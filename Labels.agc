@@ -555,8 +555,7 @@ for s = 0 to Sectors-1
 		for c = 0 to SectorWidth-1
 			PlayerSectorNodes[s,i] = PlayerSectorOrigin[s] + row
 			AISectorNodes[s,i] = AISectorOrigin[s] + row
-			inc row
-			inc i
+			inc row : inc i
 		next c
 	next r
 next s

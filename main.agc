@@ -5,7 +5,8 @@ remstart
 	ISSUES
 		----BETTER AI MOVEMENT GOAL DECISIONS
 		----IMPLEMENT AI BASE DEFENSE - SEE GOAL CHANGE
-		----TREES ARE NOT LINING UP IN IOS!!!!!!!!!!!!!!!!!!
+		----BASES ARE DIAPPEARING!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		----TREES & IMPASSABLE ARE NOT LINING UP IN IOS!!!!!!!!!!!!!!!!!!
 
 	FIXED?
 		----BASE CAPTURE NOT ALWAYS WORKING?

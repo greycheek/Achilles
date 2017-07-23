@@ -17,7 +17,7 @@ function BaseSetup( node, base, baseRef ref as baseType[],series,group )
 	SetSpriteSize( baseRef[ID].spriteID, NodeSize,NodeSize )
 	SetSpriteDepth( baseRef[ID].spriteID,5 )
 	SetSpriteGroup( baseRef[ID].spriteID, group )
-	SetSpritePosition( baseRef[ID].spriteID,mapTable[node].x-NodeOffset,mapTable[node].y-NodeOffset )
+	SetSpritePositionByOffset( baseRef[ID].spriteID,mapTable[node].x,mapTable[node].y )
 
 	if group = AIBaseGroup then divisor = 2 else divisor = 4
 	xOffset = floor( (floor( OpenColumns/divisor ) * NodeSize) /2 )
@@ -44,7 +44,7 @@ function DepotSetup( node, depot, depotNode ref as depotType[],series )
 	SetSpriteVisible( depotNode[ID].spriteID, On )
 	SetSpriteSize( depotNode[ID].spriteID, DepotSize, DepotSize )
 	SetSpriteDepth( depotNode[ID].spriteID,DepotDepth )
-	SetSpritePosition( depotNode[ID].spriteID, mapTable[node].x-depotOffset, mapTable[node].y-depotOffset )
+	SetSpritePositionByOffset( depotNode[ID].spriteID, mapTable[node].x, mapTable[node].y )
 endfunction
 
 function GenerateBases()
@@ -55,9 +55,9 @@ function GenerateBases()
 		node1 = PlayerSectorNodes[i,Random2(0,SectorNodes-1)]
 		node2 = AISectorNodes[i,Random2(0,SectorNodes-1)]
 		select i	`guarantee a base in either sector 1 or 4
-			case 1 : if one then SetupBases(node1,node2) else SetupRandomly(node1,node2) : endcase
-			case 4 : if not one then SetupBases(node1,node2) else SetupRandomly(node1,node2) : endcase
-			case 0,2,3,5 : SetupRandomly(node1,node2) : endcase
+			case 1 : if one then SetBases(node1,node2) else SetRandomly(node1,node2) : endcase
+			case 4 : if not one then SetBases(node1,node2) else SetRandomly(node1,node2) : endcase
+			case default : SetRandomly(node1,node2) : endcase
 		endselect
 	next i
 	AIBaseCount = AIBases.length
@@ -66,20 +66,20 @@ function GenerateBases()
 	PlayerProdUnits = (PlayerBaseCount+1) * BaseProdValue
 endfunction
 
-function SetupBases(node1,node2)
+function SetBases(node1,node2)
 	BaseSetup( node1,PlayerBase,PlayerBases,PlayerBaseSeries,BaseGroup )
 	BaseSetup( node2,AIBase,AIBases,AIBaseSeries,AIBaseGroup )
 endfunction
 
-function SetupDepots(node1,node2)
+function SetDepots(node1,node2)
 	DepotSetup( node1,PlayerDepot,PlayerDepotNode,PlayerDepotSeries )
 	DepotSetup( node2,AIDepot,AIDepotNode,AIDepotSeries )
 endfunction
 
-function SetupRandomly(node1,node2)
+function SetRandomly(node1,node2)
 	select Random2( 1,4 )
-		case 1 : SetupBases(node1,node2) : endcase
-		case 2 : SetupDepots(node1,node2) : endcase
+		case 1 : SetBases(node1,node2) : endcase
+		case 2 : SetDepots(node1,node2) : endcase
 		case 3,4 : endcase	`no base or depot
 	endselect
 endfunction
@@ -200,6 +200,7 @@ function GenerateMap()
 	CreateSprite(field,field)
 	SetSpriteDepth ( field, 12 )
 	SetSpriteSize(field,MaxWidth,MaxHeight)
+	//~ SetSpritePosition(field,0,0)
 	DrawSprite( field )
 
 	SetRenderToImage(field,0)
@@ -505,42 +506,5 @@ SetSpriteDepth ( Explode, 0 )
 SetSpriteAnimation( Explode,102,102,12 )
 SetSpriteSize( Explode,128,128 )
 
-function GenerateBases()
-	PlayerBases.length = -1
-	AIBases.length = -1
-	baseSector = OpenColumns/10 `separate horizontal zone for each base and depot
-	BaseCount = Random2(0,2)
-
-	for baseIndex0 = 0 to BaseCount
-		baseIndex1 = baseIndex0 + 1
-		depotIndex0 = BaseCount + baseIndex0
-		depotIndex1 = depotIndex0 + 1
-
-		b1 = (baseIndex0 * baseSector)+2	`b1 and b2 = player base limits
-		b2 = (baseIndex1 * baseSector)-1
-		node = Random2( b1,b2 ) + (Random2(1,OpenRows)*Columns)
-		BaseSetup( node,PlayerBase,PlayerBases,PlayerBaseSeries,BaseGroup )
-
-		d1 = (depotIndex0 * baseSector)+2	`d1 and d2 = player depot limits
-		d2 = (depotIndex1 * baseSector)-1
-		node = Random2( d1,d2 ) + (Random2(1,OpenRows)*Columns)
-		DepotSetup( node,PlayerDepot,PlayerDepotNode,PlayerDepotSeries )
-
-		b1 = OpenColumns - (baseIndex0 * baseSector)-2	`b1 and b2 = AI base limits
-		b2 = Opencolumns - (baseIndex1 * baseSector)+1
-		node = Random2( b1,b2 ) + (Random2(1,OpenRows)*Columns)
-		BaseSetup( node,AIBase,AIBases,AIBaseSeries,AIBaseGroup )
-
-		d1 = OpenColumns - (depotIndex0 * baseSector)-2	`d1 and d2 = AI depot limits
-		d2 = Opencolumns - (depotIndex1 * baseSector)+1
-		node = Random2( d1,d2 ) + (Random2(1,OpenRows)*Columns)
-		DepotSetup( node,AIDepot,AIDepotNode,AIDepotSeries )
-	next baseIndex0
-
-	AIBaseCount = AIBases.length
-	PlayerBaseCount = PlayerBases.length
-	AIProdUnits = (AIBaseCount+1) * BaseProdValue
-	PlayerProdUnits = (PlayerBaseCount+1) * BaseProdValue
-endfunction
 remend
 
