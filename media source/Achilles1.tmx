@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="48" height="30" tilewidth="30" tileheight="30" nextobjectid="1">
+ <tileset firstgid="1" name="Achilles1" tilewidth="30" tileheight="30" tilecount="2" columns="0">
+  <tile id="0">
+   <image width="30" height="30" source="media/Impassable.png"/>
+  </tile>
+  <tile id="1">
+   <image width="30" height="30" source="media/Tree1.png"/>
+  </tile>
+ </tileset>
+ <imagelayer name="Image Layer 1">
+  <image source="map-TREES.tif" width="1440" height="900"/>
+ </imagelayer>
+ <layer name="Tile Layer 1" width="48" height="30">
+  <data encoding="base64" compression="zlib">
+   eJztzrEJADAMwLDk/6f7QxfTIoF378zs473Kf8t/y3/Lf8t/y3/Lf8t/y3/Lf8t/y3/rl3/ptgNQ0QD1
+  </data>
+ </layer>
+ <layer name="Tile Layer 2" width="48" height="30" visible="0">
+  <data encoding="base64" compression="zlib">
+   eJztwTEBAAAAwqD1T20JT6AAAAAAAOBvFoAAAQ==
+  </data>
+ </layer>
+</map>

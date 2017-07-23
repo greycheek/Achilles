@@ -1,0 +1,53 @@
+#constant Shapes 32
+#constant ShapeLine 8
+
+type Ltype
+	armCount as integer[3]
+	totalCount as integer
+endtype
+
+global LShape as Ltype
+
+
+ImpassFile = OpenToRead( "Impassables.txt" )
+
+function MapGenerator()
+	node as integer = 0
+	nodes as integer = MapSize *.10
+
+	`Trees
+	for i = 2 to OpenRows-1
+		for j = 2 to OpenColumns-1
+			n = node + j
+			if not Random2(0,3) then mapTable[n].terrain = Trees
+		next j
+		inc node,Columns
+	 next i
+	
+	for i = 0 to 7
+		SetImpass(SelectRandomNode())
+	next i
+
+endfunction
+
+CloseFile( ImpassFile )
+
+
+function SelectRandomNode()
+endfunction randomNode
+
+function SelectShape()
+endfunction shapeFileOffset
+
+function SetImpass(startNode)
+	shapeFileOffset = SelectShape()
+	inc startNode,shapeFileOffset
+
+	lineOffset = Columns-Shapeline
+		for i = 0 to Shapeline-1
+			nextLine = lineOffset * i
+			for j = 0 to ShapeLine-1
+			mapTable[startNode+j+nextLine].terrain = val(chr(ReadByte( ImpassFile )))
+                  		next j
+               next i
+endfunction

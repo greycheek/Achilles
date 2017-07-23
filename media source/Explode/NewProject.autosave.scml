@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<spriter_data scml_version="1.0" generator="BrashMonkey Spriter" generator_version="r10">
+    <folder id="0">
+        <file id="0" name="ExplodingTank.png" width="141" height="226" pivot_x="0" pivot_y="1"/>
+        <file id="1" name="ExplodingGun.png" width="77" height="157" pivot_x="0" pivot_y="1"/>
+        <file id="2" name="ExplodingLeft.png" width="19" height="226" pivot_x="0" pivot_y="1"/>
+        <file id="3" name="ExplodingRight.png" width="19" height="226" pivot_x="0" pivot_y="1"/>
+        <file id="4" name="ExplodingTurret.png" width="105" height="119" pivot_x="0" pivot_y="1"/>
+    </folder>
+    <entity id="0" name="entity_000">
+        <animation id="0" name="NewAnimation" length="1500" interval="100">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" timeline="0" key="0" z_index="0"/>
+                </key>
+                <key id="1" time="1469">
+                    <object_ref id="0" timeline="1" key="0" z_index="0"/>
+                    <object_ref id="1" timeline="2" key="0" z_index="1"/>
+                    <object_ref id="2" timeline="3" key="0" z_index="2"/>
+                    <object_ref id="3" timeline="4" key="0" z_index="3"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="ExplodingTank">
+                <key id="0" spin="0">
+                    <object folder="0" file="0" x="-70" y="114"/>
+                </key>
+            </timeline>
+            <timeline id="1" name="ExplodingGun">
+                <key id="0" time="1469" spin="0">
+                    <object folder="0" file="1" x="-39.976669" y="353.276894"/>
+                </key>
+            </timeline>
+            <timeline id="2" name="ExplodingLeft">
+                <key id="0" time="1469" spin="0">
+                    <object folder="0" file="2" x="-500" y="92.207792"/>
+                </key>
+            </timeline>
+            <timeline id="3" name="ExplodingRight">
+                <key id="0" time="1469" spin="0">
+                    <object folder="0" file="3" x="505.194805" y="120.779221"/>
+                </key>
+            </timeline>
+            <timeline id="4" name="ExplodingTurret">
+                <key id="0" time="1469" spin="0">
+                    <object folder="0" file="4" x="-225.842697" y="143.820225"/>
+                </key>
+            </timeline>
+        </animation>
+    </entity>
+</spriter_data>

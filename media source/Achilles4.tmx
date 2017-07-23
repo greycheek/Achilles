@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="32" height="20" tilewidth="45" tileheight="45" nextobjectid="1">
+ <tileset firstgid="1" name="Achilles" tilewidth="45" tileheight="45" tilecount="1" columns="0">
+  <tile id="6">
+   <image width="45" height="45" source="../media/TreeCluster45.png"/>
+  </tile>
+ </tileset>
+ <imagelayer name="Image Layer 1" offsetx="45" offsety="0">
+  <image source="../media/Achilles3.png" width="1350" height="720"/>
+ </imagelayer>
+ <layer name="Tile Layer 1" width="32" height="20" offsetx="0" offsety="-45">
+  <data encoding="base64" compression="zlib">
+   eJztVEEKACAM6tb/f9w1pDV1p2JCEGTqajVG42dMmM+ICPyMp/jvo8JlM51qZvYyXFUH9dgzqPhHGZTsjv/eO+jp3F20nmmezpytn8nC9Kn67hR/zHDzznRuvm7m6t/h1uD0G6up3nej8QIWXUsCcA==
+  </data>
+ </layer>
+</map>

@@ -1,0 +1,1071 @@
+
+`--CONSTANTS--
+
+`screen
+#constant MaxWidth 1440
+#constant MaxHeight 900
+#constant MiddleX 720
+#constant MiddleY 360
+SetVirtualResolution( MaxWidth, MaxHeight )
+SetWindowSize( MaxWidth, MaxHeight, 1 )
+SetWindowPosition( 0,0 )
+SetOrientationAllowed( 0, 0, 1, 1 )
+
+`sounds
+#constant ErrorSound 1
+#constant ClickSound 2
+#constant TankSound 3
+#constant BangSound 4
+#constant ExplodeSound 5
+#constant RocketSound 6
+#constant LaserSound 7
+#constant SpawnSound 8
+#constant MechSound 9
+LoadSound(ErrorSound,"EdgeHit.wav")
+LoadSound(BangSound,"bang2.wav")
+LoadSound(ExplodeSound,"explode.wav")
+LoadSoundOGG(ClickSound,"buttonclick.ogg")
+LoadSoundOGG(RocketSound,"rocket.ogg" )
+LoadSoundOGG(LaserSound,"laser3.ogg" )
+LoadSoundOGG(SpawnSound,"SPAWN.ogg" )
+LoadSoundOGG(TankSound,"Rumble2.ogg")
+LoadSoundOGG(MechSound,"Mech2.ogg")
+
+`map
+#constant Columns 32	 `nodes
+#constant OpenColumns 30
+#constant Rows 20
+#constant OpenRows 16
+
+#constant NodeSize 45 	 `MaxWidth / NodeColumns
+#constant NodeOffset 22	 `Half of NodeSize = 22
+#constant BarWidth 3	 `Health Bar
+#constant MapSize 640	 `Rows * Columns
+#constant MapWidth 1350
+#constant MapHeight 720
+#constant FirstRow 1
+
+#constant south 	-32	`vectors
+#constant southeast -31
+#constant west 		  1
+#constant northeast  33
+#constant north 	 32
+#constant northwest  31
+#constant east 		 -1
+#constant southwest -33
+
+`force grid
+#constant Cells 8
+#constant CellColumns 4
+#constant DefaultAI 5
+#constant DefaultPlayer 5
+#constant DefaultTanks 5
+#constant CellWidth 112
+#constant CellHeight 112
+#constant CellOffset 56
+#constant Mullion 25
+#constant AISide 67
+#constant PlayerSide 817
+#constant Row1 96
+#constant Row2 253
+
+`buttons
+#constant SettingsButton 1
+#constant CannonButton 2
+#constant MissileButton 3
+#constant LaserButton 4
+#constant QuitButton 5
+#constant AcceptButton 6
+#constant HeavyLaserButton 7
+#constant HeavyCannonButton 8
+#constant JoyButton 9
+
+`general
+#constant Unset 100000
+#constant Minimum 0
+#constant NotFound .1
+#constant body 0
+#constant turret 1
+#constant Goal 1
+#constant Complete 1
+global turns as integer = 0
+global offset as integer[8]=[north,northwest,east,southwest,south,southeast,west,northeast]
+global angle  as integer[8]=[0,45,90,135,180,225,270,315]
+global DLS as integer
+DLS = NodeSize*sqrt(2) `Diagonal Length of Square
+
+
+`text
+#constant TurnText 0
+#constant HitText 1
+#constant MovingText 2
+#constant FiringText 4
+#constant LOSText 5
+#constant OutofRangeText 6
+#constant OutofAmmoText 7
+#constant GameOverText 8
+#constant QuitText 9
+#constant SettingsText 10
+#constant AlertText 11
+#constant VersionText 12
+#constant ProductionText 13
+#constant UnitText 14
+#constant IllegalText 15
+#constant StatText 16
+#constant NumeralText 17
+#constant Gill 50
+#constant WeaponText 100
+LoadFont(Gill,"GillSans.ttc")
+UseNewDefaultFonts(On)
+
+`sprites
+#constant SpriteConUnits 6
+#constant SpriteConGroup 4
+#constant AITankGroup 2
+#constant PlayerTankGroup 1
+#constant BaseGroup 3
+#constant AIBaseGroup 4
+#constant LightTank 1
+#constant MediumTank 2
+#constant HeavyTank 3
+#constant Battery 4
+#constant Mech 5
+#constant Question 6
+#constant UnitTypes 5
+
+#constant BaseIris 23
+#constant BlankSprite 24
+#constant FieldSeries 25
+#constant Dialog 100
+#constant BaseDialog 101
+#constant Splash 102
+#constant InterfaceSeries 103
+#constant WeaponSeries 200
+#constant MissileSeries 201
+#constant ExplodeSeries 202
+
+#constant HiliteSeries 250
+#constant PlayerHealthSeries 300
+#constant AIHealthSeries 350
+#constant PlayerCoverSeries 400
+#constant AICoverSeries 450
+#constant PlayerTankSeries 500
+#constant AITankSeries 550
+#constant FOWseries 600
+#constant SpriteConSeries 650
+#constant PlayerTurretSeries 700
+#constant AITurretSeries 750
+#constant TargetSeries 800
+#constant PlayerBaseSeries 850
+#constant AIBaseSeries 900
+#constant PlayerDepotSeries 950
+#constant AIDepotSeries 1000
+
+`strings
+global type$ as string[8,1]	 `# of UnitTypes + 3
+global armor$ as string[8,1]
+global weapon$ as string[8,1]
+global movement$ as string[8,1]
+global cost$ as string[8,1]
+
+type$[1,0] = "LIGHT TANK"
+type$[2,0] = "MEDIUM TANK"
+type$[3,0] = "HEAVY TANK"
+type$[4,0] = "BATTERY"
+type$[5,0] = "MECH"
+
+armor$[1,0] = "armor:  50%"
+armor$[2,0] = "armor:  75%"
+armor$[3,0] = "armor:  100%"
+armor$[4,0] = "armor:  33%"
+armor$[5,0] = "armor:  75%"
+
+weapon$[1,0] = "medium laser:  range unlimited, damage 10%, unlimited rounds"
+weapon$[2,0] = "medium laser:  range unlimited, damage 10%, unlimited rounds"
+weapon$[2,1] = "medium cannon:  range 3, damage 25%, unlimited rounds"
+weapon$[3,0] = "heavy laser:  range unlimited, damage 25%, unlimited rounds"
+weapon$[3,1] = "heavy cannon:  range 3, damage 35%, unlimited rounds"
+weapon$[4,0] = "missiles:  range unlimited, damage 40%, 10 missiles"
+weapon$[5,0] = "missiles:  range unlimited, damage 40%, 5 missiles"
+weapon$[5,1] = "heavy laser:  range unlimited, damage 25%, unlimited rounds"
+
+movement$[1,0] = "moves:  8"
+movement$[2,0] = "moves:  5"
+movement$[3,0] = "moves:  3"
+movement$[4,0] = "moves:  7"
+movement$[5,0] = "moves:  4"
+
+cost$[1,0] = "unit cost:  50"
+cost$[2,0] = "unit cost:  100"
+cost$[3,0] = "unit cost:  200"
+cost$[4,0] = "unit cost:  250"
+cost$[5,0] = "unit cost:  300"
+
+
+`--TANKS--
+
+global BarHeight as integer
+BarHeight = NodeSize * .75
+global BarOffset as integer
+BarOffset = floor((NodeSize-BarHeight)/2)
+
+global PlayerCount as integer
+global AICount as integer
+AICount = DefaultAI
+PlayerCount = DefaultPlayer
+
+`patrol zone
+global topRow as integer
+global bottomRow as integer
+topRow = NodeSize * 2
+bottomRow = OpenRows * NodeSize
+
+`depots
+type depotType
+	spriteID as integer
+	node as integer
+endtype
+global DepotRange as integer
+DepotRange = MaxWidth / 4
+global PlayerDepotNode as depotType[]
+global AIDepotNode as depotType[]
+
+
+`player tank glow
+#constant Brighter 9
+#constant Brightest 255
+#constant Darker -9
+#constant GlowMax 255
+#constant GlowMin 0
+
+`weapons
+#constant cannon 0
+#constant cannonDamage .25
+global cannonRange as integer
+cannonRange = nodeSize * 4
+
+#constant laser 1
+#constant laserDamage .1
+global laserRange as integer
+laserRange = mapWidth + mapHeight
+global smokeImage as integer
+smokeImage=loadimage("Smoke4a.png")
+
+#constant missile 2
+#constant missileDamage .4
+global missileRange as integer
+missileRange = mapWidth + mapHeight
+
+#constant heavyCannon 3
+#constant heavyCannonDamage .35
+global heavyCannonRange as integer
+heavyCannonRange = cannonRange
+
+#constant heavyLaser 4
+#constant heavyLaserDamage .25
+global heavyLaserRange as integer
+heavyLaserRange = mapWidth + mapHeight
+
+type tankType
+	OpenList as integer[]
+	ClosedList as integer[]
+	parentNode as integer[]
+
+	X as integer
+	y as integer
+	node as integer
+	goalNode as integer
+
+	alive as integer
+	target as integer
+	moveTarget as integer
+	index as integer
+	moves as integer
+	movesAllowed as integer
+	totalCost as integer
+	team as integer
+	line as integer
+	hilite as integer
+	bullsEye as integer
+	cover as integer
+	vehicle as integer
+	weapon as integer
+	rounds as integer
+	range as integer
+	missiles as integer
+	patrolDirection as integer
+	sound as integer
+
+	FOW as integer
+	FOWSize as integer
+	FOWOffset as integer
+	bodyID as integer
+	turretID as integer
+	healthID as integer
+	bodyImageID as integer
+	turretImageID as integer
+	healthBarImageID as integer
+
+	speed as Float
+	bodyW as Float
+	bodyH as Float
+	turretW as Float
+	turretH as Float
+	scale as Float
+	health as Float
+	minimumHealth as Float
+	maximumHealth as Float
+	damage as Float
+
+	body$ as String
+	turret$ as String
+endtype
+
+
+global unitCost as integer[unitTypes]
+unitCost[LightTank] = 50
+unitCost[MediumTank] = 100
+unitCost[HeavyTank] = 200
+unitCost[Battery] = 250
+unitCost[Mech] = 300
+
+#constant AI %0000000000000010
+#constant Player %0000000000000100
+#constant CoverAlpha 175
+#constant Unoccupied 0
+#constant PlayerTeam 1
+#constant AITeam 2
+
+#constant HeavyHealthMax 1
+#constant MediumHealthMax .75
+#constant LightHealthMax .5
+#constant BatteryHealthMax .33
+
+global AISurviving as integer
+global PlayerSurviving as integer
+
+global PlayerLast as integer
+global AIPlayerLast as integer
+
+global AITank as tankType[]
+global PlayerTank as tankType[]
+
+global PlayerProdUnits as integer
+global AIProdUnits as integer
+global BaseProdValue as integer
+
+
+`--TERRAIN--
+
+#constant Impassable 9
+#constant AIDepot 8
+#constant PlayerDepot 7
+#constant AIBase 4
+#constant PlayerBase 3
+#constant Trees 2
+#constant Clear 1
+
+global cost as integer[10]
+for i = 0 to 9 : cost[i]=Clear : next i
+cost[2]=Trees
+cost[9]=Impassable
+
+CreateSprite(BlankSprite,0)
+SetSpriteColor(BlankSprite,0,0,0,255)
+SetSpriteSize(BlankSprite,NodeSize,NodeSize)
+SetSpriteOffset(BlankSprite,NodeOffset,NodeOffset)
+SetSpriteVisible(BlankSprite,Off)
+
+global Iris = BaseIris
+global IrisFrames = 62
+LoadImage(Iris,"IRIS.png")
+CreateSprite( Iris,Iris )
+SetSpriteTransparency( Iris, 1 )
+SetSpriteVisible( Iris, 0 )
+SetSpriteDepth ( Iris, 0 )
+SetSpriteSize(Iris, 40,46)
+SetSpriteAnimation(Iris,40,46,IrisFrames)
+SetSpriteOffset(Iris,NodeOffset,NodeOffset)
+
+
+`map
+type mapType
+	x as integer	`screen coordinates
+	y as integer
+	nodeX as integer
+	nodeY as integer
+	team as integer
+	cost as integer
+	terrain as integer
+	heuristic as integer
+	moveTarget as integer
+endtype
+global mapTable as mapType[MapSize]
+global treeDummy as integer
+
+type baseType
+	node as integer
+	spriteID as integer
+	zoneID as integer
+endtype
+global AIBaseCount as integer
+global PlayerBaseCount as integer
+global PlayerBases as baseType[]
+global AIBases as baseType[]
+
+function BaseSetup( index, baseRef ref as baseType[],series,group )
+	baseRef.length = baseRef.length + 1
+	ID = baseRef.length
+	baseRef[ID].node = index
+	baseRef[ID].spriteID = series+baseRef.length-1
+	LoadImage( baseRef[ID].spriteID,"HEXBASE.png" )
+	CreateSprite( baseRef[ID].spriteID,baseRef[ID].spriteID )
+	SetSpritePhysicsOn( baseRef[ID].spriteID, On )
+	SetSpriteTransparency( baseRef[ID].spriteID, On )
+	SetSpriteVisible( baseRef[ID].spriteID, On )
+	SetSpriteSize(baseRef[ID].spriteID, 39, 45)
+	SetSpriteDepth( baseRef[ID].spriteID,3 )
+	SetSpriteGroup( baseRef[ID].spriteID, group )
+
+	x = mapTable[index].x-NodeOffset
+	y = MapTable[index].y-NodeOffset
+	SetSpritePosition(baseRef[ID].spriteID,x+3,y)
+
+	zSize = floor( OpenColumns/3 ) * NodeSize
+	zOffset = floor( zSize/2 )
+	baseRef[ID].zoneID = CreateDummySprite()
+	SetSpriteDepth( baseRef[ID].zoneID,4)
+	SetSpritePhysicsOn(baseRef[ID].zoneID,1)
+	SetSpriteShapeBox(baseRef[ID].zoneID, mapTable[index].x-zOffset, mapTable[index].y-zOffset, mapTable[index].x+zSize-1, mapTable[index].y+zSize-1,0)
+endfunction
+
+function DepotSetup( index, depotNode ref as depotType[],series )
+	depotNode.length = depotNode.length + 1
+	ID = depotNode.length
+	depotNode[ID].node = index
+	depotNode[ID].spriteID = series+depotNode.length-1
+	LoadImage( depotNode[ID].spriteID,"REDCROSS.png" )
+	CreateSprite( depotNode[ID].spriteID,depotNode[ID].spriteID )
+	SetSpriteTransparency( depotNode[ID].spriteID, On )
+	SetSpriteVisible( depotNode[ID].spriteID, On )
+	SetSpriteSize( depotNode[ID].spriteID, 22, 22 )
+	SetSpriteDepth( depotNode[ID].spriteID,3 )
+	x = mapTable[index].x-(NodeOffset/2)
+	y = MapTable[index].y-(NodeOffset/2)
+	SetSpritePosition( depotNode[ID].spriteID,x,y )
+endfunction
+
+treeDummy = CreateDummySprite()
+SetSpriteCategoryBits(treeDummy,Block)
+SetSpritePhysicsOn(treeDummy,1)
+MapFile = OpenToRead( "Achilles45.txt" )
+for i = 0 to MapSize-1
+	mapTable[i].nodeX = i-(trunc(i/Columns)*Columns)
+	mapTable[i].nodeY = trunc(i/Columns)
+	mapTable[i].x = (mapTable[i].nodeX * NodeSize) + NodeOffset
+	mapTable[i].y = (mapTable[i].nodeY * NodeSize) + NodeOffset
+	mapTable[i].terrain = val(chr(ReadByte( MapFile )))
+	maptable[i].cost = cost[mapTable[i].terrain]
+	mapTable[i].team = Unoccupied
+	mapTable[i].moveTarget = False
+
+	select mapTable[i].terrain
+		case PlayerBase  : BaseSetup(i,PlayerBases,PlayerBaseSeries,BaseGroup) : endcase
+		case AIBase		 : BaseSetup(i,AIBases,AIBaseSeries,AIBaseGroup) : endcase
+		case PlayerDepot : DepotSetup( i,PlayerDepotNode,PlayerDepotSeries ) : endcase
+		case AIDepot     : DepotSetup( i,AIDepotNode,AIDepotSeries ) : endcase
+		case Trees
+			x = mapTable[i].x-NodeOffset
+			y = mapTable[i].y-NodeOffset
+			AddSpriteShapeBox(treeDummy,x,y,x+NodeSize-1,y+NodeSize-1,0)
+		endcase
+	endselect
+next i
+CloseFile( MapFile )
+AIBaseCount = AIBases.length
+PlayerBaseCount = PlayerBases.length
+BaseProdValue = 25
+AIProdUnits = (AIBaseCount) * BaseProdValue
+PlayerProdUnits = (PlayerBaseCount) * BaseProdValue
+
+
+`--INTERFACE--
+
+global NumY as integer
+global NumX as integer
+
+type deviceType
+	scale
+	buttSize
+	textSize
+	buttX1
+	buttX2
+	YesNoX4a
+	device as string
+endtype
+global dev as deviceType
+
+dev.device = GetDeviceBaseName()
+select dev.device
+	case "windows","mac"
+		dev.buttSize = 64
+		dev.textSize = 28
+		dev.scale = 1
+		dev.buttX1 = dev.buttSize + 8
+		dev.buttX2 = dev.buttSize * 2.7
+		dev.YesNoX4a = MaxWidth-dev.buttSize - 6
+		NumX = dev.buttSize*1.7
+	endcase
+	case "ios","android","blackberry"
+		if FindString( GetDeviceType(),"ipad" )
+			dev.buttSize = 64
+			dev.textSize = 28
+			dev.scale = 1
+			dev.buttX1 = dev.buttSize + 8
+			dev.buttX2 = dev.buttSize * 2.7
+			dev.YesNoX4a = MaxWidth-dev.buttSize - 6
+			NumX = dev.buttSize*1.7
+		else
+			dev.buttSize = 86
+			dev.textSize = 40
+			dev.scale = 2
+			dev.buttX1 = dev.buttSize - 4
+			dev.buttX2 = dev.buttSize * 2.6
+			dev.YesNoX4a = MaxWidth-dev.buttSize + 6
+			NumX = dev.buttSize*1.5
+		endif
+	endcase
+endselect
+
+//~ global buttX as integer
+//~ buttX = dev.buttSize
+
+global buttY as integer
+buttY = MaxHeight - 65
+NumY = buttY - (dev.ButtSize/1.5)
+
+global AlertW
+global AlertH
+
+global YesNoX1
+global YesNoY1
+
+global YesNoX2a
+global YesNoX2b
+global YesNoY2
+
+global YesNoX3a
+global YesNoX3b
+global YesNoX3c
+global YesNoY3
+global YesNoY3a
+
+global YesNoX4a
+global YesNoX4b
+global YesNoY4
+
+AlertW = 300*dev.scale
+AlertH = 250*dev.scale
+
+YesNoX1  = MiddleX-(AlertW/2)								`alert dialog
+YesNoY1  = MiddleY-(AlertH/3)
+
+YesNoX2a = (YesNoX1+AlertW)-dev.buttSize-10					`base production
+YesNoX2b = (YesNoX1+AlertW)-(dev.buttSize*2)-20
+YesNoY2  = (YesNoY1+AlertH)-dev.buttSize-(dev.scale*10)
+
+YesNoX3a = MaxWidth-(dev.buttSize*1.5)						`splash screen
+YesNoX3b = MaxWidth-(dev.buttSize*2.75)
+YesNoX3c = MaxWidth-(dev.buttSize*4)
+YesNoY3  = buttY-50
+YesNoY3a = buttY-dev.buttSize+50
+
+YesNoX4a = dev.YesNoX4a										`main game screen
+YesNoX4b = MaxWidth-dev.buttX2
+YesNoY4  = buttY
+
+global turnImage as integer
+global turnImageDown as integer
+global cannonImage as integer
+global cannonImageDown as integer
+global laserImage as integer
+global laserImageDown as integer
+global missileImage as integer
+global missileImageDown as integer
+global heavyCannonImage as integer
+global heavyCannonImageDown as integer
+global heavyLaserImage as integer
+global heavyLaserImageDown as integer
+global quitImage as integer
+global quitImageDown as integer
+global CancelImage as integer
+global CancelImageDown as integer
+global AcceptImage as integer
+global AcceptImageDown as integer
+global SettingsImage as integer
+global SettingsImageDown as integer
+global ProductionUnits as integer
+global TurnCount as integer
+global JoyButtonImage as integer
+global JoyButtonDownImage as integer
+global Joystick as integer
+global JoyArrows as integer
+
+turnImage = InterfaceSeries+1
+turnImageDown = InterfaceSeries+2
+cannonImage = InterfaceSeries+3
+cannonImageDown = InterfaceSeries+4
+laserImage = InterfaceSeries+5
+laserImageDown = InterfaceSeries+6
+missileImage = InterfaceSeries+7
+missileImageDown = InterfaceSeries+8
+heavyCannonImage = InterfaceSeries+9
+heavyCannonImageDown = InterfaceSeries+10
+heavyLaserImage = InterfaceSeries+11
+heavyLaserImageDown = InterfaceSeries+12
+
+global square as integer
+square = InterfaceSeries+13
+LoadImage(square,"Square.png")
+CreateSprite( square,square )
+SetSpriteOffset(square, NodeOffset, NodeOffset)
+SetSpriteSize(square, NodeSize, NodeSize)
+SetSpriteTransparency( square, 1 )
+SetSpriteVisible( square, 0 )
+
+quitImage = InterfaceSeries+14
+quitImageDown = InterfaceSeries+15
+
+global AlertBackGround as integer
+AlertBackGround = InterfaceSeries+16
+
+CancelImage = InterfaceSeries+17
+CancelImageDown = InterfaceSeries+18
+AcceptImage = InterfaceSeries+19
+AcceptImageDown = InterfaceSeries+20
+SettingsImage = InterfaceSeries+21
+SettingsImageDown = InterfaceSeries+22
+ProductionUnits = InterfaceSeries+23
+TurnCount = InterfaceSeries+24
+JoyButtonImage = InterfaceSeries+25
+JoyButtonDownImage = InterfaceSeries+26
+Joystick = InterfaceSeries+27
+JoyArrows = InterfaceSeries+28
+LoadImage( Joystick,"Joy.png" )
+LoadImage( JoyArrows,"JOYARROWS.png" )
+
+#constant UnitX 130
+#constant UnitY 100
+LoadImage( ProductionUnits,"Units.gif" )
+CreateSprite( ProductionUnits,ProductionUnits )
+SetSpriteSize( ProductionUnits,28,28 )
+SetSpriteTransparency( ProductionUnits, 1 )
+SetSpritePosition( ProductionUnits,MiddleX-UnitX+15,MaxHeight-UnitY)
+SetSpriteColor( ProductionUnits,128,128,128,255 )
+ShowUnits( Off )
+
+LoadImage( TurnCount,"Turn.png")
+CreateSprite( TurnCount,TurnCount )
+SetSpriteSize( TurnCount,24,24 )
+SetSpriteTransparency( TurnCount, 1 )
+SetSpriteDepth( TurnCount,0 )
+SetSpriteVisible( TurnCount, Off )
+SetSpritePosition( TurnCount,MiddleX-UnitX+19,MaxHeight-(UnitY/1.8) )
+SetSpriteColor( TurnCount,128,128,128,255 )
+
+
+
+`--SPRITES Misc--
+
+global Fire1 = WeaponSeries
+LoadImage(Fire1,"Energy.png")
+CreateSprite( Fire1,Fire1 )
+SetSpriteTransparency( Fire1, 1 )
+SetSpriteVisible( Fire1, 0 )
+SetSpriteDepth ( Fire1, 0 )
+SetSpriteAnimation( Fire1,128,128,8 )
+SetSpriteSize(Fire1, 64, 64)
+
+global Missile1 = MissileSeries
+LoadImage(Missile1,"MissileSheet.png")
+CreateSprite( Missile1,Missile1 )
+SetSpriteTransparency( Missile1, 1 )
+SetSpriteVisible( Missile1, 0 )
+SetSpriteDepth ( Missile1, 0 )
+SetSpriteAnimation( Missile1,9,40,4 )
+SetSpriteSize(Missile1,12,43 )
+
+global Explode1 = ExplodeSeries
+LoadImage(Explode1,"red_strip16.png")
+CreateSprite( Explode1,Explode1 )
+SetSpriteTransparency( Explode1, 1 )
+SetSpriteVisible( Explode1, 0 )
+SetSpriteDepth ( Explode1, 0 )
+SetSpriteAnimation( Explode1,128,128,32 )
+SetSpriteSize(Explode1, 64, 64)
+
+global field as integer  `board
+field = FieldSeries
+LoadImage(field,"Achilles45HEX.png")
+CreateSprite(field,field)
+SetSpriteVisible(field,Off)
+SetSpriteDepth ( field, 12 )
+SetSpriteSize(field,1440,900)
+
+
+`--SPLASHSCREEN SECTION--
+
+#constant SpectrumW 556
+#constant SpectrumH 100
+#constant cy1 410
+#constant cy2 528
+
+global pickAI as ColorSpec
+global pickPL as ColorSpec
+pickAI.r = 85 : pickAI.g = 235 : pickAI.b = 85 : pickAI.a = 255 : pickAI.satur = 1 : pickAI.spect = SpectrumW : pickAI.value = SpectrumW
+pickPL.r = 255 : pickPL.g = 25  : pickPL.b = 0 : pickPL.a = 255 : pickPL.satur = 1 : pickPL.spect = SpectrumW : pickPL.value = SpectrumW
+global AISpectrumSprite as integer
+global PlayerSpectrumSprite as integer
+global AIValueSprite as integer
+global PlayerValueSprite as integer
+AISpectrumSprite = CreateDummySprite()
+AIValueSprite = CreateDummySprite()
+PlayerSpectrumSprite = CreateDummySprite()
+PlayerValueSprite = CreateDummySprite()
+
+SetSpriteShapeBox(AISpectrumSprite,AISide,cy1,AISide+SpectrumW,cy1+SpectrumH,0)
+SetSpriteShapeBox(AIValueSprite,AISide,cy2,AISide+SpectrumW,cy2+SpectrumH,0)
+SetSpriteShapeBox(PlayerSpectrumSprite,PlayerSide,cy1,PlayerSide+SpectrumW,cy1+SpectrumH,0)
+SetSpriteShapeBox(PlayerValueSprite,PlayerSide,cy2,PlayerSide+SpectrumW,cy2+SpectrumH,0)
+
+SetSpriteDepth(AISpectrumSprite,0)
+SetSpriteDepth(AIValueSprite,0)
+SetSpriteDepth(PlayerSpectrumSprite,0)
+SetSpriteDepth(PlayerValueSprite,0)
+
+SetSpritePhysicsOn(AISpectrumSprite,1)
+SetSpritePhysicsOn(AIValueSprite,1)
+SetSpritePhysicsOn(PlayerSpectrumSprite,1)
+SetSpritePhysicsOn(PlayerValueSprite,1)
+
+type dialogTankType
+	ID as integer
+	image$ as String
+	imageID as integer
+endtype
+
+type gridType
+	ID as integer
+	imageID as integer
+	x1 as integer
+	y1 as integer
+	x2 as integer
+	y2 as integer
+endtype
+
+global AIgrid as gridType[Cells]
+global PlayerGrid as gridType[Cells]
+global SpriteCon as dialogTankType[SpriteConUnits]
+global SpriteConSize as integer = 112
+
+SpriteCon[LightTank].image$ = "GENLIGHT.png"
+SpriteCon[MediumTank].image$ = "GENMEDIUM.png"
+SpriteCon[HeavyTank].image$ = "GENHEAVY.png"
+SpriteCon[Battery].image$ = "GENMISSILE.png"
+			SpriteCon[Mech].image$ = "MECH.png"
+SpriteCon[Question].image$ = "Random.png"
+
+LoadButton(AcceptButton,AcceptImage,AcceptImageDown,"Accept.png","AcceptDown.png",YesNoX3a,YesNoY3a,dev.buttSize,On)
+LoadButton(QuitButton,CancelImage,CancelImageDown,"Cancel.png","CancelDown.png",YesNoX3b,YesNoY3a,dev.buttSize,On)
+LoadButton(SettingsButton,SettingsImage,SettingsImageDown,"SettingsButton.png","SettingsButtonDown.png",YesNoX3c,YesNoY3a,dev.buttSize,On)
+
+SetupSprite( Splash,Splash,"SplashScreen.png",0,0,MaxWidth,MaxHeight,1,Off,0 )
+SetupSprite( Dialog,Dialog,"Dialog2.png",0,0,MaxWidth,MaxHeight,1,Off,0 )
+SetupSprite( BaseDialog,BaseDialog,"BaseDialog.png",0,0,MaxWidth,MaxHeight,1,Off,2 )
+
+function SettingsSetup()
+	SpriteConSize = SpriteConSize*.85
+	for i = 1 to SpriteConUnits
+		SpriteCon[i].ID = i + SpriteConSeries
+		SpriteCon[i].imageID = i + SpriteConSeries
+		SetupSprite( SpriteCon[i].ID, SpriteCon[i].imageID, SpriteCon[i].image$,0,0,SpriteConSize,SpriteConSize,0,Off,CellOffset )
+		SetSpritePosition( SpriteCon[i].ID, MiddleX-56,i*(SpriteConSize+5)-10 )
+		SetSpritePhysicsOn( SpriteCon[i].ID, 1 )
+		SetSpriteDepth( SpriteCon[i].ID, 0 )
+		SetSpriteGroup( SpriteCon[i].ID, SpriteConGroup )
+	next i
+	SpriteConSize = SpriteConSize*1.3
+	for i = 0 to 1
+		y = Row1+(i*157)
+		for j = 0 to 3
+			ID = j+(i*4)
+			xa = AISide+(j*145)
+			xb = PlayerSide+(j*145)
+			AIgrid[ID].x1 = xa
+			Aigrid[ID].y1 = y
+			AIgrid[ID].x2 = xa + CellWidth-1
+			Aigrid[ID].y2 = y + CellHeight-1
+			PlayerGrid[ID].x1 = xb
+			PlayerGrid[ID].y1 = y
+			PlayerGrid[ID].x2 = xb + CellWidth-1
+			PlayerGrid[ID].y2 = y + CellHeight-1
+		next j
+	next i
+	for i = 0 to UnitTypes-1
+		clone1 = CloneSprite( SpriteCon[i+1].ID )
+		AIgrid[i].imageID = GetSpriteImageID( clone1 )
+		AIgrid[i].ID = clone1
+		SetSpritePosition( clone1,AIgrid[i].x1,AIgrid[i].y1 )
+		SetSpriteSize( clone1,SpriteConSize,SpriteConSize )
+		SetSpriteColor(  clone1, pickAI.r, pickAI.g, pickAI.b, pickAI.a )
+
+		clone2 = CloneSprite( SpriteCon[i+1].ID )
+		PlayerGrid[i].imageID = AIgrid[i].imageID
+		PlayerGrid[i].ID = clone2
+		SetSpritePosition( clone2,PlayerGrid[i].x1,PlayerGrid[i].y1 )
+		SetSpriteSize( clone2,SpriteConSize,SpriteConSize )
+		SetSpriteColor(  clone2, pickPL.r, pickPL.g, pickPL.b, pickPL.a )
+	next i
+	Text(VersionText,"v0.9",MaxWidth-90,70,72,72,72,32,255,2)
+endfunction
+
+function AlertDialog( text,state )
+	If state = Off
+		DeleteText( text )
+		DeleteSprite( AlertBackGround )
+		WaitForButtonRelease( QuitButton )
+	else
+		SetupSprite( AlertBackGround,AlertBackGround,"Yes-NoBkgnd.png",YesNoX1,YesNoY1,AlertW,AlertH,0,Off,0 )
+	endif
+	SetSpriteActive( AlertBackGround,state )
+	SetSpriteVisible( AlertBackGround,state )
+endfunction
+
+function AlertButtons( x1,y1,x2,y2,size )
+	PlaySound( ClickSound )
+	SetVirtualButtonSize( AcceptButton,size )
+	SetVirtualButtonSize( QuitButton,size )
+	SetVirtualButtonPosition( AcceptButton,x1,y1 )
+	SetVirtualButtonPosition( QuitButton,x2,y2 )
+endfunction
+
+
+
+function SplashScreen()
+	SetSpriteActive( Splash,On )
+	SetSpriteVisible( Splash,On )
+	SettingsSetup()
+	do
+		Sync()
+		cancel = GetVirtualButtonReleased( QuitButton )
+		accept = GetVirtualButtonReleased( AcceptButton )
+		settings = GetVirtualButtonReleased( SettingsButton )
+		if cancel
+			TSize = 36*dev.scale
+			Text( QuitText,"Quit?",YesNoX1+TSize,YesNoY1+TSize,50,50,50,TSize,255,0 )
+			SetVirtualButtonVisible( SettingsButton,Off )
+			SetVirtualButtonActive( SettingsButton,Off )
+			AlertButtons( YesNoX2a, YesNoY2, YesNoX2b, YesNoY2, dev.buttSize )
+			AlertDialog( QuitText,On )
+			do
+				Sync()
+				if GetVirtualButtonPressed( AcceptButton ) then end
+				if GetVirtualButtonPressed( QuitButton )
+					AlertButtons( YesNoX3a,YesNoY3a,YesNoX3b,YesNoY3a, dev.buttSize )
+					AlertDialog( QuitText,Off )
+					SetVirtualButtonVisible( SettingsButton,On )
+					SetVirtualButtonActive( SettingsButton,On )
+					exit
+				endif
+			loop
+		endif
+		if settings then SettingsDialog()
+		if accept
+			GameSetup()
+			exitfunction
+		endif
+	loop
+endfunction
+
+
+
+function GameSetup()
+	SetViewZoomMode( 1 )
+	SetViewOffset( 0,0 )
+	AddVirtualJoystick( 1, MiddleX, MaxHeight-65, 130 )
+	SetVirtualJoystickAlpha( 1, 255, 255 )
+	SetVirtualJoystickImageInner( 1, Joystick )
+	SetVirtualJoystickImageOuter( 1, JoyArrows )
+	SetSpriteVisible( TurnCount,On )
+	DeleteText( VersionText )
+	SetSpriteActive( Dialog,Off )
+	SetSpriteActive( Splash,Off )
+	SetSpriteVisible( Dialog,Off )
+	SetSpriteVisible( Splash,Off )
+	SetSpriteVisible( field,On )
+	SetVirtualButtonVisible( SettingsButton,Off )
+	SetVirtualButtonActive( SettingsButton,Off )
+	AISurviving = AICount
+	PlayerSurviving = PlayerCount
+	PlayerLast = PlayerCount-1
+	AIPlayerLast = AICount-1
+	AITank.length = AICount
+	PlayerTank.length = PlayerCount
+	AlertButtons( YesNoX4a, YesNoY4, YesNoX4b, YesNoY4, dev.buttSize )
+	LoadButton(CannonButton,cannonImage,cannonImageDown,"Cannon.png","CannonDown.png",dev.buttX1,buttY,dev.buttSize,Off)
+	LoadButton(HeavyCannonButton,heavyCannonImage,heavyCannonImageDown,"HeavyCannon.png","HeavyCannonDown.png",dev.buttX1,buttY,dev.buttSize,Off)
+	LoadButton(MissileButton,missileImage,missileImageDown,"Rocket.png","RocketDown.png",dev.buttX1,buttY,dev.buttSize,Off)
+	LoadButton(LaserButton,laserImage,laserImageDown,"Laser.png","LaserDown.png",dev.buttX2,buttY,dev.buttSize,Off)
+	LoadButton(HeavyLaserButton,heavyLaserImage,heavyLaserImageDown,"HeavyLaser.png","HeavyLaserDown.png",dev.buttX2,buttY,dev.buttSize,Off)
+	LoadButton(JoyButton,JoyButtonImage,JoyButtonDownImage,"JoyButtonUp.png","JoyButtonDown.png",MiddleX+110,MaxHeight-66,55,On)
+	Turn()
+endfunction
+
+
+function DisplaySettings(state)
+	FlipState = not state
+	SetTextColorAlpha( VersionText,FlipState*255 )
+	SetSpriteActive( Dialog,state )
+	SetSpriteVisible( Dialog,state )
+
+	SetSpriteActive( AISpectrumSprite,state )
+	SetSpriteActive( AIValueSprite,state )
+	SetSpriteActive( PlayerSpectrumSprite,state )
+	SetSpriteActive( PlayerValueSprite,state )
+
+	SetSpriteActive( Splash,FlipState )
+	SetSpriteVisible( Splash,FlipState )
+	SetVirtualButtonVisible( SettingsButton,FlipState )
+	SetVirtualButtonActive( SettingsButton,FlipState )
+	SetVirtualButtonVisible( QuitButton,FlipState )
+	SetVirtualButtonActive( QuitButton,FlipState )
+	for i = 0 to Cells-1
+		SetSpriteActive( AIgrid[i].ID,state )
+		SetSpriteVisible( AIgrid[i].ID,state )
+		SetSpriteActive( PlayerGrid[i].ID,state )
+		SetSpriteVisible( PlayerGrid[i].ID,state )
+	next i
+	for i = 1 to SpriteConUnits
+		SetSpriteActive( SpriteCon[i].ID,state )
+		SetSpriteVisible( SpriteCon[i].ID,state )
+	next i
+endfunction
+
+function SettingsDialog()
+	DisplaySettings(On)
+	repeat
+		Compose()
+	until ForcesReady()
+	DisplaySettings(Off)
+endfunction
+
+function ChangeColor( grid as gridType[], c as ColorSpec )
+	for i = 0 to Cells-1
+		if GetSpriteExists( grid[i].ID ) then SetSpriteColor( grid[i].ID, c.r, c.g, c.b, c.a  )
+	next i
+endfunction
+
+function Compose()
+	repeat
+		if GetPointerState()
+			x = GetPointerX()
+			y = GetPointery()
+			hit = GetSpriteHit(x,y)
+			select hit
+				case SpriteCon[1].ID, SpriteCon[2].ID, SpriteCon[3].ID, SpriteCon[4].ID, SpriteCon[5].ID
+					SetRawMouseVisible( Off )
+					clone = CloneSprite( hit )
+					while GetPointerState()
+						SetSpritePositionByOffset( clone,GetPointerX(),GetPointerY() )
+						Sync()
+					endwhile
+					SetSpriteSize( clone,SpriteConSize,SpriteConSize )
+					SetRawMouseVisible( On )
+					GridCheck(clone)
+				endcase
+				case AISpectrumSprite
+					pickAI.satur = abs(cy1-y)/100
+					pickAI.spect = x-AISide
+					CalcColor( SpectrumW,pickAI,AIGrid )
+				endcase
+				case PlayerSpectrumSprite
+					pickPL.satur = abs(cy1-y)/100
+					pickPL.spect = x-PlayerSide
+					CalcColor( SpectrumW,pickPL,PlayerGrid )
+				endcase
+				case AIValueSprite
+					pickAI.value = x-AISide
+					CalcColor( SpectrumW,pickAI,AIGrid )
+				endcase
+				case PlayerValueSprite
+					pickPL.value = x-PlayerSide
+					CalcColor( SpectrumW,pickPL,PlayerGrid )
+				endcase
+				case Dialog : endcase
+				case Splash : endcase
+				case default
+					RemoveSpriteCon(hit,x,y)
+				endcase
+			endselect
+		endif
+		Sync()
+	until GetVirtualButtonPressed( AcceptButton )
+	WaitForButtonRelease(Acceptbutton)
+endfunction
+
+function ForcesReady()
+	AICount = 0
+	PlayerCount = 0
+	for i = 0 to Cells-1
+		if AIgrid[i].imageID then inc AICount
+		if PlayerGrid[i].imageID then inc PlayerCount
+	next i
+	if (not PlayerCount) or (not AICount)
+		DisplayError( SettingsText,"Each side must have at least one unit" )
+		ready = False
+	else
+		ready = True
+	endif
+endfunction ready
+
+function GridCheck(ID)
+	for i = 0 to Cells-1
+		if GetSpriteInBox( ID,AIgrid[i].x1, AIgrid[i].y1, AIgrid[i].x2, AIgrid[i].y2 )
+			if AIgrid[i].imageID then DeleteSprite( AIgrid[i].ID )
+			AIgrid[i].ID = ID
+			AIgrid[i].imageID = GetSpriteImageID( ID )
+			SetSpritePosition( ID,AIGrid[i].x1, AIGrid[i].y1 )
+			SetSpriteColor(  ID, pickAI.r, pickAI.g, pickAI.b, pickAI.a  )
+			exitfunction
+		endif
+		if GetSpriteInBox( ID,PlayerGrid[i].x1, PlayerGrid[i].y1, PlayerGrid[i].x2, PlayerGrid[i].y2 )
+			if PlayerGrid[i].imageID then DeleteSprite( PlayerGrid[i].ID )
+			PlayerGrid[i].ID = ID
+			PlayerGrid[i].imageID = GetSpriteImageID( ID )
+			SetSpritePosition( ID,PlayerGrid[i].x1, PlayerGrid[i].y1 )
+			SetSpriteColor(  ID, pickPL.r, pickPL.g, pickPL.b, pickPL.a )
+			exitfunction
+		endif
+	next i
+	DeleteSprite(ID)
+endfunction
+
+function RemoveSpriteCon(ID,x,y)
+	DeleteSprite(ID)
+	if x >= PlayerSide
+		PlayerGrid[CalcCell(x-PlayerSide,y)].imageID = Null
+	else
+		AIgrid[CalcCell(x-AISide,y)].imageID = Null
+	endif
+endfunction
+
+function CalcCell(x,y)
+	cell as integer
+	cell = Max(CellColumns-1,x/(CellWidth+Mullion))
+	if y >= Row2 then inc cell,CellColumns
+endfunction cell
+
+remstart
+
+remend
+

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="48" height="30" tilewidth="30" tileheight="30" nextobjectid="1">
+ <tileset firstgid="1" name="tank tiles" tilewidth="30" tileheight="30" tilecount="3" columns="0">
+  <tile id="1">
+   <image width="30" height="30" source="media/Impassable.png"/>
+  </tile>
+  <tile id="2">
+   <image width="30" height="30" source="media/Clear.png"/>
+  </tile>
+  <tile id="3">
+   <image width="30" height="30" source="media/Rough.png"/>
+  </tile>
+ </tileset>
+ <imagelayer name="Image Layer 1">
+  <image source="media/AchlllesMap1.png" width="1440" height="900"/>
+ </imagelayer>
+ <layer name="Tile Layer 1" width="48" height="30" opacity="0.44">
+  <data encoding="base64" compression="zlib">
+   eJzVmM0OxCAIhE237//MezUG5gcxbQ9cKpKPEcfNXmOM6+PxW+KeYv225nbGnUSWv/Jn+52aGdPb+E/04daM5meuEdXa6aU7D/FnNaL1yowoeS6/ounOHKn5aH2uweana1ajecz2srrz+i6/q3nkx1U/yPgr+rrnFN2dbv6uHhzd0X2r8HeeQ8aOemLnoup/kh95cRd/B7vaw9v5nR7YDFX4mTcrvaO5d/Sr+Gf13WH56I2o8Ktnr5xLtS6rqfI7Hr7LnXkR4md57F1Bs8b6Qv0797eiI9vD5ov55a7/qGehcil5jkYOvzvrzFsqenTyIw9HM1Hhz/Kc32/Mnzs9qUt/pK0aXfzRd+X9VfhOcTv8HVqfYEfB/j/Men+SOeL/cvwBJisR3g==
+  </data>
+ </layer>
+</map>
