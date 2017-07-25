@@ -168,6 +168,7 @@ function AIFOW(ID)
 		if PlayerTank[i].alive and GetSpriteInCircle(AITank[ID].bodyID,PlayerTank[i].x,PlayerTank[i].y,PlayerTank[i].FOWOffset-NodeSize)
 			SetSpriteVisible(AITank[ID].bodyID,On)
 			SetSpriteVisible(AITank[ID].turretID,On)
+			if AITank[ID].stunned then SetSpriteVisible(AITank[ID].stunMarker,On)
 			HealthBar(ID,AITank)
 			exitfunction True
 		endif
@@ -175,6 +176,7 @@ function AIFOW(ID)
 						SetSpriteVisible(AITank[ID].bodyID,Off)
 						SetSpriteVisible(AITank[ID].turretID,Off)
 						SetSpriteVisible(AITank[ID].healthID,Off)
+						SetSpriteVisible(AITank[ID].stunMarker,Off)
 endfunction False
 
 function GoalChange(ID)

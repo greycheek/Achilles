@@ -4,11 +4,12 @@ remstart
 
 	ISSUES
 		----BETTER AI MOVEMENT GOAL DECISIONS
+		----AI MUST BE MORE AGGRESSIVE IN CAPTURING BASES!!!!!!!!!!
 		----IMPLEMENT AI BASE DEFENSE - SEE GOAL CHANGE
-		----BASES ARE DIAPPEARING!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		----TREES & IMPASSABLE ARE NOT LINING UP IN IOS!!!!!!!!!!!!!!!!!!
 
 	FIXED?
+		----BASE OWNERSHIP NOT PROPERLY CHANGING HANDS!!!!!--------ARRAY MANAGEMENT PROBLEM???
 		----BASE CAPTURE NOT ALWAYS WORKING?
 		----MAKE FIRING CONTINGENT UPON VISIBILITY - WHERE DO TANKS EMERGE FROM FOW??? ----
 		ELIMINATE MOVEMENT MARKERS IF TANK IS STUNNED
@@ -311,9 +312,9 @@ function HealthBar(ID,Tank ref as tankType[])
 	Sync()
 endfunction
 
-function CaptureBase( capturedIndex, pick ref as ColorSpec, attBase ref as baseType[], defBase ref as baseType[], series, group, base )
+function CaptureBase( capturedIndex, pick ref as ColorSpec, attBase ref as baseType[], defBase ref as baseType[], group, base )
 	DeleteSprite( defBase[capturedIndex].spriteID )
-	newBaseIndex = BaseSetup( defBase[capturedIndex].node,base,attBase,series,group )
+	newBaseIndex = BaseSetup( defBase[capturedIndex].spriteID,defBase[capturedIndex].node,base,attBase,group )
 	PlaySound( BuildBaseSound )
 
 	SetSpritePositionByOffset( BaseHalo,mapTable[defBase[capturedIndex].node].x,mapTable[defBase[capturedIndex].node].y )
@@ -348,7 +349,7 @@ function VictoryConditions( ID,Tank ref as tankType[] )
 				if Tank[ID].parentNode[Tank[ID].index] = AIBases[i].node
 					dec AIBaseCount
 					inc PlayerBaseCount
-					CaptureBase( i,pickPL,PlayerBases,AIBases,PlayerBaseSeries,BaseGroup,PlayerBase )
+					CaptureBase( i,pickPL,PlayerBases,AIBases,BaseGroup,PlayerBase )
 					if AIBaseCount = -1 then GameOver("VICTORY")
 				endif
 			next i
@@ -359,7 +360,7 @@ function VictoryConditions( ID,Tank ref as tankType[] )
 					SetSpriteVisible(Tank[ID].turretID,On)
 					dec PlayerBaseCount
 					inc AIBaseCount
-					CaptureBase( i,pickAI,AIBases,PlayerBases,AIBaseSeries,AIBaseGroup,AIBase )
+					CaptureBase( i,pickAI,AIBases,PlayerBases,AIBaseGroup,AIBase )
 					if PlayerBaseCount = -1 then GameOver("DEFEAT")
 				endif
 			next i

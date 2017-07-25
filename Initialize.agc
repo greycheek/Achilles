@@ -139,6 +139,7 @@ function Initialize()
 		AITank[i].route = AStar(i,AITank)
 						SetSpriteVisible(AITank[i].bodyID,Off)
 						SetSpriteVisible(AITank[i].turretID,Off)
+						SetSpriteVisible(AITank[i].stunMarker,Off)
 		//~ SetSpriteVisible(AITank[i].healthID,Off) `keep off
 		SetSpriteAngle(AITank[i].bodyID,270)
 		SetSpriteAngle(AITank[i].turretID,270)

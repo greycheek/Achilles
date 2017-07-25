@@ -1,10 +1,10 @@
 
 
-function BaseSetup( node, base, baseRef ref as baseType[],series,group )
+function BaseSetup( spriteID,node, base, baseRef ref as baseType[],group )
 	baseRef.length = baseRef.length + 1
 	ID = baseRef.length
 	baseRef[ID].node = node
-	baseRef[ID].spriteID = series+baseRef.length-1
+	baseRef[ID].spriteID = spriteID
 	maptable[node].base = True
 	mapTable[node].terrain = base
 	//~ mapTable[node].team = team
@@ -67,8 +67,8 @@ function GenerateBases()
 endfunction
 
 function SetBases(node1,node2)
-	BaseSetup( node1,PlayerBase,PlayerBases,PlayerBaseSeries,BaseGroup )
-	BaseSetup( node2,AIBase,AIBases,AIBaseSeries,AIBaseGroup )
+	BaseSetup( PlayerBaseSeries+PlayerBases.length-1,node1,PlayerBase,PlayerBases,BaseGroup )
+	BaseSetup( AIBaseSeries+AIBases.length-1,node2,AIBase,AIBases,AIBaseGroup )
 endfunction
 
 function SetDepots(node1,node2)
