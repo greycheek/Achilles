@@ -26,11 +26,10 @@ function PinchToZoom(touch as integer)
 				xoffset = GetViewOffsetX()+(GetRawTouchLastX(post)-GetRawTouchCurrentX(post))/zoomFactor
 				yoffset = GetViewOffsetY()+(GetRawTouchLastY(post)-GetRawTouchCurrentY(post))/zoomFactor
 
-				//*** Adjust screen offset ***
 				SetViewOffset(xoffset,yoffset)
 			endif
 		endcase
-		case 2:
+		case 2:	`Zoom
 			y1 as float
 			y2 as float
 			distance as float
@@ -49,7 +48,7 @@ function PinchToZoom(touch as integer)
 			//*** Get new distance apart, compare with original and adjust zoom accordingly **
 			newDistance = Abs(GetRawTouchCurrentY(t1)-GetRawTouchCurrentY(t2))
 			difference = Abs(newDistance/distance)
-			zoomFactor = Min(1,zoomFactor*difference) `minimum size is 100%
+			zoomFactor = MinMax(1,10,zoomFactor*difference) `minimum size is 100%, maximum 1000%
 			SetViewZoom(zoomFactor)
 		endcase
 	endselect

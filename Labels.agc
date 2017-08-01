@@ -328,9 +328,6 @@ BarOffset = floor((NodeSize-BarHeight)/2)
 global PlayerCount as integer
 global AICount as integer
 
-global alpha as integer
-global glow as integer
-
 `patrol zone
 global topRow as integer
 global bottomRow as integer
@@ -353,6 +350,8 @@ global AIDepotNode as depotType[]
 #constant Darker -9
 #constant GlowMax 255
 #constant GlowMin 0
+global alpha as integer
+global glow as integer
 
 `weapons
 #constant cannon 0

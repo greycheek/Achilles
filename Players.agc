@@ -612,25 +612,26 @@ function DisplayInteract( ID,selection )
 				vx# = MinMax(-mx,mx,vx#)
 				vy# = MinMax(-my,my,vy#)
 				SetViewOffset(vx#,vy#)
-			elseif selection <> Undefined
-				inc alpha,glow
-				if alpha > GlowMax
-					alpha = GlowMax : glow = Darker
-				elseif alpha < GlowMin
-					alpha = GlowMin : glow = Brighter
-				endif
-				SetSpriteColorAlpha( PlayerTank[ID].bodyID,alpha )
-				SetSpriteColorAlpha( PlayerTank[ID].turretID,alpha )
-				SetSpriteColorAlpha( PlayerTank[ID].hilite,alpha )
-				SetSpriteColorAlpha( PlayerTank[ID].bullsEye,alpha )
-				SetSpriteColorAlpha( PlayerTank[ID].cover,alpha )
-						//~ SetSpriteColorAlpha( PlayerTank[ID].FOW,alpha/10 )
 			endif
 		endcase
 		case "ios","android","blackberry"
 			PinchToZoom(GetRawTouchCount(1))
 		endcase
 	endselect
+	if selection <> Undefined
+		inc alpha,glow
+		if alpha > GlowMax
+			alpha = GlowMax : glow = Darker
+		elseif alpha < GlowMin
+			alpha = GlowMin : glow = Brighter
+		endif
+		SetSpriteColorAlpha( PlayerTank[ID].bodyID,alpha )
+		SetSpriteColorAlpha( PlayerTank[ID].turretID,alpha )
+		SetSpriteColorAlpha( PlayerTank[ID].hilite,alpha )
+		SetSpriteColorAlpha( PlayerTank[ID].bullsEye,alpha )
+		SetSpriteColorAlpha( PlayerTank[ID].cover,alpha )
+				//~ SetSpriteColorAlpha( PlayerTank[ID].FOW,alpha/10 )
+	endif
 	Sync()
 endfunction
 
