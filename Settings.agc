@@ -11,7 +11,7 @@ function BaseSetup( spriteID,node, base, baseRef ref as baseType[],group )
 
 	LoadImage( baseRef[ID].spriteID,"HEXBASE.png" )
 	CreateSprite( baseRef[ID].spriteID,baseRef[ID].spriteID )
-	SetSpritePhysicsOn( baseRef[ID].spriteID, On )
+	//~ SetSpritePhysicsOn( baseRef[ID].spriteID, On )
 	SetSpriteTransparency( baseRef[ID].spriteID, On )
 	SetSpriteVisible( baseRef[ID].spriteID, On )
 	SetSpriteSize( baseRef[ID].spriteID, NodeSize,NodeSize )
@@ -195,18 +195,19 @@ function GenerateMap()
 	SetSpriteOffset(BaseHalo,NodeOffset*2,NodeOffset*2)
 	SetSpriteVisible(BaseHalo,Off)
 
+	SetDisplayAspect(-1)  `set current device aspect ratio
 	field = FieldSeries
 	LoadImage(field,"AchillesBoardClear.png")
 	CreateSprite(field,field)
 	SetSpriteDepth ( field, 12 )
 	SetSpriteSize(field,MaxWidth,MaxHeight)
-	//~ SetSpritePosition(field,0,0)
 	DrawSprite( field )
 
 	SetRenderToImage(field,0)
 	GenerateBases()
 	GenerateImpassables()
 	GenerateTrees()
+	SetDisplayAspect(AspectRatio)  `back to map aspect ratio
 	SetRenderToScreen()
 endfunction
 

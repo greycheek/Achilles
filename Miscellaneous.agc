@@ -10,8 +10,50 @@
 #constant Undefined -1
 #constant FullAlpha 255
 #constant NoBlock %0000000000000010
-#constant Block	  %0000000010000000		`#constant Block	  %0000000000000100
+#constant Block	  %0000000010000000	  `#constant Block %0000000000000100
 
+global zoomFactor as float = 1
+
+function PinchToZoom(touch as integer)
+	xoffset as float
+	yoffset as float
+
+	select touch
+		case 1:  `Scroll
+			if zoomFactor > 1  `only scroll if zoomed-in
+				//*** Calculate new scroll position ***
+				post = GetRawFirstTouchEvent(0)
+				xoffset = GetViewOffsetX()+(GetRawTouchLastX(post)-GetRawTouchCurrentX(post))/zoomFactor
+				yoffset = GetViewOffsetY()+(GetRawTouchLastY(post)-GetRawTouchCurrentY(post))/zoomFactor
+
+				//*** Adjust screen offset ***
+				SetViewOffset(xoffset,yoffset)
+			endif
+		endcase
+		case 2:
+			y1 as float
+			y2 as float
+			distance as float
+			newDistance as float
+			difference as float
+
+			//*** Get last y coord for each touch ***
+			t1 = GetRawFirstTouchEvent(1)
+			t2 = GetRawNextTouchEvent()
+			y1 = GetRawTouchLastY(t1)
+			y2 = GetRawTouchLastY(t2)
+
+			//*** Calculate distance between the two points ***
+			distance = Abs(y1 - y2)
+
+			//*** Get new distance apart, compare with original and adjust zoom accordingly **
+			newDistance = Abs(GetRawTouchCurrentY(t1)-GetRawTouchCurrentY(t2))
+			difference = Abs(newDistance/distance)
+			zoomFactor = Min(1,zoomFactor*difference) `minimum size is 100%
+			SetViewZoom(zoomFactor)
+		endcase
+	endselect
+endfunction
 
 type ColorSpec
     r

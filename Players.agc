@@ -583,44 +583,55 @@ function GetInput()
 				endif
 			endif
 		endif
-		if GetVirtualButtonState( JoyButton )
-			WaitForButtonRelease( JoyButton )
-			PlaySound( ClickSound,vol )
-			z = GetViewZoom()
-			select z
-				case 1 : Zoom(2,0,0,Off,dev.scale) : endcase
-				case 2 : Zoom(3,vx#,vy#,Off,dev.scale) : mx=MaxWidth/3 : my=MaxHeight/3 : endcase
-				case 3 : Zoom(1,0,0,On,1) : mx=MaxWidth/4 : my=MaxHeight/4 : endcase
-			endselect
-		endif
-		jx# = GetVirtualJoystickX(1)
-		jy# = GetVirtualJoystickY(1)
-		if (jx# <> 0) or (jy# <> 0)
-			if GetViewZoom() = 1 then Zoom(2,0,0,Off,dev.scale)
-			inc vx#,jx#*7  `speed x7
-			inc vy#,jy#*7
-			vx# = MinMax(-mx,mx,vx#)
-			vy# = MinMax(-my,my,vy#)
-			SetViewOffset(vx#,vy#)
-		elseif selection <> Undefined
-			inc alpha,glow
-			if alpha > GlowMax
-				alpha = GlowMax : glow = Darker
-			elseif alpha < GlowMin
-				alpha = GlowMin : glow = Brighter
-			endif
-			SetSpriteColorAlpha( PlayerTank[ID].bodyID,alpha )
-			SetSpriteColorAlpha( PlayerTank[ID].turretID,alpha )
-			SetSpriteColorAlpha( PlayerTank[ID].hilite,alpha )
-			SetSpriteColorAlpha( PlayerTank[ID].bullsEye,alpha )
-			SetSpriteColorAlpha( PlayerTank[ID].cover,alpha )
-					//~ SetSpriteColorAlpha( PlayerTank[ID].FOW,alpha/10 )
-		endif
-		Sync()
+		DisplayInteract( ID,selection )
 	loop
 	SetSpriteVisible(PlayerTank[ID].FOW,Off)
 	//~ SetViewOffset(vx#,vy#)
 	Zoom(1,0,0,On,1) `TURN THIS OFF FOR CONTINUOS ZOOM OPERATION
+endfunction
+
+function DisplayInteract( ID,selection )
+	select dev.device
+		case "windows","mac"
+			if GetVirtualButtonState( JoyButton )
+				WaitForButtonRelease( JoyButton )
+				PlaySound( ClickSound,vol )
+				z = GetViewZoom()
+				select z
+					case 1 : Zoom(2,0,0,Off,dev.scale) : endcase
+					case 2 : Zoom(3,vx#,vy#,Off,dev.scale) : mx=MaxWidth/3 : my=MaxHeight/3 : endcase
+					case 3 : Zoom(1,0,0,On,1) : mx=MaxWidth/4 : my=MaxHeight/4 : endcase
+				endselect
+			endif
+			jx# = GetVirtualJoystickX(1)
+			jy# = GetVirtualJoystickY(1)
+			if (jx# <> 0) or (jy# <> 0)
+				if GetViewZoom() = 1 then Zoom(2,0,0,Off,dev.scale)
+				inc vx#,jx#*7  `speed x7
+				inc vy#,jy#*7
+				vx# = MinMax(-mx,mx,vx#)
+				vy# = MinMax(-my,my,vy#)
+				SetViewOffset(vx#,vy#)
+			elseif selection <> Undefined
+				inc alpha,glow
+				if alpha > GlowMax
+					alpha = GlowMax : glow = Darker
+				elseif alpha < GlowMin
+					alpha = GlowMin : glow = Brighter
+				endif
+				SetSpriteColorAlpha( PlayerTank[ID].bodyID,alpha )
+				SetSpriteColorAlpha( PlayerTank[ID].turretID,alpha )
+				SetSpriteColorAlpha( PlayerTank[ID].hilite,alpha )
+				SetSpriteColorAlpha( PlayerTank[ID].bullsEye,alpha )
+				SetSpriteColorAlpha( PlayerTank[ID].cover,alpha )
+						//~ SetSpriteColorAlpha( PlayerTank[ID].FOW,alpha/10 )
+			endif
+		endcase
+		case "ios","android","blackberry"
+			PinchToZoom(GetRawTouchCount(1))
+		endcase
+	endselect
+	Sync()
 endfunction
 
 function Zoom(z,vx#,vy#,state,scale)

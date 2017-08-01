@@ -6,7 +6,6 @@ remstart
 		----BETTER AI MOVEMENT GOAL DECISIONS
 		----AI MUST BE MORE AGGRESSIVE IN CAPTURING BASES!!!!!!!!!!
 		----IMPLEMENT AI BASE DEFENSE - SEE GOAL CHANGE
-		----TREES & IMPASSABLE ARE NOT LINING UP IN IOS!!!!!!!!!!!!!!!!!!
 
 	FIXED?
 		----BASE OWNERSHIP NOT PROPERLY CHANGING HANDS!!!!!--------ARRAY MANAGEMENT PROBLEM???
@@ -34,8 +33,9 @@ remstart
 		---LOS -- Mod at end of PlayerOps
 remend
 
-SetVirtualResolution( MaxWidth, MaxHeight )
-SetWindowSize( MaxWidth, MaxHeight, 0 )
+SetVirtualResolution( MaxWidth,MaxHeight )
+SetDisplayAspect( AspectRatio )
+SetWindowSize( MaxWidth,MaxHeight, 0 )
 MaximizeWindow()
 SetWindowPosition( 0,0 )
 SetOrientationAllowed( 0, 0, 1, 1 )

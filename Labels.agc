@@ -1,29 +1,36 @@
 
-`--CONSTANTS--
 
-`SCREEN
-#constant MaxWidth 1440
-#constant MaxHeight 900
-#constant MiddleX 720
-#constant MiddleY 360
-
-`MAP
+`SCREEN/MAP
 #constant Columns 32	 `nodes
 #constant OpenColumns 30
 #constant Rows 20
 #constant OpenRows 16
-#constant PatrolRadius 7
-
-#constant NodeSize 45 	 ` MaxWidth / NodeColumns
-#constant NodeOffset 22	  `Half of NodeSize = 22
-#constant BarWidth 3	  `Health Bar
-#constant MapSize 640	  `Rows * Columns
-#constant OpenMapSize 480 `Open Rows * Open Columns
-#constant MapWidth 1350
-#constant MapHeight 720
 #constant FirstRow 1
+#constant MapSize 640	 `Rows*Columns
 
-#constant south 	-32	`vectors
+global OpenMapSize as float
+OpenMapSize = OpenRows*OpenColumns
+
+global MaxWidth as float = 1440  `map size as designed
+global MaxHeight as float = 900
+global MiddleX as float
+global MiddleY as float
+global AspectRatio as float
+global MapWidth as float
+global MapHeight as float
+global NodeSize as integer
+global NodeOffset as integer
+
+AspectRatio = MaxWidth/MaxHeight
+NodeSize = MaxWidth/Columns
+NodeOffset = NodeSize/2
+MapWidth = OpenColumns*NodeSize
+MapHeight = OpenRows*NodeSize
+MiddleX = MaxWidth/2
+MiddleY = MapHeight/2
+
+`VECTORS
+#constant south 	-32
 #constant southeast -31
 #constant west 		  1
 #constant northeast  33
@@ -69,6 +76,9 @@
 #constant turret 1
 #constant Goal 1
 #constant Complete 1
+#constant PatrolRadius 7
+#constant BarWidth 3	 `Health Bar
+
 
 global DLS as integer
 DLS = NodeSize*sqrt(2) `Diagonal Length of Square
@@ -317,6 +327,9 @@ BarOffset = floor((NodeSize-BarHeight)/2)
 
 global PlayerCount as integer
 global AICount as integer
+
+global alpha as integer
+global glow as integer
 
 `patrol zone
 global topRow as integer
