@@ -12,44 +12,48 @@
 #constant NoBlock %0000000000000010
 #constant Block	  %0000000010000000	  `#constant Block %0000000000000100
 
+
 global zoomFactor as float = 1
 
 function PinchToZoom(touch as integer)
-	xoffset as float
-	yoffset as float
-
 	select touch
 		case 1:  `Scroll
 			if zoomFactor > 1  `only scroll if zoomed-in
+				// Limit to board edges
+				zoom# =  zoomFactor - 1.0
+				dble# =  zoomFactor * 2.0
+				minX# = -zoom# * MaxWidth  / dble#  `should zoom * MaxWidth/MaxHeight be in ( )??
+				maxX# =  zoom# * MaxWidth  / dble#
+				minY# = -zoom# * MaxHeight / dble#
+				maxY# =  zoom# * MaxHeight / dble#
+
 				//*** Calculate new scroll position ***
 				post = GetRawFirstTouchEvent(0)
-				xoffset = GetViewOffsetX()+(GetRawTouchLastX(post)-GetRawTouchCurrentX(post))/zoomFactor
-				yoffset = GetViewOffsetY()+(GetRawTouchLastY(post)-GetRawTouchCurrentY(post))/zoomFactor
+				xoffset# = MinMax( minX#,maxX#, GetViewOffsetX()+(GetRawTouchLastX(post)-GetRawTouchCurrentX(post))/zoomFactor )
+				yoffset# = MinMax( minY#,maxY#, GetViewOffsetY()+(GetRawTouchLastY(post)-GetRawTouchCurrentY(post))/zoomFactor )
 
-				SetViewOffset(xoffset,yoffset)
+				SetViewOffset(xoffset#,yoffset#)
+			else
+				SetViewOffset(0,0)
 			endif
 		endcase
 		case 2:	`Zoom
-			y1 as float
-			y2 as float
-			distance as float
-			newDistance as float
-			difference as float
-
 			//*** Get last y coord for each touch ***
 			t1 = GetRawFirstTouchEvent(1)
 			t2 = GetRawNextTouchEvent()
-			y1 = GetRawTouchLastY(t1)
-			y2 = GetRawTouchLastY(t2)
+			y1# = GetRawTouchLastY(t1)
+			y2# = GetRawTouchLastY(t2)
 
 			//*** Calculate distance between the two points ***
-			distance = Abs(y1 - y2)
+			distance# = Abs(y1# - y2#)
 
 			//*** Get new distance apart, compare with original and adjust zoom accordingly **
-			newDistance = Abs(GetRawTouchCurrentY(t1)-GetRawTouchCurrentY(t2))
-			difference = Abs(newDistance/distance)
-			zoomFactor = MinMax(1,10,zoomFactor*difference) `minimum size is 100%, maximum 1000%
-			SetViewZoom(zoomFactor)
+			newDistance# = Abs(GetRawTouchCurrentY(t1)-GetRawTouchCurrentY(t2))
+			difference# = Abs(newDistance#/distance#)
+			zoomFactor = MinMax(1,5,zoomFactor*difference#) `minimum size is 100%, maximum 500%
+			if zoomFactor < 1 then zoomFactor = 1
+			if zoomFactor = 1 then SetViewOffset(0,0)
+			SetViewZoom( zoomFactor )
 		endcase
 	endselect
 endfunction
@@ -230,9 +234,12 @@ function ReadDataFromString(s$,delimiter$,dataArray ref as integer[]) `takes emp
 endfunction dataArray.length
 
 
-
 remstart
-//~ #constant ImpassBlock %0000000000010000
-//~ #constant TreeBlock   %0000000000001000
+xMax = MiddleX/zoomFactor
+yMax = MiddleY/zoomFactor
+xoffset = MinMax(-(MiddleX-xMax),xMax,GetViewOffsetX()+(GetRawTouchLastX(post)-GetRawTouchCurrentX(post))/zoomFactor)
+yoffset = MinMax(-(MiddleY-yMax),yMax,GetViewOffsetY()+(GetRawTouchLastY(post)-GetRawTouchCurrentY(post))/zoomFactor)
+#constant ImpassBlock %0000000000010000
+#constant TreeBlock   %0000000000001000
 remend
 

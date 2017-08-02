@@ -1,8 +1,9 @@
 
 function BaseProduction( node )
 	ShowUnits( Off )
+	zoomFactor = 1
+	SetViewZoom( zoomFactor )
 	SetViewOffset( 0,0 )
-	SetViewZoom( 1 )
 	SetVirtualJoystickVisible( 1, Off )
 	DeleteText( TurnText )
 	SetSpriteVisible( TurnCount, Off )
@@ -494,8 +495,8 @@ function GetInput()
 			PlaySound( ClickSound,vol )
 			EndGame()
 		elseif GetPointerState()
-			x = ScreenToWorldX(GetPointerX())
-			y = ScreenToWorldY(GetPointerY())
+			x = MinMax(0,MaxWidth-1,ScreenToWorldX(GetPointerX()))	`MinMax, temporary fix for out of bounds erros
+			y = MinMax(0,MaxHeight-1,ScreenToWorldY(GetPointerY()))
 				pointerNode = CalcNode( floor(x/NodeSize),floor(y/NodeSize) )
 
 			baseID = GetSpriteHitGroup( BaseGroup,x,y )

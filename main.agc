@@ -8,6 +8,7 @@ remstart
 		----IMPLEMENT AI BASE DEFENSE - SEE GOAL CHANGE
 
 	FIXED?
+		----zoom offset not set coming out of base production screen
 		----BASE OWNERSHIP NOT PROPERLY CHANGING HANDS!!!!!--------ARRAY MANAGEMENT PROBLEM???
 		----BASE CAPTURE NOT ALWAYS WORKING?
 		----MAKE FIRING CONTINGENT UPON VISIBILITY - WHERE DO TANKS EMERGE FROM FOW??? ----
@@ -121,11 +122,15 @@ function Produce( ID, Tank ref as tankType[], rate, baseProduct, baseID, c as Co
 		until GetSpriteCurrentFrame(Iris) >= (frames/2)
 		SetSpriteDepth(Iris,3)
 		SetSpriteVisible(baseID,Off)
+	elseif mapTable[Tank[ID].node].terrain = Trees
+		SetSpritePositionByOffset(Tank[ID].cover,Tank[ID].x,Tank[ID].y)
+		SetSpriteVisible(Tank[ID].cover,On)
 	endif
 	SetSpriteSize(Tank[ID].bodyID,1,1)
 	SetSpriteSize(Tank[ID].turretID,1,1)
 	SetSpriteVisible(Tank[ID].bodyID,On)
 	SetSpriteVisible(Tank[ID].turretID,On)
+
 	SetSpritePositionByOffset(Tank[ID].bodyID,Tank[ID].x,Tank[ID].y)
 	SetSpritePositionByOffset(Tank[ID].turretID,Tank[ID].x,Tank[ID].y)
 	generateFOW = baseproduct and (Tank[ID].team = PlayerTeam)

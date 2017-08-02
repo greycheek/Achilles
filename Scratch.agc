@@ -1,115 +1,33 @@
 
-// Project: renderimage
-// Created: 2017-07-28
 
-// show all errors
-SetErrorMode(2)
-
-
-// set window properties
-SetWindowTitle( "renderimage" )
-SetWindowSize( 1024, 768, 0 )
-SetWindowAllowResize( 0 ) // allow the user to resize the window
-
-// set display properties
-SetVirtualResolution( 1024, 768 ) // doesn't have to match the window
-SetOrientationAllowed( 0, 0, 1, 0 ) // allow both portrait and landscape on mobile devices
-SetSyncRate( 30, 0 ) // 30fps instead of 60 to save battery
-SetScissor( 0,0,0,0 ) // use the maximum available screen space, no black borders
-UseNewDefaultFonts( 1 ) // since version 2.0.22 we can use nicer default fonts
-
-
-rts = CreateSprite(LoadImage("rts.png"))
-SetSpritePosition(rts, GetScreenBoundsLeft(), GetScreenBoundsTop())
-
-agk = LoadImage("agk.png")
-
-global logo as integer
-logo = CreateSprite(agk)
-SetSpriteVisible(logo, 0)
-
-bl = GetScreenBoundsLeft()
-br = GetScreenBoundsRight()
-
-
-bb = GetScreenBoundsBottom()
-bt = GetScreenBoundsTop()
-
-
-bw as float
-bw = br - bl
-
-
-bh as float
-bh = bb - bt
-
-type pos
-	x as integer
-	y as integer
-endtype
-
-global s as pos[10]
-
-for i = 1 to 10
-	s[i].x = random(0, bw - GetImageWidth(agk)) + bl
-	s[i].y = random(bt, bb - GetImageHeight(agk))
-next
-
-rti = 0
-ri = 0
-si = 0
-SetClearColor(128, 128, 128)
+				xoffset = GetViewOffsetX()+(GetRawTouchLastX(post)-GetRawTouchCurrentX(post))/zoomFactor
+				yoffset = GetViewOffsetY()+(GetRawTouchLastY(post)-GetRawTouchCurrentY(post))/zoomFactor
 
 
 
-do
-	ClearScreen()
-	select rti
-		case 0
-			print("RenderToScreen()")
-			if GetPointerPressed() = 1
-				rti=1
-				SetScissor( 0,0,0,0 )
-				ri = CreateRenderImage(bw, bh, 0, 0)  //***** Render image is size of display area
-				SetRenderToImage(ri, 0)
-				ClearScreen()
-				DrawSprite(rts)
-				DrawSprites()
-				si = CreateSprite(ri)
-				SetRenderToScreen()
-				SetSpritePosition(si, GetScreenBoundsLeft(), GetScreenBoundsTop())
-			endif
-			endcase
-		case 1
-			print("RenderToImage()")
-			DrawSprites()
-			if GetPointerPressed() = 1
-				DeleteFile("screen.png")
-				SaveImage(ri, "screen.png")
-				DeleteImage(ri)
-				DeleteSprite(si)
-				rti=0
-				if GetPointerX() > 1000 and GetPointerY() > 700
-					ShareImage("screen.png")
-				endif
-			endif
-			endcase
-	endselect
 
-    Print( str(ScreenFPS())+" ("+str(GetDeviceWidth())+","+str(GetDeviceHeight())+") ["+str(rti)+"]("+str(bw)+","+str(bh)+")" )
-    Sync()
-loop
+zoom# = (zoomFactor - 1.0)
+
+minX# = -zoom# * MaxWidth  / (2.0 * zoomFactor)
+maxX# =  zoom# * MaxWidth  / (2.0 * zoomFactor)
+minY# = -zoom# * MaxHeight / (2.0 * zoomFactor)
+maxY# =  zoom# * MaxHeight / (2.0 * zoomFactor)
 
 
-function DrawSprites()
-	SetSpriteVisible(logo, 1)
-	for i=0 to s.length
-		DrawSprite(logo)
-		setspriteposition(logo, s[i].x, s[i].y)
-	next
-	SetSpriteVisible(logo, 0)
-endfunction
+`Quote: " the board can move half of its height plus the height of one tile."
 
+overX = MaxWidth / 2.0
+overY = MaxHeight / 2.0
+
+`Positioning the board at 0,0 on the world plane, the minimums are minus whatever you want to go past the left / top edge.
+
+minX = -overX
+minY = -overY
+
+`The maximums are the width / height of the board, plus the overshoot, minus the amount on visible on screen (display size adjusted by the zoom).
+
+maxX = MaxWidth + overX - (MaxWidth / zoomfactor)
+maxY = MaxHeight + overY - (MaxHeight / zoomfactor)
 
 
 // Project: renderimage
