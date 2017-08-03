@@ -630,6 +630,8 @@ global AIBases as baseType[]
 global NumY as integer
 global NumX as integer
 global NumX1 as integer
+global UnitX as integer
+global UnitY as integer = 105
 
 type deviceType
 	scale
@@ -651,6 +653,7 @@ select dev.device
 		dev.buttX1 = dev.buttSize + 8
 		dev.buttX2 = dev.buttSize * 2.7
 		dev.YesNoX4a = MaxWidth-dev.buttSize - 6
+		UnitX = 450
 		NumX = dev.buttSize*1.7
 		NumX1 = NumX*1.93
 	endcase
@@ -662,6 +665,7 @@ select dev.device
 			dev.buttX1 = dev.buttSize + 8
 			dev.buttX2 = dev.buttSize * 2.7
 			dev.YesNoX4a = MaxWidth-dev.buttSize - 6
+			UnitX = 450
 			NumX = dev.buttSize*1.7
 			NumX1 = NumX*1.93
 		else
@@ -670,7 +674,8 @@ select dev.device
 			dev.scale = 2
 			dev.buttX1 = dev.buttSize - 4
 			dev.buttX2 = dev.buttSize * 2.6
-			dev.YesNoX4a = MaxWidth-dev.buttSize + 6
+			dev.YesNoX4a = MaxWidth-dev.buttSize + 3
+			UnitX = 415
 			NumX = dev.buttSize*1.5
 			NumX1 = NumX*2.1
 		endif
@@ -846,9 +851,6 @@ SoundSlide.h = MusicSlide.h
 SoundSlide.x = MusicSlide.x
 SoundSlide.y = MusicSlide.y+90
 
-#constant UnitX 130
-#constant UnitY 100
-
 `SPRITES Misc
 
 global Fire1 = WeaponSeries
@@ -860,7 +862,6 @@ Mine1 = MineSeries + 1
 
 global EMP1
 EMP1 = EMPSeries
-
 
 global field as integer  `board
 global Explode1 as integer

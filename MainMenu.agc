@@ -323,7 +323,7 @@ function CalcCell(x,y)
 endfunction cell
 
 function GameSetup()
-	SetViewZoomMode( 1 )
+	SetViewZoomMode( 1.0 )
 	SetViewOffset( 0,0 )
 	if (dev.device = "windows") or (dev.device = "mac")
 		AddVirtualJoystick( 1, MiddleX, MaxHeight-65, 130 )
@@ -373,7 +373,7 @@ function GameSetup()
 	LoadButton(EMPButton,EMPImage,EMPImageDown,"EMPButton.png","EMPButtonDown.png",dev.buttX2,buttY,dev.buttSize,Off)
 	LoadButton(MineButton,MineImage,MineImageDown,"MineButton.png","MineButtonDown.png",dev.buttX1,buttY,dev.buttSize,Off)
 	turns = 1
-	Text(TurnText,str(turns),MiddleX-UnitX+6,MaxHeight-(UnitY/1.58),0,0,0,36,255,2)
+	Text(TurnText,str(turns),MiddleX+UnitX+6,MaxHeight-(UnitY/1.5),0,0,0,36,255,2)
 	ShowUnits( On )
 endfunction
 

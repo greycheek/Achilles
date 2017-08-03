@@ -13,19 +13,19 @@
 #constant Block	  %0000000010000000	  `#constant Block %0000000000000100
 
 
-global zoomFactor as float = 1
+global zoomFactor as float = 1.0
 
 function PinchToZoom(touch as integer)
 	select touch
 		case 1:  `Scroll
 			if zoomFactor > 1  `only scroll if zoomed-in
-				// Limit to board edges
+				// Limit scroll to board edges
 				zoom# =  zoomFactor - 1.0
-				dble# =  zoomFactor * 2.0
-				minX# = -zoom# * MaxWidth  / dble#  `should zoom * MaxWidth/MaxHeight be in ( )??
-				maxX# =  zoom# * MaxWidth  / dble#
-				minY# = -zoom# * MaxHeight / dble#
-				maxY# =  zoom# * MaxHeight / dble#
+				ZFx2# =  zoomFactor * 2.0
+				minX# = -zoom# * MaxWidth  / ZFx2#  `should zoom * MaxWidth/MaxHeight be in ( )??
+				maxX# =  zoom# * MaxWidth  / ZFx2#
+				minY# = -zoom# * MaxHeight / ZFx2#
+				maxY# =  zoom# * MaxHeight / ZFx2#
 
 				//*** Calculate new scroll position ***
 				post = GetRawFirstTouchEvent(0)
@@ -34,7 +34,7 @@ function PinchToZoom(touch as integer)
 
 				SetViewOffset(xoffset#,yoffset#)
 			else
-				SetViewOffset(0,0)
+				SetViewOffset(0,0)  `reset scroll
 			endif
 		endcase
 		case 2:	`Zoom
@@ -50,10 +50,9 @@ function PinchToZoom(touch as integer)
 			//*** Get new distance apart, compare with original and adjust zoom accordingly **
 			newDistance# = Abs(GetRawTouchCurrentY(t1)-GetRawTouchCurrentY(t2))
 			difference# = Abs(newDistance#/distance#)
-			zoomFactor = MinMax(1,5,zoomFactor*difference#) `minimum size is 100%, maximum 500%
-			if zoomFactor < 1 then zoomFactor = 1
+			zoomFactor = MinMax(1,5,zoomFactor*difference#) `minimum 100%, maximum 500%
 			if zoomFactor = 1 then SetViewOffset(0,0)
-			SetViewZoom( zoomFactor )
+			SetViewZoom( zoomFactor )  `reset scroll
 		endcase
 	endselect
 endfunction

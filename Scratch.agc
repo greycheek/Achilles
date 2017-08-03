@@ -1,5 +1,152 @@
 
 
+function GetInput()
+	selection = Undefined
+    alpha = Brightest
+    glow = Brighter
+	WeaponButtons( Null,Undefined )
+	mx=MaxWidth/4 : my=MaxHeight/4
+	do
+		if selection <> Undefined then WeaponInput(ID)
+		if GetVirtualButtonState(AcceptButton) or GetRawKeyState(Enter)
+			PlaySound( ClickSound,vol )
+			MaxAlpha(ID)
+			exit
+		elseif GetVirtualButtonState(QuitButton) or GetRawKeyState(0x51) `Q
+			Zoom(1,0,0,On,1)
+			if GetVirtualButtonState(QuitButton) then WaitForButtonRelease(QuitButton)
+			PlaySound( ClickSound,vol )
+			EndGame()
+		elseif GetPointerState()
+			x = ScreenToWorldX(GetPointerX())
+			y = ScreenToWorldY(GetPointerY())
+				pointerNode = CalcNode( floor(x/NodeSize),floor(y/NodeSize) )
+
+			baseID = GetSpriteHitGroup( BaseGroup,x,y )
+			if GetSpriteHitGroup( PlayerTankGroup,x,y )
+				for i = 0 to PlayerLast
+					if GetSpriteHitTest( PlayerTank[i].bodyID,x,y )
+						if selection = i
+							PlaySound( ClickSound,vol )
+							CancelMove( ID,PlayerTank )
+							selection = Undefined
+							WeaponButtons(Null,Undefined)
+							SetSpriteVisible(PlayerTank[i].FOW,Off)
+
+						elseif PlayerTank[i].stunned
+							continue
+						else
+							MaxAlpha(ID)
+							SetSpriteVisible(PlayerTank[ID].FOW,Off)
+
+							ID = i
+							selection = i
+							WeaponButtons( ID,PlayerTank[ID].vehicle )
+
+							SetSpriteVisible(PlayerTank[ID].FOW,On)
+						endif
+						WaitForPointerRelease()
+						exit
+					endif
+				next i
+			elseif baseID and (selection = Undefined) and ( mapTable[pointerNode].moveTarget = False )
+				Markers(Off)
+				selection = BaseProduction( pointerNode )
+				if selection <> Undefined
+					ID = selection
+					WeaponButtons( ID,PlayerTank[ID].vehicle )
+					Produce( ID,PlayerTank,1,1,baseID,pickPL )
+				else
+					WeaponButtons( Null,Undefined )
+				endif
+				Markers(On)
+			elseif selection <> Undefined
+				if y < ( MapHeight+NodeSize ) `stay within map height
+					TankAlpha(PlayerTank[ID].bodyID,PlayerTank[ID].turretID,Brightest)
+
+					node = MoveInput(ID,WorldToScreenX(PlayerTank[ID].x),WorldToScreenY(PlayerTank[ID].y))
+
+					if mapTable[node].team <> Unoccupied
+						if (PlayerTank[ID].target = Undefined) and (mapTable[node].team = AITeam) and (PlayerTank[ID].vehicle <> Engineer)
+							PlayerAim(ID,PlayerTank[ID].x,PlayerTank[ID].y)
+						else
+							CancelFire(ID)
+						endif
+						SetSpriteVisible(square,Off)
+					elseif mapTable[node].moveTarget
+						BadMove()
+						CancelMove( ID,PlayerTank )
+
+					elseif mapTable[node].terrain <> Impassable
+						PlayerTank[ID].goalNode = node
+						ResetPath(ID,PlayerTank)
+						if AStar(ID,PlayerTank) > InReach     `node out of range
+							BadMove()
+							CancelMove( ID,PlayerTank )
+						else
+							if PlayerTank[ID].moveTarget then mapTable[PlayerTank[ID].moveTarget].moveTarget = False  `clear previous target
+							mapTable[node].moveTarget = True
+							PlaySound( ClickSound,vol )
+							SetSpriteVisible(square,Off)
+							SetSpriteVisible(PlayerTank[ID].hilite,On)
+							SetSpriteColor(PlayerTank[ID].hilite,255,255,255,255 )
+							SetSpritePositionByOffset( PlayerTank[ID].hilite, mapTable[PlayerTank[ID].goalNode].x, mapTable[PlayerTank[ID].goalNode].y )
+							MaxAlpha(ID)
+							selection = Undefined
+							WeaponButtons( Null,Undefined )
+							PlayerTank[ID].moveTarget = node  `record last target
+											SetSpriteVisible(PlayerTank[ID].FOW,Off)
+						endif
+					else
+						BadMove()
+						SetSpriteVisible(square,Off)
+					endif
+					Sync()
+				endif
+			endif
+		endif
+		if GetVirtualButtonState( JoyButton )
+			WaitForButtonRelease( JoyButton )
+			PlaySound( ClickSound,vol )
+			z = GetViewZoom()
+			select z
+				case 1 : Zoom(2,0,0,Off,dev.scale) : endcase
+				case 2 : Zoom(3,vx#,vy#,Off,dev.scale) : mx=MaxWidth/3 : my=MaxHeight/3 : endcase
+				case 3 : Zoom(1,0,0,On,1) : mx=MaxWidth/4 : my=MaxHeight/4 : endcase
+			endselect
+		endif
+		jx# = GetVirtualJoystickX(1)
+		jy# = GetVirtualJoystickY(1)
+		if (jx# <> 0) or (jy# <> 0)
+			if GetViewZoom() = 1 then Zoom(2,0,0,Off,dev.scale)
+			inc vx#,jx#*7  `speed x7
+			inc vy#,jy#*7
+			vx# = MinMax(-mx,mx,vx#)
+			vy# = MinMax(-my,my,vy#)
+			SetViewOffset(vx#,vy#)
+		elseif selection <> Undefined
+			inc alpha,glow
+			if alpha > GlowMax
+				alpha = GlowMax : glow = Darker
+			elseif alpha < GlowMin
+				alpha = GlowMin : glow = Brighter
+			endif
+			SetSpriteColorAlpha( PlayerTank[ID].bodyID,alpha )
+			SetSpriteColorAlpha( PlayerTank[ID].turretID,alpha )
+			SetSpriteColorAlpha( PlayerTank[ID].hilite,alpha )
+			SetSpriteColorAlpha( PlayerTank[ID].bullsEye,alpha )
+			SetSpriteColorAlpha( PlayerTank[ID].cover,alpha )
+					//~ SetSpriteColorAlpha( PlayerTank[ID].FOW,alpha/10 )
+		endif
+		Sync()
+	loop
+	SetSpriteVisible(PlayerTank[ID].FOW,Off)
+	//~ SetViewOffset(vx#,vy#)
+	Zoom(1,0,0,On,1) `TURN THIS OFF FOR CONTINUOS ZOOM OPERATION
+endfunction
+
+
+
 				xoffset = GetViewOffsetX()+(GetRawTouchLastX(post)-GetRawTouchCurrentX(post))/zoomFactor
 				yoffset = GetViewOffsetY()+(GetRawTouchLastY(post)-GetRawTouchCurrentY(post))/zoomFactor
 

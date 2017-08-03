@@ -298,7 +298,7 @@ function Setup()
 	CreateSprite( ProductionUnits,ProductionUnits )
 	SetSpriteSize( ProductionUnits,28,28 )
 	SetSpriteTransparency( ProductionUnits, 1 )
-	SetSpritePosition( ProductionUnits,MiddleX-UnitX+15,MaxHeight-UnitY)
+	SetSpritePosition( ProductionUnits,MiddleX+UnitX+15,MaxHeight-UnitY)
 	SetSpriteColor( ProductionUnits,0,0,0,255 )
 	ShowUnits( Off )
 
@@ -308,7 +308,7 @@ function Setup()
 	SetSpriteTransparency( TurnCount, 1 )
 	SetSpriteDepth( TurnCount,0 )
 	SetSpriteVisible( TurnCount, Off )
-	SetSpritePosition( TurnCount,MiddleX-UnitX+17,MaxHeight-(UnitY/1.7) )
+	SetSpritePosition( TurnCount,MiddleX+UnitX+17,MaxHeight-(UnitY/1.6) )
 	SetSpriteColor( TurnCount,0,0,0,255 )
 
    `SPRITES Misc

@@ -7,6 +7,8 @@ remstart
 		----AI MUST BE MORE AGGRESSIVE IN CAPTURING BASES!!!!!!!!!!
 		----IMPLEMENT AI BASE DEFENSE - SEE GOAL CHANGE
 
+		----DisplayInteract() doesn't function on it own - use globals?
+
 	FIXED?
 		----zoom offset not set coming out of base production screen
 		----BASE OWNERSHIP NOT PROPERLY CHANGING HANDS!!!!!--------ARRAY MANAGEMENT PROBLEM???
@@ -26,6 +28,7 @@ remstart
   	ENHANCEMENTS
  		Improve AI decision making for different vehicle types
  		Better AI use of terrain
+ 		Load/Save, maps/games
 		New units
 		Accumulated experience
 		Multiplayer
@@ -73,7 +76,7 @@ endfunction
 function Turn()
 	DeleteText(TurnText)
 	inc turns
-	Text(TurnText,str(turns),MiddleX-UnitX+6,MaxHeight-(UnitY/1.58),0,0,0,36,255,2)
+	Text(TurnText,str(turns),MiddleX+UnitX+6,MaxHeight-(UnitY/1.5),0,0,0,36,255,2)
 	inc PlayerProdUnits,(PlayerBaseCount+1)*BaseProdValue
 	inc AIProdUnits,(AIBaseCount+1)*BaseProdValue
 	ShowUnits( On )
@@ -104,6 +107,61 @@ function WeaponSelect(ID,Tank ref as tankType[],w,r,d#)
 	endif
 endfunction
 
+function Produce( ID, Tank ref as tankType[], rate, baseProduct, baseID, c as ColorSpec )
+	if baseProduct
+		SetSpriteVisible(Tank[ID].bodyID,Off)
+		SetSpriteVisible(Tank[ID].turretID,Off)
+		SetSpriteVisible(Tank[ID].healthID,Off)
+		SetSpriteVisible(baseID,On)
+		Delay(.3)
+		PlaySound(SpawnSound,vol)
+		SetSpritePositionByOffset(Iris,Tank[ID].x+2,Tank[ID].y)
+		SetSpriteColor(Iris, c.r, c.g, c.b, c.a)
+		SetSpriteVisible(Iris,On)
+		frames = IrisFrames*1.5
+		PlaySprite(Iris,frames,0)
+		repeat
+			Sync()
+		until GetSpriteCurrentFrame(Iris) >= (frames/2)
+		SetSpriteDepth(Iris,3)
+		SetSpriteVisible(baseID,Off)
+	elseif mapTable[Tank[ID].node].terrain = Trees
+		SetSpritePositionByOffset(Tank[ID].cover,Tank[ID].x,Tank[ID].y)
+		SetSpriteVisible(Tank[ID].cover,On)
+	endif
+	generateFOW = baseproduct and (Tank[ID].team = PlayerTeam)
+	if generateFOW
+		SetSpriteVisible(Tank[ID].FOW,On)
+		FOWSize = Tank[ID].FOWSize / ( NodeSize / rate )
+		SetSpriteSize(Tank[ID].FOWSize,FOWSize,FOWSize)
+		SetSpriteSize(Tank[ID].FOWSize,FOWSize,FOWSize)
+	endif
+	SetSpriteVisible(Tank[ID].bodyID,On)
+	SetSpriteVisible(Tank[ID].turretID,On)
+	SetSpritePositionByOffset(Tank[ID].bodyID,Tank[ID].x,Tank[ID].y)
+	SetSpritePositionByOffset(Tank[ID].turretID,Tank[ID].x,Tank[ID].y)
+	if baseproduct
+		for i = 1 to NodeSize step rate
+			SetSpriteSize(Tank[ID].bodyID,i,i)
+			SetSpriteSize(Tank[ID].turretID,i,i)
+			if generateFOW
+				growth = FOWSize * i
+				growthShift = growth / 2
+				SetSpriteSize(Tank[ID].FOW,growth,growth)
+				SetSpritePosition(Tank[ID].FOW, mapTable[Tank[ID].node].x - growthShift, mapTable[Tank[ID].node].y - growthShift)
+			endif
+			Sync()
+		next i
+		PlaySprite(Iris,frames,0,IrisFrames,1)
+		Delay(.5)
+		SetSpriteVisible(baseID,On)
+		SetSpriteVisible(Iris,Off)
+		SetSpriteDepth(Iris,0)
+	endif
+	HealthBar(ID,Tank)
+endfunction
+
+remstart
 function Produce( ID, Tank ref as tankType[], rate, baseProduct, baseID, c as ColorSpec )
 	if baseProduct
 		SetSpriteVisible(Tank[ID].bodyID,Off)
@@ -160,6 +218,9 @@ function Produce( ID, Tank ref as tankType[], rate, baseProduct, baseID, c as Co
 	endif
 	HealthBar(ID,Tank)
 endfunction
+remend
+
+
 
 function LOSblocked(x1,y1,x2,y2)
 	if PhysicsRayCastCategory(Block,x1,y1,x2,y2)
