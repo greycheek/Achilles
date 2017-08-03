@@ -8,6 +8,7 @@ remstart
 		----IMPLEMENT AI BASE DEFENSE - SEE GOAL CHANGE
 
 		----DisplayInteract() doesn't function on it own - use globals?
+		----Eliminate white board border, and keyboard zoom with mouse scroll
 
 	FIXED?
 		----zoom offset not set coming out of base production screen
