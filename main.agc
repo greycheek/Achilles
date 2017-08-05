@@ -7,8 +7,7 @@ remstart
 		----AI MUST BE MORE AGGRESSIVE IN CAPTURING BASES!!!!!!!!!!
 		----IMPLEMENT AI BASE DEFENSE - SEE GOAL CHANGE
 
-		----DisplayInteract() doesn't function on it own - use globals?
-		----Eliminate white board border, and keyboard zoom with mouse scroll
+		----PRESS TO ZOOM NOT WORKING PROPERLY; CHECK PINCH TO ZOOM BASE SELECTION
 
 	FIXED?
 		----zoom offset not set coming out of base production screen
@@ -77,7 +76,7 @@ endfunction
 function Turn()
 	DeleteText(TurnText)
 	inc turns
-	Text(TurnText,str(turns),MiddleX+UnitX+6,MaxHeight-(UnitY/1.5),0,0,0,36,255,2)
+	Text(TurnText,str(turns),MiddleX+UnitX+6,MaxHeight-(UnitY/1.5),255,255,255,36,255,2)
 	inc PlayerProdUnits,(PlayerBaseCount+1)*BaseProdValue
 	inc AIProdUnits,(AIBaseCount+1)*BaseProdValue
 	ShowUnits( On )

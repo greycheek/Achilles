@@ -14,6 +14,9 @@
 
 
 global zoomFactor as float = 1.0
+global zoomStep as float = 1.0
+global lastX as float
+global lastY as float
 
 function PinchToZoom(touch as integer)
 	select touch
@@ -51,10 +54,38 @@ function PinchToZoom(touch as integer)
 			newDistance# = Abs(GetRawTouchCurrentY(t1)-GetRawTouchCurrentY(t2))
 			difference# = Abs(newDistance#/distance#)
 			zoomFactor = MinMax(1,5,zoomFactor*difference#) `minimum 100%, maximum 500%
-			if zoomFactor = 1 then SetViewOffset(0,0)
-			SetViewZoom( zoomFactor )  `reset scroll
+			if zoomFactor = 1 then SetViewOffset(0,0) `reset scroll
+			SetViewZoom( zoomFactor )
 		endcase
 	endselect
+endfunction
+
+function PressToZoom()
+	if (zoomStep > 1)  and GetRawMouseLeftState() `only scroll if zoomed-in
+		zoom# =  zoomStep - 1.0
+		ZFx2# =  zoomStep * 2.0
+		minX# = -zoom# * MaxWidth  / ZFx2#  `should zoom * MaxWidth/MaxHeight be in ( )??
+		maxX# =  zoom# * MaxWidth  / ZFx2#
+		minY# = -zoom# * MaxHeight / ZFx2#
+		maxY# =  zoom# * MaxHeight / ZFx2#
+		x# = GetRawMouseX()
+		y# = GetRawMouseY()
+		//*** Calculate new scroll position ***
+		xoffset# = MinMax( minX#,maxX#, GetViewOffsetX()+((lastX-x#)/zoomFactor) )
+		yoffset# = MinMax( minY#,maxY#, GetViewOffsetY()+((lastY-y#)/zoomFactor) )
+		SetViewOffset(xoffset#,yoffset#)
+		lastX = x#
+		lastY = y#
+	elseif GetRawKeyReleased(190) or GetRawKeyReleased(187)  // ">" or "="
+		inc zoomStep
+		zoomStep = Max(5,zoomStep)
+		SetViewZoom( zoomStep )
+	elseif GetRawKeyReleased(188) or GetRawKeyReleased(189)  // "<" or "-"
+		dec zoomStep
+		zoomStep = Min(1,zoomStep)
+		if zoomStep = 1 then SetViewOffset(0,0) `reset scroll
+		SetViewZoom( zoomStep )
+	endif
 endfunction
 
 type ColorSpec

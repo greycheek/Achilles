@@ -299,7 +299,7 @@ function Setup()
 	SetSpriteSize( ProductionUnits,28,28 )
 	SetSpriteTransparency( ProductionUnits, 1 )
 	SetSpritePosition( ProductionUnits,MiddleX+UnitX+15,MaxHeight-UnitY)
-	SetSpriteColor( ProductionUnits,0,0,0,255 )
+	SetSpriteColor( ProductionUnits,255,255,255,255 )
 	ShowUnits( Off )
 
 	LoadImage( TurnCount,"Turn.png")
@@ -309,7 +309,7 @@ function Setup()
 	SetSpriteDepth( TurnCount,0 )
 	SetSpriteVisible( TurnCount, Off )
 	SetSpritePosition( TurnCount,MiddleX+UnitX+17,MaxHeight-(UnitY/1.6) )
-	SetSpriteColor( TurnCount,0,0,0,255 )
+	SetSpriteColor( TurnCount,255,255,255,255 )
 
    `SPRITES Misc
 

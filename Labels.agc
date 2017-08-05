@@ -657,7 +657,7 @@ select dev.device
 		NumX = dev.buttSize*1.7
 		NumX1 = NumX*1.93
 	endcase
-	case "ios","android","blackberry"
+	case "ios","android"
 		if FindString( GetDeviceType(),"ipad" )
 			dev.buttSize = 64
 			dev.textSize = 28

@@ -88,7 +88,7 @@ function BaseProduction( node )
 	next i
 	Stats(Null,Null,Null,Null,Null)
 	DeleteText( ProductionText )
-	Text(TurnText,str(turns),MiddleX+UnitX+6,MaxHeight-(UnitY/1.5),0,0,0,36,255,2)
+	Text(TurnText,str(turns),MiddleX+UnitX+6,MaxHeight-(UnitY/1.5),255,255,255,36,255,2)
 		SetSpriteVisible( field,On )
 			Zoom(1,0,0,On,1)
 
@@ -101,7 +101,7 @@ endfunction ID
 function ShowUnits( state )
 	DeleteText( UnitText )
 	SetSpriteVisible( ProductionUnits,state )
-	if state then Text(UnitText,str(PlayerProdUnits),MiddleX+UnitX+4,MaxHeight-UnitY-3,0,0,0,36,255,2)
+	if state then Text(UnitText,str(PlayerProdUnits),MiddleX+UnitX+4,MaxHeight-UnitY-3,255,255,255,36,255,2)
 endfunction
 
 function Markers( state )
@@ -304,7 +304,7 @@ function WeaponButtons(ID,vehicle)
 			SetVirtualButtonActive( MineButton, Off )
 			SetVirtualButtonVisible( EMPButton, Off )
 			SetVirtualButtonActive( EMPButton, Off )
-			Text(NumeralText,str(PlayerTank[ID].missiles),NumX,NumY,0,0,0,30,255,0)
+			Text(NumeralText,str(PlayerTank[ID].missiles),NumX,NumY,255,255,255,30,255,0)
 		endcase
 		case Mech
 			SetVirtualButtonVisible( HeavyCannonButton, Off )
@@ -323,7 +323,7 @@ function WeaponButtons(ID,vehicle)
 			SetVirtualButtonActive( MineButton, Off )
 			SetVirtualButtonVisible( EMPButton, Off )
 			SetVirtualButtonActive( EMPButton, Off )
-			Text(NumeralText,str(PlayerTank[ID].missiles),NumX,NumY,0,0,0,30,255,0)
+			Text(NumeralText,str(PlayerTank[ID].missiles),NumX,NumY,255,255,255,30,255,0)
 		endcase
 		case Engineer
 			SetVirtualButtonVisible( HeavyCannonButton, Off )
@@ -342,8 +342,8 @@ function WeaponButtons(ID,vehicle)
 			SetVirtualButtonActive( EMPButton, On )
 			SetVirtualButtonImageUp( MineButton, MineImage )
 			SetVirtualButtonImageUp( EMPButton, EMPImage )
-			Text(NumeralText,str(PlayerTank[ID].mines),NumX,NumY,0,0,0,30,255,0)
-			Text(NumeralText2,str(PlayerTank[ID].charges),NumX1,NumY,0,0,0,30,255,0)
+			Text(NumeralText,str(PlayerTank[ID].mines),NumX,NumY,255,255,255,30,255,0)
+			Text(NumeralText2,str(PlayerTank[ID].charges),NumX1,NumY,255,255,255,30,255,0)
 		endcase
 	endselect
 	select PlayerTank[ID].weapon
@@ -483,6 +483,7 @@ function GetInput()
     glow = Brighter
 	WeaponButtons( Null,Undefined )
 	mx=MaxWidth/4 : my=MaxHeight/4
+
 	do
 		if selection <> Undefined then WeaponInput(ID)
 		if GetVirtualButtonState(AcceptButton) or GetRawKeyState(Enter)
@@ -585,33 +586,9 @@ function GetInput()
 			endif
 		endif
 
-
 		select dev.device
-			case "windows","mac"
-				if GetVirtualButtonState( JoyButton )
-					WaitForButtonRelease( JoyButton )
-					PlaySound( ClickSound,vol )
-					z = GetViewZoom()
-					select z
-						case 1 : Zoom(2,0,0,Off,dev.scale) : endcase
-						case 2 : Zoom(3,vx#,vy#,Off,dev.scale) : mx=MaxWidth/3 : my=MaxHeight/3 : endcase
-						case 3 : Zoom(1,0,0,On,1) : mx=MaxWidth/4 : my=MaxHeight/4 : endcase
-					endselect
-				endif
-				jx# = GetVirtualJoystickX(1)
-				jy# = GetVirtualJoystickY(1)
-				if (jx# <> 0) or (jy# <> 0)
-					if GetViewZoom() = 1 then Zoom(2,0,0,Off,dev.scale)
-					inc vx#,jx#*7  `speed x7
-					inc vy#,jy#*7
-					vx# = MinMax(-mx,mx,vx#)
-					vy# = MinMax(-my,my,vy#)
-					SetViewOffset(vx#,vy#)
-				endif
-			endcase
-			case "ios","android","blackberry"
-				PinchToZoom(GetRawTouchCount(1))
-			endcase
+			case "windows","mac" : PressToZoom() : endcase
+			case "ios","android" : PinchToZoom(GetRawTouchCount(1)) : endcase
 		endselect
 		if selection <> Undefined
 			inc alpha,glow
@@ -628,56 +605,10 @@ function GetInput()
 					//~ SetSpriteColorAlpha( PlayerTank[ID].FOW,alpha/10 )
 		endif
 		Sync()
-
 	loop
 	SetSpriteVisible(PlayerTank[ID].FOW,Off)
 	//~ SetViewOffset(vx#,vy#)
 	Zoom(1,0,0,On,1) `TURN THIS OFF FOR CONTINUOS ZOOM OPERATION
-endfunction
-
-function DisplayInteract( ID,mx,my,selection )
-	select dev.device
-		case "windows","mac"
-			if GetVirtualButtonState( JoyButton )
-				WaitForButtonRelease( JoyButton )
-				PlaySound( ClickSound,vol )
-				z = GetViewZoom()
-				select z
-					case 1 : Zoom(2,0,0,Off,dev.scale) : endcase
-					case 2 : Zoom(3,vx#,vy#,Off,dev.scale) : mx=MaxWidth/3 : my=MaxHeight/3 : endcase
-					case 3 : Zoom(1,0,0,On,1) : mx=MaxWidth/4 : my=MaxHeight/4 : endcase
-				endselect
-			endif
-			jx# = GetVirtualJoystickX(1)
-			jy# = GetVirtualJoystickY(1)
-			if (jx# <> 0) or (jy# <> 0)
-				if GetViewZoom() = 1 then Zoom(2,0,0,Off,dev.scale)
-				inc vx#,jx#*7  `speed x7
-				inc vy#,jy#*7
-				vx# = MinMax(-mx,mx,vx#)
-				vy# = MinMax(-my,my,vy#)
-				SetViewOffset(vx#,vy#)
-			endif
-		endcase
-		case "ios","android","blackberry"
-			PinchToZoom(GetRawTouchCount(1))
-		endcase
-	endselect
-	if selection <> Undefined
-		inc alpha,glow
-		if alpha > GlowMax
-			alpha = GlowMax : glow = Darker
-		elseif alpha < GlowMin
-			alpha = GlowMin : glow = Brighter
-		endif
-		SetSpriteColorAlpha( PlayerTank[ID].bodyID,alpha )
-		SetSpriteColorAlpha( PlayerTank[ID].turretID,alpha )
-		SetSpriteColorAlpha( PlayerTank[ID].hilite,alpha )
-		SetSpriteColorAlpha( PlayerTank[ID].bullsEye,alpha )
-		SetSpriteColorAlpha( PlayerTank[ID].cover,alpha )
-				//~ SetSpriteColorAlpha( PlayerTank[ID].FOW,alpha/10 )
-	endif
-	Sync()
 endfunction
 
 function Zoom(z,vx#,vy#,state,scale)
@@ -902,6 +833,75 @@ function DisplayError(ID,error$)
 endfunction
 
 remstart
+
+function DisplayInteract( ID,mx,my,selection )
+	select dev.device
+		case "windows","mac"
+			if GetVirtualButtonState( JoyButton )
+				WaitForButtonRelease( JoyButton )
+				PlaySound( ClickSound,vol )
+				z = GetViewZoom()
+				select z
+					case 1 : Zoom(2,0,0,Off,dev.scale) : endcase
+					case 2 : Zoom(3,vx#,vy#,Off,dev.scale) : mx=MaxWidth/3 : my=MaxHeight/3 : endcase
+					case 3 : Zoom(1,0,0,On,1) : mx=MaxWidth/4 : my=MaxHeight/4 : endcase
+				endselect
+			endif
+			jx# = GetVirtualJoystickX(1)
+			jy# = GetVirtualJoystickY(1)
+			if (jx# <> 0) or (jy# <> 0)
+				if GetViewZoom() = 1 then Zoom(2,0,0,Off,dev.scale)
+				inc vx#,jx#*7  `speed x7
+				inc vy#,jy#*7
+				vx# = MinMax(-mx,mx,vx#)
+				vy# = MinMax(-my,my,vy#)
+				SetViewOffset(vx#,vy#)
+			endif
+		endcase
+		case "ios","android","blackberry"
+			PinchToZoom(GetRawTouchCount(1))
+		endcase
+	endselect
+	if selection <> Undefined
+		inc alpha,glow
+		if alpha > GlowMax
+			alpha = GlowMax : glow = Darker
+		elseif alpha < GlowMin
+			alpha = GlowMin : glow = Brighter
+		endif
+		SetSpriteColorAlpha( PlayerTank[ID].bodyID,alpha )
+		SetSpriteColorAlpha( PlayerTank[ID].turretID,alpha )
+		SetSpriteColorAlpha( PlayerTank[ID].hilite,alpha )
+		SetSpriteColorAlpha( PlayerTank[ID].bullsEye,alpha )
+		SetSpriteColorAlpha( PlayerTank[ID].cover,alpha )
+				//~ SetSpriteColorAlpha( PlayerTank[ID].FOW,alpha/10 )
+	endif
+	Sync()
+endfunction
+
+
+
+	from GetInput:
+		if GetVirtualButtonState( JoyButton )
+			WaitForButtonRelease( JoyButton )
+			PlaySound( ClickSound,vol )
+			z = GetViewZoom()
+			select z
+				case 1 : Zoom(2,0,0,Off,dev.scale) : endcase
+				case 2 : Zoom(3,vx#,vy#,Off,dev.scale) : mx=MaxWidth/3 : my=MaxHeight/3 : endcase
+				case 3 : Zoom(1,0,0,On,1) : mx=MaxWidth/4 : my=MaxHeight/4 : endcase
+			endselect
+		endif
+		jx# = GetVirtualJoystickX(1)
+		jy# = GetVirtualJoystickY(1)
+		if (jx# <> 0) or (jy# <> 0)
+			if GetViewZoom() = 1 then Zoom(2,0,0,Off,dev.scale)
+			inc vx#,jx#*7  `speed x7
+			inc vy#,jy#*7
+			vx# = MinMax(-mx,mx,vx#)
+			vy# = MinMax(-my,my,vy#)
+			SetViewOffset(vx#,vy#)
+		endif
 	from Spawn:
 		SetSpritePosition(PlayerTank[ID].FOW, mapTable[PlayerTank[ID].node].x - PlayerTank[ID].FOWoffset, mapTable[PlayerTank[ID].node].y - PlayerTank[ID].FOWoffset)
 	from GetInput:
