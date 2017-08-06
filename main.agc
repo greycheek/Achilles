@@ -72,12 +72,10 @@ endfunction
 `COMMON FUNCTIONS
 
 function Turn()
-	DeleteText(TurnText)
 	inc turns
-	Text(TurnText,str(turns),MiddleX+UnitX+6,MaxHeight-(UnitY/1.5),255,255,255,36,255,2)
 	inc PlayerProdUnits,(PlayerBaseCount+1)*BaseProdValue
 	inc AIProdUnits,(AIBaseCount+1)*BaseProdValue
-	ShowUnits( On )
+	ShowInfo(On)
 	Sync()
 endfunction
 

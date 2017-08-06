@@ -1,13 +1,22 @@
 
+function ShowInfo( shown )
+	DeleteText( TurnText )
+	DeleteText( UnitText )
+	SetSpriteVisible( TurnCount,shown )
+	SetSpriteVisible( ProductionUnits,shown )
+	if shown
+		Text(TurnText,str(turns),MiddleX+UnitX+6,MaxHeight-(UnitY/1.5),255,255,255,36,255,2)
+		Text(UnitText,str(PlayerProdUnits),MiddleX+UnitX+4,MaxHeight-UnitY-3,255,255,255,36,255,2)
+	endif
+endfunction
+
 function BaseProduction( node )
-	ShowUnits( Off )
+	ShowInfo( Off )
 	zoomFactor = 1
 	SetViewZoom( zoomFactor )
 	SetViewOffset( 0,0 )
-	SetVirtualJoystickVisible( 1, Off )
-	DeleteText( TurnText )
-	SetSpriteVisible( TurnCount, Off )
-			SetSpriteVisible( field,Off )
+
+	SetSpriteVisible( field,Off )
 	SetSpriteActive( BaseDialog,On )
 	SetSpriteVisible( BaseDialog,On )
 	SetSpriteDepth( BaseDialog, 0 )
@@ -17,10 +26,11 @@ function BaseProduction( node )
 	SetVirtualButtonVisible( LaserButton,Off )
 	SetVirtualButtonVisible( HeavyLaserButton,Off )
 	SetVirtualButtonVisible( HeavyCannonButton,Off )
-	SetVirtualButtonVisible( JoyButton,Off )
 	SetVirtualButtonVisible( MineButton,Off )
 	SetVirtualButtonVisible( EMPButton,Off )
-	AlertButtons( YesNoX3a, YesNoY3, YesNoX3b, YesNoY3, dev.buttSize )
+			FlipButtonStatus(On)
+
+	AlertButtons( YesNoX3a, YesNoY3, YesNoX3b, YesNoY3, dev.buttSize, AcceptFlipButton, QuitFlipButton )
 
 	for i = 1 to SpriteConUnits-1
 		SetSpriteActive( SpriteCon[i].ID,On )
@@ -63,8 +73,8 @@ function BaseProduction( node )
 			endif
 		endif
 		Sync()
-		accept = GetVirtualButtonPressed( AcceptButton )
-		quit = GetVirtualButtonPressed( QuitButton )
+		accept = GetVirtualButtonPressed( AcceptFlipButton )
+		quit = GetVirtualButtonPressed( QuitFlipButton )
 	until accept or quit
 	DeleteText(IllegalText)
 	ID = Undefined
@@ -79,7 +89,8 @@ function BaseProduction( node )
 		WaitForButtonRelease( QuitButton )
 	endif
 
-	AlertButtons( YesNoX4a, YesNoY4, YesNoX4b, YesNoY4, dev.buttSize )
+			FlipButtonStatus(Off)
+	AlertButtons( YesNoX4a, YesNoY4, YesNoX4b, YesNoY4, dev.buttSize, AcceptButton, QuitButton )
 	SetSpriteActive( BaseDialog,Off )
 	SetSpriteVisible( BaseDialog,Off )
 	for i = 1 to SpriteConUnits-1
@@ -88,21 +99,12 @@ function BaseProduction( node )
 	next i
 	Stats(Null,Null,Null,Null,Null)
 	DeleteText( ProductionText )
-	Text(TurnText,str(turns),MiddleX+UnitX+6,MaxHeight-(UnitY/1.5),255,255,255,36,255,2)
-		SetSpriteVisible( field,On )
-			Zoom(1,0,0,On,1)
 
-	SetSpriteVisible( TurnCount, On )
-	SetVirtualButtonVisible( JoyButton,On )
-	SetVirtualJoystickVisible( 1, On )
-	ShowUnits(On)
+	SetSpriteVisible( field,On )
+	Zoom(1,0,0,On,1)
+
+	ShowInfo(On)
 endfunction ID
-
-function ShowUnits( state )
-	DeleteText( UnitText )
-	SetSpriteVisible( ProductionUnits,state )
-	if state then Text(UnitText,str(PlayerProdUnits),MiddleX+UnitX+4,MaxHeight-UnitY-3,255,255,255,36,255,2)
-endfunction
 
 function Markers( state )
 	for i = 0 to PlayerLast
@@ -482,7 +484,7 @@ function GetInput()
     alpha = Brightest
     glow = Brighter
 	WeaponButtons( Null,Undefined )
-	mx=MaxWidth/4 : my=MaxHeight/4
+	ID as integer
 
 	do
 		if selection <> Undefined then WeaponInput(ID)
@@ -587,9 +589,13 @@ function GetInput()
 		endif
 
 		select dev.device
-			case "windows","mac" : MouseScroll() : PressToZoom() : endcase
+			case "windows","mac"
+				MouseScroll()
+				if selection = Undefined then PressToZoom()
+			endcase
 			case "ios","android" : PinchToZoom() : endcase
 		endselect
+		if zoomFactor > 1 then ShowInfo(Off) else ShowInfo(On)
 		if selection <> Undefined
 			inc alpha,glow
 			if alpha > GlowMax
@@ -615,10 +621,6 @@ function Zoom(z,vx#,vy#,state,scale)
 	SetViewZoom(z)
 	SetViewOffset(vx#,vy#)
 	SetTextVisible(NumeralText,state)
-	SetVirtualJoystickSize(1,130*scale)
-	SetVirtualJoystickPosition(1,MiddleX,MaxHeight-(65*scale))
-	SetVirtualButtonSize(JoyButton,55*scale)
-	SetVirtualButtonPosition(JoyButton,MiddleX+(110*scale),MaxHeight-(66*scale))
 endfunction
 
 function MaxAlpha(ID)
@@ -633,11 +635,12 @@ function EndGame()
 	Zoom(1,0,0,On,1)
 	TSize = 36*dev.scale
 	Text( QuitText,"Back to Menu?",YesNoX1+TSize,YesNoY1+TSize,50,50,50,TSize,255,0 )
-	AlertButtons( YesNoX2a, YesNoY2, YesNoX2b, YesNoY2, dev.buttSize )
+	FlipButtonStatus(On)
+	AlertButtons( YesNoX2a, YesNoY2, YesNoX2b, YesNoY2, dev.buttSize, AcceptFlipButton, QuitFlipButton )
 	AlertDialog( QuitText,On )
 	repeat
-		if GetVirtualButtonPressed( AcceptButton )
-			WaitForButtonRelease( AcceptButton )
+		if GetVirtualButtonPressed( AcceptFlipButton )
+			WaitForButtonRelease( AcceptFlipButton )
 			startOver = True : exit
 		endif
 		if GetRawKeyPressed( Enter )
@@ -647,10 +650,10 @@ function EndGame()
 			startOver = True : exit
 		endif
 		Sync()
-	until GetVirtualButtonState( QuitButton ) or GetRawKeyPressed( 0x4E ) `N
+	until GetVirtualButtonState( QuitFlipButton ) or GetRawKeyPressed( 0x4E ) `N
 	if startOver then Main() `RESTART ACHILLES
 
-	AlertButtons( YesNoX4a, YesNoY4, YesNoX4b, YesNoY4, dev.buttSize )
+	FlipButtonStatus(Off)
 	AlertDialog( QuitText,Off )
 endfunction
 

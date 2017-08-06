@@ -20,6 +20,11 @@ global MapWidth as float
 global MapHeight as float
 global NodeSize as integer
 global NodeOffset as integer
+global ScreenWidth as integer
+global ScreenHeight as integer
+
+ScreenWidth = GetDeviceWidth()
+ScreenHeight = GetDeviceHeight()
 
 AspectRatio = MaxWidth/MaxHeight
 NodeSize = MaxWidth/Columns
@@ -65,7 +70,8 @@ MiddleY = MapHeight/2
 #constant HeavyCannonButton 8
 #constant EMPButton 9
 #constant MineButton 10
-#constant JoyButton 11
+#constant AcceptFlipButton 11
+#constant QuitFlipButton 12
 
 `GENERAL
 #constant Unset 100000
@@ -752,11 +758,10 @@ global SettingsImage as integer
 global SettingsImageDown as integer
 global ProductionUnits as integer
 global TurnCount as integer
-global JoyButtonImage as integer
-global JoyButtonDownImage as integer
-global Joystick as integer
-global JoyArrows as integer
-
+global CancelFlipImage as integer
+global CancelFlipImageDown as integer
+global AcceptFlipImage as integer
+global AcceptFlipImageDown as integer
 
 turnImage = InterfaceSeries+1
 turnImageDown = InterfaceSeries+2
@@ -797,10 +802,11 @@ SettingsImage = InterfaceSeries+21
 SettingsImageDown = InterfaceSeries+22
 ProductionUnits = InterfaceSeries+23
 TurnCount = InterfaceSeries+24
-JoyButtonImage = InterfaceSeries+25
-JoyButtonDownImage = InterfaceSeries+26
-Joystick = InterfaceSeries+27
-JoyArrows = InterfaceSeries+28
+
+CancelFlipImage = InterfaceSeries+25
+CancelFlipImageDown = InterfaceSeries+26
+AcceptFlipImage = InterfaceSeries+27
+AcceptFlipImageDown = InterfaceSeries+28
 
 MineImage = InterfaceSeries+29
 MineImageDown = InterfaceSeries+30

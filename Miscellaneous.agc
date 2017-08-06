@@ -12,7 +12,6 @@
 #constant NoBlock %0000000000000010
 #constant Block	  %0000000010000000	  `#constant Block %0000000000000100
 
-
 global zoomFactor as float = 1.0
 global lastX as float
 global lastY as float
@@ -21,7 +20,6 @@ global newY as float
 global xoffset as float = 0
 global yoffset as float = 0
 global dragMode as integer
-
 
 function PinchToZoom()
 	select GetRawTouchCount(1)
@@ -83,16 +81,18 @@ function PresstoZoom()
 endfunction
 
 function MouseScroll()
-	if GetPointerPressed() and (zoomFactor > 1) `only scroll if zoomed-in
-		newX=GetPointerX()
-		newY=GetPointerY()
-		dragMode = True
-	endif
-	if dragMode then CalcScroll()
-	if GetPointerReleased()
-		dragMode = False
-		lastX = xoffset
-		lastY = yoffset
+	if zoomFactor > 1 `only scroll if zoomed-in
+		if GetPointerPressed()
+			newX=GetPointerX()
+			newY=GetPointerY()
+			dragMode = True
+		endif
+		if GetPointerReleased()
+			dragMode = False
+			lastX = xoffset
+			lastY = yoffset
+		endif
+		if dragMode then CalcScroll()
 	endif
 endfunction
 

@@ -15,18 +15,15 @@ function MainMenu()
 			PlaySound( ClickSound,vol )
 			TSize = 36*dev.scale
 			Text( QuitText,"Quit?",YesNoX1+TSize,YesNoY1+TSize,50,50,50,TSize,255,0 )
-			SetVirtualButtonVisible( SettingsButton,Off )
-			SetVirtualButtonActive( SettingsButton,Off )
-			AlertButtons( YesNoX2a, YesNoY2, YesNoX2b, YesNoY2, dev.buttSize )
+			FlipButtonStatus(On)
+			AlertButtons( YesNoX2a, YesNoY2, YesNoX2b, YesNoY2, dev.buttSize, AcceptFlipButton, QuitFlipButton )
 			AlertDialog( QuitText,On )
 			do
 				Sync()
-				if GetVirtualButtonPressed( AcceptButton ) or GetRawKeyState( Enter ) or GetRawKeyPressed( 0x59 ) then end  `Y
-				if GetVirtualButtonPressed( QuitButton ) //or GetRawKeyReleased( 0x4E ) `N
-					AlertButtons( YesNoX3a,YesNoY3a,YesNoX3b,YesNoY3a, dev.buttSize )
+				if GetVirtualButtonPressed( AcceptFlipButton ) or GetRawKeyState( Enter ) or GetRawKeyPressed( 0x59 ) then end  `Y
+				if GetVirtualButtonPressed( QuitFlipButton ) //or GetRawKeyReleased( 0x4E ) `N
+					FlipButtonStatus(Off)
 					AlertDialog( QuitText,Off )
-					SetVirtualButtonVisible( SettingsButton,On )
-					SetVirtualButtonActive( SettingsButton,On )
 					exit
 				endif
 			loop
@@ -48,13 +45,17 @@ function Halt(ID1,ID2)
 	StopSprite( MechGuy[0].bodyID )
 endfunction
 
-function ButtonStatus(state)
-	SetVirtualButtonVisible( SettingsButton,state )
-	SetVirtualButtonActive( SettingsButton,state )
-	SetVirtualButtonVisible( AcceptButton,state )
-	SetVirtualButtonActive( AcceptButton,state )
-	SetVirtualButtonVisible( QuitButton,state )
-	SetVirtualButtonActive( QuitButton,state )
+function AlertButtons( x1,y1,x2,y2,size,accept,quit )
+	PlaySound( ClickSound,vol )
+	SetVirtualButtonSize( accept,size )
+	SetVirtualButtonSize( quit,size )
+	SetVirtualButtonPosition( accept,x1,y1 )
+	SetVirtualButtonPosition( quit,x2,y2 )
+endfunction
+
+function FlipButtonStatus(state)
+	SetVirtualButtonVisible( AcceptFlipButton,state )
+	SetVirtualButtonVisible( QuitFlipButton,state )
 endfunction
 
 function PatrolMech()
@@ -124,20 +125,12 @@ function AlertDialog( text,state )
 	If state = Off
 		DeleteText( text )
 		DeleteSprite( AlertBackGround )
-		WaitForButtonRelease( QuitButton )
+		WaitForButtonRelease( QuitFlipButton )
 	else
 		SetupSprite( AlertBackGround,AlertBackGround,"Yes-NoBkgnd.png",YesNoX1,YesNoY1,AlertW,AlertH,0,Off,0 )
 	endif
 	SetSpriteActive( AlertBackGround,state )
 	SetSpriteVisible( AlertBackGround,state )
-endfunction
-
-function AlertButtons( x1,y1,x2,y2,size )
-	PlaySound( ClickSound,vol )
-	SetVirtualButtonSize( AcceptButton,size )
-	SetVirtualButtonSize( QuitButton,size )
-	SetVirtualButtonPosition( AcceptButton,x1,y1 )
-	SetVirtualButtonPosition( QuitButton,x2,y2 )
 endfunction
 
 function DisplaySettings(state)
@@ -166,6 +159,18 @@ function DisplaySettings(state)
 	SetVirtualButtonActive( SettingsButton,FlipState )
 	SetVirtualButtonVisible( QuitButton,FlipState )
 	SetVirtualButtonActive( QuitButton,FlipState )
+	if FlipState
+		SetVirtualButtonVisible( AcceptButton,On )
+		SetVirtualButtonActive( AcceptButton,On )
+		SetVirtualButtonVisible( AcceptFlipButton,Off )
+		SetVirtualButtonActive( AcceptFlipButton,Off )
+	else
+		SetVirtualButtonVisible( AcceptButton,Off )
+		SetVirtualButtonActive( AcceptButton,Off )
+		SetVirtualButtonVisible( AcceptFlipButton,On )
+		SetVirtualButtonActive( AcceptFlipButton,On )
+	endif
+
 	for i = 0 to Cells-1
 		SetSpriteActive( AIgrid[i].ID,state )
 		SetSpriteVisible( AIgrid[i].ID,state )
@@ -178,9 +183,9 @@ function DisplaySettings(state)
 	next i
 	if state
 		Text(MusicText,"MUSIC",MusicScale.tx,MusicScale.ty,0,0,0,30,255,0)
-			SetTextDepth(MusicText,1)
+		SetTextDepth(MusicText,1)
 		Text(SoundText,"SOUND",SoundScale.tx,SoundScale.ty,0,0,0,30,255,0)
-			SetTextDepth(SoundText,1)
+		SetTextDepth(SoundText,1)
 	else
 		DeleteText(MusicText)
 		DeleteText(SoundText)
@@ -251,8 +256,8 @@ function Compose()
 		endif
 		Sync()
 		if GetRawKeyPressed( Enter ) then exitfunction
-	until GetVirtualButtonPressed( AcceptButton )
-	WaitForButtonRelease( Acceptbutton )
+	until GetVirtualButtonPressed( AcceptFlipButton )
+	WaitForButtonRelease( AcceptFlipbutton )
 endfunction
 
 function SliderInput( Slide as sliderType, Scale as sliderType )
@@ -326,13 +331,7 @@ function GameSetup()
 	SetViewZoomMode( 1.0 )
 	SetViewOffset( 0,0 )
 	zoomFactor = 1
-	if (dev.device = "windows") or (dev.device = "mac")
-		AddVirtualJoystick( 1, MiddleX, MaxHeight-65, 130 )
-		SetVirtualJoystickAlpha( 1, 255, 255 )
-		SetVirtualJoystickImageInner( 1, Joystick )
-		SetVirtualJoystickImageOuter( 1, JoyArrows )
-		LoadButton(JoyButton,JoyButtonImage,JoyButtonDownImage,"JoyButtonUp.png","JoyButtonDown.png",MiddleX+110,MaxHeight-66,55,On)
-	endif
+
 	SetSpriteVisible( TurnCount,On )
 	DeleteText( VersionText )
 	DeleteSprite( MechGuy[0].bodyID )
@@ -365,7 +364,8 @@ function GameSetup()
 	AITank.length = AICount
 	PlayerTank.length = PlayerCount
 
-	AlertButtons( YesNoX4a, YesNoY4, YesNoX4b, YesNoY4, dev.buttSize )
+	FlipButtonStatus(Off)
+	AlertButtons( YesNoX4a, YesNoY4, YesNoX4b, YesNoY4, dev.buttSize, AcceptButton, QuitButton )
 	LoadButton(CannonButton,cannonImage,cannonImageDown,"Cannon.png","CannonDown.png",dev.buttX1,buttY,dev.buttSize,Off)
 	LoadButton(HeavyCannonButton,heavyCannonImage,heavyCannonImageDown,"HeavyCannon.png","HeavyCannonDown.png",dev.buttX1,buttY,dev.buttSize,Off)
 	LoadButton(MissileButton,missileImage,missileImageDown,"Rocket.png","RocketDown.png",dev.buttX1,buttY,dev.buttSize,Off)
@@ -374,8 +374,7 @@ function GameSetup()
 	LoadButton(EMPButton,EMPImage,EMPImageDown,"EMPButton.png","EMPButtonDown.png",dev.buttX2,buttY,dev.buttSize,Off)
 	LoadButton(MineButton,MineImage,MineImageDown,"MineButton.png","MineButtonDown.png",dev.buttX1,buttY,dev.buttSize,Off)
 	turns = 1
-	Text(TurnText,str(turns),MiddleX+UnitX+6,MaxHeight-(UnitY/1.5),255,255,255,36,255,2)
-	ShowUnits( On )
+	ShowInfo( On )
 endfunction
 
 remstart
