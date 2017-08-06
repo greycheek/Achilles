@@ -325,7 +325,7 @@ endfunction cell
 function GameSetup()
 	SetViewZoomMode( 1.0 )
 	SetViewOffset( 0,0 )
-	zoomStep = 1
+	zoomFactor = 1
 	if (dev.device = "windows") or (dev.device = "mac")
 		AddVirtualJoystick( 1, MiddleX, MaxHeight-65, 130 )
 		SetVirtualJoystickAlpha( 1, 255, 255 )

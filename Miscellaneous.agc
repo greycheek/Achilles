@@ -14,9 +14,14 @@
 
 
 global zoomFactor as float = 1.0
-global zoomStep as float = 1.0
 global lastX as float
 global lastY as float
+global newX as float
+global newY as float
+global xoffset as float = 0
+global yoffset as float = 0
+global dragMode as integer
+
 
 function PinchToZoom(touch as integer)
 	select touch
@@ -32,10 +37,10 @@ function PinchToZoom(touch as integer)
 
 				//*** Calculate new scroll position ***
 				post = GetRawFirstTouchEvent(0)
-				xoffset# = MinMax( minX#,maxX#, GetViewOffsetX()+(GetRawTouchLastX(post)-GetRawTouchCurrentX(post))/zoomFactor )
-				yoffset# = MinMax( minY#,maxY#, GetViewOffsetY()+(GetRawTouchLastY(post)-GetRawTouchCurrentY(post))/zoomFactor )
+				xoffset = MinMax( minX#,maxX#, GetViewOffsetX()+(GetRawTouchLastX(post)-GetRawTouchCurrentX(post))/zoomFactor )
+				yoffset = MinMax( minY#,maxY#, GetViewOffsetY()+(GetRawTouchLastY(post)-GetRawTouchCurrentY(post))/zoomFactor )
 
-				SetViewOffset(xoffset#,yoffset#)
+				SetViewOffset(xoffset,yoffset)
 			else
 				SetViewOffset(0,0)  `reset scroll
 			endif
@@ -61,30 +66,35 @@ function PinchToZoom(touch as integer)
 endfunction
 
 function PressToZoom()
-	if (zoomStep > 1)  and GetRawMouseLeftState() `only scroll if zoomed-in
-		zoom# =  zoomStep - 1.0
-		ZFx2# =  zoomStep * 2.0
-		minX# = -zoom# * MaxWidth  / ZFx2#  `should zoom * MaxWidth/MaxHeight be in ( )??
+	if GetPointerPressed() and (zoomFactor > 1) `only scroll if zoomed-in
+		newX=GetPointerX()
+		newY=GetPointerY()
+		dragMode = True
+	endif
+	if dragMode
+		zoom# =  zoomFactor - 1.0
+		ZFx2# =  zoomFactor * 2.0
+		minX# = -zoom# * MaxWidth  / ZFx2# `should zoom * MaxWidth/MaxHeight be in ( )??
 		maxX# =  zoom# * MaxWidth  / ZFx2#
 		minY# = -zoom# * MaxHeight / ZFx2#
 		maxY# =  zoom# * MaxHeight / ZFx2#
-		x# = GetRawMouseX()
-		y# = GetRawMouseY()
 		//*** Calculate new scroll position ***
-		xoffset# = MinMax( minX#,maxX#, GetViewOffsetX()+((lastX-x#)/zoomFactor) )
-		yoffset# = MinMax( minY#,maxY#, GetViewOffsetY()+((lastY-y#)/zoomFactor) )
-		SetViewOffset(xoffset#,yoffset#)
-		lastX = x#
-		lastY = y#
-	elseif GetRawKeyReleased(190) or GetRawKeyReleased(187)  // ">" or "="
-		inc zoomStep
-		zoomStep = Max(5,zoomStep)
-		SetViewZoom( zoomStep )
+		xoffset = MinMax( minX#,maxX#,lastX+( (newX-GetPointerX())/zoomFactor ))
+		yoffset = MinMax( minY#,maxY#,lastY+( (newY-GetPointerY())/zoomFactor ))
+		SetViewOffset(xoffset,yoffset)
+	endif
+	if GetPointerReleased()
+		dragMode = False
+		lastX = xoffset
+		lastY = yoffset
+	endif
+	if GetRawKeyReleased(190) or GetRawKeyReleased(187)  // ">" or "="
+		zoomFactor = Max(5,zoomFactor+1)
+		SetViewZoom( zoomFactor )
 	elseif GetRawKeyReleased(188) or GetRawKeyReleased(189)  // "<" or "-"
-		dec zoomStep
-		zoomStep = Min(1,zoomStep)
-		if zoomStep = 1 then SetViewOffset(0,0) `reset scroll
-		SetViewZoom( zoomStep )
+		zoomFactor = Min(1,zoomFactor-1)
+		if zoomFactor = 1 then SetViewOffset(0,0) `reset scroll
+		SetViewZoom( zoomFactor )
 	endif
 endfunction
 
