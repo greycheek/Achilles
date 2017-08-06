@@ -587,8 +587,8 @@ function GetInput()
 		endif
 
 		select dev.device
-			case "windows","mac" : PressToZoom() : endcase
-			case "ios","android" : PinchToZoom(GetRawTouchCount(1)) : endcase
+			case "windows","mac" : MouseScroll() : PressToZoom() : endcase
+			case "ios","android" : PinchToZoom() : endcase
 		endselect
 		if selection <> Undefined
 			inc alpha,glow

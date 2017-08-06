@@ -23,8 +23,8 @@ global yoffset as float = 0
 global dragMode as integer
 
 
-function PinchToZoom(touch as integer)
-	select touch
+function PinchToZoom()
+	select GetRawTouchCount(1)
 		case 1:  `Scroll
 			if zoomFactor > 1  `only scroll if zoomed-in
 				// Limit scroll to board edges
@@ -65,37 +65,49 @@ function PinchToZoom(touch as integer)
 	endselect
 endfunction
 
-function PressToZoom()
+function PresstoZoom()
+	if GetRawKeyReleased(190) or GetRawKeyReleased(187)  // ">" or "="
+		zoomFactor = Max(5,zoomFactor+.5)
+		SetViewZoom( zoomFactor )
+		CalcScroll()
+		lastX = xoffset
+		lastY = yoffset
+	elseif GetRawKeyReleased(188) or GetRawKeyReleased(189)  // "<" or "-"
+		zoomFactor = Min(1,zoomFactor-.5)
+		if zoomFactor = 1 then SetViewOffset(0,0) `reset scroll
+		SetViewZoom( zoomFactor )
+		CalcScroll()
+		lastX = xoffset
+		lastY = yoffset
+	endif
+endfunction
+
+function MouseScroll()
 	if GetPointerPressed() and (zoomFactor > 1) `only scroll if zoomed-in
 		newX=GetPointerX()
 		newY=GetPointerY()
 		dragMode = True
 	endif
-	if dragMode
-		zoom# =  zoomFactor - 1.0
-		ZFx2# =  zoomFactor * 2.0
-		minX# = -zoom# * MaxWidth  / ZFx2# `should zoom * MaxWidth/MaxHeight be in ( )??
-		maxX# =  zoom# * MaxWidth  / ZFx2#
-		minY# = -zoom# * MaxHeight / ZFx2#
-		maxY# =  zoom# * MaxHeight / ZFx2#
-		//*** Calculate new scroll position ***
-		xoffset = MinMax( minX#,maxX#,lastX+( (newX-GetPointerX())/zoomFactor ))
-		yoffset = MinMax( minY#,maxY#,lastY+( (newY-GetPointerY())/zoomFactor ))
-		SetViewOffset(xoffset,yoffset)
-	endif
+	if dragMode then CalcScroll()
 	if GetPointerReleased()
 		dragMode = False
 		lastX = xoffset
 		lastY = yoffset
 	endif
-	if GetRawKeyReleased(190) or GetRawKeyReleased(187)  // ">" or "="
-		zoomFactor = Max(5,zoomFactor+1)
-		SetViewZoom( zoomFactor )
-	elseif GetRawKeyReleased(188) or GetRawKeyReleased(189)  // "<" or "-"
-		zoomFactor = Min(1,zoomFactor-1)
-		if zoomFactor = 1 then SetViewOffset(0,0) `reset scroll
-		SetViewZoom( zoomFactor )
-	endif
+endfunction
+
+function CalcScroll()
+	zoom# =  zoomFactor - 1.0
+	ZFx2# =  zoomFactor * 2.0
+	minX# = -zoom# * MaxWidth  / ZFx2# `should zoom * MaxWidth/MaxHeight be in ( )??
+	maxX# =  zoom# * MaxWidth  / ZFx2#
+	minY# = -zoom# * MaxHeight / ZFx2#
+	maxY# =  zoom# * MaxHeight / ZFx2#
+
+	//*** Calculate new scroll position ***
+	xoffset = MinMax( minX#,maxX#,lastX+( (newX-GetPointerX())/zoomFactor ))
+	yoffset = MinMax( minY#,maxY#,lastY+( (newY-GetPointerY())/zoomFactor ))
+	SetViewOffset(xoffset,yoffset)
 endfunction
 
 type ColorSpec

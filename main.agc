@@ -7,8 +7,6 @@ remstart
 		----AI MUST BE MORE AGGRESSIVE IN CAPTURING BASES!!!!!!!!!!
 		----IMPLEMENT AI BASE DEFENSE - SEE GOAL CHANGE
 
-		----PRESS TO ZOOM NOT WORKING PROPERLY
-
 	FIXED?
 		----zoom offset not set coming out of base production screen
 		----BASE OWNERSHIP NOT PROPERLY CHANGING HANDS!!!!!--------ARRAY MANAGEMENT PROBLEM???
