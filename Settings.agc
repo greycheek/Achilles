@@ -378,7 +378,7 @@ function Setup()
 	LoadButton(SettingsButton,SettingsImage,SettingsImageDown,"SettingsButton.png","SettingsButtonDown.png",YesNoX3c,YesNoY3a,dev.buttSize,On)
 	LoadButton(AcceptFlipButton,AcceptFlipImage,AcceptFlipImageDown,"AcceptFlip.png","AcceptFlipDown.png",YesNoX3a,YesNoY3a,dev.buttSize,On)
 	LoadButton(QuitFlipButton,CancelFlipImage,CancelFlipImageDown,"CancelFlip.png","CancelFlipDown.png",YesNoX3b,YesNoY3a,dev.buttSize,On)
-	FlipButtonStatus( Off )
+	ButtonStatus(Off, AcceptFlipButton, QuitFlipButton)
 
 	//~ LoadButton(MapButton,MapButtonImage,MapButtonImage,"MiniMap.png","MiniMap.png",YesNoX3b-32,YesNoY3a-4,64,On)
 

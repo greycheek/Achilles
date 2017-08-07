@@ -28,8 +28,8 @@ function BaseProduction( node )
 	SetVirtualButtonVisible( HeavyCannonButton,Off )
 	SetVirtualButtonVisible( MineButton,Off )
 	SetVirtualButtonVisible( EMPButton,Off )
-			FlipButtonStatus(On)
-
+	ButtonStatus( On, AcceptFlipButton, QuitFlipButton )
+	ButtonStatus( Off, AcceptButton, QuitButton )
 	AlertButtons( YesNoX3a, YesNoY3, YesNoX3b, YesNoY3, dev.buttSize, AcceptFlipButton, QuitFlipButton )
 
 	for i = 1 to SpriteConUnits-1
@@ -79,17 +79,18 @@ function BaseProduction( node )
 	DeleteText(IllegalText)
 	ID = Undefined
 	if accept
-		WaitForButtonRelease( Acceptbutton )
+		WaitForButtonRelease( AcceptFlipbutton )
 		if vehicle = index
 			PlayerProdUnits = units
 			ID = Spawn( vehicle,node )
 			WeaponButtons( ID,PlayerTank[ID].vehicle )
 		endif
 	else
-		WaitForButtonRelease( QuitButton )
+		WaitForButtonRelease( QuitFlipButton )
 	endif
 
-			FlipButtonStatus(Off)
+	ButtonStatus( Off, AcceptFlipButton, QuitFlipButton )
+	ButtonStatus( On, AcceptButton, QuitButton )
 	AlertButtons( YesNoX4a, YesNoY4, YesNoX4b, YesNoY4, dev.buttSize, AcceptButton, QuitButton )
 	SetSpriteActive( BaseDialog,Off )
 	SetSpriteVisible( BaseDialog,Off )
@@ -635,7 +636,7 @@ function EndGame()
 	Zoom(1,0,0,On,1)
 	TSize = 36*dev.scale
 	Text( QuitText,"Back to Menu?",YesNoX1+TSize,YesNoY1+TSize,50,50,50,TSize,255,0 )
-	FlipButtonStatus(On)
+	ButtonStatus( On, AcceptFlipButton, QuitFlipButton )
 	AlertButtons( YesNoX2a, YesNoY2, YesNoX2b, YesNoY2, dev.buttSize, AcceptFlipButton, QuitFlipButton )
 	AlertDialog( QuitText,On )
 	repeat
@@ -653,7 +654,7 @@ function EndGame()
 	until GetVirtualButtonState( QuitFlipButton ) or GetRawKeyPressed( 0x4E ) `N
 	if startOver then Main() `RESTART ACHILLES
 
-	FlipButtonStatus(Off)
+	ButtonStatus( Off, AcceptFlipButton, QuitFlipButton )
 	AlertDialog( QuitText,Off )
 endfunction
 

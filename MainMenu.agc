@@ -15,14 +15,14 @@ function MainMenu()
 			PlaySound( ClickSound,vol )
 			TSize = 36*dev.scale
 			Text( QuitText,"Quit?",YesNoX1+TSize,YesNoY1+TSize,50,50,50,TSize,255,0 )
-			FlipButtonStatus(On)
+			ButtonStatus( On, AcceptFlipButton, QuitFlipButton )
 			AlertButtons( YesNoX2a, YesNoY2, YesNoX2b, YesNoY2, dev.buttSize, AcceptFlipButton, QuitFlipButton )
 			AlertDialog( QuitText,On )
 			do
 				Sync()
 				if GetVirtualButtonPressed( AcceptFlipButton ) or GetRawKeyState( Enter ) or GetRawKeyPressed( 0x59 ) then end  `Y
 				if GetVirtualButtonPressed( QuitFlipButton ) //or GetRawKeyReleased( 0x4E ) `N
-					FlipButtonStatus(Off)
+					ButtonStatus( Off, AcceptFlipButton, QuitFlipButton )
 					AlertDialog( QuitText,Off )
 					exit
 				endif
@@ -53,9 +53,9 @@ function AlertButtons( x1,y1,x2,y2,size,accept,quit )
 	SetVirtualButtonPosition( quit,x2,y2 )
 endfunction
 
-function FlipButtonStatus(state)
-	SetVirtualButtonVisible( AcceptFlipButton,state )
-	SetVirtualButtonVisible( QuitFlipButton,state )
+function ButtonStatus(state, accept, quit)
+	SetVirtualButtonVisible( accept,state )
+	SetVirtualButtonVisible( quit,state )
 endfunction
 
 function PatrolMech()
@@ -364,7 +364,7 @@ function GameSetup()
 	AITank.length = AICount
 	PlayerTank.length = PlayerCount
 
-	FlipButtonStatus(Off)
+	ButtonStatus( Off, AcceptFlipButton, QuitFlipButton )
 	AlertButtons( YesNoX4a, YesNoY4, YesNoX4b, YesNoY4, dev.buttSize, AcceptButton, QuitButton )
 	LoadButton(CannonButton,cannonImage,cannonImageDown,"Cannon.png","CannonDown.png",dev.buttX1,buttY,dev.buttSize,Off)
 	LoadButton(HeavyCannonButton,heavyCannonImage,heavyCannonImageDown,"HeavyCannon.png","HeavyCannonDown.png",dev.buttX1,buttY,dev.buttSize,Off)
