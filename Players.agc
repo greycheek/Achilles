@@ -15,8 +15,6 @@ function BaseProduction( node )
 	zoomFactor = 1
 	SetViewZoom( zoomFactor )
 	SetViewOffset( 0,0 )
-
-	SetSpriteVisible( field,Off )
 	SetSpriteActive( BaseDialog,On )
 	SetSpriteVisible( BaseDialog,On )
 	SetSpriteDepth( BaseDialog, 0 )
@@ -101,16 +99,13 @@ function BaseProduction( node )
 	Stats(Null,Null,Null,Null,Null)
 	DeleteText( ProductionText )
 
-	SetSpriteVisible( field,On )
 	Zoom(1,0,0,On,1)
-
 	ShowInfo(On)
 endfunction ID
 
 function Markers( state )
 	for i = 0 to PlayerLast
 		SetSpriteVisible(PlayerTank[i].healthID,state)
-		if GetSpriteVisible(PlayerTank[i].cover) then SetSpriteVisible(PlayerTank[i].cover,Off)
 		if PlayerTank[i].target <> Undefined
 			if GetSpriteVisible(PlayerTank[i].bullsEye)
 				SetSpriteVisible(PlayerTank[i].bullsEye,Off)
@@ -121,7 +116,6 @@ function Markers( state )
 	next i
 	for i = 0 to AIPlayerLast
 		If GetSpriteVisible(AITank[i].healthID) then SetSpriteVisible(AITank[i].healthID,state)
-		if GetSpriteVisible(AITank[i].cover) then SetSpriteVisible(AITank[i].cover,Off)
 		if AITank[i].target <> Undefined
 			if GetSpriteVisible(AITank[i].bullsEye)
 				SetSpriteVisible(AITank[i].bullsEye,Off)
