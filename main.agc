@@ -4,10 +4,14 @@ remstart
 
 	ISSUES
 		----BETTER AI MOVEMENT GOAL DECISIONS
-		----AI MUST BE MORE AGGRESSIVE IN CAPTURING BASES!!!!!!!!!!
-		----IMPLEMENT AI BASE DEFENSE - SEE GOAL CHANGE
+
+		----TREE COVER NOT ALWAYS APPEARING FOR AI
+		----CHECK IMPASSABLE PLACEMENT TOWARD BOARD CENTER
 
 	FIXED?
+		----IMPLEMENT AI BASE DEFENSE - SEE GOAL CHANGE
+		----AI MUST BE MORE AGGRESSIVE IN CAPTURING BASES!!!!!!!!!!
+
 		----zoom offset not set coming out of base production screen
 		----BASE OWNERSHIP NOT PROPERLY CHANGING HANDS!!!!!--------ARRAY MANAGEMENT PROBLEM???
 		----BASE CAPTURE NOT ALWAYS WORKING?
@@ -156,67 +160,6 @@ function Produce( ID, Tank ref as tankType[], rate, baseProduct, baseID, c as Co
 	endif
 	HealthBar(ID,Tank)
 endfunction
-
-remstart
-function Produce( ID, Tank ref as tankType[], rate, baseProduct, baseID, c as ColorSpec )
-	if baseProduct
-		SetSpriteVisible(Tank[ID].bodyID,Off)
-		SetSpriteVisible(Tank[ID].turretID,Off)
-		SetSpriteVisible(Tank[ID].healthID,Off)
-		SetSpriteVisible(baseID,On)
-		Delay(.3)
-		PlaySound(SpawnSound,vol)
-		SetSpritePositionByOffset(Iris,Tank[ID].x+2,Tank[ID].y)
-		SetSpriteColor(Iris, c.r, c.g, c.b, c.a)
-		SetSpriteVisible(Iris,On)
-		frames = IrisFrames*1.5
-		PlaySprite(Iris,frames,0)
-		repeat
-			Sync()
-		until GetSpriteCurrentFrame(Iris) >= (frames/2)
-		SetSpriteDepth(Iris,3)
-		SetSpriteVisible(baseID,Off)
-	elseif mapTable[Tank[ID].node].terrain = Trees
-		SetSpritePositionByOffset(Tank[ID].cover,Tank[ID].x,Tank[ID].y)
-		SetSpriteVisible(Tank[ID].cover,On)
-	endif
-	SetSpriteSize(Tank[ID].bodyID,1,1)
-	SetSpriteSize(Tank[ID].turretID,1,1)
-	SetSpriteVisible(Tank[ID].bodyID,On)
-	SetSpriteVisible(Tank[ID].turretID,On)
-
-	SetSpritePositionByOffset(Tank[ID].bodyID,Tank[ID].x,Tank[ID].y)
-	SetSpritePositionByOffset(Tank[ID].turretID,Tank[ID].x,Tank[ID].y)
-	generateFOW = baseproduct and (Tank[ID].team = PlayerTeam)
-	if generateFOW
-		FOWSize = Tank[ID].FOWSize / ( NodeSize / rate )
-		SetSpriteSize(Tank[ID].FOWSize,FOWSize,FOWSize)
-		SetSpriteSize(Tank[ID].FOWSize,FOWSize,FOWSize)
-		SetSpriteVisible(Tank[ID].FOW,On)
-	endif
-	for i = 1 to NodeSize step rate
-		SetSpriteSize(Tank[ID].bodyID,i,i)
-		SetSpriteSize(Tank[ID].turretID,i,i)
-		if generateFOW
-			growth = FOWSize * i
-			growthShift = growth / 2
-			SetSpriteSize(Tank[ID].FOW,growth,growth)
-			SetSpritePosition(Tank[ID].FOW, mapTable[Tank[ID].node].x - growthShift, mapTable[Tank[ID].node].y - growthShift)
-		endif
-		Sync()
-	next i
-	if baseProduct
-		PlaySprite(Iris,frames,0,IrisFrames,1)
-		Delay(.5)
-		SetSpriteVisible(baseID,On)
-		SetSpriteVisible(Iris,Off)
-		SetSpriteDepth(Iris,0)
-	endif
-	HealthBar(ID,Tank)
-endfunction
-remend
-
-
 
 function LOSblocked(x1,y1,x2,y2)
 	if PhysicsRayCastCategory(Block,x1,y1,x2,y2)
@@ -637,6 +580,63 @@ function ParticleTest()
 endfunction
 
 remstart
+function Produce( ID, Tank ref as tankType[], rate, baseProduct, baseID, c as ColorSpec )
+	if baseProduct
+		SetSpriteVisible(Tank[ID].bodyID,Off)
+		SetSpriteVisible(Tank[ID].turretID,Off)
+		SetSpriteVisible(Tank[ID].healthID,Off)
+		SetSpriteVisible(baseID,On)
+		Delay(.3)
+		PlaySound(SpawnSound,vol)
+		SetSpritePositionByOffset(Iris,Tank[ID].x+2,Tank[ID].y)
+		SetSpriteColor(Iris, c.r, c.g, c.b, c.a)
+		SetSpriteVisible(Iris,On)
+		frames = IrisFrames*1.5
+		PlaySprite(Iris,frames,0)
+		repeat
+			Sync()
+		until GetSpriteCurrentFrame(Iris) >= (frames/2)
+		SetSpriteDepth(Iris,3)
+		SetSpriteVisible(baseID,Off)
+	elseif mapTable[Tank[ID].node].terrain = Trees
+		SetSpritePositionByOffset(Tank[ID].cover,Tank[ID].x,Tank[ID].y)
+		SetSpriteVisible(Tank[ID].cover,On)
+	endif
+	SetSpriteSize(Tank[ID].bodyID,1,1)
+	SetSpriteSize(Tank[ID].turretID,1,1)
+	SetSpriteVisible(Tank[ID].bodyID,On)
+	SetSpriteVisible(Tank[ID].turretID,On)
+
+	SetSpritePositionByOffset(Tank[ID].bodyID,Tank[ID].x,Tank[ID].y)
+	SetSpritePositionByOffset(Tank[ID].turretID,Tank[ID].x,Tank[ID].y)
+	generateFOW = baseproduct and (Tank[ID].team = PlayerTeam)
+	if generateFOW
+		FOWSize = Tank[ID].FOWSize / ( NodeSize / rate )
+		SetSpriteSize(Tank[ID].FOWSize,FOWSize,FOWSize)
+		SetSpriteSize(Tank[ID].FOWSize,FOWSize,FOWSize)
+		SetSpriteVisible(Tank[ID].FOW,On)
+	endif
+	for i = 1 to NodeSize step rate
+		SetSpriteSize(Tank[ID].bodyID,i,i)
+		SetSpriteSize(Tank[ID].turretID,i,i)
+		if generateFOW
+			growth = FOWSize * i
+			growthShift = growth / 2
+			SetSpriteSize(Tank[ID].FOW,growth,growth)
+			SetSpritePosition(Tank[ID].FOW, mapTable[Tank[ID].node].x - growthShift, mapTable[Tank[ID].node].y - growthShift)
+		endif
+		Sync()
+	next i
+	if baseProduct
+		PlaySprite(Iris,frames,0,IrisFrames,1)
+		Delay(.5)
+		SetSpriteVisible(baseID,On)
+		SetSpriteVisible(Iris,Off)
+		SetSpriteDepth(Iris,0)
+	endif
+	HealthBar(ID,Tank)
+endfunction
+
 old victoryconditions
 function VictoryConditions( ID,Tank ref as tankType[] )
 	//~ if not Tank[ID].alive then exitfunction

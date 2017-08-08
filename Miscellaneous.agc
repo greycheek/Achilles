@@ -287,11 +287,6 @@ endfunction dataArray.length
 
 
 remstart
-xMax = MiddleX/zoomFactor
-yMax = MiddleY/zoomFactor
-xoffset = MinMax(-(MiddleX-xMax),xMax,GetViewOffsetX()+(GetRawTouchLastX(post)-GetRawTouchCurrentX(post))/zoomFactor)
-yoffset = MinMax(-(MiddleY-yMax),yMax,GetViewOffsetY()+(GetRawTouchLastY(post)-GetRawTouchCurrentY(post))/zoomFactor)
-#constant ImpassBlock %0000000000010000
-#constant TreeBlock   %0000000000001000
+
 remend
 

@@ -19,13 +19,10 @@ function BaseSetup( spriteID,node, base, baseRef ref as baseType[],group )
 	SetSpriteGroup( baseRef[ID].spriteID, group )
 	SetSpritePositionByOffset( baseRef[ID].spriteID,mapTable[node].x,mapTable[node].y )
 
-	if group = AIBaseGroup then divisor = 2 else divisor = 4
-	xOffset = floor( (floor( OpenColumns/divisor ) * NodeSize) /2 )
-	yOffset = floor( (floor( OpenRows/divisor    ) * NodeSize) /2 )
 	baseRef[ID].zoneID = CreateDummySprite()
 	SetSpriteDepth( baseRef[ID].zoneID,4 )
 	SetSpritePhysicsOn( baseRef[ID].zoneID,1 )
-	SetSpriteShapeBox( baseRef[ID].zoneID, mapTable[node].x-xOffset, mapTable[node].y-yOffset, mapTable[node].x+xOffset, mapTable[node].y+yOffset,0 )
+	SetSpriteShapeBox( baseRef[ID].zoneID, mapTable[node].x-zoneX, mapTable[node].y-zoneY, mapTable[node].x+zoneX, mapTable[node].y+zoneY,0 )
 endfunction ID
 
 function DepotSetup( node, depot, depotNode ref as depotType[],series )

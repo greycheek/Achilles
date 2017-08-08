@@ -18,6 +18,8 @@ global MiddleY as float
 global AspectRatio as float
 global MapWidth as float
 global MapHeight as float
+global zoneX as float
+global zoneY as float
 global NodeSize as integer
 global NodeOffset as integer
 global ScreenWidth as integer
@@ -33,6 +35,8 @@ MapWidth = OpenColumns*NodeSize
 MapHeight = OpenRows*NodeSize
 MiddleX = MaxWidth/2
 MiddleY = MapHeight/2
+zoneX = ((OpenColumns/2)*NodeSize)/2
+zoneY = ((OpenRows/2   )*NodeSize)/2
 
 `VECTORS
 #constant south 	-32

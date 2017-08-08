@@ -29,6 +29,7 @@ function AISpawn( vehicle,node )
 	TankSetup(ID,AITank,pickAI)
 	SetSpriteVisible(AITank[ID].bodyID,Off)
 	SetSpriteVisible(AITank[ID].turretID,Off)
+	SetSpriteVisible(AITank[ID].cover,Off)
 	SetSpriteGroup(AITank[ID].bodyID, AITankGroup)
 	SetSpriteGroup(AITank[ID].turretID, AITankGroup)
 	SetSpriteAngle(AITank[ID].bodyID,270)
@@ -194,17 +195,19 @@ function GoalChange(ID)
 			exitfunction True `go to nearest depot
 		endif
 	endif
-	for i = 0 to AIBaseCount	 `friendly base
-		if mapTable[AIBases[i].node].team then continue `friendly tank already at base?
-		for j = 0 to PlayerCount
-			if  GetSpriteCollision( AIBases[i].zoneID, PlayerTank[j].bodyID )
-				AITank[ID].goalNode = AIBases[i].node
-				AITank[ID].NearestPlayer = Unset
-				exitfunction True
-			endif
-		next j
-	next i
-	for i = 0 to PlayerBaseCount  `enemy base
+	if AIBaseCount < 2	`protect bases if less than 3 owned
+		for i = 0 to AIBaseCount	 `friendly base
+			if mapTable[AIBases[i].node].team then continue `friendly tank already at base?
+			for j = 0 to PlayerCount
+				if  GetSpriteCollision( AIBases[i].zoneID, PlayerTank[j].bodyID )
+					AITank[ID].goalNode = AIBases[i].node
+					AITank[ID].NearestPlayer = Unset
+					exitfunction True
+				endif
+			next j
+		next i
+	endif
+	for i = 0 to PlayerBaseCount  `attack enemy base
 		if  GetSpriteCollision( PlayerBases[i].zoneID, AITank[ID].bodyID ) and ( mapTable[PlayerBases[i].node].team = Unoccupied )
 			AITank[ID].goalNode = PlayerBases[i].node
 			AITank[ID].NearestPlayer = Unset

@@ -264,7 +264,7 @@ function TankSetup(ID,Tank ref as tankType[],pick as ColorSpec)
 	LoadImage(Tank[ID].healthBarImageID,"health3.png")
 
 	CreateSprite(Tank[ID].bodyID, Tank[ID].bodyImageID)
-			SetSpritePhysicsOn(Tank[ID].bodyID,1)
+	SetSpritePhysicsOn(Tank[ID].bodyID,1)
 	CreateSprite(Tank[ID].turretID, Tank[ID].turretImageID)
 	CreateSprite(Tank[ID].healthID, Tank[ID].healthBarImageID)
 	SetSpriteVisible(Tank[ID].healthID,Off)
