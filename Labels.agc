@@ -538,17 +538,17 @@ global MaxMapX
 global MaxMapY
 global TreeSprite = TerrainSeries1
 global Impass = TerrainSeries2
-global midWidth
-global midDepth
+global quadWidth
+global quadDepth
 MaxMapX  = OpenColumns * NodeSize
 MaxMapY  = OpenRows * NodeSize
-midWidth = (Columns/2)-2
-midDepth = (ShapeSize*Columns)+(Columns*2)
+quadWidth = (Columns/2)-4
+quadDepth = (ShapeSize*Columns)+(Columns*2)
 
-Quad[0] = Columns + 2		  `upper left
-Quad[1] = Quad[0] + midWidth  `upper right
-Quad[2] = Quad[0] + midDepth  `lower left
-Quad[3] = Quad[1] + midDepth  `lower right
+Quad[0] = Columns + 2		  	   `upper left
+Quad[1] = Quad[0] + quadWidth + 3  `upper right
+Quad[2] = Quad[0] + quadDepth  	   `lower left
+Quad[3] = Quad[1] + quadDepth  	   `lower right
 
 `create impass shape array
 ImpassFile = OpenToRead("7x7x42.txt")

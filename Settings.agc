@@ -85,7 +85,7 @@ function GenerateImpassables()
 	SetSpriteVisible(Impass,On)
 	for q = 0 to 3	`4 quadrants
 		shape = Random2(0,ShapeCount-1) `pick a random shape
-		startNode = Quad[q] + Random2(0,midWidth-ShapeSize-2)  `random x position
+		startNode = Quad[q] + Random2(0,quadWidth-ShapeSize)  `random x position
 
 		for r = 0 to ShapeSize-1
 			shapeLine = r * ShapeSize
