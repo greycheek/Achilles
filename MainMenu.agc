@@ -7,9 +7,9 @@ function MainMenu()
 		if not GetTweenSpritePlaying(t1,MechGuy[0].bodyID) then t1 = PatrolMech()
 		UpdateAllTweens(getframetime())
 		Sync()
-		cancel = GetVirtualButtonReleased( QuitButton )
-		accept = GetVirtualButtonReleased( AcceptButton )
-		settings = GetVirtualButtonReleased( SettingsButton )
+		cancel = GetVirtualButtonPressed( QuitButton )
+		accept = GetVirtualButtonPressed( AcceptButton )
+		settings = GetVirtualButtonPressed( SettingsButton )
 		Qkey = GetRawKeyPressed( 0x51 ) `Q
 		if cancel or Qkey
 			PlaySound( ClickSound,vol )
@@ -29,6 +29,7 @@ function MainMenu()
 			loop
 		elseif settings
 			PlaySound( ClickSound,vol )
+			AlertButtons( YesNoX3a,YesNoY3a,YesNoX3b,YesNoY3a, dev.buttSize, AcceptFlipButton, QuitFlipButton )
 			SettingsDialog()
 		elseif accept
 			PlaySound( ClickSound,vol )
@@ -53,9 +54,11 @@ function AlertButtons( x1,y1,x2,y2,size,accept,quit )
 	SetVirtualButtonPosition( quit,x2,y2 )
 endfunction
 
-function ButtonStatus(state, accept, quit)
+function ButtonStatus( state,accept,quit )
 	SetVirtualButtonVisible( accept,state )
 	SetVirtualButtonVisible( quit,state )
+	//~ SetVirtualButtonActive( accept,state )
+	//~ SetVirtualButtonActive( quit,state )
 endfunction
 
 function PatrolMech()
@@ -147,7 +150,6 @@ function DisplaySettings(state)
 	SetSpriteActive( SoundSlide.ID,state )
 	SetSpriteActive( MusicScale.ID,state )
 	SetSpriteActive( SoundScale.ID,state )
-
 	SetSpriteActive( AISpectrumSprite,state )
 	SetSpriteActive( AIValueSprite,state )
 	SetSpriteActive( PlayerSpectrumSprite,state )
@@ -155,21 +157,12 @@ function DisplaySettings(state)
 
 	SetSpriteActive( Splash,FlipState )
 	SetSpriteVisible( Splash,FlipState )
+
 	SetVirtualButtonVisible( SettingsButton,FlipState )
-	SetVirtualButtonActive( SettingsButton,FlipState )
+	SetVirtualButtonVisible( AcceptButton,FlipState )
 	SetVirtualButtonVisible( QuitButton,FlipState )
-	SetVirtualButtonActive( QuitButton,FlipState )
-	if FlipState
-		SetVirtualButtonVisible( AcceptButton,On )
-		SetVirtualButtonActive( AcceptButton,On )
-		SetVirtualButtonVisible( AcceptFlipButton,Off )
-		SetVirtualButtonActive( AcceptFlipButton,Off )
-	else
-		SetVirtualButtonVisible( AcceptButton,Off )
-		SetVirtualButtonActive( AcceptButton,Off )
-		SetVirtualButtonVisible( AcceptFlipButton,On )
-		SetVirtualButtonActive( AcceptFlipButton,On )
-	endif
+	SetVirtualButtonVisible( AcceptFlipButton,state )
+	SetVirtualButtonVisible( MapButton,state )
 
 	for i = 0 to Cells-1
 		SetSpriteActive( AIgrid[i].ID,state )
