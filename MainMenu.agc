@@ -8,7 +8,7 @@ function MainMenu()
 		UpdateAllTweens(getframetime())
 		Sync()
 		cancel = GetVirtualButtonPressed( QuitButton )
-		accept = GetVirtualButtonPressed( AcceptButton )
+		accept = GetVirtualButtonReleased( AcceptButton )
 		settings = GetVirtualButtonPressed( SettingsButton )
 		Qkey = GetRawKeyPressed( 0x51 ) `Q
 		if cancel or Qkey
@@ -136,6 +136,28 @@ function AlertDialog( text,state )
 	SetSpriteVisible( AlertBackGround,state )
 endfunction
 
+function CreateGrid(state)
+	for i = 0 to Cells-1
+		SetSpriteActive( AIgrid[i].ID,state )
+		SetSpriteVisible( AIgrid[i].ID,state )
+		SetSpriteActive( PlayerGrid[i].ID,state )
+		SetSpriteVisible( PlayerGrid[i].ID,state )
+	next i
+	for i = 1 to SpriteConUnits
+		SetSpriteActive( SpriteCon[i].ID,state )
+		SetSpriteVisible( SpriteCon[i].ID,state )
+	next i
+	if state
+		Text(MusicText,"MUSIC",MusicScale.tx,MusicScale.ty,0,0,0,30,255,0)
+		SetTextDepth(MusicText,1)
+		Text(SoundText,"SOUND",SoundScale.tx,SoundScale.ty,0,0,0,30,255,0)
+		SetTextDepth(SoundText,1)
+	else
+		DeleteText(MusicText)
+		DeleteText(SoundText)
+	endif
+endfunction
+
 function DisplaySettings(state)
 	FlipState = not state
 	SetTextColorAlpha( VersionText,FlipState*255 )
@@ -164,25 +186,7 @@ function DisplaySettings(state)
 	SetVirtualButtonVisible( AcceptFlipButton,state )
 	SetVirtualButtonVisible( MapButton,state )
 
-	for i = 0 to Cells-1
-		SetSpriteActive( AIgrid[i].ID,state )
-		SetSpriteVisible( AIgrid[i].ID,state )
-		SetSpriteActive( PlayerGrid[i].ID,state )
-		SetSpriteVisible( PlayerGrid[i].ID,state )
-	next i
-	for i = 1 to SpriteConUnits
-		SetSpriteActive( SpriteCon[i].ID,state )
-		SetSpriteVisible( SpriteCon[i].ID,state )
-	next i
-	if state
-		Text(MusicText,"MUSIC",MusicScale.tx,MusicScale.ty,0,0,0,30,255,0)
-		SetTextDepth(MusicText,1)
-		Text(SoundText,"SOUND",SoundScale.tx,SoundScale.ty,0,0,0,30,255,0)
-		SetTextDepth(SoundText,1)
-	else
-		DeleteText(MusicText)
-		DeleteText(SoundText)
-	endif
+	CreateGrid(state)
 endfunction
 
 function SettingsDialog()
@@ -199,6 +203,7 @@ function ChangeColor( grid as gridType[], c as ColorSpec )
 		if GetSpriteExists( grid[i].ID ) then SetSpriteColor( grid[i].ID, c.r, c.g, c.b, c.a  )
 	next i
 endfunction
+
 
 function Compose()
 	repeat
@@ -249,9 +254,57 @@ function Compose()
 		endif
 		Sync()
 		if GetRawKeyPressed( Enter ) then exitfunction
+
+				if GetVirtualButtonReleased( MapButton )
+					ReDisplaySettings(Off)
+					StopMusicOGG( MusicSound )
+					ReGenerateMap()
+					do
+						Sync()
+						if GetVirtualButtonReleased( AcceptButton ) then exit
+						if GetVirtualButtonReleased( MapButton ) then ReGenerateMap()
+					loop
+					SetSpriteVisible( field,Off )
+					ReDisplaySettings(On)
+				endif
+
 	until GetVirtualButtonPressed( AcceptFlipButton )
 	WaitForButtonRelease( AcceptFlipbutton )
 endfunction
+
+		function ReDisplaySettings(state)
+			SetSpriteActive( Dialog,state )
+			SetSpriteVisible( Dialog,state )
+			SetSpriteVisible( MusicSlide.ID,state )
+			SetSpriteVisible( SoundSlide.ID,state )
+			SetSpriteVisible( MusicScale.ID,state )
+			SetSpriteVisible( SoundScale.ID,state )
+			SetSpriteActive( MusicSlide.ID,state )
+			SetSpriteActive( SoundSlide.ID,state )
+			SetSpriteActive( MusicScale.ID,state )
+			SetSpriteActive( SoundScale.ID,state )
+			SetSpriteActive( AISpectrumSprite,state )
+			SetSpriteActive( AIValueSprite,state )
+			SetSpriteActive( PlayerSpectrumSprite,state )
+			SetSpriteActive( PlayerValueSprite,state )
+			SetVirtualButtonVisible( AcceptButton, Not state )
+			SetVirtualButtonVisible( AcceptFlipButton,state )
+			CreateGrid(state)
+		endfunction
+
+		function ReGenerateMap()
+			LoadBoard()
+			SetSpriteVisible(field,On)
+			SetDisplayAspect(-1)
+			SetRenderToImage(field,0)
+			DrawSprite(field)
+			GenerateBases()
+			GenerateImpassables()
+			GenerateTrees()
+			SetDisplayAspect(AspectRatio)  `back to map aspect ratio
+			SetRenderToScreen()
+		endfunction
+
 
 function SliderInput( Slide as sliderType, Scale as sliderType )
 	SetRawMouseVisible( Off )
@@ -339,7 +392,7 @@ function GameSetup()
 	SetVirtualButtonActive( SettingsButton,Off )
 	StopMusicOGG( MusicSound )
 
-	GenerateMap()
+	//~ GenerateMap()
 
 	LoadImage( EMP1,"EMP.png" )
 	CreateSprite( EMP1,EMP1 )

@@ -134,7 +134,7 @@ function GenerateTrees()
 	SetSpriteVisible(TreeSprite,Off)
 endfunction
 
-function GenerateMap()
+function LoadBoard()
 	MapFile = OpenToRead( "AchillesBoardClear.txt" )
 	for i = 0 to MapSize-1
 		mapTable[i].nodeX = i-(trunc(i/Columns)*Columns)
@@ -149,6 +149,10 @@ function GenerateMap()
 		mapTable[i].moveTarget = False
 	next i
 	CloseFile( MapFile )
+endfunction
+
+function GenerateMap()
+	LoadBoard()
 
 	LoadImage(Iris,"IRIS.png")
 	CreateSprite( Iris,Iris )
@@ -484,6 +488,8 @@ function Setup()
 	next i
 	Text(VersionText,"v0.9",MaxWidth-90,70,72,72,72,32,255,2)
 	PlayMusicOGG( MusicSound, 1 )
+
+					GenerateMap()
 endfunction
 
 remstart
