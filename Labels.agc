@@ -11,6 +11,7 @@
 global OpenMapSize as float
 OpenMapSize = OpenRows*OpenColumns
 
+global MapGenerated as integer
 global MaxWidth as float = 1440  `map size as designed
 global MaxHeight as float = 900
 global MiddleX as float
