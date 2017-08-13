@@ -412,7 +412,10 @@ function Setup()
 	LoadButton(AcceptFlipButton,AcceptFlipImage,AcceptFlipImageDown,"AcceptFlip.png","AcceptFlipDown.png",YesNoX3a,YesNoY3a,dev.buttSize,On)
 	LoadButton(QuitFlipButton,CancelFlipImage,CancelFlipImageDown,"CancelFlip.png","CancelFlipDown.png",YesNoX3b,YesNoY3a,dev.buttSize,On)
 	LoadButton(MapButton,MapButtonImage,MapButtonImageDown,"Globe.png","GlobeDown.png",YesNoX3b,YesNoY3a,dev.buttSize,On)
+	LoadButton(MapFlipButton,MapFlipButtonImage,MapFlipButtonImageDown,"GlobeFlip.png","GlobeFlipDown.png",YesNoX3b,YesNoY3a,dev.buttSize,On)
 	SetVirtualButtonVisible( MapButton,Off )
+	SetVirtualButtonVisible( MapFlipButton,Off )
+
 	ButtonStatus(Off, AcceptFlipButton, QuitFlipButton)
 
    `FORCE SELECTION

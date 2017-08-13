@@ -206,8 +206,10 @@ function ReDisplaySettings(state)
 	SetSpriteActive( PlayerValueSprite,state )
 	SetSpriteVisible( MechGuy[0].bodyID,state )
 	SetSpriteVisible( MechGuy[0].turretID,state )
-	SetVirtualButtonVisible( AcceptButton, Not state )
+	SetVirtualButtonVisible( AcceptButton, not state )
 	SetVirtualButtonVisible( AcceptFlipButton,state )
+	SetVirtualButtonVisible( MapButton,state )
+	SetVirtualButtonVisible( MapFlipButton, not state )
 	CreateGrid(state)
 endfunction
 

@@ -77,6 +77,7 @@ zoneY = ((OpenRows/2   )*NodeSize)/2
 #constant AcceptFlipButton 11
 #constant QuitFlipButton 12
 #constant MapButton 13
+#constant MapFlipButton 14
 
 `GENERAL
 #constant Unset 100000
@@ -780,6 +781,8 @@ global AcceptFlipImage as integer
 global AcceptFlipImageDown as integer
 global MapButtonImage as integer
 global MapButtonImageDown as integer
+global MapFlipButtonImage as integer
+global MapFlipButtonImageDown as integer
 
 turnImage = InterfaceSeries+1
 turnImageDown = InterfaceSeries+2
@@ -833,6 +836,8 @@ EMPImageDown = InterfaceSeries+32
 
 MapButtonImage = InterfaceSeries+33
 MapButtonImageDown = InterfaceSeries+34
+MapFlipButtonImage = InterfaceSeries+35
+MapFlipButtonImageDown = InterfaceSeries+36
 
 type sliderType
 	ID
@@ -849,10 +854,10 @@ global SoundSlide as sliderType
 global MusicScale as sliderType
 global SoundScale as sliderType
 
-MusicSlide.ID = InterfaceSeries+35
-SoundSlide.ID = InterfaceSeries+36
-MusicScale.ID = InterfaceSeries+37
-SoundScale.ID = InterfaceSeries+38
+MusicSlide.ID = InterfaceSeries+37
+SoundSlide.ID = InterfaceSeries+38
+MusicScale.ID = InterfaceSeries+39
+SoundScale.ID = InterfaceSeries+40
 
 MusicScale.x = MiddleX+95
 MusicScale.y = MiddleY+260
