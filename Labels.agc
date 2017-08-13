@@ -78,6 +78,13 @@ zoneY = ((OpenRows/2   )*NodeSize)/2
 #constant QuitFlipButton 12
 #constant MapButton 13
 #constant MapFlipButton 14
+#constant L1 15
+#constant L2 16
+#constant L3 17
+#constant S1 18
+#constant S2 19
+#constant S3 20
+
 
 `GENERAL
 #constant Unset 100000
@@ -749,40 +756,52 @@ YesNoX4a = dev.YesNoX4a										`main game screen
 YesNoX4b = MaxWidth-dev.buttX2+20
 YesNoY4  = buttY
 
-global turnImage as integer
-global turnImageDown as integer
-global cannonImage as integer
-global cannonImageDown as integer
-global laserImage as integer
-global laserImageDown as integer
-global missileImage as integer
-global missileImageDown as integer
-global heavyCannonImage as integer
-global heavyCannonImageDown as integer
-global heavyLaserImage as integer
-global heavyLaserImageDown as integer
+global turnImage
+global turnImageDown
+global cannonImage
+global cannonImageDown
+global laserImage
+global laserImageDown
+global missileImage
+global missileImageDown
+global heavyCannonImage
+global heavyCannonImageDown
+global heavyLaserImage
+global heavyLaserImageDown
 global EMPImage
 global EMPImageDown
 global MineImage
 global MineImageDown
-global quitImage as integer
-global quitImageDown as integer
-global CancelImage as integer
-global CancelImageDown as integer
-global AcceptImage as integer
-global AcceptImageDown as integer
-global SettingsImage as integer
-global SettingsImageDown as integer
-global ProductionUnits as integer
-global TurnCount as integer
-global CancelFlipImage as integer
-global CancelFlipImageDown as integer
-global AcceptFlipImage as integer
-global AcceptFlipImageDown as integer
-global MapButtonImage as integer
-global MapButtonImageDown as integer
-global MapFlipButtonImage as integer
-global MapFlipButtonImageDown as integer
+global quitImage
+global quitImageDown
+global CancelImage
+global CancelImageDown
+global AcceptImage
+global AcceptImageDown
+global SettingsImage
+global SettingsImageDown
+global ProductionUnits
+global TurnCount
+global CancelFlipImage
+global CancelFlipImageDown
+global AcceptFlipImage
+global AcceptFlipImageDown
+global MapButtonImage
+global MapButtonImageDown
+global MapFlipButtonImage
+global MapFlipButtonImageDown
+global L1image
+global L2image
+global L3image
+global LD1image
+global LD2image
+global LD3image
+global S1image
+global S2image
+global S3image
+global SD1image
+global SD2image
+global SD3image
 
 turnImage = InterfaceSeries+1
 turnImageDown = InterfaceSeries+2
@@ -839,6 +858,13 @@ MapButtonImageDown = InterfaceSeries+34
 MapFlipButtonImage = InterfaceSeries+35
 MapFlipButtonImageDown = InterfaceSeries+36
 
+L1image  = InterfaceSeries+37 : L2image  = InterfaceSeries+38 : L3image  = InterfaceSeries+39
+LD1image = InterfaceSeries+40 : LD2image = InterfaceSeries+41 : LD3image = InterfaceSeries+42
+
+S1image  = InterfaceSeries+43 : S2image  = InterfaceSeries+44 : S3image  = InterfaceSeries+45
+SD1image = InterfaceSeries+46 : SD2image = InterfaceSeries+47 : SD3image = InterfaceSeries+48
+
+
 type sliderType
 	ID
 	x
@@ -854,10 +880,10 @@ global SoundSlide as sliderType
 global MusicScale as sliderType
 global SoundScale as sliderType
 
-MusicSlide.ID = InterfaceSeries+37
-SoundSlide.ID = InterfaceSeries+38
-MusicScale.ID = InterfaceSeries+39
-SoundScale.ID = InterfaceSeries+40
+MusicSlide.ID = InterfaceSeries+49
+SoundSlide.ID = InterfaceSeries+50
+MusicScale.ID = InterfaceSeries+51
+SoundScale.ID = InterfaceSeries+52
 
 MusicScale.x = MiddleX+95
 MusicScale.y = MiddleY+260

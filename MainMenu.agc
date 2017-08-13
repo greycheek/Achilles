@@ -282,18 +282,81 @@ function Compose()
 		`Map Generation
 		if GetVirtualButtonReleased( MapButton )
 			ReDisplaySettings( Off )
+			MapLoadSaveButtons( On )
 			StopMusicOGG( MusicSound )
 			do
 				Sync()
 				if GetVirtualButtonReleased( AcceptButton ) then exit
+				if GetVirtualButtonReleased( L1 ) then LoadMap( "map1" )
+				if GetVirtualButtonReleased( S1 ) then SaveMap( "map1" ) : MapLoadSaveButtons( On )
+				if GetVirtualButtonReleased( L2 ) then LoadMap( "map2" )
+				if GetVirtualButtonReleased( S2 ) then SaveMap( "map2" ) : MapLoadSaveButtons( On )
+				if GetVirtualButtonReleased( L3 ) then LoadMap( "map3" )
+				if GetVirtualButtonReleased( S3 ) then SaveMap( "map3" ) : MapLoadSaveButtons( On )
 				if GetVirtualButtonReleased( MapButton ) then ReGenerateMap()
 			loop
 			ReDisplaySettings( On )
+			MapLoadSaveButtons( Off )
 		endif
 
 	until GetVirtualButtonPressed( AcceptFlipButton )
 	WaitForButtonRelease( AcceptFlipbutton )
 endfunction
+
+function LoadMap( map$ )
+	if GetFileExists( map$ )
+		mapTable = holdTable  `reset mapTable
+		MapFile = OpenToRead( map$ )
+		for i = 0 to MapSize-1
+			mapTable[i].terrain = ReadInteger( MapFile )
+			maptable[i].cost = cost[mapTable[i].terrain]
+			maptable[i].modifier = TRM[mapTable[i].terrain]
+			mapTable[i].base = mapTable[i].terrain
+			mapTable[i].team = Unoccupied
+		next i
+		CloseFile( MapFile )
+		holdTable = mapTable  `store mapTable
+	endif
+endfunction
+
+function SaveMap( map$ )
+	MapFile = OpenToWrite( map$ )
+	for i = 0 to MapSize-1 : WriteInteger( MapFile, mapTable[i].terrain ) : next i
+	CloseFile( MapFile )
+endfunction
+
+function MapLoadSaveButtons( state )
+	SetVirtualButtonVisible( L1,state )
+	SetVirtualButtonVisible( L2,state )
+	SetVirtualButtonVisible( L3,state )
+
+	if GetFileExists( "map1" )
+		SetVirtualButtonActive( L1,On )
+		SetVirtualButtonAlpha( L1,255 )
+	else
+		SetVirtualButtonActive( L1,Off )
+		SetVirtualButtonAlpha( L1,128 )
+	endif
+	if GetFileExists( "map2" )
+		SetVirtualButtonActive( L2,On )
+		SetVirtualButtonAlpha( L2,255 )
+	else
+		SetVirtualButtonActive( L2,Off )
+		SetVirtualButtonAlpha( L2,128 )
+	endif
+	if GetFileExists( "map3" )
+		SetVirtualButtonActive( L3,On )
+		SetVirtualButtonAlpha( L3,255 )
+	else
+		SetVirtualButtonActive( L3,Off )
+		SetVirtualButtonAlpha( L3,128 )
+	endif
+
+	SetVirtualButtonVisible( S1,state )
+	SetVirtualButtonVisible( S2,state )
+	SetVirtualButtonVisible( S3,state )
+endfunction
+
 
 function SliderInput( Slide as sliderType, Scale as sliderType )
 	SetRawMouseVisible( Off )

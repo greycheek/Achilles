@@ -157,15 +157,15 @@ function ReGenerateMap()
 	PlayerDepotNode.length = Empty
 	AIDepotNode.length = Empty
 
+	GenerateTerrain()
+endfunction
+
+function GenerateTerrain()
 	LoadImage(field,"AchillesBoardClear.png")
 	CreateSprite(field,field)
 	SetSpriteDepth(field,12)
 	SetSpriteSize(field,MaxWidth,MaxHeight)
 
-	GenerateTerrain()
-endfunction
-
-function GenerateTerrain()
 	SetDisplayAspect(-1)  `set current device aspect ratio
 	DrawSprite(field)
 	SetRenderToImage(field,0)
@@ -236,11 +236,6 @@ function GenerateMap()
 	SetSpriteVisible(BaseHalo,Off)
 
 	field = FieldSeries
-	LoadImage(field,"AchillesBoardClear.png")
-	CreateSprite(field,field)
-	SetSpriteDepth(field,12)
-	SetSpriteSize(field,MaxWidth,MaxHeight)
-
 	GenerateTerrain()
 endfunction
 
@@ -415,6 +410,18 @@ function Setup()
 	LoadButton(MapFlipButton,MapFlipButtonImage,MapFlipButtonImageDown,"GlobeFlip.png","GlobeFlipDown.png",YesNoX3b,YesNoY3a,dev.buttSize,On)
 	SetVirtualButtonVisible( MapButton,Off )
 	SetVirtualButtonVisible( MapFlipButton,Off )
+
+	buttStep = dev.buttX2 - dev.ButtX1
+	buttOffset# = dev.buttSize*.2
+	bx# = dev.buttX1 + buttOffset#
+	by# = buttY - buttOffset#
+	LoadButton(L1,L1image,LD1image,"l1.png","ld1.png",bx#,by#,dev.buttSize,On) : inc bx#,buttStep
+	LoadButton(L2,L2image,LD2image,"l2.png","ld2.png",bx#,by#,dev.buttSize,On) : inc bx#,buttStep
+	LoadButton(L3,L3image,LD3image,"l3.png","ld3.png",bx#,by#,dev.buttSize,On) : inc bx#,buttStep*1.5
+	LoadButton(S1,S1image,SD1image,"s1.png","sd1.png",bx#,by#,dev.buttSize,On) : inc bx#,buttStep
+	LoadButton(S2,S2image,SD2image,"s2.png","sd2.png",bx#,by#,dev.buttSize,On) : inc bx#,buttStep
+	LoadButton(S3,S3image,SD3image,"s3.png","sd3.png",bx#,by#,dev.buttSize,On)
+	MapLoadSaveButtons( Off )
 
 	ButtonStatus(Off, AcceptFlipButton, QuitFlipButton)
 
