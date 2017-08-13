@@ -189,6 +189,28 @@ function DisplaySettings(state)
 	CreateGrid(state)
 endfunction
 
+function ReDisplaySettings(state)
+	SetSpriteActive( Dialog,state )
+	SetSpriteVisible( Dialog,state )
+	SetSpriteVisible( MusicSlide.ID,state )
+	SetSpriteVisible( SoundSlide.ID,state )
+	SetSpriteVisible( MusicScale.ID,state )
+	SetSpriteVisible( SoundScale.ID,state )
+	SetSpriteActive( MusicSlide.ID,state )
+	SetSpriteActive( SoundSlide.ID,state )
+	SetSpriteActive( MusicScale.ID,state )
+	SetSpriteActive( SoundScale.ID,state )
+	SetSpriteActive( AISpectrumSprite,state )
+	SetSpriteActive( AIValueSprite,state )
+	SetSpriteActive( PlayerSpectrumSprite,state )
+	SetSpriteActive( PlayerValueSprite,state )
+	SetSpriteVisible( MechGuy[0].bodyID,state )
+	SetSpriteVisible( MechGuy[0].turretID,state )
+	SetVirtualButtonVisible( AcceptButton, Not state )
+	SetVirtualButtonVisible( AcceptFlipButton,state )
+	CreateGrid(state)
+endfunction
+
 function SettingsDialog()
 	DisplaySettings(On)
 	repeat
@@ -255,60 +277,21 @@ function Compose()
 		Sync()
 		if GetRawKeyPressed( Enter ) then exitfunction
 
+		`Map Generation
 		if GetVirtualButtonReleased( MapButton )
-			MapGenerated = True
-			ReDisplaySettings(Off)
+			ReDisplaySettings( Off )
 			StopMusicOGG( MusicSound )
-			ReGenerateMap()
 			do
 				Sync()
 				if GetVirtualButtonReleased( AcceptButton ) then exit
 				if GetVirtualButtonReleased( MapButton ) then ReGenerateMap()
 			loop
-			SetSpriteVisible( field,Off )
-			ReDisplaySettings(On)
+			ReDisplaySettings( On )
 		endif
 
 	until GetVirtualButtonPressed( AcceptFlipButton )
 	WaitForButtonRelease( AcceptFlipbutton )
 endfunction
-
-function ReDisplaySettings(state)
-	SetSpriteActive( Dialog,state )
-	SetSpriteVisible( Dialog,state )
-	SetSpriteVisible( MusicSlide.ID,state )
-	SetSpriteVisible( SoundSlide.ID,state )
-	SetSpriteVisible( MusicScale.ID,state )
-	SetSpriteVisible( SoundScale.ID,state )
-	SetSpriteActive( MusicSlide.ID,state )
-	SetSpriteActive( SoundSlide.ID,state )
-	SetSpriteActive( MusicScale.ID,state )
-	SetSpriteActive( SoundScale.ID,state )
-	SetSpriteActive( AISpectrumSprite,state )
-	SetSpriteActive( AIValueSprite,state )
-	SetSpriteActive( PlayerSpectrumSprite,state )
-	SetSpriteActive( PlayerValueSprite,state )
-	SetSpriteVisible( MechGuy[0].bodyID,state )
-	SetSpriteVisible( MechGuy[0].turretID,state )
-	SetVirtualButtonVisible( AcceptButton, Not state )
-	SetVirtualButtonVisible( AcceptFlipButton,state )
-	CreateGrid(state)
-endfunction
-
-function ReGenerateMap()
-	LoadBoard()
-	SetDisplayAspect(-1)
-	SetRenderToImage(field,0)
-	ClearScreen()
-	SetSpriteVisible(field,On)
-	DrawSprite(field)
-	GenerateBases()
-	GenerateImpassables()
-	GenerateTrees()
-	SetDisplayAspect(AspectRatio)  `back to map aspect ratio
-	SetRenderToScreen()
-endfunction
-
 
 function SliderInput( Slide as sliderType, Scale as sliderType )
 	SetRawMouseVisible( Off )
@@ -395,8 +378,6 @@ function GameSetup()
 	SetVirtualButtonVisible( SettingsButton,Off )
 	SetVirtualButtonActive( SettingsButton,Off )
 	StopMusicOGG( MusicSound )
-
-	if not MapGenerated then GenerateMap()
 
 	LoadImage( EMP1,"EMP.png" )
 	CreateSprite( EMP1,EMP1 )

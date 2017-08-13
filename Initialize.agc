@@ -40,12 +40,6 @@ function VehicleImage( ID, Tank ref as tankType[] )
 endfunction
 
 function Initialize()
-	`BASE & DEPOT COLOR
-	for i = 0 to PlayerBases.length 	: SetSpriteColor(PlayerBases[i].spriteID,pickPL.r,pickPL.g,pickPL.b,pickPL.a) : next i
-	for i = 0 to AIBases.length 		: SetSpriteColor(AIBases[i].spriteID,pickAI.r,pickAI.g,pickAI.b,pickAI.a) : next i
-	for i = 0 to PlayerDepotNode.length	: SetSpriteColor(PlayerDepotNode[i].spriteID,pickPL.r,pickPL.g,pickPL.b,pickPL.a) : next i
-	for i = 0 to AIDepotNode.length 	: SetSpriteColor(AIDepotNode[i].spriteID,pickAI.r,pickAI.g,pickAI.b,pickAI.a) : next i
-
 	`FORCES
 	ForceComposition(0,AITank,AIGrid)
 	ForceComposition(0,PlayerTank,PlayerGrid)
@@ -298,6 +292,11 @@ function CalcNodeFromScreen(x,y)	`screen coordinates
 endfunction node
 
 remstart
+	`BASE & DEPOT COLOR
+	for i = 0 to PlayerBases.length 	: SetSpriteColor(PlayerBases[i].spriteID,pickPL.r,pickPL.g,pickPL.b,pickPL.a) : next i
+	for i = 0 to AIBases.length 		: SetSpriteColor(AIBases[i].spriteID,pickAI.r,pickAI.g,pickAI.b,pickAI.a) : next i
+	for i = 0 to PlayerDepotNode.length	: SetSpriteColor(PlayerDepotNode[i].spriteID,pickPL.r,pickPL.g,pickPL.b,pickPL.a) : next i
+	for i = 0 to AIDepotNode.length 	: SetSpriteColor(AIDepotNode[i].spriteID,pickAI.r,pickAI.g,pickAI.b,pickAI.a) : next i
 	if i > topZone
 		AITank[i].patrolDirection = OpenRows `go to bottom row
 	else

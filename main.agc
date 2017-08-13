@@ -5,9 +5,6 @@ remstart
 	ISSUES
 		----BETTER AI MOVEMENT GOAL DECISIONS
 
-		----ESTABLISH BASE OWNERSHIP IN MAP GENERATION
-		----RESTORE MAP SPRITE AFTER MAP GENERATION
-
 	FIXED?
 		----IMPLEMENT AI BASE DEFENSE - SEE GOAL CHANGE
 		----AI MUST BE MORE AGGRESSIVE IN CAPTURING BASES!!!!!!!!!!
@@ -88,7 +85,7 @@ function LegalMove(node,team)
 		legal = False
 	elseif mapTable[node].terrain = Impassable
 		legal = False
-	elseif mapTable[node].base
+	elseif mapTable[node].base <> Empty
 		legal = True
 	elseif mapTable[node].team //(team = PlayerTeam) and
 		legal = False

@@ -1,11 +1,18 @@
 
+function BaseColor()
+	`BASE & DEPOT COLOR
+	for i = 0 to PlayerBaseCount  : SetSpriteColor(PlayerBases[i].spriteID,pickPL.r,pickPL.g,pickPL.b,pickPL.a) : next i
+	for i = 0 to AIBaseCount      : SetSpriteColor(AIBases[i].spriteID,pickAI.r,pickAI.g,pickAI.b,pickAI.a) : next i
+	for i = 0 to PlayerDepotCount : SetSpriteColor(PlayerDepotNode[i].spriteID,pickPL.r,pickPL.g,pickPL.b,pickPL.a) : next i
+	for i = 0 to AIDepotCount     : SetSpriteColor(AIDepotNode[i].spriteID,pickAI.r,pickAI.g,pickAI.b,pickAI.a) : next i
+endfunction
 
-function BaseSetup( spriteID,node, base, baseRef ref as baseType[],group )
+function BaseSetup( spriteID, node, base, baseRef ref as baseType[],group )
 	baseRef.length = baseRef.length + 1
 	ID = baseRef.length
 	baseRef[ID].node = node
 	baseRef[ID].spriteID = spriteID
-	maptable[node].base = True
+	maptable[node].base = base
 	mapTable[node].terrain = base
 	//~ mapTable[node].team = team
 
@@ -31,7 +38,7 @@ function DepotSetup( node, depot, depotNode ref as depotType[],series )
 	depotNode[ID].node = node
 	depotNode[ID].spriteID = series+depotNode.length-1
 	mapTable[node].depotID = ID
-	maptable[node].base = True
+	maptable[node].base = depot
 	mapTable[node].terrain = depot
 	//~ mapTable[node].team = team
 
@@ -45,8 +52,6 @@ function DepotSetup( node, depot, depotNode ref as depotType[],series )
 endfunction
 
 function GenerateBases()
-	PlayerBases.length = -1
-	AIBases.length = -1
 	one = Random2( 0,1 )
 	for i = 0 to Sectors-1
 		node1 = PlayerSectorNodes[i,Random2(0,SectorNodes-1)]
@@ -59,6 +64,8 @@ function GenerateBases()
 	next i
 	AIBaseCount = AIBases.length
 	PlayerBaseCount = PlayerBases.length
+	AIDepotCount = AIDepotNode.length
+	PlayerDepotCount = PlayerDepotNode.length
 	AIProdUnits = (AIBaseCount+1) * BaseProdValue
 	PlayerProdUnits = (PlayerBaseCount+1) * BaseProdValue
 endfunction
@@ -93,7 +100,7 @@ function GenerateImpassables()
 
 			for c = 0 to ShapeSize-1
 				columnNode = rowNode+c
-				if mapTable[columnNode].base then continue
+				if mapTable[columnNode].base <> Empty then continue
 
 				if Shapes[ shape,shapeLine+c ] = Impassable
 					mapTable[columnNode].terrain = Impassable
@@ -113,7 +120,7 @@ function GenerateTrees()
 	SetSpriteVisible(TreeSprite,On)
 	odds = Cells * 2
 	for i = 0 to MapSize-1
-		if ( mapTable[i].terrain <> Impassable ) and ( mapTable[i].team = Unoccupied ) and ( mapTable[i].base = False )
+		if ( mapTable[i].terrain <> Impassable ) and ( mapTable[i].team = Unoccupied ) and ( mapTable[i].base = Empty )
 			treeOdds = odds
 			for j = 0 to Cells-1
 				if mapTable[i+offset[j]].terrain = Trees then dec treeOdds,3  `increase tree chance; generate clumps
@@ -134,7 +141,43 @@ function GenerateTrees()
 	SetSpriteVisible(TreeSprite,Off)
 endfunction
 
-function LoadBoard()
+function ReGenerateMap()
+	for i = 0 to AIBaseCount : DeleteSprite(AIBases[i].spriteID) : next i
+	for i = 0 to PlayerBaseCount : DeleteSprite(PlayerBases[i].spriteID) : next i
+	for i = 0 to AIDepotCount : DeleteSprite(AIDepotNode[i].spriteID) : next i
+	for i = 0 to PlayerDepotCount : DeleteSprite(PlayerDepotNode[i].spriteID) : next i
+
+	SetSpriteVisible(TreeSprite,Off)
+	SetSpriteVisible(Impass,Off)
+	DeleteImage(field)
+	DeleteSprite(field)
+	mapTable = holdTable  `reset mapTable
+	PlayerBases.length = Empty
+	AIBases.length = Empty
+	PlayerDepotNode.length = Empty
+	AIDepotNode.length = Empty
+
+	LoadImage(field,"AchillesBoardClear.png")
+	CreateSprite(field,field)
+	SetSpriteDepth(field,12)
+	SetSpriteSize(field,MaxWidth,MaxHeight)
+
+	GenerateTerrain()
+endfunction
+
+function GenerateTerrain()
+	SetDisplayAspect(-1)  `set current device aspect ratio
+	DrawSprite(field)
+	SetRenderToImage(field,0)
+	GenerateBases()
+	GenerateImpassables()
+	GenerateTrees()
+	BaseColor()
+	SetDisplayAspect(AspectRatio)  `back to map aspect ratio
+	SetRenderToScreen()
+endfunction
+
+function GenerateMap()
 	MapFile = OpenToRead( "AchillesBoardClear.txt" )
 	for i = 0 to MapSize-1
 		mapTable[i].nodeX = i-(trunc(i/Columns)*Columns)
@@ -144,15 +187,11 @@ function LoadBoard()
 		mapTable[i].terrain = val(chr(ReadByte( MapFile )))
 		maptable[i].cost = cost[mapTable[i].terrain]
 		maptable[i].modifier = TRM[mapTable[i].terrain]
+		mapTable[i].base = Empty
 		mapTable[i].team = Unoccupied
-		mapTable[i].base = False
-		mapTable[i].moveTarget = False
 	next i
 	CloseFile( MapFile )
-endfunction
-
-function GenerateMap()
-	LoadBoard()
+	holdTable = mapTable	`store mapTable
 
 	LoadImage(Iris,"IRIS.png")
 	CreateSprite( Iris,Iris )
@@ -196,20 +235,13 @@ function GenerateMap()
 	SetSpriteOffset(BaseHalo,NodeOffset*2,NodeOffset*2)
 	SetSpriteVisible(BaseHalo,Off)
 
-	SetDisplayAspect(-1)  `set current device aspect ratio
 	field = FieldSeries
 	LoadImage(field,"AchillesBoardClear.png")
 	CreateSprite(field,field)
-	SetSpriteDepth ( field, 12 )
+	SetSpriteDepth(field,12)
 	SetSpriteSize(field,MaxWidth,MaxHeight)
-	DrawSprite( field )
 
-	SetRenderToImage(field,0)
-	GenerateBases()
-	GenerateImpassables()
-	GenerateTrees()
-	SetDisplayAspect(AspectRatio)  `back to map aspect ratio
-	SetRenderToScreen()
+	GenerateTerrain()
 endfunction
 
 function Setup()
@@ -489,26 +521,10 @@ function Setup()
 	Text(VersionText,"v0.9",MaxWidth-90,70,72,72,72,32,255,2)
 	PlayMusicOGG( MusicSound, 1 )
 
-					GenerateMap()
+	GenerateMap()
 endfunction
 
 remstart
-
-FROM GENERATE MAP
-	CreateSprite(BlankSprite,0)
-	SetSpriteColor(BlankSprite,0,0,0,255)
-	SetSpriteSize(BlankSprite,NodeSize,NodeSize)
-	SetSpriteOffset(BlankSprite,NodeOffset,NodeOffset)
-	SetSpriteVisible(BlankSprite,Off)
-
-global Explode = ExplodeSeries
-LoadImage(Explode,"whitestrip12.png")
-CreateSprite( Explode,Explode )
-SetSpriteTransparency( Explode, 1 )
-SetSpriteVisible( Explode, 0 )
-SetSpriteDepth ( Explode, 0 )
-SetSpriteAnimation( Explode,102,102,12 )
-SetSpriteSize( Explode,128,128 )
 
 remend
 

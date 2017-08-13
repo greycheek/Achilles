@@ -11,7 +11,6 @@
 global OpenMapSize as float
 OpenMapSize = OpenRows*OpenColumns
 
-global MapGenerated as integer
 global MaxWidth as float = 1440  `map size as designed
 global MaxHeight as float = 900
 global MiddleX as float
@@ -174,11 +173,15 @@ global angle  as integer[8]=[0,45,90,135,180,225,270,315]
 #constant PlayerTurretSeries 700
 #constant AITurretSeries 750
 #constant TargetSeries 800
+
 #constant PlayerBaseSeries 850
 #constant AIBaseSeries 875
+
 #constant BaseHaloSeries 900
+
 #constant PlayerDepotSeries 950
-#constant AIDepotSeries 1000
+#constant AIDepotSeries 975
+
 #constant MechGuySeries 1050
 #constant MineSeries 1100
 #constant EMPSeries 1500
@@ -355,6 +358,10 @@ global DepotRange as integer
 DepotRange = MaxWidth / 2
 global PlayerDepotNode as depotType[]
 global AIDepotNode as depotType[]
+
+		global PlayerDepotCount as integer
+		global AIDepotCount as integer
+
 
 `player tank glow
 #constant Brighter 9
@@ -624,6 +631,7 @@ type mapType
 	modifier as Float
 endtype
 global mapTable as mapType[MapSize]
+global holdTable as mapType[MapSize]
 global treeDummy as integer
 global impassDummy as integer
 
@@ -634,8 +642,10 @@ type baseType
 endtype
 global AIBaseCount as integer
 global PlayerBaseCount as integer
+
 global PlayerBases as baseType[]
 global AIBases as baseType[]
+
 
 `--INTERFACE--
 
@@ -917,19 +927,6 @@ global SpriteConSize as integer = 112
 global Clones as integer[]
 
 remstart
-global OpenNodes as integer[4,OpenQuadNodes]
-
-for q = 0 to 3
-	index = 0
-	for r = 0 to QuadRows-1
-		rowTotal = r*Columns
-		for c = 0 to QuadColumns-1
-			OpenNodes[q,index] = Quad[q]+rowTotal+c
-			inc index
-		next c
-	next r
-next q
-#constant OpenQuadNodes 98	`OpenNodeCount/4
 
 `DON'T NEED FOR NEW PATROL
 global patrolVectors as integer[16] = [0,1,2,3,4,5,6,7,0,1,2,3,4,5,6,7
