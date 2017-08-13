@@ -286,14 +286,17 @@ function Compose()
 			StopMusicOGG( MusicSound )
 			do
 				Sync()
-				if GetVirtualButtonReleased( AcceptButton ) then exit
 				if GetVirtualButtonReleased( L1 ) then LoadMap( "map1" )
-				if GetVirtualButtonReleased( S1 ) then SaveMap( "map1" ) : MapLoadSaveButtons( On )
+				if GetVirtualButtonReleased( S1 ) then SaveMap( "map1" )
 				if GetVirtualButtonReleased( L2 ) then LoadMap( "map2" )
-				if GetVirtualButtonReleased( S2 ) then SaveMap( "map2" ) : MapLoadSaveButtons( On )
+				if GetVirtualButtonReleased( S2 ) then SaveMap( "map2" )
 				if GetVirtualButtonReleased( L3 ) then LoadMap( "map3" )
-				if GetVirtualButtonReleased( S3 ) then SaveMap( "map3" ) : MapLoadSaveButtons( On )
-				if GetVirtualButtonReleased( MapButton ) then ReGenerateMap()
+				if GetVirtualButtonReleased( S3 ) then SaveMap( "map3" )
+				if GetVirtualButtonReleased( AcceptButton ) then exit
+				if GetVirtualButtonReleased( MapButton )
+					ReGenerateMap()
+					GenerateTerrain()
+				endif
 			loop
 			ReDisplaySettings( On )
 			MapLoadSaveButtons( Off )
@@ -305,7 +308,15 @@ endfunction
 
 function LoadMap( map$ )
 	if GetFileExists( map$ )
-		mapTable = holdTable  `reset mapTable
+		ReGenerateMap()
+		LoadImage(field,"AchillesBoardClear.png")
+		CreateSprite(field,field)
+		SetSpriteDepth(field,12)
+		SetSpriteSize(field,MaxWidth,MaxHeight)
+		SetDisplayAspect(-1)  `set current device aspect ratio
+		DrawSprite(field)
+		SetRenderToImage(field,0)
+
 		MapFile = OpenToRead( map$ )
 		for i = 0 to MapSize-1
 			mapTable[i].terrain = ReadInteger( MapFile )
@@ -313,48 +324,79 @@ function LoadMap( map$ )
 			maptable[i].modifier = TRM[mapTable[i].terrain]
 			mapTable[i].base = mapTable[i].terrain
 			mapTable[i].team = Unoccupied
+			node = CalcNode( mapTable[i].nodeX,mapTable[i].nodeY )
+			if node < LiveArea `not within button area
+				select mapTable[i].terrain
+					case PlayerBase  : BaseSetup( PlayerBaseSeries+PlayerBases.length-1,node,PlayerBase,PlayerBases,BaseGroup ) : endcase
+					case AIBase      : BaseSetup( AIBaseSeries+AIBases.length-1,node,AIBase,AIBases,AIBaseGroup ) : endcase
+					case PlayerDepot : DepotSetup( node,PlayerDepot,PlayerDepotNode,PlayerDepotSeries ) : endcase
+					case AIDepot     : DepotSetup( node,AIDepot,AIDepotNode,AIDepotSeries ) : endcase
+					case Impassable  : DrawTerrain( node,Impass,impassDummy ) : endcase
+					case Trees       : DrawTerrain( node,TreeSprite,treeDummy ) : endcase
+				endselect
+			endif
 		next i
 		CloseFile( MapFile )
-		holdTable = mapTable  `store mapTable
+		SetDisplayAspect(AspectRatio)  `back to map aspect ratio
+		SetRenderToScreen()
+
+		AIBaseCount = AIBases.length
+		PlayerBaseCount = PlayerBases.length
+		AIDepotCount = AIDepotNode.length
+		PlayerDepotCount = PlayerDepotNode.length
+		AIProdUnits = (AIBaseCount+1) * BaseProdValue
+		PlayerProdUnits = (PlayerBaseCount+1) * BaseProdValue
 	endif
+endfunction
+
+function DrawTerrain( node,terrain,dummy )
+	SetSpriteScissor( terrain, NodeSize, NodeSize, MapWidth+NodeSize, MapHeight+NodeSize )
+	SetSpriteVisible( terrain,On )
+	SetSpritePositionByOffset( terrain,mapTable[node].x,mapTable[node].y )
+	DrawSprite( terrain )
+	x = mapTable[node].x-NodeOffset
+	y = mapTable[node].y-NodeOffset
+	AddSpriteShapeBox(dummy,x,y,x+NodeSize-1,y+NodeSize-1,0)
+	SetSpriteVisible( terrain,Off )
 endfunction
 
 function SaveMap( map$ )
 	MapFile = OpenToWrite( map$ )
 	for i = 0 to MapSize-1 : WriteInteger( MapFile, mapTable[i].terrain ) : next i
 	CloseFile( MapFile )
+	MapLoadSaveButtons( On )
 endfunction
 
 function MapLoadSaveButtons( state )
 	SetVirtualButtonVisible( L1,state )
 	SetVirtualButtonVisible( L2,state )
 	SetVirtualButtonVisible( L3,state )
-
-	if GetFileExists( "map1" )
-		SetVirtualButtonActive( L1,On )
-		SetVirtualButtonAlpha( L1,255 )
-	else
-		SetVirtualButtonActive( L1,Off )
-		SetVirtualButtonAlpha( L1,128 )
-	endif
-	if GetFileExists( "map2" )
-		SetVirtualButtonActive( L2,On )
-		SetVirtualButtonAlpha( L2,255 )
-	else
-		SetVirtualButtonActive( L2,Off )
-		SetVirtualButtonAlpha( L2,128 )
-	endif
-	if GetFileExists( "map3" )
-		SetVirtualButtonActive( L3,On )
-		SetVirtualButtonAlpha( L3,255 )
-	else
-		SetVirtualButtonActive( L3,Off )
-		SetVirtualButtonAlpha( L3,128 )
-	endif
-
 	SetVirtualButtonVisible( S1,state )
 	SetVirtualButtonVisible( S2,state )
 	SetVirtualButtonVisible( S3,state )
+	if state
+		if GetFileExists( "map1" )
+			SetVirtualButtonActive( L1,On )
+			SetVirtualButtonAlpha( L1,255 )
+		else
+			SetVirtualButtonActive( L1,Off )
+			SetVirtualButtonAlpha( L1,128 )
+		endif
+		if GetFileExists( "map2" )
+			SetVirtualButtonActive( L2,On )
+			SetVirtualButtonAlpha( L2,255 )
+		else
+			SetVirtualButtonActive( L2,Off )
+			SetVirtualButtonAlpha( L2,128 )
+		endif
+		if GetFileExists( "map3" )
+			SetVirtualButtonActive( L3,On )
+			SetVirtualButtonAlpha( L3,255 )
+		else
+			SetVirtualButtonActive( L3,Off )
+			SetVirtualButtonAlpha( L3,128 )
+		endif
+	endif
 endfunction
 
 

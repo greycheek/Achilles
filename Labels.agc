@@ -9,6 +9,8 @@
 #constant MapSize 640	 `Rows*Columns
 
 global OpenMapSize as float
+global LiveArea as float
+LiveArea = Columns * ( OpenRows + 1 )
 OpenMapSize = OpenRows*OpenColumns
 
 global MaxWidth as float = 1440  `map size as designed

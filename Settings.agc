@@ -156,8 +156,6 @@ function ReGenerateMap()
 	AIBases.length = Empty
 	PlayerDepotNode.length = Empty
 	AIDepotNode.length = Empty
-
-	GenerateTerrain()
 endfunction
 
 function GenerateTerrain()
@@ -406,11 +404,10 @@ function Setup()
 	LoadButton(SettingsButton,SettingsImage,SettingsImageDown,"SettingsButton.png","SettingsButtonDown.png",YesNoX3c,YesNoY3a,dev.buttSize,On)
 	LoadButton(AcceptFlipButton,AcceptFlipImage,AcceptFlipImageDown,"AcceptFlip.png","AcceptFlipDown.png",YesNoX3a,YesNoY3a,dev.buttSize,On)
 	LoadButton(QuitFlipButton,CancelFlipImage,CancelFlipImageDown,"CancelFlip.png","CancelFlipDown.png",YesNoX3b,YesNoY3a,dev.buttSize,On)
+
+   `MAP GENERATOR SCREEN
 	LoadButton(MapButton,MapButtonImage,MapButtonImageDown,"Globe.png","GlobeDown.png",YesNoX3b,YesNoY3a,dev.buttSize,On)
 	LoadButton(MapFlipButton,MapFlipButtonImage,MapFlipButtonImageDown,"GlobeFlip.png","GlobeFlipDown.png",YesNoX3b,YesNoY3a,dev.buttSize,On)
-	SetVirtualButtonVisible( MapButton,Off )
-	SetVirtualButtonVisible( MapFlipButton,Off )
-
 	buttStep = dev.buttX2 - dev.ButtX1
 	buttOffset# = dev.buttSize*.2
 	bx# = dev.buttX1 + buttOffset#
@@ -422,7 +419,8 @@ function Setup()
 	LoadButton(S2,S2image,SD2image,"s2.png","sd2.png",bx#,by#,dev.buttSize,On) : inc bx#,buttStep
 	LoadButton(S3,S3image,SD3image,"s3.png","sd3.png",bx#,by#,dev.buttSize,On)
 	MapLoadSaveButtons( Off )
-
+	SetVirtualButtonVisible( MapButton,Off )
+	SetVirtualButtonVisible( MapFlipButton,Off )
 	ButtonStatus(Off, AcceptFlipButton, QuitFlipButton)
 
    `FORCE SELECTION
