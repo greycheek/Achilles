@@ -395,30 +395,32 @@ function Setup()
 
    `SPLASHSCREEN
 
+	buttStep# = ( dev.buttX2 - dev.ButtX1 ) * .8
+	buttOffset# = dev.buttSize * .2
+	bx# = dev.buttX1 + buttOffset#
+	by# = buttY - ( buttOffset# / dev.scale )
+	gap# = 1 + ( .75 / dev.scale )
+
 	SetupSprite( Splash,Splash,"SplashScreen.png",0,0,MaxWidth,MaxHeight,2,On,0 )
 	SetupSprite( Dialog,Dialog,"Dialog2.png",0,0,MaxWidth,MaxHeight,1,Off,0 )
 	SetupSprite( BaseDialog,BaseDialog,"BaseDialog.png",0,0,MaxWidth,MaxHeight,1,Off,2 )
 
-	LoadButton(AcceptButton,AcceptImage,AcceptImageDown,"Accept.png","AcceptDown.png",YesNoX3a,YesNoY3a,dev.buttSize,On)
-	LoadButton(QuitButton,CancelImage,CancelImageDown,"Cancel.png","CancelDown.png",YesNoX3b,YesNoY3a,dev.buttSize,On)
-	LoadButton(SettingsButton,SettingsImage,SettingsImageDown,"SettingsButton.png","SettingsButtonDown.png",YesNoX3c,YesNoY3a,dev.buttSize,On)
-	LoadButton(AcceptFlipButton,AcceptFlipImage,AcceptFlipImageDown,"AcceptFlip.png","AcceptFlipDown.png",YesNoX3a,YesNoY3a,dev.buttSize,On)
-	LoadButton(QuitFlipButton,CancelFlipImage,CancelFlipImageDown,"CancelFlip.png","CancelFlipDown.png",YesNoX3b,YesNoY3a,dev.buttSize,On)
+	LoadButton(AcceptButton,AcceptImage,AcceptImageDown,"Accept.png","AcceptDown.png",YesNoX3a,by#,dev.buttSize,On)
+	LoadButton(QuitButton,CancelImage,CancelImageDown,"Cancel.png","CancelDown.png",YesNoX3b,by#,dev.buttSize,On)
+	LoadButton(SettingsButton,SettingsImage,SettingsImageDown,"SettingsButton.png","SettingsButtonDown.png",YesNoX3c,by#,dev.buttSize,On)
+	LoadButton(AcceptFlipButton,AcceptFlipImage,AcceptFlipImageDown,"AcceptFlip.png","AcceptFlipDown.png",YesNoX3a,by#,dev.buttSize,On)
+	LoadButton(QuitFlipButton,CancelFlipImage,CancelFlipImageDown,"CancelFlip.png","CancelFlipDown.png",YesNoX3b,by#,dev.buttSize,On)
 
    `MAP GENERATOR SCREEN
-	LoadButton(MapButton,MapButtonImage,MapButtonImageDown,"Globe.png","GlobeDown.png",YesNoX3b,YesNoY3a,dev.buttSize,On)
-	LoadButton(MapFlipButton,MapFlipButtonImage,MapFlipButtonImageDown,"GlobeFlip.png","GlobeFlipDown.png",YesNoX3b,YesNoY3a,dev.buttSize,On)
 
-	buttStep# = (dev.buttX2 - dev.ButtX1)*.8
-	buttOffset# = dev.buttSize*.2
-	bx# = dev.buttX1 + buttOffset#
-	by# = buttY - buttOffset#
+	LoadButton(MapButton,MapButtonImage,MapButtonImageDown,"Globe.png","GlobeDown.png",YesNoX3b,by#,dev.buttSize,On)
+	LoadButton(MapFlipButton,MapFlipButtonImage,MapFlipButtonImageDown,"GlobeFlip.png","GlobeFlipDown.png",YesNoX3b,by#,dev.buttSize,On)
 
 	LoadButton(L1,L1image,LD1image,"l1.png","ld1.png",bx#,by#,dev.buttSize,On) : inc bx#,buttStep#
 	LoadButton(L2,L2image,LD2image,"l2.png","ld2.png",bx#,by#,dev.buttSize,On) : inc bx#,buttStep#
 	LoadButton(L3,L3image,LD3image,"l3.png","ld3.png",bx#,by#,dev.buttSize,On) : inc bx#,buttStep#
 	LoadButton(L4,L4image,LD4image,"l4.png","ld4.png",bx#,by#,dev.buttSize,On) : inc bx#,buttStep#
-	LoadButton(L5,L5image,LD5image,"l5.png","ld5.png",bx#,by#,dev.buttSize,On) : inc bx#,buttStep#*1.75
+	LoadButton(L5,L5image,LD5image,"l5.png","ld5.png",bx#,by#,dev.buttSize,On) : inc bx#,buttStep#*gap#
 
 	LoadButton(S1,S1image,SD1image,"s1.png","sd1.png",bx#,by#,dev.buttSize,On) : inc bx#,buttStep#
 	LoadButton(S2,S2image,SD2image,"s2.png","sd2.png",bx#,by#,dev.buttSize,On) : inc bx#,buttStep#

@@ -4,33 +4,16 @@ remstart
 
 	ISSUES
 		----BETTER AI MOVEMENT GOAL DECISIONS
+			-preference for tree cover
 
-		----MOVE MAP GENERATOR BUTTONS DOWN IN IOS
-		----ADJUST COLOR SLIDERS FOR IOS
+		----GUARANTEE AT LEAST ONE DEPOT GENERATED
+
 
 	FIXED?
-		----IMPLEMENT AI BASE DEFENSE - SEE GOAL CHANGE
-		----AI MUST BE MORE AGGRESSIVE IN CAPTURING BASES!!!!!!!!!!
-
-		----zoom offset not set coming out of base production screen
-		----BASE OWNERSHIP NOT PROPERLY CHANGING HANDS!!!!!--------ARRAY MANAGEMENT PROBLEM???
-		----BASE CAPTURE NOT ALWAYS WORKING?
-		----MAKE FIRING CONTINGENT UPON VISIBILITY - WHERE DO TANKS EMERGE FROM FOW??? ----
-		ELIMINATE MOVEMENT MARKERS IF TANK IS STUNNED
-		BASE PRODUCTION AND ZOOM BACK AND FORTH NOT WORKING PROPERLY IN IOS
-		Set limit on the number of units that can be produced
-		---STUNMARKERS DON'T ALWAYS APPEAR!!!
-		---PROBLEM WITH AI BASE CAPTURE WHEN PLAYER TANKS ARE NEAR BASE
-		---When AI Spawns, attempt to acquire target????
-
-		THESE PROBLEMS APPEAR TO BE RELATED TO THE SETTINGS DIALOG:
-		---TANKS ARE NOT GOING AWAY IN BASE PRODUCTION SCREEN
-		---NEW ENGINEERS AT BASES NOT SELECTABLE??????
 
   	ENHANCEMENTS
  		Improve AI decision making for different vehicle types
  		Better AI use of terrain
- 		Load/Save, maps/games
 		New units
 		Accumulated experience
 		Multiplayer
@@ -580,6 +563,26 @@ function ParticleTest()
 endfunction
 
 remstart
+
+	FIXED?
+		----IMPLEMENT AI BASE DEFENSE - SEE GOAL CHANGE
+		----AI MUST BE MORE AGGRESSIVE IN CAPTURING BASES!!!!!!!!!!
+
+		----zoom offset not set coming out of base production screen
+		----BASE OWNERSHIP NOT PROPERLY CHANGING HANDS!!!!!--------ARRAY MANAGEMENT PROBLEM???
+		----BASE CAPTURE NOT ALWAYS WORKING?
+		----MAKE FIRING CONTINGENT UPON VISIBILITY - WHERE DO TANKS EMERGE FROM FOW??? ----
+		ELIMINATE MOVEMENT MARKERS IF TANK IS STUNNED
+		BASE PRODUCTION AND ZOOM BACK AND FORTH NOT WORKING PROPERLY IN IOS
+		Set limit on the number of units that can be produced
+		---STUNMARKERS DON'T ALWAYS APPEAR!!!
+		---PROBLEM WITH AI BASE CAPTURE WHEN PLAYER TANKS ARE NEAR BASE
+		---When AI Spawns, attempt to acquire target????
+
+		THESE PROBLEMS APPEAR TO BE RELATED TO THE SETTINGS DIALOG:
+		---TANKS ARE NOT GOING AWAY IN BASE PRODUCTION SCREEN
+		---NEW ENGINEERS AT BASES NOT SELECTABLE??????
+
 function Produce( ID, Tank ref as tankType[], rate, baseProduct, baseID, c as ColorSpec )
 	if baseProduct
 		SetSpriteVisible(Tank[ID].bodyID,Off)

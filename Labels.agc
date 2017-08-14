@@ -743,6 +743,10 @@ global YesNoX4a
 global YesNoX4b
 global YesNoY4
 
+	global bx# as float	`for bottom row buttons
+	global by# as float
+
+
 AlertW = 300*dev.scale
 AlertH = 250*dev.scale
 
@@ -753,9 +757,9 @@ YesNoX2a = (YesNoX1+AlertW)-dev.buttSize-10					`base production
 YesNoX2b = (YesNoX1+AlertW)-(dev.buttSize*2)-20
 YesNoY2  = (YesNoY1+AlertH)-dev.buttSize-(dev.scale*10)
 
-YesNoX3a = MaxWidth-(dev.buttSize*1.5)						`splash screen
-YesNoX3b = MaxWidth-(dev.buttSize*2.75)
-YesNoX3c = MaxWidth-(dev.buttSize*4)
+YesNoX3a = MaxWidth-(dev.buttSize*1.25)						`splash screen
+YesNoX3b = MaxWidth-(dev.buttSize*2.5)
+YesNoX3c = MaxWidth-(dev.buttSize*3.75)
 YesNoY3  = buttY-50
 YesNoY3a = buttY-dev.buttSize+50
 

@@ -29,7 +29,7 @@ function MainMenu()
 			loop
 		elseif settings
 			PlaySound( ClickSound,vol )
-			AlertButtons( YesNoX3a,YesNoY3a,YesNoX3b,YesNoY3a, dev.buttSize, AcceptFlipButton, QuitFlipButton )
+			AlertButtons( YesNoX3a,by#,YesNoX3b,by#,dev.buttSize,AcceptFlipButton,QuitFlipButton )
 			SettingsDialog()
 		elseif accept
 			PlaySound( ClickSound,vol )
@@ -283,6 +283,7 @@ function Compose()
 		Sync()
 		if GetRawKeyPressed( Enter ) then exitfunction
 
+
 		`Map Generation
 		if GetVirtualButtonReleased( MapButton )
 			PlaySound( ClickSound )
@@ -396,15 +397,15 @@ function MapLSButtons( state )
 	SetVirtualButtonVisible( S5,state )
 
 	if state
-		if GetFileExists( "map1" ) then ActivateButton( L1,On,255 ) else ActivateButton( L1,Off,128 )
-		if GetFileExists( "map2" ) then ActivateButton( L2,On,255 ) else ActivateButton( L2,Off,128 )
-		if GetFileExists( "map3" ) then ActivateButton( L3,On,255 ) else ActivateButton( L3,Off,128 )
-		if GetFileExists( "map4" ) then ActivateButton( L4,On,255 ) else ActivateButton( L4,Off,128 )
-		if GetFileExists( "map5" ) then ActivateButton( L5,On,255 ) else ActivateButton( L5,Off,128 )
+		if GetFileExists( "map1" ) then LSButtState( L1,On,255 ) else LSButtState( L1,Off,128 )
+		if GetFileExists( "map2" ) then LSButtState( L2,On,255 ) else LSButtState( L2,Off,128 )
+		if GetFileExists( "map3" ) then LSButtState( L3,On,255 ) else LSButtState( L3,Off,128 )
+		if GetFileExists( "map4" ) then LSButtState( L4,On,255 ) else LSButtState( L4,Off,128 )
+		if GetFileExists( "map5" ) then LSButtState( L5,On,255 ) else LSButtState( L5,Off,128 )
 	endif
 endfunction
 
-function ActivateButton( button,state,alpha )
+function LSButtState( button,state,alpha )
 	SetVirtualButtonActive( button,state )
 	SetVirtualButtonAlpha( button,alpha )
 endfunction
