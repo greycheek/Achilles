@@ -83,9 +83,14 @@ zoneY = ((OpenRows/2   )*NodeSize)/2
 #constant L1 15
 #constant L2 16
 #constant L3 17
-#constant S1 18
-#constant S2 19
-#constant S3 20
+#constant L4 18
+#constant L5 19
+#constant S1 20
+#constant S2 21
+#constant S3 22
+#constant S4 23
+#constant S5 24
+
 
 
 `GENERAL
@@ -369,8 +374,8 @@ DepotRange = MaxWidth / 2
 global PlayerDepotNode as depotType[]
 global AIDepotNode as depotType[]
 
-		global PlayerDepotCount as integer
-		global AIDepotCount as integer
+global PlayerDepotCount as integer
+global AIDepotCount as integer
 
 
 `player tank glow
@@ -701,8 +706,8 @@ select dev.device
 			NumX = dev.buttSize*1.7
 			NumX1 = NumX*1.93
 		else
-			dev.buttSize = 80
-			dev.textSize = 32
+			dev.buttSize = 80	`dev.buttSize = 80
+			dev.textSize = 32	`dev.textSize = 32
 			dev.scale = 2
 			dev.buttX1 = dev.buttSize - 4
 			dev.buttX2 = dev.buttSize * 2.6
@@ -795,15 +800,23 @@ global MapFlipButtonImageDown
 global L1image
 global L2image
 global L3image
+global L4image
+global L5image
 global LD1image
 global LD2image
 global LD3image
+global LD4image
+global LD5image
 global S1image
 global S2image
 global S3image
+global S4image
+global S5image
 global SD1image
 global SD2image
 global SD3image
+global SD4image
+global SD5image
 
 turnImage = InterfaceSeries+1
 turnImageDown = InterfaceSeries+2
@@ -860,11 +873,29 @@ MapButtonImageDown = InterfaceSeries+34
 MapFlipButtonImage = InterfaceSeries+35
 MapFlipButtonImageDown = InterfaceSeries+36
 
-L1image  = InterfaceSeries+37 : L2image  = InterfaceSeries+38 : L3image  = InterfaceSeries+39
-LD1image = InterfaceSeries+40 : LD2image = InterfaceSeries+41 : LD3image = InterfaceSeries+42
+L1image  = InterfaceSeries+37
+L2image  = InterfaceSeries+38
+L3image  = InterfaceSeries+39
+L4image  = InterfaceSeries+40
+L5image  = InterfaceSeries+41
 
-S1image  = InterfaceSeries+43 : S2image  = InterfaceSeries+44 : S3image  = InterfaceSeries+45
-SD1image = InterfaceSeries+46 : SD2image = InterfaceSeries+47 : SD3image = InterfaceSeries+48
+LD1image = InterfaceSeries+42
+LD2image = InterfaceSeries+43
+LD3image = InterfaceSeries+44
+LD4image = InterfaceSeries+45
+LD5image = InterfaceSeries+46
+
+S1image  = InterfaceSeries+47
+S2image  = InterfaceSeries+48
+S3image  = InterfaceSeries+49
+S4image  = InterfaceSeries+50
+S5image  = InterfaceSeries+51
+
+SD1image = InterfaceSeries+52
+SD2image = InterfaceSeries+53
+SD3image = InterfaceSeries+54
+SD4image = InterfaceSeries+55
+SD5image = InterfaceSeries+56
 
 
 type sliderType
@@ -882,10 +913,10 @@ global SoundSlide as sliderType
 global MusicScale as sliderType
 global SoundScale as sliderType
 
-MusicSlide.ID = InterfaceSeries+49
-SoundSlide.ID = InterfaceSeries+50
-MusicScale.ID = InterfaceSeries+51
-SoundScale.ID = InterfaceSeries+52
+MusicSlide.ID = InterfaceSeries+57
+SoundSlide.ID = InterfaceSeries+58
+MusicScale.ID = InterfaceSeries+59
+SoundScale.ID = InterfaceSeries+60
 
 MusicScale.x = MiddleX+95
 MusicScale.y = MiddleY+260

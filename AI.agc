@@ -169,6 +169,11 @@ function AIFOW(ID)
 		if PlayerTank[i].alive and GetSpriteInCircle(AITank[ID].bodyID,PlayerTank[i].x,PlayerTank[i].y,PlayerTank[i].FOWOffset-NodeSize)
 			SetSpriteVisible(AITank[ID].bodyID,On)
 			SetSpriteVisible(AITank[ID].turretID,On)
+
+						if mapTable[ AITank[ID].parentNode[AITank[ID].index] ].terrain = Trees
+							SetSpriteVisible(AITank[ID].cover,On)
+							SetSpritePositionByOffset(AITank[ID].cover,AITank[ID].x,AITank[ID].y)
+						endif
 			if AITank[ID].stunned then SetSpriteVisible(AITank[ID].stunMarker,On)
 			HealthBar(ID,AITank)
 			exitfunction True

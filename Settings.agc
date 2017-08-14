@@ -408,17 +408,25 @@ function Setup()
    `MAP GENERATOR SCREEN
 	LoadButton(MapButton,MapButtonImage,MapButtonImageDown,"Globe.png","GlobeDown.png",YesNoX3b,YesNoY3a,dev.buttSize,On)
 	LoadButton(MapFlipButton,MapFlipButtonImage,MapFlipButtonImageDown,"GlobeFlip.png","GlobeFlipDown.png",YesNoX3b,YesNoY3a,dev.buttSize,On)
-	buttStep = dev.buttX2 - dev.ButtX1
+
+	buttStep# = (dev.buttX2 - dev.ButtX1)*.8
 	buttOffset# = dev.buttSize*.2
 	bx# = dev.buttX1 + buttOffset#
 	by# = buttY - buttOffset#
-	LoadButton(L1,L1image,LD1image,"l1.png","ld1.png",bx#,by#,dev.buttSize,On) : inc bx#,buttStep
-	LoadButton(L2,L2image,LD2image,"l2.png","ld2.png",bx#,by#,dev.buttSize,On) : inc bx#,buttStep
-	LoadButton(L3,L3image,LD3image,"l3.png","ld3.png",bx#,by#,dev.buttSize,On) : inc bx#,buttStep*1.5
-	LoadButton(S1,S1image,SD1image,"s1.png","sd1.png",bx#,by#,dev.buttSize,On) : inc bx#,buttStep
-	LoadButton(S2,S2image,SD2image,"s2.png","sd2.png",bx#,by#,dev.buttSize,On) : inc bx#,buttStep
-	LoadButton(S3,S3image,SD3image,"s3.png","sd3.png",bx#,by#,dev.buttSize,On)
-	MapLoadSaveButtons( Off )
+
+	LoadButton(L1,L1image,LD1image,"l1.png","ld1.png",bx#,by#,dev.buttSize,On) : inc bx#,buttStep#
+	LoadButton(L2,L2image,LD2image,"l2.png","ld2.png",bx#,by#,dev.buttSize,On) : inc bx#,buttStep#
+	LoadButton(L3,L3image,LD3image,"l3.png","ld3.png",bx#,by#,dev.buttSize,On) : inc bx#,buttStep#
+	LoadButton(L4,L4image,LD4image,"l4.png","ld4.png",bx#,by#,dev.buttSize,On) : inc bx#,buttStep#
+	LoadButton(L5,L5image,LD5image,"l5.png","ld5.png",bx#,by#,dev.buttSize,On) : inc bx#,buttStep#*1.75
+
+	LoadButton(S1,S1image,SD1image,"s1.png","sd1.png",bx#,by#,dev.buttSize,On) : inc bx#,buttStep#
+	LoadButton(S2,S2image,SD2image,"s2.png","sd2.png",bx#,by#,dev.buttSize,On) : inc bx#,buttStep#
+	LoadButton(S3,S3image,SD3image,"s3.png","sd3.png",bx#,by#,dev.buttSize,On) : inc bx#,buttStep#
+	LoadButton(S4,S4image,SD4image,"s4.png","sd4.png",bx#,by#,dev.buttSize,On) : inc bx#,buttStep#
+	LoadButton(S5,S5image,SD5image,"s5.png","sd5.png",bx#,by#,dev.buttSize,On)
+
+	MapLSButtons( Off )
 	SetVirtualButtonVisible( MapButton,Off )
 	SetVirtualButtonVisible( MapFlipButton,Off )
 	ButtonStatus(Off, AcceptFlipButton, QuitFlipButton)
