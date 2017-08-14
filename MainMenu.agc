@@ -253,19 +253,23 @@ function Compose()
 					pickAI.satur = abs(cy1-y)/100
 					pickAI.spect = x-AISide
 					CalcColor( pickAI,AIGrid )
+					BaseColor()
 				endcase
 				case PlayerSpectrumSprite
 					pickPL.satur = abs(cy1-y)/100
 					pickPL.spect = x-PlayerSide
 					CalcColor( pickPL,PlayerGrid )
+					BaseColor()
 				endcase
 				case AIValueSprite
 					pickAI.value = x-AISide
 					CalcColor( pickAI,AIGrid )
+					BaseColor()
 				endcase
 				case PlayerValueSprite
 					pickPL.value = x-PlayerSide
 					CalcColor( pickPL,PlayerGrid )
+					BaseColor()
 				endcase
 				case SoundSlide.ID
 					vol = SliderInput( SoundSlide,SoundScale )
@@ -281,6 +285,7 @@ function Compose()
 
 		`Map Generation
 		if GetVirtualButtonReleased( MapButton )
+			PlaySound( ClickSound )
 			ReDisplaySettings( Off )
 			MapLoadSaveButtons( On )
 			StopMusicOGG( MusicSound )
@@ -292,8 +297,12 @@ function Compose()
 				if GetVirtualButtonReleased( S2 ) then SaveMap( "map2" )
 				if GetVirtualButtonReleased( L3 ) then LoadMap( "map3" )
 				if GetVirtualButtonReleased( S3 ) then SaveMap( "map3" )
-				if GetVirtualButtonReleased( AcceptButton ) then exit
+				if GetVirtualButtonReleased( AcceptButton )
+					PlaySound( ClickSound )
+					exit
+				endif
 				if GetVirtualButtonReleased( MapButton )
+					PlaySound( ClickSound )
 					ReGenerateMap()
 					GenerateTerrain()
 				endif
@@ -308,15 +317,16 @@ endfunction
 
 function LoadMap( map$ )
 	if GetFileExists( map$ )
+		PlaySound( ClickSound )
 		ReGenerateMap()
 		LoadImage(field,"AchillesBoardClear.png")
 		CreateSprite(field,field)
 		SetSpriteDepth(field,12)
 		SetSpriteSize(field,MaxWidth,MaxHeight)
+
 		SetDisplayAspect(-1)  `set current device aspect ratio
 		DrawSprite(field)
 		SetRenderToImage(field,0)
-
 		MapFile = OpenToRead( map$ )
 		for i = 0 to MapSize-1
 			mapTable[i].terrain = ReadInteger( MapFile )
@@ -325,14 +335,14 @@ function LoadMap( map$ )
 			mapTable[i].base = mapTable[i].terrain
 			mapTable[i].team = Unoccupied
 			node = CalcNode( mapTable[i].nodeX,mapTable[i].nodeY )
-			if node < LiveArea `not within button area
+			if node < LiveArea  `before button area
 				select mapTable[i].terrain
 					case PlayerBase  : BaseSetup( PlayerBaseSeries+PlayerBases.length-1,node,PlayerBase,PlayerBases,BaseGroup ) : endcase
 					case AIBase      : BaseSetup( AIBaseSeries+AIBases.length-1,node,AIBase,AIBases,AIBaseGroup ) : endcase
 					case PlayerDepot : DepotSetup( node,PlayerDepot,PlayerDepotNode,PlayerDepotSeries ) : endcase
 					case AIDepot     : DepotSetup( node,AIDepot,AIDepotNode,AIDepotSeries ) : endcase
-					case Impassable  : DrawTerrain( node,Impass,impassDummy ) : endcase
 					case Trees       : DrawTerrain( node,TreeSprite,treeDummy ) : endcase
+					case Impassable  : DrawTerrain( node,Impass,impassDummy ) : endcase
 				endselect
 			endif
 		next i
@@ -346,7 +356,16 @@ function LoadMap( map$ )
 		PlayerDepotCount = PlayerDepotNode.length
 		AIProdUnits = (AIBaseCount+1) * BaseProdValue
 		PlayerProdUnits = (PlayerBaseCount+1) * BaseProdValue
+		BaseColor()
 	endif
+endfunction
+
+function SaveMap( map$ )
+	PlaySound( ClickSound )
+	MapFile = OpenToWrite( map$ )
+	for i = 0 to MapSize-1 : WriteInteger( MapFile, mapTable[i].terrain ) : next i
+	CloseFile( MapFile )
+	MapLoadSaveButtons( On )
 endfunction
 
 function DrawTerrain( node,terrain,dummy )
@@ -358,13 +377,6 @@ function DrawTerrain( node,terrain,dummy )
 	y = mapTable[node].y-NodeOffset
 	AddSpriteShapeBox(dummy,x,y,x+NodeSize-1,y+NodeSize-1,0)
 	SetSpriteVisible( terrain,Off )
-endfunction
-
-function SaveMap( map$ )
-	MapFile = OpenToWrite( map$ )
-	for i = 0 to MapSize-1 : WriteInteger( MapFile, mapTable[i].terrain ) : next i
-	CloseFile( MapFile )
-	MapLoadSaveButtons( On )
 endfunction
 
 function MapLoadSaveButtons( state )
