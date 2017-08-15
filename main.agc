@@ -6,9 +6,6 @@ remstart
 		----BETTER AI MOVEMENT GOAL DECISIONS
 			-preference for tree cover
 
-		----GUARANTEE AT LEAST ONE DEPOT GENERATED
-
-
 	FIXED?
 
   	ENHANCEMENTS

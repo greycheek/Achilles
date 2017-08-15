@@ -56,9 +56,9 @@ function GenerateBases()
 	for i = 0 to Sectors-1
 		node1 = PlayerSectorNodes[i,Random2(0,SectorNodes-1)]
 		node2 = AISectorNodes[i,Random2(0,SectorNodes-1)]
-		select i	`guarantee a base in either sector 1 or 4
-			case 1 : if one then SetBases(node1,node2) else SetRandomly(node1,node2) : endcase
-			case 4 : if not one then SetBases(node1,node2) else SetRandomly(node1,node2) : endcase
+		select i	`guarantee a depot and base in either sector 1 or 4
+			case 1 : if one then SetBases(node1,node2)  else SetDepots(node1,node2) : endcase
+			case 4 : if one then SetDepots(node1,node2) else SetBases(node1,node2)  : endcase
 			case default : SetRandomly(node1,node2) : endcase
 		endselect
 	next i
