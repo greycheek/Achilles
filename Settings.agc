@@ -1,6 +1,5 @@
 
 function BaseColor()
-	`BASE & DEPOT COLOR
 	for i = 0 to PlayerBaseCount  : SetSpriteColor(PlayerBases[i].spriteID,pickPL.r,pickPL.g,pickPL.b,pickPL.a) : next i
 	for i = 0 to AIBaseCount      : SetSpriteColor(AIBases[i].spriteID,pickAI.r,pickAI.g,pickAI.b,pickAI.a) : next i
 	for i = 0 to PlayerDepotCount : SetSpriteColor(PlayerDepotNode[i].spriteID,pickPL.r,pickPL.g,pickPL.b,pickPL.a) : next i
@@ -52,13 +51,13 @@ function DepotSetup( node, depot, depotNode ref as depotType[],series )
 endfunction
 
 function GenerateBases()
-	one = Random2( 0,1 )
+	sbd = Random2( 0,1 )
 	for i = 0 to Sectors-1
 		node1 = PlayerSectorNodes[i,Random2(0,SectorNodes-1)]
 		node2 = AISectorNodes[i,Random2(0,SectorNodes-1)]
-		select i	`guarantee a depot and base in either sector 1 or 4
-			case 1 : if one then SetBases(node1,node2)  else SetDepots(node1,node2) : endcase
-			case 4 : if one then SetDepots(node1,node2) else SetBases(node1,node2)  : endcase
+		select i	`guarantee either a base or depot in sectors 1 & 4
+			case 1 : if sbd then SetBases(node1,node2)  else SetDepots(node1,node2) : endcase
+			case 4 : if sbd then SetDepots(node1,node2) else SetBases(node1,node2)  : endcase
 			case default : SetRandomly(node1,node2) : endcase
 		endselect
 	next i
@@ -141,7 +140,7 @@ function GenerateTrees()
 	SetSpriteVisible(TreeSprite,Off)
 endfunction
 
-function ReGenerateMap()
+function ResetMap()
 	for i = 0 to AIBaseCount : DeleteSprite(AIBases[i].spriteID) : next i
 	for i = 0 to PlayerBaseCount : DeleteSprite(PlayerBases[i].spriteID) : next i
 	for i = 0 to AIDepotCount : DeleteSprite(AIDepotNode[i].spriteID) : next i

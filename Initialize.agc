@@ -250,7 +250,7 @@ function TankSetup(ID,Tank ref as tankType[],pick as ColorSpec)
 	CreateSprite(Tank[ID].cover,Tank[ID].cover )
 
 	SetSpriteColorAlpha(Tank[ID].cover,CoverAlpha )
-	SetSpriteDepth(Tank[ID].cover,0 )
+	SetSpriteDepth(Tank[ID].cover,1 )
 	SetSpriteSize(Tank[ID].cover,NodeSize,NodeSize )
 
 	LoadImage(Tank[ID].bodyImageID, Tank[ID].body$)

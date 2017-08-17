@@ -3,14 +3,13 @@ remstart
 	Two ways to win - base capture, or eliminate all enemy units
 
 	ISSUES
-		----BETTER AI MOVEMENT GOAL DECISIONS
-			-preference for tree cover
+
 
 	FIXED?
-
+		---BETTER AI MOVEMENT GOAL DECISIONS
+		---SAVE TANK/BASE COLOR WITH MAP
   	ENHANCEMENTS
  		Improve AI decision making for different vehicle types
- 		Better AI use of terrain
 		New units
 		Accumulated experience
 		Multiplayer
@@ -21,7 +20,7 @@ remend
 
 SetVirtualResolution( MaxWidth,MaxHeight )
 SetDisplayAspect( AspectRatio )
-SetWindowSize( MaxWidth,MaxHeight, 0 )
+SetWindowSize( MaxWidth,MaxHeight,1,1 )
 MaximizeWindow()
 SetWindowPosition( 0,0 )
 SetOrientationAllowed( 0, 0, 1, 1 )

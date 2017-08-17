@@ -1,6 +1,8 @@
 
 #constant True = 1
 #constant False = 0
+#constant Read = 1
+#constant Write = 0
 #constant On 1
 #constant Off 0
 #constant Space 32
@@ -253,7 +255,11 @@ function Heuristic(goalNode,currentNode,team)
 	g# = CreateVector3( mapTable[goalNode].nodeX, mapTable[goalNode].nodeY,0 )
 	c# = CreateVector3( mapTable[currentNode].nodeX, mapTable[currentNode].nodeY,0 )
 	h# = GetVector3Distance( g#,c# )
-	if team = PlayerTeam then inc h#,mapTable[currentNode].cost
+	if team = PlayerTeam
+		inc h#,mapTable[currentNode].cost
+	else  `reduce heuristic by terrain cost to help AI defensive position
+		dec h#,mapTable[currentNode].cost : h# = Min(0,h#)
+	endif
 endfunction h#
 
 function VectorDistance( x1,y1,x2,y2 )

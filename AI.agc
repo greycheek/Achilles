@@ -185,8 +185,10 @@ function AIFOW(ID)
 						SetSpriteVisible(AITank[ID].stunMarker,Off)
 endfunction False
 
-function GoalChange(ID)
-	if AIDepotNode.length <> -1		`Visit depot
+function GoalSet(ID)
+
+	`Visit depot
+	if AIDepotNode.length <> -1
 		if (AITank[ID].health <= AITank[ID].minimumHealth) or (not AITank[ID].missiles) or (not AITank[ID].mines) or (not AITank[ID].charges)
 			shortestRange = Unset
 			for i = 0 to AIDepotNode.length
@@ -194,60 +196,61 @@ function GoalChange(ID)
 				if distance < shortestRange
 					shortestRange = distance
 					AITank[ID].goalNode = AIDepotNode[i].node
+					exitfunction
 				endif
 			next i
 			AITank[ID].NearestPlayer = Unset
-			exitfunction True `go to nearest depot
+			AITank[ID].route = PlanMove(ID,AITank)
 		endif
 	endif
-	if AIBaseCount < 2	`protect bases if less than 3 owned
+
+	`Protect bases if less than 3 owned
+	if AIBaseCount < 2
 		for i = 0 to AIBaseCount	 `friendly base
 			if mapTable[AIBases[i].node].team then continue `friendly tank already at base?
 			for j = 0 to PlayerCount
 				if  GetSpriteCollision( AIBases[i].zoneID, PlayerTank[j].bodyID )
 					AITank[ID].goalNode = AIBases[i].node
 					AITank[ID].NearestPlayer = Unset
-					exitfunction True
+					AITank[ID].route = PlanMove(ID,AITank)
+					exitfunction
 				endif
 			next j
 		next i
 	endif
-	for i = 0 to PlayerBaseCount  `attack enemy base
+
+	`Attack enemy base
+	for i = 0 to PlayerBaseCount
 		if  GetSpriteCollision( PlayerBases[i].zoneID, AITank[ID].bodyID ) and ( mapTable[PlayerBases[i].node].team = Unoccupied )
 			AITank[ID].goalNode = PlayerBases[i].node
 			AITank[ID].NearestPlayer = Unset
-			exitfunction True
+			AITank[ID].route = PlanMove(ID,AITank)
+			exitfunction
 		endif
 	next i
+
 	NearestPlayer = FindEnemy(ID)
 	if (NearestPlayer <> Unset) //and (AITank[ID].NearestPlayer <> Nearestplayer)
 		AITank[ID].NearestPlayer = Nearestplayer
 		AITank[ID].goalNode = PlayerTank[NearestPlayer].parentNode[PlayerTank[NearestPlayer].index]
-		exitfunction True
+
+		AITank[ID].route = PlanMove(ID,AITank)
+		if AITank[ID].parentNode.length > 1
+			AITank[ID].parentNode.remove() `remove last two nodes; stay at least 2 nodes away from enemy
+			AITank[ID].parentNode.remove()
+			AITank[ID].goalNode = AITank[ID].parentNode[AITank[ID].parentNode.length]
+		endif
 	elseif (AITank[ID].parentNode[AITank[ID].index] = AITank[ID].goalNode) or (AITank[ID].route = NoPath)
 		Patrol(ID)
-		exitfunction True
+		AITank[ID].route = PlanMove(ID,AITank)
 	endif
-endfunction False
+endfunction
 
 function PlanMove(ID, Tank ref as tankType[])
 	ResetPath(ID,AITank)
 	AITank[ID].route = AStar(ID,AITank)
 endfunction AITank[ID].route
 
-function BestTacticalPosition(ID,Tank ref as tankType[])
-	pathLength = Tank[ID].parentNode.length-1
-	bestPosition = pathlength
-	highWeight = 0
-	if pathLength > 0
-		for i = pathLength to Tank[ID].index step -1
-			if mapTable[Tank[ID].parentNode[i]].cost > highweight
-				highWeight = mapTable[Tank[ID].parentNode[i]].cost
-				bestPosition = i
-			endif
-		next i
-	endif
-endfunction bestPosition
 
 function AIOps()
 	AIBaseProduction()
@@ -261,7 +264,7 @@ function AIOps()
 			dec AITank[i].stunned
 			continue
 		endif
-		if GoalChange(i) then AITank[i].route = PlanMove(i,AITank)
+		GoalSet(i)
 
 		AITank[i].totalTerrainCost = Null
 
@@ -278,7 +281,7 @@ function AIOps()
 						//~ AIFOW(i)
 
 						if AITank[i].totalTerrainCost >= AITank[i].movesAllowed
-							AITank[i].route = PlanMove(i,AITank)
+							//~ AITank[i].route = PlanMove(i,AITank)
 							exit
 						elseif AITank[i].parentNode[AITank[i].index] = AITank[i].goalNode
 							exit
@@ -312,7 +315,20 @@ endfunction
 
 
 remstart
-			if not GoalChange(i) then Patrol(i)
+old version:
+function BestTacticalPosition(ID,Tank ref as tankType[])
+	pathLength = Tank[ID].parentNode.length-1
+	bestPosition = pathlength
+	highWeight = 0
+	if pathLength > 0
+		for i = pathLength to Tank[ID].index step -1
+			if mapTable[Tank[ID].parentNode[i]].cost > highweight
+				highWeight = mapTable[Tank[ID].parentNode[i]].cost
+				bestPosition = i
+			endif
+		next i
+	endif
+endfunction bestPosition
 
 remend
 

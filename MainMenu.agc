@@ -308,7 +308,7 @@ function Compose()
 				endif
 				if GetVirtualButtonReleased( MapButton )
 					PlaySound( ClickSound )
-					ReGenerateMap()
+					ResetMap()
 					GenerateTerrain()
 				endif
 			loop
@@ -323,7 +323,7 @@ endfunction
 
 function LoadMap( map$ )
 	PlaySound( ClickSound )
-	ReGenerateMap()
+	ResetMap()
 	LoadImage(field,"AchillesBoardClear.png")
 	CreateSprite(field,field)
 	SetSpriteDepth(field,12)
@@ -351,6 +351,7 @@ function LoadMap( map$ )
 			endselect
 		endif
 	next i
+	rgb( MapFile,Read )
 	CloseFile( MapFile )
 	SetDisplayAspect(AspectRatio)  `back to map aspect ratio
 	SetRenderToScreen()
@@ -368,8 +369,19 @@ function SaveMap( map$ )
 	PlaySound( ClickSound )
 	MapFile = OpenToWrite( map$ )
 	for i = 0 to MapSize-1 : WriteInteger( MapFile, mapTable[i].terrain ) : next i
+	rgb( MapFile,Write )
 	CloseFile( MapFile )
 	MapLSButtons( On )
+endfunction
+
+function rgb( file,load )
+	if load
+		pickPL.r = ReadInteger( file ) : pickPL.g = ReadInteger( file ) : pickPL.b = ReadInteger( file ) : pickPL.a = ReadInteger( file )
+		pickAI.r = ReadInteger( file ) : pickAI.g = ReadInteger( file ) : pickAI.b = ReadInteger( file ) : pickAI.a = ReadInteger( file )
+	else
+		WriteInteger( file,pickPL.r ) : WriteInteger( file,pickPL.g ) : WriteInteger( file,pickPL.b ) : WriteInteger( file,pickPL.a )
+		WriteInteger( file,pickAI.r ) : WriteInteger( file,pickAI.g ) : WriteInteger( file,pickAI.b ) : WriteInteger( file,pickAI.a )
+	endif
 endfunction
 
 function DrawTerrain( node,terrain,dummy )
