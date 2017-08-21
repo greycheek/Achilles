@@ -53,8 +53,12 @@ endfunction
 function GenerateBases()
 	sbd = Random2( 0,1 )
 	for i = 0 to Sectors-1
-		node1 = PlayerSectorNodes[i,Random2(0,SectorNodes-1)]
-		node2 = AISectorNodes[i,Random2(0,SectorNodes-1)]
+		repeat
+			node1 = PlayerSectorNodes[i,Random2(0,SectorNodes-1)]
+		until mapTable[node1].terrain <> Impassable
+		repeat
+			node2 = AISectorNodes[i,Random2(0,SectorNodes-1)]
+		until mapTable[node2].terrain <> Impassable
 		select i	`guarantee either a base or depot in sectors 1 & 4
 			case 1 : if sbd then SetBases(node1,node2)  else SetDepots(node1,node2) : endcase
 			case 4 : if sbd then SetDepots(node1,node2) else SetBases(node1,node2)  : endcase
@@ -89,15 +93,16 @@ endfunction
 
 function GenerateImpassables()
 	SetSpriteVisible(Impass,On)
-	for q = 0 to 3	`4 quadrants
+	for s = 0 to 1 `2 halves of the screen
 		shape = Random2(0,ShapeCount-1) `pick a random shape
-		startNode = Quad[q] + Random2(0,quadWidth-ShapeSize)  `random x position
+		depth = Random2(0,OpenRows-ShapeHeight) * Columns
+		startNode = Semi[s] + Random2(0,SemiWidth-ShapeWidth) + depth
 
-		for r = 0 to ShapeSize-1
-			shapeLine = r * ShapeSize
+		for r = 0 to ShapeHeight-1
+			shapeLine = r * ShapeWidth
 			rowNode = startNode + (r * Columns)
 
-			for c = 0 to ShapeSize-1
+			for c = 0 to ShapeWidth-1
 				columnNode = rowNode+c
 				if mapTable[columnNode].base <> Empty then continue
 
@@ -111,7 +116,7 @@ function GenerateImpassables()
 				endif
 			next c
 		next r
-	next q
+	next s
 	SetSpriteVisible(Impass,Off)
 endfunction
 
@@ -166,8 +171,9 @@ function GenerateTerrain()
 	SetDisplayAspect(-1)  `set current device aspect ratio
 	DrawSprite(field)
 	SetRenderToImage(field,0)
-	GenerateBases()
+
 	GenerateImpassables()
+	GenerateBases()
 	GenerateTrees()
 	BaseColor()
 	SetDisplayAspect(AspectRatio)  `back to map aspect ratio

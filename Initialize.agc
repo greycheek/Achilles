@@ -85,7 +85,7 @@ function Initialize()
 		SetSpriteDepth( PlayerTank[i].bullsEye, 2 )
 
 		TankSetup(i,PlayerTank,pickPL)
-						SetSpriteVisible(PlayerTank[i].cover,Off)
+						//~ SetSpriteVisible(PlayerTank[i].cover,Off)
 
 		PlayerTank[i].FOW = FOWseries+i
 		LoadImage(PlayerTank[i].FOW,"FOW.png")
@@ -129,7 +129,7 @@ function Initialize()
 		AITank[i].healthBarImageID = AITank[i].healthID
 
 		TankSetup(i,AITank,pickAI)
-						SetSpriteVisible(AITank[i].cover,Off)
+						//~ SetSpriteVisible(AITank[i].cover,Off)
 		Patrol(i)
 		AITank[i].route = AStar(i,AITank)
 						SetSpriteVisible(AITank[i].bodyID,Off)
@@ -248,10 +248,10 @@ function TankSetup(ID,Tank ref as tankType[],pick as ColorSpec)
 
 	LoadImage(Tank[ID].cover,"Foliage.png")
 	CreateSprite(Tank[ID].cover,Tank[ID].cover )
-
 	SetSpriteColorAlpha(Tank[ID].cover,CoverAlpha )
 	SetSpriteDepth(Tank[ID].cover,1 )
 	SetSpriteSize(Tank[ID].cover,NodeSize,NodeSize )
+	SetSpriteVisible(Tank[ID].cover,Off)
 
 	LoadImage(Tank[ID].bodyImageID, Tank[ID].body$)
 	LoadImage(Tank[ID].turretImageID, Tank[ID].turret$)

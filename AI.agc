@@ -185,9 +185,46 @@ function AIFOW(ID)
 						SetSpriteVisible(AITank[ID].stunMarker,Off)
 endfunction False
 
-function GoalSet(ID)
+function GoalSet(ID,vehicle)
+	select vehicle
+		case HeavyTank
+			if VisitDepot(ID)  then exitfunction
+			if ProtectBase(ID) then exitfunction
+			if AttackBase(ID)  then exitfunction
+			DefaultGoal(ID,1)
+		endcase
+		case MediumTank
+			if VisitDepot(ID)  then exitfunction
+			if ProtectBase(ID) then exitfunction
+			if AttackBase(ID)  then exitfunction
+			DefaultGoal(ID,1)
+		endcase
+		case LightTank
+			if VisitDepot(ID)  then exitfunction
+			if ProtectBase(ID) then exitfunction
+			if AttackBase(ID)  then exitfunction
+			DefaultGoal(ID,2)
+		endcase
+		case Battery
+			if VisitDepot(ID) then exitfunction
+			if AttackBase(ID) then exitfunction
+			DefaultGoal(ID,3)
+		endcase
+		case Mech
+			if VisitDepot(ID)  then exitfunction
+			if ProtectBase(ID) then exitfunction
+			if AttackBase(ID)  then exitfunction
+			DefaultGoal(ID,1)
+		endcase
+		case Engineer
+			if VisitDepot(ID) then exitfunction
+			if AttackBase(ID) then exitfunction
+			DefaultGoal(ID,3)
+		endcase
+	endselect
+endfunction
 
-	`Visit depot
+function VisitDepot(ID)
 	if AIDepotNode.length <> -1
 		if (AITank[ID].health <= AITank[ID].minimumHealth) or (not AITank[ID].missiles) or (not AITank[ID].mines) or (not AITank[ID].charges)
 			shortestRange = Unset
@@ -196,15 +233,18 @@ function GoalSet(ID)
 				if distance < shortestRange
 					shortestRange = distance
 					AITank[ID].goalNode = AIDepotNode[i].node
-					exitfunction
+					AITank[ID].NearestPlayer = Unset
+					AITank[ID].route = PlanMove(ID,AITank)
+					exitfunction True
 				endif
 			next i
-			AITank[ID].NearestPlayer = Unset
-			AITank[ID].route = PlanMove(ID,AITank)
+			//~ AITank[ID].NearestPlayer = Unset
+			//~ AITank[ID].route = PlanMove(ID,AITank)
 		endif
 	endif
+endfunction False
 
-	`Protect bases if less than 3 owned
+function ProtectBase(ID)
 	if AIBaseCount < 2
 		for i = 0 to AIBaseCount	 `friendly base
 			if mapTable[AIBases[i].node].team then continue `friendly tank already at base?
@@ -213,31 +253,33 @@ function GoalSet(ID)
 					AITank[ID].goalNode = AIBases[i].node
 					AITank[ID].NearestPlayer = Unset
 					AITank[ID].route = PlanMove(ID,AITank)
-					exitfunction
+					exitfunction True
 				endif
 			next j
 		next i
 	endif
+endfunction False
 
-	`Attack enemy base
+function AttackBase(ID)
 	for i = 0 to PlayerBaseCount
 		if  GetSpriteCollision( PlayerBases[i].zoneID, AITank[ID].bodyID ) and ( mapTable[PlayerBases[i].node].team = Unoccupied )
 			AITank[ID].goalNode = PlayerBases[i].node
 			AITank[ID].NearestPlayer = Unset
 			AITank[ID].route = PlanMove(ID,AITank)
-			exitfunction
+			exitfunction True
 		endif
 	next i
+endfunction False
 
+function DefaultGoal(ID,standOff)
 	NearestPlayer = FindEnemy(ID)
 	if (NearestPlayer <> Unset) //and (AITank[ID].NearestPlayer <> Nearestplayer)
 		AITank[ID].NearestPlayer = Nearestplayer
 		AITank[ID].goalNode = PlayerTank[NearestPlayer].parentNode[PlayerTank[NearestPlayer].index]
 
 		AITank[ID].route = PlanMove(ID,AITank)
-		if AITank[ID].parentNode.length > 1
-			AITank[ID].parentNode.remove() `remove last two nodes; stay at least 2 nodes away from enemy
-			AITank[ID].parentNode.remove()
+		if AITank[ID].parentNode.length > standOff
+			for i = 0 to standOff : AITank[ID].parentNode.remove() : next i `stay at least 'standOff nodes + 1' away from enemy
 			AITank[ID].goalNode = AITank[ID].parentNode[AITank[ID].parentNode.length]
 		endif
 	elseif (AITank[ID].parentNode[AITank[ID].index] = AITank[ID].goalNode) or (AITank[ID].route = NoPath)
@@ -245,6 +287,7 @@ function GoalSet(ID)
 		AITank[ID].route = PlanMove(ID,AITank)
 	endif
 endfunction
+
 
 function PlanMove(ID, Tank ref as tankType[])
 	ResetPath(ID,AITank)
@@ -264,7 +307,7 @@ function AIOps()
 			dec AITank[i].stunned
 			continue
 		endif
-		GoalSet(i)
+		GoalSet(i,AITank[i].vehicle)
 
 		AITank[i].totalTerrainCost = Null
 

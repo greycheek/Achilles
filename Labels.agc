@@ -243,7 +243,7 @@ MineBangSound = LoadSound("ExplosionPlain.wav")
 HeavyLaserSound = LoadSound( "BeamElectro_01.wav" )
 MechSound = LoadSound("MotorClose_01.wav")
 HealSound = LoadSound("HealGlassy.wav")
-GameOverSound = LoadSound( "GameOverRobot.wav" )
+GameOverSound = LoadSound( "GameOverRobot2.wav" )
 
 EMPSound = LoadSoundOGG("EMP.ogg")
 TankSound = LoadSoundOGG("Rumble2.ogg")
@@ -552,30 +552,27 @@ depotOffset = NodeOffset/2
 
 
 `RANDOM MAP STUFF
-#constant ShapeCount 42
-#constant ShapeGrid 49
-#constant ShapeSize 7
+#constant ShapeCount 21
+#constant ShapeGrid 98
+#constant ShapeWidth 7
+#constant ShapeHeight 14
 #constant OpenNodeCount 392
-global Quad as integer[4]
+global Semi as integer[2]
 global Shapes as integer[ShapeCount,ShapeGrid]
 global MaxMapX
 global MaxMapY
 global TreeSprite = TerrainSeries1
 global Impass = TerrainSeries2
-global quadWidth
-global quadDepth
-MaxMapX  = OpenColumns * NodeSize
-MaxMapY  = OpenRows * NodeSize
-quadWidth = (Columns/2)-4
-quadDepth = (ShapeSize*Columns)+(Columns*2)
+global SemiWidth
+MaxMapX = OpenColumns * NodeSize
+MaxMapY = OpenRows * NodeSize
+SemiWidth = (Columns/2)-4
 
-Quad[0] = Columns + 2		  	   `upper left
-Quad[1] = Quad[0] + quadWidth + 3  `upper right
-Quad[2] = Quad[0] + quadDepth  	   `lower left
-Quad[3] = Quad[1] + quadDepth  	   `lower right
+Semi[0] = Columns + 2		  	  `upper left
+Semi[1] = Semi[0] + SemiWidth + 3  `upper right
 
 `create impass shape array
-ImpassFile = OpenToRead("7x7x42.txt")
+ImpassFile = OpenToRead("7x14x21.txt")
 for i = 0 to ShapeCount-1
 	for j = 0 to ShapeGrid-1
 		Shapes[i,j] = val(chr(ReadByte(ImpassFile)))
