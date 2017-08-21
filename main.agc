@@ -3,7 +3,8 @@ remstart
 	Two ways to win - base capture, or eliminate all enemy units
 
 	ISSUES
-
+		---ENGINEER EMP DAMAGING SELF??
+		---CHECK AI FIRING READINESS
 	FIXED?
 		---AI GO TO DEPOT DOESN'T SEEM TO WORK PROPERLY
 		---BETTER AI MOVEMENT GOAL DECISIONS

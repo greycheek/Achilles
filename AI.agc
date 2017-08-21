@@ -109,11 +109,22 @@ function AITarget()
 						if Random2(0,1) and AITank[i].mines
 							WeaponSelect(i,AITank,mine,empRange,mineDamage)
 						elseif AITank[i].charges
-							WeaponSelect(i,AITank,emp,empRange,empDamage)
-							Fire( AITank,PlayerTank,i,Null )
-							continue
-						else
-							continue
+							friendly = Null
+							xa = AITank[i].x - empRange
+							ya = AITank[i].y - empRange
+							xb = AITank[i].x + empRange
+							yb = AITank[i].y + empRange
+							for j = 0 to AIPlayerLast
+								if j = i then continue
+								friendly = friendly or GetSpriteInBox( AITank[j].bodyID,xa,ya,xb,yb )
+							next j
+							if not friendly
+								WeaponSelect( i,AITank,emp,empRange,empDamage )
+								Fire( AITank,PlayerTank,i,Null )
+							endif
+							//~ continue
+						//~ else
+							//~ continue
 						endif
 					elseif not LOSblocked(x1,y1,PlayerTank[AITank[i].NearestPlayer].x,PlayerTank[AITank[i].NearestPlayer].y)
 
@@ -150,7 +161,6 @@ function AITarget()
 								endif
 							endcase
 						endselect
-
 					else
 						continue
 					endif
