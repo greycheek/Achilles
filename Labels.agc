@@ -552,7 +552,7 @@ depotOffset = NodeOffset/2
 
 
 `RANDOM MAP STUFF
-#constant ShapeCount 21
+#constant ShapeCount 32
 #constant ShapeGrid 98
 #constant ShapeWidth 7
 #constant ShapeHeight 14
@@ -572,7 +572,7 @@ Semi[0] = Columns + 2		  	  `upper left
 Semi[1] = Semi[0] + SemiWidth + 3  `upper right
 
 `create impass shape array
-ImpassFile = OpenToRead("7x14x21.txt")
+ImpassFile = OpenToRead("7x14x32.txt")
 for i = 0 to ShapeCount-1
 	for j = 0 to ShapeGrid-1
 		Shapes[i,j] = val(chr(ReadByte(ImpassFile)))
