@@ -122,9 +122,9 @@ function AITarget()
 								WeaponSelect( i,AITank,emp,empRange,empDamage )
 								Fire( AITank,PlayerTank,i,Null )
 							endif
-							//~ continue
-						//~ else
-							//~ continue
+							continue
+						else
+							continue
 						endif
 					elseif not LOSblocked(x1,y1,PlayerTank[AITank[i].NearestPlayer].x,PlayerTank[AITank[i].NearestPlayer].y)
 
@@ -243,7 +243,7 @@ function VisitDepot(ID)
 				if distance < shortestRange
 					shortestRange = distance
 					AITank[ID].goalNode = AIDepotNode[i].node
-					AITank[ID].NearestPlayer = Unset
+					//~ AITank[ID].NearestPlayer = Unset
 					AITank[ID].route = PlanMove(ID,AITank)
 					exitfunction True
 				endif
@@ -261,7 +261,7 @@ function ProtectBase(ID)
 			for j = 0 to PlayerCount
 				if  GetSpriteCollision( AIBases[i].zoneID, PlayerTank[j].bodyID )
 					AITank[ID].goalNode = AIBases[i].node
-					AITank[ID].NearestPlayer = Unset
+					//~ AITank[ID].NearestPlayer = Unset
 					AITank[ID].route = PlanMove(ID,AITank)
 					exitfunction True
 				endif
@@ -274,7 +274,7 @@ function AttackBase(ID)
 	for i = 0 to PlayerBaseCount
 		if  GetSpriteCollision( PlayerBases[i].zoneID, AITank[ID].bodyID ) and ( mapTable[PlayerBases[i].node].team = Unoccupied )
 			AITank[ID].goalNode = PlayerBases[i].node
-			AITank[ID].NearestPlayer = Unset
+			//~ AITank[ID].NearestPlayer = Unset
 			AITank[ID].route = PlanMove(ID,AITank)
 			exitfunction True
 		endif

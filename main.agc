@@ -3,8 +3,7 @@ remstart
 	Two ways to win - base capture, or eliminate all enemy units
 
 	ISSUES
-		---ENGINEER EMP DAMAGING SELF??
-		---CHECK AI FIRING READINESS
+		---CHECK AI FIRING READINESS -- DONT REMOVE "NEARESTPLAYER" FROM GOALSET?
 	FIXED?
 		---AI GO TO DEPOT DOESN'T SEEM TO WORK PROPERLY
 		---BETTER AI MOVEMENT GOAL DECISIONS
@@ -197,23 +196,36 @@ endfunction
 
 function LayMine(ID,Tank ref as tankType[],node)
 	if Tank[ID].team = PlayerTeam
-		mapTable[node].mineSprite = CloneSprite( Mine1 )
-		PlaySound( MineSound,vol )
-		maptable[node].mineType = PlayerTeam
-		SetSpriteVisible( mapTable[node].mineSprite,On )
-		SetSpritePositionByOffset(mapTable[node].mineSprite,Tank[ID].x+1,Tank[ID].y-3 )
-		PlaySprite( mapTable[node].mineSprite,20 )
+		ShowMine( ID,Tank,node )
 	else
 		mapTable[node].mineSprite = CreateDummySprite()
+		SetSpriteDepth( mapTable[node].mineSprite,1 )
 		maptable[node].mineType = AITeam
 	endif
 	dec Tank[ID].mines
+endfunction
+
+function ShowMine(ID,Tank as tankType[],node)
+	mapTable[node].mineSprite = CloneSprite( Mine1 )
+	PlaySound( MineSound,vol )
+	maptable[node].mineType = PlayerTeam
+	SetSpriteVisible( mapTable[node].mineSprite,On )
+	SetSpriteDepth( mapTable[node].mineSprite,1 )
+	SetSpritePositionByOffset( mapTable[node].mineSprite,Tank[ID].x+1,Tank[ID].y-3 )
+	PlaySprite( mapTable[node].mineSprite,20 )
 endfunction
 
 function MineField(ID, Tank ref as tankType[])
 	node = CalcNodeFromScreen( Tank[ID].x,Tank[ID].y )
 	if maptable[node].mineType and ( mapTable[node].mineType <> Tank[ID].team )
 		PlaySound( MineBangSound,vol )
+		if mapTable[node].mineType = AITeam
+			ShowMine( ID,Tank,node )
+			SetSpriteDepth( mapTable[node].mineSprite,0 )
+			Delay( 1 )
+		else
+			SetSpriteDepth( mapTable[node].mineSprite,0 )
+		endif
 		DeleteSprite( maptable[node].mineSprite )
 
 		SetSpriteVisible( MineExplode,On )
