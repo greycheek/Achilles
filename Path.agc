@@ -157,29 +157,7 @@ function ShowNode(node,cost) `debug
 endfunction
 
 remstart
-	function TurnAround(ID, Tank ref as tankType[], currentNode)
-		terrainCost = Undefined
-		facing = floor( GetSpriteAngle(Tank[ID].bodyID)/90 )
-		for i = 0 to 3
-			adjacentNode = turnOffset[facing,i] + currentNode
-			if LegalMove(adjacentNode)
-				Tank[ID].OpenList.insert(adjacentNode)
-				Tank[ID].node = adjacentNode
-				terrainCost = mapTable[adjacentNode].cost
-				exit
-			else
-				Tank[ID].ClosedList.insert(adjacentNode)
-			endif
-		next i
-	endfunction terrainCost
 
-	FROM MOVE ROUTINE:
-	xa = x1 - Tank[ID].FOWOffset
-	ya = y1 - Tank[ID].FOWOffset
-	xb = x2 + Tank[ID].FOWOffset
-	yb = y2 + Tank[ID].FOWOffset
-	ClearSpriteShapes( Tank[ID].FOWDummy )
-	AddSpriteShapeBox( Tank[ID].FOWDummy,xa,ya,xb,yb,0 )
 remend
 
 

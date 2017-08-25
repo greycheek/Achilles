@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<spriter_data scml_version="1.0" generator="BrashMonkey Spriter" generator_version="r11">
+    <folder id="0">
+        <file id="0" name="VICTORY.png" width="2000" height="432" pivot_x="0" pivot_y="1"/>
+        <file id="1" name="Defeat.png" width="2000" height="432" pivot_x="0" pivot_y="1"/>
+    </folder>
+    <entity id="0" name="entity_000">
+        <animation id="0" name="NewAnimation" length="1000" interval="100" looping="false">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" timeline="0" key="0" z_index="0"/>
+                </key>
+                <key id="1" time="1000" curve_type="bezier" c1="0" c2="0.9953" c3="0.2332" c4="0.9953">
+                    <object_ref id="0" timeline="0" key="1" z_index="0"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="Defeat">
+                <key id="0" spin="0">
+                    <object folder="0" file="1" x="-252" y="53" scale_x="0.25" scale_y="0.25"/>
+                </key>
+                <key id="1" time="1000" spin="0">
+                    <object folder="0" file="1" x="-71" y="16" scale_x="0.072155" scale_y="0.072155"/>
+                </key>
+            </timeline>
+        </animation>
+    </entity>
+</spriter_data>

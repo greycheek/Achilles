@@ -1,6 +1,269 @@
 
 remstart
 
+	function TurnAround(ID, Tank ref as tankType[], currentNode)
+		terrainCost = Undefined
+		facing = floor( GetSpriteAngle(Tank[ID].bodyID)/90 )
+		for i = 0 to 3
+			adjacentNode = turnOffset[facing,i] + currentNode
+			if LegalMove(adjacentNode)
+				Tank[ID].OpenList.insert(adjacentNode)
+				Tank[ID].node = adjacentNode
+				terrainCost = mapTable[adjacentNode].cost
+				exit
+			else
+				Tank[ID].ClosedList.insert(adjacentNode)
+			endif
+		next i
+	endfunction terrainCost
+
+	FROM MOVE ROUTINE:
+	xa = x1 - Tank[ID].FOWOffset
+	ya = y1 - Tank[ID].FOWOffset
+	xb = x2 + Tank[ID].FOWOffset
+	yb = y2 + Tank[ID].FOWOffset
+	ClearSpriteShapes( Tank[ID].FOWDummy )
+	AddSpriteShapeBox( Tank[ID].FOWDummy,xa,ya,xb,yb,0 )
+
+
+function DisplayInteract( ID,mx,my,selection )
+	select dev.device
+		case "windows","mac"
+			if GetVirtualButtonState( JoyButton )
+				WaitForButtonRelease( JoyButton )
+				PlaySound( ClickSound,vol )
+				z = GetViewZoom()
+				select z
+					case 1 : Zoom(2,0,0,Off,dev.scale) : endcase
+					case 2 : Zoom(3,vx#,vy#,Off,dev.scale) : mx=MaxWidth/3 : my=MaxHeight/3 : endcase
+					case 3 : Zoom(1,0,0,On,1) : mx=MaxWidth/4 : my=MaxHeight/4 : endcase
+				endselect
+			endif
+			jx# = GetVirtualJoystickX(1)
+			jy# = GetVirtualJoystickY(1)
+			if (jx# <> 0) or (jy# <> 0)
+				if GetViewZoom() = 1 then Zoom(2,0,0,Off,dev.scale)
+				inc vx#,jx#*7  `speed x7
+				inc vy#,jy#*7
+				vx# = MinMax(-mx,mx,vx#)
+				vy# = MinMax(-my,my,vy#)
+				SetViewOffset(vx#,vy#)
+			endif
+		endcase
+		case "ios","android","blackberry"
+			PinchToZoom(GetRawTouchCount(1))
+		endcase
+	endselect
+	if selection <> Undefined
+		inc alpha,glow
+		if alpha > GlowMax
+			alpha = GlowMax : glow = Darker
+		elseif alpha < GlowMin
+			alpha = GlowMin : glow = Brighter
+		endif
+		SetSpriteColorAlpha( PlayerTank[ID].bodyID,alpha )
+		SetSpriteColorAlpha( PlayerTank[ID].turretID,alpha )
+		SetSpriteColorAlpha( PlayerTank[ID].hilite,alpha )
+		SetSpriteColorAlpha( PlayerTank[ID].bullsEye,alpha )
+		SetSpriteColorAlpha( PlayerTank[ID].cover,alpha )
+				//~ SetSpriteColorAlpha( PlayerTank[ID].FOW,alpha/10 )
+	endif
+	Sync()
+endfunction
+
+
+
+	from GetInput:
+		if GetVirtualButtonState( JoyButton )
+			WaitForButtonRelease( JoyButton )
+			PlaySound( ClickSound,vol )
+			z = GetViewZoom()
+			select z
+				case 1 : Zoom(2,0,0,Off,dev.scale) : endcase
+				case 2 : Zoom(3,vx#,vy#,Off,dev.scale) : mx=MaxWidth/3 : my=MaxHeight/3 : endcase
+				case 3 : Zoom(1,0,0,On,1) : mx=MaxWidth/4 : my=MaxHeight/4 : endcase
+			endselect
+		endif
+		jx# = GetVirtualJoystickX(1)
+		jy# = GetVirtualJoystickY(1)
+		if (jx# <> 0) or (jy# <> 0)
+			if GetViewZoom() = 1 then Zoom(2,0,0,Off,dev.scale)
+			inc vx#,jx#*7  `speed x7
+			inc vy#,jy#*7
+			vx# = MinMax(-mx,mx,vx#)
+			vy# = MinMax(-my,my,vy#)
+			SetViewOffset(vx#,vy#)
+		endif
+	from Spawn:
+		SetSpritePosition(PlayerTank[ID].FOW, mapTable[PlayerTank[ID].node].x - PlayerTank[ID].FOWoffset, mapTable[PlayerTank[ID].node].y - PlayerTank[ID].FOWoffset)
+	from GetInput:
+		x1 = PlayerTank[ID].x - PlayerTank[ID].FOWOffset
+		y1 = PlayerTank[ID].y - PlayerTank[ID].FOWOffset
+		x2 = PlayerTank[ID].x + PlayerTank[ID].FOWOffset
+		y2 = PlayerTank[ID].y + PlayerTank[ID].FOWOffset
+
+		if GetSpriteInBox( square,x1,y1,x2,y2 )
+
+		..
+
+		else
+			BadMove()
+			SetSpriteVisible(square,Off)
+		endif
+
+	from PlayerOps:
+		If AITank[PlayerTank[i].target].alive
+			Fire( PlayerTank,AITank,i,PlayerTank[i].target )
+
+			if PlayerTank[i].weapon = missile
+				dec PlayerTank[i].missiles
+				WeaponButtons(i,PlayerTank[i].vehicle)
+				if PlayerTank[i].missiles = 0
+					SetVirtualButtonImageUp(missileButton,missileImage)
+					WeaponSelect(i,PlayerTank,cannon,cannonRange,cannonDamage)
+				endif
+			endif
+		else
+			CancelFire(i)
+		endif
+
+	from PlayerOps:
+		for i = 0 to PlayerLast
+			if not PlayerTank[i].alive then continue
+			PlayerFOW(i)
+		next I
+	also to prevent traffic jam problems:
+		ResetPath(i,PlayerTank)
+		if AStar(i,PlayerTank) > InReach
+			CancelMove(i,PlayerTank)
+			exit
+		endif
+
+	TankAlpha(PlayerTank[ID].bodyID,PlayerTank[ID].turretID,alpha)
+	if GetSpriteVisible( PlayerTank[ID].hilite ) then SetSpriteColorAlpha( PlayerTank[ID].hilite,alpha )
+	if GetSpriteVisible( PlayerTank[ID].bullsEye ) then SetSpriteColorAlpha( PlayerTank[ID].bullsEye,alpha )
+	if GetSpriteVisible( PlayerTank[ID].cover ) then SetSpriteColorAlpha( PlayerTank[ID].cover,alpha )
+
+	function PlayerFOW(ID)
+		for i = 0 to AIPlayerLast
+			if AITank[i].alive and GetSpriteInCircle(AITank[i].bodyID, PlayerTank[ID].x,PlayerTank[ID].y,PlayerTank[ID].FOWoffset-Nodesize)
+				SetSpriteVisible(AITank[i].bodyID,On)
+				SetSpriteVisible(AITank[i].turretID,On)
+				HealthBar(i,AITank)
+			else
+				SetSpriteVisible(AITank[i].bodyID,Off)
+				SetSpriteVisible(AITank[i].turretID,Off)
+				SetSpriteVisible(AITank[i].healthID,Off)
+			endif
+		next i
+	endfunction
+
+	`BASE & DEPOT COLOR
+	for i = 0 to PlayerBases.length 	: SetSpriteColor(PlayerBases[i].spriteID,pickPL.r,pickPL.g,pickPL.b,pickPL.a) : next i
+	for i = 0 to AIBases.length 		: SetSpriteColor(AIBases[i].spriteID,pickAI.r,pickAI.g,pickAI.b,pickAI.a) : next i
+	for i = 0 to PlayerDepotNode.length	: SetSpriteColor(PlayerDepotNode[i].spriteID,pickPL.r,pickPL.g,pickPL.b,pickPL.a) : next i
+	for i = 0 to AIDepotNode.length 	: SetSpriteColor(AIDepotNode[i].spriteID,pickAI.r,pickAI.g,pickAI.b,pickAI.a) : next i
+	if i > topZone
+		AITank[i].patrolDirection = OpenRows `go to bottom row
+	else
+		AITank[i].patrolDirection = FirstRow `go to top row
+	endif
+	AITank[i].goalNode = CalcNode(randomColumn,AITank[i].patrolDirection)
+
+
+function Produce( ID, Tank ref as tankType[], rate, baseProduct, baseID, c as ColorSpec )
+	if baseProduct
+		SetSpriteVisible(Tank[ID].bodyID,Off)
+		SetSpriteVisible(Tank[ID].turretID,Off)
+		SetSpriteVisible(Tank[ID].healthID,Off)
+		SetSpriteVisible(baseID,On)
+		Delay(.3)
+		PlaySound(SpawnSound,vol)
+		SetSpritePositionByOffset(Iris,Tank[ID].x+2,Tank[ID].y)
+		SetSpriteColor(Iris, c.r, c.g, c.b, c.a)
+		SetSpriteVisible(Iris,On)
+		frames = IrisFrames*1.5
+		PlaySprite(Iris,frames,0)
+		repeat
+			Sync()
+		until GetSpriteCurrentFrame(Iris) >= (frames/2)
+		SetSpriteDepth(Iris,3)
+		SetSpriteVisible(baseID,Off)
+	elseif mapTable[Tank[ID].node].terrain = Trees
+		SetSpritePositionByOffset(Tank[ID].cover,Tank[ID].x,Tank[ID].y)
+		SetSpriteVisible(Tank[ID].cover,On)
+	endif
+	SetSpriteSize(Tank[ID].bodyID,1,1)
+	SetSpriteSize(Tank[ID].turretID,1,1)
+	SetSpriteVisible(Tank[ID].bodyID,On)
+	SetSpriteVisible(Tank[ID].turretID,On)
+
+	SetSpritePositionByOffset(Tank[ID].bodyID,Tank[ID].x,Tank[ID].y)
+	SetSpritePositionByOffset(Tank[ID].turretID,Tank[ID].x,Tank[ID].y)
+	generateFOW = baseproduct and (Tank[ID].team = PlayerTeam)
+	if generateFOW
+		FOWSize = Tank[ID].FOWSize / ( NodeSize / rate )
+		SetSpriteSize(Tank[ID].FOWSize,FOWSize,FOWSize)
+		SetSpriteSize(Tank[ID].FOWSize,FOWSize,FOWSize)
+		SetSpriteVisible(Tank[ID].FOW,On)
+	endif
+	for i = 1 to NodeSize step rate
+		SetSpriteSize(Tank[ID].bodyID,i,i)
+		SetSpriteSize(Tank[ID].turretID,i,i)
+		if generateFOW
+			growth = FOWSize * i
+			growthShift = growth / 2
+			SetSpriteSize(Tank[ID].FOW,growth,growth)
+			SetSpritePosition(Tank[ID].FOW, mapTable[Tank[ID].node].x - growthShift, mapTable[Tank[ID].node].y - growthShift)
+		endif
+		Sync()
+	next i
+	if baseProduct
+		PlaySprite(Iris,frames,0,IrisFrames,1)
+		Delay(.5)
+		SetSpriteVisible(baseID,On)
+		SetSpriteVisible(Iris,Off)
+		SetSpriteDepth(Iris,0)
+	endif
+	HealthBar(ID,Tank)
+endfunction
+
+old victoryconditions
+function VictoryConditions( ID,Tank ref as tankType[] )
+	//~ if not Tank[ID].alive then exitfunction
+	if Tank[ID].health <= 0
+		KillTank(ID,Tank)
+		if Tank[ID].team = PlayerTeam
+			if PlayerSurviving = 0 then GameOver("DEFEAT") `all tanks destroyed?
+		elseif Tank[ID].team = AITeam `not necessary
+			if AISurviving = 0 then GameOver("VICTORY")
+		endif
+	else
+		if Tank[ID].team = PlayerTeam
+			for i = 0 to AIBaseCount
+				if Tank[ID].parentNode[Tank[ID].index] = AIBases[i].node then GameOver("VICTORY")
+			next i
+		else
+			for i = 0 to PlayerBaseCount
+				if Tank[ID].parentNode[Tank[ID].index] = PlayerBases[i].node
+					SetSpriteVisible(Tank[ID].bodyID,On)
+					SetSpriteVisible(Tank[ID].turretID,On)
+					GameOver("DEFEAT")
+				endif
+			next i
+		endif
+	endif
+endfunction
+			if Attacker[attID].team = AITeam
+				for i = 0 to AIPlayerLast
+					if GetSpriteInCircle( AITank[i].bodyID, AITank[attID].x, AITank[attID].y, AITank[attID].FOWoffset-NodeSize ) then exitfunction
+				next i
+			endif
+		Fixed?:
+			STRANGE PLAYER PATHS - NOT SHORTEST PATH??
+			Modified PlayerOps() - no path reset
+			Adjacent node check for other player removed in Path
+
 
 AI.AGC
 if (NearestPlayer <> Unset) and (AITank[ID].NearestPlayer <> Nearestplayer)
@@ -22,7 +285,7 @@ if nextmove = AITank[i].goalNode then AITank[i].NearestPlayer = Unset
 
 `from beginning of AITarget
 AITank[i].NearestPlayer = FindEnemy(i)
-		
+
 `OLD PATROL
 function PlanMove(ID, Tank ref as tankType[])
 	DecisionTree(ID,AITank[ID].x,AITank[ID].y,AITank[ID].NearestPlayer)

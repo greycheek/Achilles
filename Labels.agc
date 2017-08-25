@@ -204,6 +204,7 @@ global angle  as integer[8]=[0,45,90,135,180,225,270,315]
 #constant TerrainSeries1 1700
 #constant TerrainSeries2 1701
 
+
 `SOUNDS
 global ClickSound
 global OKSound
@@ -740,8 +741,8 @@ global YesNoX4a
 global YesNoX4b
 global YesNoY4
 
-	global bx# as float	`for bottom row buttons
-	global by# as float
+global bx# as float	`for bottom row buttons
+global by# as float
 
 
 AlertW = 300*dev.scale
@@ -958,6 +959,7 @@ EMP1 = EMPSeries
 global field as integer  `board
 global Explode1 as integer
 global Explode2 as integer
+
 `SPLASHSCREEN
 
 #constant SpectrumW 556

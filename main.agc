@@ -36,7 +36,8 @@ UseNewDefaultFonts( On )
 #include "Path.agc"
 #include "Miscellaneous.agc"
 
-
+//~ GameOver("DefeatSS2.png",497,100)
+GameOver("VictorySS2.png",500,88)
 
 Main()
 
@@ -336,9 +337,9 @@ function VictoryConditions( ID,Tank ref as tankType[] )
 	if Tank[ID].health <= 0
 		KillTank(ID,Tank)
 		if Tank[ID].team = PlayerTeam
-			if PlayerSurviving = 0 then GameOver("DEFEAT") `all tanks destroyed?
+			if PlayerSurviving = 0 then GameOver("DefeatSS2.png",497,100) `all tanks destroyed?
 		elseif Tank[ID].team = AITeam `not necessary
-			if AISurviving = 0 then GameOver("VICTORY")
+			if AISurviving = 0 then GameOver("VictorySS2.png",500,88)
 		endif
 	else
 		if Tank[ID].team = PlayerTeam
@@ -347,7 +348,7 @@ function VictoryConditions( ID,Tank ref as tankType[] )
 					dec AIBaseCount
 					inc PlayerBaseCount
 					CaptureBase( i,pickPL,PlayerBases,AIBases,BaseGroup,PlayerBase )
-					if AIBaseCount = -1 then GameOver("VICTORY")
+					if AIBaseCount = -1 then GameOver("VictorySS2.png",500,88)
 				endif
 			next i
 		else
@@ -358,7 +359,7 @@ function VictoryConditions( ID,Tank ref as tankType[] )
 					dec PlayerBaseCount
 					inc AIBaseCount
 					CaptureBase( i,pickAI,AIBases,PlayerBases,AIBaseGroup,AIBase )
-					if PlayerBaseCount = -1 then GameOver("DEFEAT")
+					if PlayerBaseCount = -1 then GameOver("DefeatSS2.png",497,100)
 				endif
 			next i
 		endif
@@ -366,14 +367,23 @@ function VictoryConditions( ID,Tank ref as tankType[] )
 endfunction
 
 
-function GameOver(message$)
+function GameOver( message$,w#,h# )
+	frames = 20
+	m = LoadImage( message$ )
+	CreateSprite( m,m )
+	SetSpriteDepth( m,0 )
+	SetSpriteTransparency( m,1 )
+	SetSpritePosition( m, MiddleX-(w#/2), MapHeight/2 )
+	SetSpriteVisible( m,On )
+	SetSpriteAnimation( m,w#,h#,frames )
+	PlaySprite( m,frames*1.5,0 )
 	PlaySound( GameOverSound )
-	Text(5,message$,MiddleX,MiddleY,255,255,255,36,255,1)
 	repeat
 		Sync()
-	until GetRawMouseLeftPressed()
+	until GetPointerPressed()
 	end
 endfunction
+
 
 function KillTank( defID,Tank ref as tankType[] )
 	PlaySound( ExplodeSound,vol )
@@ -572,7 +582,6 @@ function ParticleTest()
 endfunction
 
 remstart
-
 	FIXED?
 		----IMPLEMENT AI BASE DEFENSE - SEE GOAL CHANGE
 		----AI MUST BE MORE AGGRESSIVE IN CAPTURING BASES!!!!!!!!!!
@@ -591,98 +600,5 @@ remstart
 		THESE PROBLEMS APPEAR TO BE RELATED TO THE SETTINGS DIALOG:
 		---TANKS ARE NOT GOING AWAY IN BASE PRODUCTION SCREEN
 		---NEW ENGINEERS AT BASES NOT SELECTABLE??????
-
-function Produce( ID, Tank ref as tankType[], rate, baseProduct, baseID, c as ColorSpec )
-	if baseProduct
-		SetSpriteVisible(Tank[ID].bodyID,Off)
-		SetSpriteVisible(Tank[ID].turretID,Off)
-		SetSpriteVisible(Tank[ID].healthID,Off)
-		SetSpriteVisible(baseID,On)
-		Delay(.3)
-		PlaySound(SpawnSound,vol)
-		SetSpritePositionByOffset(Iris,Tank[ID].x+2,Tank[ID].y)
-		SetSpriteColor(Iris, c.r, c.g, c.b, c.a)
-		SetSpriteVisible(Iris,On)
-		frames = IrisFrames*1.5
-		PlaySprite(Iris,frames,0)
-		repeat
-			Sync()
-		until GetSpriteCurrentFrame(Iris) >= (frames/2)
-		SetSpriteDepth(Iris,3)
-		SetSpriteVisible(baseID,Off)
-	elseif mapTable[Tank[ID].node].terrain = Trees
-		SetSpritePositionByOffset(Tank[ID].cover,Tank[ID].x,Tank[ID].y)
-		SetSpriteVisible(Tank[ID].cover,On)
-	endif
-	SetSpriteSize(Tank[ID].bodyID,1,1)
-	SetSpriteSize(Tank[ID].turretID,1,1)
-	SetSpriteVisible(Tank[ID].bodyID,On)
-	SetSpriteVisible(Tank[ID].turretID,On)
-
-	SetSpritePositionByOffset(Tank[ID].bodyID,Tank[ID].x,Tank[ID].y)
-	SetSpritePositionByOffset(Tank[ID].turretID,Tank[ID].x,Tank[ID].y)
-	generateFOW = baseproduct and (Tank[ID].team = PlayerTeam)
-	if generateFOW
-		FOWSize = Tank[ID].FOWSize / ( NodeSize / rate )
-		SetSpriteSize(Tank[ID].FOWSize,FOWSize,FOWSize)
-		SetSpriteSize(Tank[ID].FOWSize,FOWSize,FOWSize)
-		SetSpriteVisible(Tank[ID].FOW,On)
-	endif
-	for i = 1 to NodeSize step rate
-		SetSpriteSize(Tank[ID].bodyID,i,i)
-		SetSpriteSize(Tank[ID].turretID,i,i)
-		if generateFOW
-			growth = FOWSize * i
-			growthShift = growth / 2
-			SetSpriteSize(Tank[ID].FOW,growth,growth)
-			SetSpritePosition(Tank[ID].FOW, mapTable[Tank[ID].node].x - growthShift, mapTable[Tank[ID].node].y - growthShift)
-		endif
-		Sync()
-	next i
-	if baseProduct
-		PlaySprite(Iris,frames,0,IrisFrames,1)
-		Delay(.5)
-		SetSpriteVisible(baseID,On)
-		SetSpriteVisible(Iris,Off)
-		SetSpriteDepth(Iris,0)
-	endif
-	HealthBar(ID,Tank)
-endfunction
-
-old victoryconditions
-function VictoryConditions( ID,Tank ref as tankType[] )
-	//~ if not Tank[ID].alive then exitfunction
-	if Tank[ID].health <= 0
-		KillTank(ID,Tank)
-		if Tank[ID].team = PlayerTeam
-			if PlayerSurviving = 0 then GameOver("DEFEAT") `all tanks destroyed?
-		elseif Tank[ID].team = AITeam `not necessary
-			if AISurviving = 0 then GameOver("VICTORY")
-		endif
-	else
-		if Tank[ID].team = PlayerTeam
-			for i = 0 to AIBaseCount
-				if Tank[ID].parentNode[Tank[ID].index] = AIBases[i].node then GameOver("VICTORY")
-			next i
-		else
-			for i = 0 to PlayerBaseCount
-				if Tank[ID].parentNode[Tank[ID].index] = PlayerBases[i].node
-					SetSpriteVisible(Tank[ID].bodyID,On)
-					SetSpriteVisible(Tank[ID].turretID,On)
-					GameOver("DEFEAT")
-				endif
-			next i
-		endif
-	endif
-endfunction
-			if Attacker[attID].team = AITeam
-				for i = 0 to AIPlayerLast
-					if GetSpriteInCircle( AITank[i].bodyID, AITank[attID].x, AITank[attID].y, AITank[attID].FOWoffset-NodeSize ) then exitfunction
-				next i
-			endif
-		Fixed?:
-			STRANGE PLAYER PATHS - NOT SHORTEST PATH??
-			Modified PlayerOps() - no path reset
-			Adjacent node check for other player removed in Path
 remend
 
