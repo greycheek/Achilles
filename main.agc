@@ -4,6 +4,7 @@ remstart
 
 	ISSUES
 		---CHECK AI FIRING READINESS -- DONT REMOVE "NEARESTPLAYER" FROM GOALSET?
+		---SAVE FORCE COMPOSITION WITH MAPS; ALERT FOR OVERWRITE SAVE SLOTS
 	FIXED?
 		---AI GO TO DEPOT DOESN'T SEEM TO WORK PROPERLY
 		---BETTER AI MOVEMENT GOAL DECISIONS
@@ -36,8 +37,8 @@ UseNewDefaultFonts( On )
 #include "Path.agc"
 #include "Miscellaneous.agc"
 
-//~ GameOver("DefeatSS2.png",497,100)
-GameOver("VictorySS2.png",500,88)
+//~ GameOver("DefeatSS2.png",497,100,20,GameOverSound)
+GameOver("VictorySS2.png",500,88,20,GameOverSound) : end
 
 Main()
 
@@ -337,9 +338,9 @@ function VictoryConditions( ID,Tank ref as tankType[] )
 	if Tank[ID].health <= 0
 		KillTank(ID,Tank)
 		if Tank[ID].team = PlayerTeam
-			if PlayerSurviving = 0 then GameOver("DefeatSS2.png",497,100) `all tanks destroyed?
+			if PlayerSurviving = 0 then GameOver( Defeat$,497,100,20,GameOverSound ) `all tanks destroyed?
 		elseif Tank[ID].team = AITeam `not necessary
-			if AISurviving = 0 then GameOver("VictorySS2.png",500,88)
+			if AISurviving = 0 then GameOver( Victory$,500,88,20,GameOverSound ) `create victory & defeat sounds
 		endif
 	else
 		if Tank[ID].team = PlayerTeam
@@ -348,7 +349,7 @@ function VictoryConditions( ID,Tank ref as tankType[] )
 					dec AIBaseCount
 					inc PlayerBaseCount
 					CaptureBase( i,pickPL,PlayerBases,AIBases,BaseGroup,PlayerBase )
-					if AIBaseCount = -1 then GameOver("VictorySS2.png",500,88)
+					if AIBaseCount = -1 then GameOver( Victory$,500,88,20,GameOverSound )
 				endif
 			next i
 		else
@@ -359,7 +360,7 @@ function VictoryConditions( ID,Tank ref as tankType[] )
 					dec PlayerBaseCount
 					inc AIBaseCount
 					CaptureBase( i,pickAI,AIBases,PlayerBases,AIBaseGroup,AIBase )
-					if PlayerBaseCount = -1 then GameOver("DefeatSS2.png",497,100)
+					if PlayerBaseCount = -1 then GameOver( Defeat$,497,100,20,GameOverSound )
 				endif
 			next i
 		endif
@@ -367,21 +368,28 @@ function VictoryConditions( ID,Tank ref as tankType[] )
 endfunction
 
 
-function GameOver( message$,w#,h# )
-	frames = 20
+function GameOver( message$,w#,h#,frames,sound )
+	PlaySound( sound )
+	DeleteAllSprites()
+	LoadImage(field,"AchillesBoardClear.png")
+	CreateSprite(field,field)
+	SetSpriteDepth(field,12)
+	SetSpriteSize(field,MaxWidth,MaxHeight)
+
 	m = LoadImage( message$ )
 	CreateSprite( m,m )
+	SetSpritePosition( m,MiddleX-(w#/2),MapHeight/2 )
 	SetSpriteDepth( m,0 )
 	SetSpriteTransparency( m,1 )
-	SetSpritePosition( m, MiddleX-(w#/2), MapHeight/2 )
 	SetSpriteVisible( m,On )
 	SetSpriteAnimation( m,w#,h#,frames )
-	PlaySprite( m,frames*1.5,0 )
-	PlaySound( GameOverSound )
+	SetSpriteSize( m,w#*2,h#*2 )
+	PlaySprite( m,frames*1.25,0 )
+	if GetMouseExists() then SetRawMouseVisible( On )
 	repeat
 		Sync()
 	until GetPointerPressed()
-	end
+	Main() `restart Achilles
 endfunction
 
 

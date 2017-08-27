@@ -92,7 +92,6 @@ zoneY = ((OpenRows/2   )*NodeSize)/2
 #constant S5 24
 
 
-
 `GENERAL
 #constant Unset 100000
 #constant Empty -1
@@ -104,7 +103,8 @@ zoneY = ((OpenRows/2   )*NodeSize)/2
 #constant Complete 1
 #constant PatrolRadius 7
 #constant BarWidth 3	 `Health Bar
-
+#constant Defeat$ "DefeatSS2.png"
+#constant Victory$ "VictorySS2.png"
 
 global DLS as integer
 DLS = NodeSize*sqrt(2) `Diagonal Length of Square
