@@ -25,7 +25,8 @@ SetWindowSize( MaxWidth,MaxHeight,1,1 )
 MaximizeWindow()
 SetWindowPosition( 0,0 )
 SetOrientationAllowed( 0, 0, 1, 1 )
-LoadFont( Gill,"GillSans.ttc" )
+LoadFont( Gill,"GillSans.ttf" )
+LoadFont( SourceCodeBlack,"SourceCodePro-Black.ttf" )
 UseNewDefaultFonts( On )
 
 #insert "Labels.agc"
@@ -37,8 +38,8 @@ UseNewDefaultFonts( On )
 #include "Path.agc"
 #include "Miscellaneous.agc"
 
-//~ GameOver("DefeatSS2.png",497,100,20,GameOverSound)
-GameOver("VictorySS2.png",500,88,20,GameOverSound) : end
+//~ GameOver( DefeatText,"DEFEAT",255,0,0,GameOverSound )
+//~ GameOver( VictoryText,"VICTORY",255,255,255,GameOverSound )
 
 Main()
 
@@ -338,9 +339,9 @@ function VictoryConditions( ID,Tank ref as tankType[] )
 	if Tank[ID].health <= 0
 		KillTank(ID,Tank)
 		if Tank[ID].team = PlayerTeam
-			if PlayerSurviving = 0 then GameOver( Defeat$,497,100,20,GameOverSound ) `all tanks destroyed?
+			if PlayerSurviving = 0 then GameOver( DefeatText,"DEFEAT",255,0,0,GameOverSound ) `all tanks destroyed?
 		elseif Tank[ID].team = AITeam `not necessary
-			if AISurviving = 0 then GameOver( Victory$,500,88,20,GameOverSound ) `create victory & defeat sounds
+			if AISurviving = 0 then GameOver( VictoryText,"VICTORY",255,255,255,GameOverSound ) `create victory & defeat sounds
 		endif
 	else
 		if Tank[ID].team = PlayerTeam
@@ -349,7 +350,7 @@ function VictoryConditions( ID,Tank ref as tankType[] )
 					dec AIBaseCount
 					inc PlayerBaseCount
 					CaptureBase( i,pickPL,PlayerBases,AIBases,BaseGroup,PlayerBase )
-					if AIBaseCount = -1 then GameOver( Victory$,500,88,20,GameOverSound )
+					if AIBaseCount = -1 then GameOver( VictoryText,"VICTORY",255,255,255,GameOverSound )
 				endif
 			next i
 		else
@@ -360,36 +361,37 @@ function VictoryConditions( ID,Tank ref as tankType[] )
 					dec PlayerBaseCount
 					inc AIBaseCount
 					CaptureBase( i,pickAI,AIBases,PlayerBases,AIBaseGroup,AIBase )
-					if PlayerBaseCount = -1 then GameOver( Defeat$,497,100,20,GameOverSound )
+					if PlayerBaseCount = -1 then GameOver( DefeatText,"DEFEAT",255,0,0,GameOverSound )
 				endif
 			next i
 		endif
 	endif
 endfunction
 
+function TweenText( textID,alpha1,alpha2,size1,size2,space1,space2,speed#,delay#,intMode )
+	tt = CreateTweenText( speed# )
+	if alpha1<>alpha2 then SetTweenTextAlpha( tt,alpha1,alpha2,intMode )
+	if size1<>size2   then SetTweenTextSize( tt,size1,size2,intMode )
+	if space1<>space2 then SetTweenTextSpacing( tt,space1,space2,intMode )
+	PlayTweenText( tt,textID,delay# )
+endfunction tt
 
-function GameOver( message$,w#,h#,frames,sound )
+function GameOver( textID,message$,r,g,b,sound )
+	#constant startSize 500
+	#constant endSize 100
+	#constant beginSpacing 150
+	#constant endSpacing 0
+
 	PlaySound( sound )
-	DeleteAllSprites()
-	LoadImage(field,"AchillesBoardClear.png")
-	CreateSprite(field,field)
-	SetSpriteDepth(field,12)
-	SetSpriteSize(field,MaxWidth,MaxHeight)
-
-	m = LoadImage( message$ )
-	CreateSprite( m,m )
-	SetSpritePosition( m,MiddleX-(w#/2),MapHeight/2 )
-	SetSpriteDepth( m,0 )
-	SetSpriteTransparency( m,1 )
-	SetSpriteVisible( m,On )
-	SetSpriteAnimation( m,w#,h#,frames )
-	SetSpriteSize( m,w#*2,h#*2 )
-	PlaySprite( m,frames*1.25,0 )
-	if GetMouseExists() then SetRawMouseVisible( On )
+	Text( textID,message$,MiddleX,MapHeight/2,r,g,b,startSize,255,1 )
+	SetTextFont( textID,SourceCodeBlack )
+	TweenText( textID,Null,Null,startSize,endSize,beginSpacing,endSpacing,2.5,Null,TweenEaseIn1() )
+	ft# = GetFrameTime()
 	repeat
+		UpdateAllTweens( ft# )
 		Sync()
 	until GetPointerPressed()
-	Main() `restart Achilles
+	Main() `restart Achilless
 endfunction
 
 

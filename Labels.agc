@@ -143,9 +143,14 @@ global angle  as integer[8]=[0,45,90,135,180,225,270,315]
 #constant NumeralText2 17
 #constant MusicText 18
 #constant SoundText 19
+#constant VictoryText 20
+#constant DefeatText 21
+
 #constant Gill 50
+#constant SourceCodeBlack 60
 #constant WeaponText 100
 #constant StatText 200
+
 
 `SPRITES
 #constant PlayerTankGroup 1
