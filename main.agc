@@ -2,9 +2,10 @@ remstart
 	ACHILLES v0.9 ~ Created 3/14/16 by Bob Tedesco Jr
 	Two ways to win - base capture, or eliminate all enemy units
 
-	ISSUES
+	ISSUES/REVISIONS
 		---CHECK AI FIRING READINESS -- DONT REMOVE "NEARESTPLAYER" FROM GOALSET?
 		---SAVE FORCE COMPOSITION WITH MAPS; ALERT FOR OVERWRITE SAVE SLOTS
+		---HAVE TWEENTEXT CHANGE SIZE AS IT MOVES
 	FIXED?
 		---AI GO TO DEPOT DOESN'T SEEM TO WORK PROPERLY
 		---BETTER AI MOVEMENT GOAL DECISIONS
@@ -26,7 +27,7 @@ MaximizeWindow()
 SetWindowPosition( 0,0 )
 SetOrientationAllowed( 0, 0, 1, 1 )
 LoadFont( Gill,"GillSans.ttf" )
-LoadFont( SourceCodeBlack,"SourceCodePro-Black.ttf" )
+LoadFont( Impact,"Impact.ttf" )
 UseNewDefaultFonts( On )
 
 #insert "Labels.agc"
@@ -38,7 +39,7 @@ UseNewDefaultFonts( On )
 #include "Path.agc"
 #include "Miscellaneous.agc"
 
-//~ GameOver( DefeatText,"DEFEAT",255,0,0,GameOverSound )
+GameOver( DefeatText,"DEFEAT",150,0,0,GameOverSound )
 //~ GameOver( VictoryText,"VICTORY",255,255,255,GameOverSound )
 
 Main()
@@ -339,7 +340,7 @@ function VictoryConditions( ID,Tank ref as tankType[] )
 	if Tank[ID].health <= 0
 		KillTank(ID,Tank)
 		if Tank[ID].team = PlayerTeam
-			if PlayerSurviving = 0 then GameOver( DefeatText,"DEFEAT",255,0,0,GameOverSound ) `all tanks destroyed?
+			if PlayerSurviving = 0 then GameOver( DefeatText,"DEFEAT",150,0,0,GameOverSound ) `all tanks destroyed?
 		elseif Tank[ID].team = AITeam `not necessary
 			if AISurviving = 0 then GameOver( VictoryText,"VICTORY",255,255,255,GameOverSound ) `create victory & defeat sounds
 		endif
@@ -361,34 +362,28 @@ function VictoryConditions( ID,Tank ref as tankType[] )
 					dec PlayerBaseCount
 					inc AIBaseCount
 					CaptureBase( i,pickAI,AIBases,PlayerBases,AIBaseGroup,AIBase )
-					if PlayerBaseCount = -1 then GameOver( DefeatText,"DEFEAT",255,0,0,GameOverSound )
+					if PlayerBaseCount = -1 then GameOver( DefeatText,"DEFEAT",150,0,0,GameOverSound )
 				endif
 			next i
 		endif
 	endif
 endfunction
 
-function TweenText( textID,alpha1,alpha2,size1,size2,space1,space2,speed#,delay#,intMode )
-	tt = CreateTweenText( speed# )
-	if alpha1<>alpha2 then SetTweenTextAlpha( tt,alpha1,alpha2,intMode )
-	if size1<>size2   then SetTweenTextSize( tt,size1,size2,intMode )
-	if space1<>space2 then SetTweenTextSpacing( tt,space1,space2,intMode )
-	PlayTweenText( tt,textID,delay# )
-endfunction tt
-
 function GameOver( textID,message$,r,g,b,sound )
-	#constant startSize 500
+	#constant startSize 750
 	#constant endSize 100
-	#constant beginSpacing 150
+	#constant beginSpacing 300
 	#constant endSpacing 0
 
+	y2 = MapHeight/2
+	y1 = y2-(startSize/2)
 	PlaySound( sound )
-	Text( textID,message$,MiddleX,MapHeight/2,r,g,b,startSize,255,1 )
-	SetTextFont( textID,SourceCodeBlack )
-	TweenText( textID,Null,Null,startSize,endSize,beginSpacing,endSpacing,2.5,Null,TweenEaseIn1() )
-	ft# = GetFrameTime()
+	Text( textID,message$,MiddleX,y2,r,g,b,startSize,255,1 )
+	SetTextFont( textID,Impact )
+	TweenText( textID,Null,Null,y1,y2,Null,Null,startSize,endSize,beginSpacing,endSpacing,2.5,Null,TweenEaseIn1() )
+	FT# = GetFrameTime()
 	repeat
-		UpdateAllTweens( ft# )
+		UpdateAllTweens( FT# )
 		Sync()
 	until GetPointerPressed()
 	Main() `restart Achilless
@@ -557,12 +552,6 @@ function SetTween( x1,y1,x2,y2,a1#,a2#,sprite,mode,speed#  )
 	PlayTweenSprite( t, sprite, 0 )
 endfunction t
 
-function SetTweenText( a1,a2,text,intMode,speed# )
-	tt = CreateTweenText( speed# )
-	SetTweenTextAlpha( tt,a1,a2,intMode )
-	PlayTweenText( tt,text,0 )
-endfunction tt
-
 function PlayTweens( tween, sprite )
 	while GetTweenSpritePlaying( tween, sprite )
 		UpdateAllTweens(getframetime())
@@ -592,6 +581,12 @@ function ParticleTest()
 endfunction
 
 remstart
+	function SetTweenText( a1,a2,text,intMode,speed# )
+		tt = CreateTweenText( speed# )
+		SetTweenTextAlpha( tt,a1,a2,intMode )
+		PlayTweenText( tt,text,0 )
+	endfunction tt
+
 	FIXED?
 		----IMPLEMENT AI BASE DEFENSE - SEE GOAL CHANGE
 		----AI MUST BE MORE AGGRESSIVE IN CAPTURING BASES!!!!!!!!!!

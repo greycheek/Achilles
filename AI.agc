@@ -298,18 +298,16 @@ function DefaultGoal(ID,standOff)
 	endif
 endfunction
 
-
 function PlanMove(ID, Tank ref as tankType[])
 	ResetPath(ID,AITank)
 	AITank[ID].route = AStar(ID,AITank)
 endfunction AITank[ID].route
 
-
 function AIOps()
 	AIBaseProduction()
 	AITarget()
 	Text(MovingText,"moving",MiddleX,MiddleY,255,255,255,36,255,1)
-	tt = SetTweenText( 255,0,MovingText,2,1 )
+	tt = TweenText( MovingText,Null,Null,Null,Null,255,0,Null,Null,Null,Null,1,0,2 )
 
 	for i = 0 to AIPlayerLast
 		if not AITank[i].alive then continue
@@ -352,7 +350,7 @@ function AIOps()
 			else
 				exit
 			endif
-			if not GetTweenTextPlaying( tt,MovingText ) then tt = SetTweenText( 255,0,MovingText,2,1 )
+			if not GetTweenTextPlaying( tt,MovingText ) then tt = TweenText( MovingText,Null,Null,Null,Null,255,0,Null,Null,Null,Null,1,0,2 )
 		loop
 		AIFOW(i)
 	next i

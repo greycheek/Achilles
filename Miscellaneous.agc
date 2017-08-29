@@ -221,6 +221,16 @@ function Text(ID,text$,x,y,r,g,b,size,alpha,align)
 	SetTextColor(ID,r,g,b,alpha)
 endfunction
 
+function TweenText( textID,x1,x2,y1,y2,alpha1,alpha2,size1,size2,space1,space2,speed#,delay#,mode )
+	tt = CreateTweenText( speed# )
+	if alpha1 <> alpha2 then SetTweenTextAlpha( tt,alpha1,alpha2,mode )
+	if size1 <> size2 then SetTweenTextSize( tt,size1,size2,mode )
+	if space1 <> space2 then SetTweenTextSpacing( tt,space1,space2,mode )
+	if x1 <> x2	then SetTweenTextX( tt,x1,x2,mode )
+	if y1 <> y2	then SetTweenTextY( tt,y1,y2,mode )
+	PlayTweenText( tt,textID,delay# )
+endfunction tt
+
 function LoadButton(buttonID,imageUpID,imageDownID,fileUp$,fileDown$,x,y,s,state)
 	LoadImage(imageUpID,fileUp$)
 	LoadImage(imageDownID,fileDown$)
