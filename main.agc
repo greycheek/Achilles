@@ -39,8 +39,8 @@ UseNewDefaultFonts( On )
 #include "Path.agc"
 #include "Miscellaneous.agc"
 
-GameOver( DefeatText,"DEFEAT",150,0,0,GameOverSound )
-//~ GameOver( VictoryText,"VICTORY",255,255,255,GameOverSound )
+//~ GameOver( DefeatText,"DEFEAT",150,0,0,DefeatSound )
+GameOver( VictoryText,"VICTORY",255,255,255,VictorySound )
 
 Main()
 
@@ -340,9 +340,9 @@ function VictoryConditions( ID,Tank ref as tankType[] )
 	if Tank[ID].health <= 0
 		KillTank(ID,Tank)
 		if Tank[ID].team = PlayerTeam
-			if PlayerSurviving = 0 then GameOver( DefeatText,"DEFEAT",150,0,0,GameOverSound ) `all tanks destroyed?
+			if PlayerSurviving = 0 then GameOver( DefeatText,"DEFEAT",150,0,0,DefeatSound ) `all tanks destroyed?
 		elseif Tank[ID].team = AITeam `not necessary
-			if AISurviving = 0 then GameOver( VictoryText,"VICTORY",255,255,255,GameOverSound ) `create victory & defeat sounds
+			if AISurviving = 0 then GameOver( VictoryText,"VICTORY",255,255,255,VictorySound ) `create victory & defeat sounds
 		endif
 	else
 		if Tank[ID].team = PlayerTeam
@@ -351,7 +351,7 @@ function VictoryConditions( ID,Tank ref as tankType[] )
 					dec AIBaseCount
 					inc PlayerBaseCount
 					CaptureBase( i,pickPL,PlayerBases,AIBases,BaseGroup,PlayerBase )
-					if AIBaseCount = -1 then GameOver( VictoryText,"VICTORY",255,255,255,GameOverSound )
+					if AIBaseCount = -1 then GameOver( VictoryText,"VICTORY",255,255,255,VictorySound )
 				endif
 			next i
 		else
@@ -362,7 +362,7 @@ function VictoryConditions( ID,Tank ref as tankType[] )
 					dec PlayerBaseCount
 					inc AIBaseCount
 					CaptureBase( i,pickAI,AIBases,PlayerBases,AIBaseGroup,AIBase )
-					if PlayerBaseCount = -1 then GameOver( DefeatText,"DEFEAT",150,0,0,GameOverSound )
+					if PlayerBaseCount = -1 then GameOver( DefeatText,"DEFEAT",150,0,0,DefeatSound )
 				endif
 			next i
 		endif
@@ -380,7 +380,7 @@ function GameOver( textID,message$,r,g,b,sound )
 	PlaySound( sound )
 	Text( textID,message$,MiddleX,y2,r,g,b,startSize,255,1 )
 	SetTextFont( textID,Impact )
-	TweenText( textID,Null,Null,y1,y2,Null,Null,startSize,endSize,beginSpacing,endSpacing,2.5,Null,TweenEaseIn1() )
+	TweenText( textID,Null,Null,y1,y2,Null,Null,startSize,endSize,beginSpacing,endSpacing,5,Null,TweenEaseIn1() )
 	FT# = GetFrameTime()
 	repeat
 		UpdateAllTweens( FT# )
