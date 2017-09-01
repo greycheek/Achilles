@@ -5,7 +5,6 @@ remstart
 	ISSUES/REVISIONS
 		---CHECK AI FIRING READINESS -- DONT REMOVE "NEARESTPLAYER" FROM GOALSET?
 		---SAVE FORCE COMPOSITION WITH MAPS; ALERT FOR OVERWRITE SAVE SLOTS
-		---HAVE TWEENTEXT CHANGE SIZE AS IT MOVES
 	FIXED?
 		---AI GO TO DEPOT DOESN'T SEEM TO WORK PROPERLY
 		---BETTER AI MOVEMENT GOAL DECISIONS
@@ -39,8 +38,10 @@ UseNewDefaultFonts( On )
 #include "Path.agc"
 #include "Miscellaneous.agc"
 
-//~ GameOver( DefeatText,"DEFEAT",150,0,0,DefeatSound )
-GameOver( VictoryText,"VICTORY",255,255,255,VictorySound )
+
+//~ GameOver( DefeatText,DefeatSpinner,150,0,0,0,0,0,"DEFEAT",DefeatSound )
+//~ GameOver( VictoryText,VictorySpinner,0,0,0,255,255,255,"VICTORY",VictorySound )
+
 
 Main()
 
@@ -340,9 +341,9 @@ function VictoryConditions( ID,Tank ref as tankType[] )
 	if Tank[ID].health <= 0
 		KillTank(ID,Tank)
 		if Tank[ID].team = PlayerTeam
-			if PlayerSurviving = 0 then GameOver( DefeatText,"DEFEAT",150,0,0,DefeatSound ) `all tanks destroyed?
+			if PlayerSurviving = 0 then GameOver( DefeatText,DefeatSpinner,150,0,0,0,0,0,"DEFEAT",DefeatSound ) `all tanks destroyed?
 		elseif Tank[ID].team = AITeam `not necessary
-			if AISurviving = 0 then GameOver( VictoryText,"VICTORY",255,255,255,VictorySound ) `create victory & defeat sounds
+			if AISurviving = 0 then GameOver( VictoryText,VictorySpinner,0,0,0,255,255,255,"VICTORY",VictorySound ) `create victory & defeat sounds
 		endif
 	else
 		if Tank[ID].team = PlayerTeam
@@ -351,7 +352,7 @@ function VictoryConditions( ID,Tank ref as tankType[] )
 					dec AIBaseCount
 					inc PlayerBaseCount
 					CaptureBase( i,pickPL,PlayerBases,AIBases,BaseGroup,PlayerBase )
-					if AIBaseCount = -1 then GameOver( VictoryText,"VICTORY",255,255,255,VictorySound )
+					if AIBaseCount = -1 then GameOver( VictoryText,VictorySpinner,0,0,0,255,255,255,"VICTORY",VictorySound )
 				endif
 			next i
 		else
@@ -362,33 +363,56 @@ function VictoryConditions( ID,Tank ref as tankType[] )
 					dec PlayerBaseCount
 					inc AIBaseCount
 					CaptureBase( i,pickAI,AIBases,PlayerBases,AIBaseGroup,AIBase )
-					if PlayerBaseCount = -1 then GameOver( DefeatText,"DEFEAT",150,0,0,DefeatSound )
+					if PlayerBaseCount = -1 then GameOver( DefeatText,DefeatSpinner,150,0,0,0,0,0,"DEFEAT",DefeatSound )
 				endif
 			next i
 		endif
 	endif
 endfunction
 
-function GameOver( textID,message$,r,g,b,sound )
+function GameOver( textID,spinID,r,g,b,spinR,spinG,spinB,message$,sound )
 	#constant startSize 750
 	#constant endSize 100
 	#constant beginSpacing 300
 	#constant endSpacing 0
+	#constant spinDiameter 341.33
+	#constant spinW 576
+	#constant spinH 256
 
+	PlaySound( sound )
+	DeleteVirtualButton(AcceptButton)
+	DeleteVirtualButton(QuitButton)
+	DeleteAllText()
+	ft# = GetFrameTime()
 	y2 = MapHeight/2
 	y1 = y2-(startSize/2)
-	PlaySound( sound )
+
 	Text( textID,message$,MiddleX,y2,r,g,b,startSize,255,1 )
 	SetTextFont( textID,Impact )
-	TweenText( textID,Null,Null,y1,y2,Null,Null,startSize,endSize,beginSpacing,endSpacing,5,Null,TweenEaseIn1() )
-	FT# = GetFrameTime()
+	tt = TweenText( textID,Null,Null,y1,y2,Null,Null,startSize,endSize,beginSpacing,endSpacing,3,Null,TweenEaseIn1() )
+
+	if GetMouseExists() then SetRawMouseVisible( On )
 	repeat
-		UpdateAllTweens( FT# )
+		if GetTweenExists( tt )
+			if GetTweenTextPlaying( tt,textID )
+				UpdateAllTweens( ft# )
+			else
+				DeleteTween( tt )
+				DeleteAllSprites()
+				SetupSprite(field,field,"AchillesBoardClear.png",0,0,MaxWidth,MaxHeight,12,On,0)
+				SetupSprite(spinID,spinID,"SpinnerSS.png",MiddleX-(spinW/2),y2-(spinH/2)+(endSize/2),spinW,spinH,0,On,0)
+				SetSpriteColor( spinID,spinR,spinG,spinB,255 )
+				SetSpriteAnimation( spinID,spinDiameter,spinDiameter,32 )
+				PlaySprite( spinID,16 )
+				SetTextColor( textID,r,g,b,255 )
+			endif
+		elseif not GetSpriteVisible( VictorySpinner )
+			SetSpriteVisible( VictorySpinner,On )
+		endif
 		Sync()
 	until GetPointerPressed()
-	Main() `restart Achilless
+	Main() `restart Achilles
 endfunction
-
 
 function KillTank( defID,Tank ref as tankType[] )
 	PlaySound( ExplodeSound,vol )
@@ -581,6 +605,38 @@ function ParticleTest()
 endfunction
 
 remstart
+
+					LoadImage( VictorySpinner,"SpinnerSS.png")
+					CreateSprite( VictorySpinner,VictorySpinner )
+					SetSpriteTransparency( VictorySpinner,1 )
+					SetSpriteVisible( VictorySpinner,Off )
+					SetSpriteDepth ( VictorySpinner,0 )
+					SetSpriteAnimation( VictorySpinner,341.33,341.33,32 )
+					SetSpriteSize( VictorySpinner,576,256)
+					SetSpritePosition( VictorySpinner,MiddleX-(GetSpriteWidth(VictorySpinner)/2),y2-(GetSpriteHeight(VictorySpinner)/2)+(endSize/2) )
+					PlaySprite( VictorySpinner,16 )
+
+function GameOver( textID,message$,r,g,b,sound )
+	#constant startSize 750
+	#constant endSize 100
+	#constant beginSpacing 300
+	#constant endSpacing 0
+
+	y2 = MapHeight/2
+	y1 = y2-(startSize/2)
+	PlaySound( sound )
+	Text( textID,message$,MiddleX,y2,r,g,b,startSize,255,1 )
+	SetTextFont( textID,Impact )
+	TweenText( textID,Null,Null,y1,y2,Null,Null,startSize,endSize,beginSpacing,endSpacing,3,Null,TweenEaseIn1() )
+	ft# = GetFrameTime()
+	if GetMouseExists() then SetRawMouseVisible( On )
+	repeat
+		UpdateAllTweens( ft# )
+		Sync()
+	until GetPointerPressed()
+	Main() `restart Achilles
+endfunction
+
 	function SetTweenText( a1,a2,text,intMode,speed# )
 		tt = CreateTweenText( speed# )
 		SetTweenTextAlpha( tt,a1,a2,intMode )

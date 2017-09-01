@@ -211,9 +211,9 @@ global angle  as integer[8]=[0,45,90,135,180,225,270,315]
 `SOUNDS
 global ClickSound
 global OKSound
-	global GameOverSound
-	global VictorySound
-	global DefeatSound
+global GameOverSound
+global VictorySound
+global DefeatSound
 global TankSound
 global BangSound
 global BuildBaseSound
@@ -826,6 +826,8 @@ global SD2image
 global SD3image
 global SD4image
 global SD5image
+		global VictorySpinner
+		global DefeatSpinner
 
 turnImage = InterfaceSeries+1
 turnImageDown = InterfaceSeries+2
@@ -906,6 +908,8 @@ SD3image = InterfaceSeries+54
 SD4image = InterfaceSeries+55
 SD5image = InterfaceSeries+56
 
+		VictorySpinner = InterfaceSeries+57
+		DefeatSpinner = InterfaceSeries+58
 
 type sliderType
 	ID
@@ -922,10 +926,10 @@ global SoundSlide as sliderType
 global MusicScale as sliderType
 global SoundScale as sliderType
 
-MusicSlide.ID = InterfaceSeries+57
-SoundSlide.ID = InterfaceSeries+58
-MusicScale.ID = InterfaceSeries+59
-SoundScale.ID = InterfaceSeries+60
+MusicSlide.ID = InterfaceSeries+59
+SoundSlide.ID = InterfaceSeries+60
+MusicScale.ID = InterfaceSeries+61
+SoundScale.ID = InterfaceSeries+62
 
 MusicScale.x = MiddleX+95
 MusicScale.y = MiddleY+260

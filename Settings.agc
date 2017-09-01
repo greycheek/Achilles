@@ -398,6 +398,7 @@ function Setup()
 	SetSpriteAnimation( Explode2,109,81,32 )
 	SetSpriteSize( Explode2,75,60 )
 
+
    `SPLASHSCREEN
 
 	buttStep# = ( dev.buttX2 - dev.ButtX1 ) * .8
