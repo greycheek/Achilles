@@ -38,12 +38,12 @@ function AISpawn( vehicle,node )
 endfunction ID
 
 function Patrol(ID)
-	v = Random2(0,7)					  `Random starting vector
-	for j = PatrolRadius to 1 step -1	  `Linear search
-		for i = 0 to 7					  `Circular search
+	v = Random2(0,7)                    `Random starting vector
+	for j = PatrolRadius to 1 step -1   `Linear search
+		for i = 0 to 7                  `Circular search
 			node = AITank[ID].parentNode[AITank[ID].index] + (patrolScan[ v+i ] * j)  `Advance to next node vector
 			node = MinMax(1,OpenMapSize,node)
-			if (mapTable[node].terrain <> Impassable) //and (mapTable[node].team = Unoccupied) //TURN OFF OCCUPY CHECK????
+			if mapTable[node].terrain < Impassable //and (mapTable[node].team = Unoccupied) //TURN OFF OCCUPY CHECK????
 				AITank[ID].goalNode = node
 				exitfunction
 			endif
@@ -99,6 +99,9 @@ function AITarget()
 		else
 			continue
 		endif
+
+			AITank[i].NearestPlayer = FindEnemy(i)
+
 		if AITank[i].NearestPlayer <> Unset
 			x1 = AITank[i].x
 			y1 = AITank[i].y
@@ -193,6 +196,7 @@ function AIFOW(ID)
 						SetSpriteVisible(AITank[ID].turretID,Off)
 						SetSpriteVisible(AITank[ID].healthID,Off)
 						SetSpriteVisible(AITank[ID].stunMarker,Off)
+								SetSpriteVisible(AITank[ID].cover,Off)
 endfunction False
 
 function GoalSet(ID,vehicle)
@@ -242,69 +246,72 @@ function VisitDepot(ID)
 				distance = VectorDistance( AITank[ID].x,AITank[ID].y, mapTable[AIDepotNode[i].node].x, mapTable[AIDepotNode[i].node].y )
 				if distance < shortestRange
 					shortestRange = distance
-					AITank[ID].goalNode = AIDepotNode[i].node
-					//~ AITank[ID].NearestPlayer = Unset
-					AITank[ID].route = PlanMove(ID,AITank)
-					exitfunction True
+					targetDepot = AIDepotNode[i].node
 				endif
 			next i
-			//~ AITank[ID].NearestPlayer = Unset
-			//~ AITank[ID].route = PlanMove(ID,AITank)
+			AITank[ID].goalNode = targetDepot
+			AITank[ID].route = PlanMove(ID)
+			//~ if AITank[ID].route = NoPath then NewGoal(ID)
+			exitfunction True
 		endif
 	endif
 endfunction False
 
-function ProtectBase(ID)
-	if AIBaseCount < 2
-		for i = 0 to AIBaseCount	 `friendly base
-			if mapTable[AIBases[i].node].team then continue `friendly tank already at base?
-			for j = 0 to PlayerCount
-				if  GetSpriteCollision( AIBases[i].zoneID, PlayerTank[j].bodyID )
-					AITank[ID].goalNode = AIBases[i].node
-					//~ AITank[ID].NearestPlayer = Unset
-					AITank[ID].route = PlanMove(ID,AITank)
-					exitfunction True
-				endif
-			next j
-		next i
-	endif
+function ProtectBase(ID)	`routine to select other than 1st base examined?
+	for i = 0 to AIBaseCount	 `friendly base
+		if mapTable[AIBases[i].node].team then continue `friendly tank already at base?
+		for j = 0 to PlayerCount
+			if  GetSpriteInBox( PlayerTank[j].bodyID, AIBases[i].x1, AIBases[i].y1, AIBases[i].x2, AIBases[i].y2 )
+				AITank[ID].goalNode = AIBases[i].node
+				AITank[ID].route = PlanMove(ID)
+				//~ if AITank[ID].route = NoPath then NewGoal(ID)
+				exitfunction True
+			endif
+		next j
+	next i
 endfunction False
 
 function AttackBase(ID)
 	for i = 0 to PlayerBaseCount
-		if  GetSpriteCollision( PlayerBases[i].zoneID, AITank[ID].bodyID ) and ( mapTable[PlayerBases[i].node].team = Unoccupied )
-			AITank[ID].goalNode = PlayerBases[i].node
-			//~ AITank[ID].NearestPlayer = Unset
-			AITank[ID].route = PlanMove(ID,AITank)
-			exitfunction True
+		if  GetSpriteInBox( AITank[ID].bodyID, PlayerBases[i].x1, PlayerBases[i].y1, PlayerBases[i].x2, PlayerBases[i].y2 )
+			if mapTable[PlayerBases[i].node].team = Unoccupied
+				AITank[ID].goalNode = PlayerBases[i].node
+				AITank[ID].route = PlanMove(ID)
+				//~ if AITank[ID].route = NoPath then NewGoal(ID)
+				exitfunction True
+			endif
 		endif
 	next i
 endfunction False
 
 function DefaultGoal(ID,standOff)
-	NearestPlayer = FindEnemy(ID)
-	if (NearestPlayer <> Unset) //and (AITank[ID].NearestPlayer <> Nearestplayer)
-		AITank[ID].NearestPlayer = Nearestplayer
-		AITank[ID].goalNode = PlayerTank[NearestPlayer].parentNode[PlayerTank[NearestPlayer].index]
+	//~ NearestPlayer = FindEnemy(ID)
+	if (AITank[ID].NearestPlayer <> Unset) //and (AITank[ID].NearestPlayer <> Nearestplayer)
+		AITank[ID].goalNode = PlayerTank[AITank[ID].NearestPlayer].parentNode[PlayerTank[AITank[ID].NearestPlayer].index]
 
-		AITank[ID].route = PlanMove(ID,AITank)
+		AITank[ID].route = PlanMove(ID)
 		if AITank[ID].parentNode.length > standOff
 			for i = 0 to standOff : AITank[ID].parentNode.remove() : next i `stay at least 'standOff nodes + 1' away from enemy
 			AITank[ID].goalNode = AITank[ID].parentNode[AITank[ID].parentNode.length]
 		endif
 	elseif (AITank[ID].parentNode[AITank[ID].index] = AITank[ID].goalNode) or (AITank[ID].route = NoPath)
-		Patrol(ID)
-		AITank[ID].route = PlanMove(ID,AITank)
+		NewGoal(ID)
 	endif
 endfunction
 
-function PlanMove(ID, Tank ref as tankType[])
+function NewGoal(ID)
+	Patrol(ID)
+	PlanMove(ID)
+endfunction
+
+function PlanMove(ID)
 	ResetPath(ID,AITank)
 	AITank[ID].route = AStar(ID,AITank)
 endfunction AITank[ID].route
 
 function AIOps()
-	AIBaseProduction()
+			if AICount < UnitLimit then AIBaseProduction()
+	//~ AIBaseProduction()
 	AITarget()
 	Text(MovingText,"moving",MiddleX,MiddleY,255,255,255,36,255,1)
 	tt = TweenText( MovingText,Null,Null,Null,Null,255,0,Null,Null,Null,Null,1,0,2 )
@@ -332,7 +339,7 @@ function AIOps()
 						//~ AIFOW(i)
 
 						if AITank[i].totalTerrainCost >= AITank[i].movesAllowed
-							//~ AITank[i].route = PlanMove(i,AITank)
+							//~ AITank[i].route = PlanMove(i)
 							exit
 						elseif AITank[i].parentNode[AITank[i].index] = AITank[i].goalNode
 							exit
@@ -344,7 +351,7 @@ function AIOps()
 						//~ exit
 					//~ endif
 				else
-					AITank[i].route = PlanMove(i,AITank)
+					AITank[i].route = PlanMove(i)
 					exit
 				endif
 			else
@@ -366,6 +373,10 @@ endfunction
 
 
 remstart
+
+from ProtectBase and VisitDepot and AttackBase:
+				AITank[ID].NearestPlayer = Unset
+
 old version:
 function BestTacticalPosition(ID,Tank ref as tankType[])
 	pathLength = Tank[ID].parentNode.length-1

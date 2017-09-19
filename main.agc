@@ -1,19 +1,27 @@
 remstart
+
 	ACHILLES v0.9 ~ Created 3/14/16 by Bob Tedesco Jr
 	Two ways to win - base capture, or eliminate all enemy units
 
 	ISSUES/REVISIONS
-		---CHECK AI FIRING READINESS -- DONT REMOVE "NEARESTPLAYER" FROM GOALSET?
-		---SAVE FORCE COMPOSITION WITH MAPS; ALERT FOR OVERWRITE SAVE SLOTS
+		---BETTER ASTAR??
+		---IMPLEMENT SWARM
+		---REVISE MAP LOAD/SAVE BUTTONS
+
 	FIXED?
-		---AI GO TO DEPOT DOESN'T SEEM TO WORK PROPERLY
-		---BETTER AI MOVEMENT GOAL DECISIONS
-		---SAVE TANK/BASE COLOR WITH MAP
+		---ROUGH TERRAIN BLOCKING LOS
+		---PHANTOM BASE/UNIT SPAWN??????------
+		---LOS IMPROPERLY BLOCKED!!!!!
+		---HEAVILY DAMAGED AI TANKS DON'T VISIT DEPOTS
+		---AI RELUCTANT TO FIRE; MAKING POOR MOVE DECISIONS (dont remove "nearestplayer" from goalset?)
+
   	ENHANCEMENTS
- 		Improve AI decision making for different vehicle types
-		New units
+		Races/Factions?
+
+	FUTURE
 		Accumulated experience
 		Multiplayer
+		Create movement lines
 
 		---AITank visibility - Initialize and AIFOW
 		---LOS -- Mod at end of PlayerOps
@@ -25,8 +33,8 @@ SetWindowSize( MaxWidth,MaxHeight,1,1 )
 MaximizeWindow()
 SetWindowPosition( 0,0 )
 SetOrientationAllowed( 0, 0, 1, 1 )
-LoadFont( Gill,"GillSans.ttf" )
-LoadFont( Impact,"Impact.ttf" )
+//~ LoadFont( Gill,"GillSans.ttf" )
+LoadFont( Avenir,"Avenir Next.ttc" )
 UseNewDefaultFonts( On )
 
 #insert "Labels.agc"
@@ -41,6 +49,9 @@ UseNewDefaultFonts( On )
 
 //~ GameOver( DefeatText,DefeatSpinner,150,0,0,0,0,0,"DEFEAT",DefeatSound )
 //~ GameOver( VictoryText,VictorySpinner,0,0,0,255,255,255,"VICTORY",VictorySound )
+//~ WaterTest()
+//~ SwarmTest()
+
 
 
 Main()
@@ -70,7 +81,7 @@ endfunction
 function LegalMove(node,team)
 	if (node < 0) and (node > MapSize)
 		legal = False
-	elseif mapTable[node].terrain = Impassable
+	elseif mapTable[node].terrain >= Impassable
 		legal = False
 	elseif mapTable[node].base <> Empty
 		legal = True
@@ -99,7 +110,7 @@ function Produce( ID, Tank ref as tankType[], rate, baseProduct, baseID, c as Co
 		SetSpriteVisible(baseID,On)
 		Delay(.3)
 		PlaySound(SpawnSound,vol)
-		SetSpritePositionByOffset(Iris,Tank[ID].x+2,Tank[ID].y)
+		SetSpritePositionByOffset(Iris,Tank[ID].x+2,Tank[ID].y-1)
 		SetSpriteColor(Iris, c.r, c.g, c.b, c.a)
 		SetSpriteVisible(Iris,On)
 		frames = IrisFrames*1.5
@@ -314,7 +325,7 @@ function HealthBar(ID,Tank ref as tankType[])
 	Sync()
 endfunction
 
-function CaptureBase( capturedIndex, pick ref as ColorSpec, attBase ref as baseType[], defBase ref as baseType[], group, base )
+function CaptureBase( capturedIndex, pick ref as ColorSpec, attBase ref as baseType[], defBase ref as baseType[], base, group )
 	DeleteSprite( defBase[capturedIndex].spriteID )
 	newBaseIndex = BaseSetup( defBase[capturedIndex].spriteID,defBase[capturedIndex].node,base,attBase,group )
 	PlaySound( BuildBaseSound )
@@ -333,6 +344,10 @@ function CaptureBase( capturedIndex, pick ref as ColorSpec, attBase ref as baseT
 	SetSpriteColor( attBase[newBaseIndex].spriteID,pick.r,pick.g,pick.b,i )
 	Sync()
 	defBase.remove( capturedIndex )
+			AIBaseCount = AIBases.length
+			PlayerBaseCount = PlayerBases.length
+			AIProdUnits = (AIBaseCount+1) * BaseProdValue
+			PlayerProdUnits = (PlayerBaseCount+1) * BaseProdValue
 	SetSpriteVisible( BaseHalo,Off )
 endfunction
 
@@ -351,7 +366,7 @@ function VictoryConditions( ID,Tank ref as tankType[] )
 				if Tank[ID].parentNode[Tank[ID].index] = AIBases[i].node
 					dec AIBaseCount
 					inc PlayerBaseCount
-					CaptureBase( i,pickPL,PlayerBases,AIBases,BaseGroup,PlayerBase )
+					CaptureBase( i,pickPL,PlayerBases,AIBases,PlayerBase,BaseGroup )
 					if AIBaseCount = -1 then GameOver( VictoryText,VictorySpinner,0,0,0,255,255,255,"VICTORY",VictorySound )
 				endif
 			next i
@@ -362,7 +377,7 @@ function VictoryConditions( ID,Tank ref as tankType[] )
 					SetSpriteVisible(Tank[ID].turretID,On)
 					dec PlayerBaseCount
 					inc AIBaseCount
-					CaptureBase( i,pickAI,AIBases,PlayerBases,AIBaseGroup,AIBase )
+					CaptureBase( i,pickAI,AIBases,PlayerBases,AIBase,AIBaseGroup )
 					if PlayerBaseCount = -1 then GameOver( DefeatText,DefeatSpinner,150,0,0,0,0,0,"DEFEAT",DefeatSound )
 				endif
 			next i
@@ -388,7 +403,7 @@ function GameOver( textID,spinID,r,g,b,spinR,spinG,spinB,message$,sound )
 	y1 = y2-(startSize/2)
 
 	Text( textID,message$,MiddleX,y2,r,g,b,startSize,255,1 )
-	SetTextFont( textID,Impact )
+	SetTextFont( textID,Avenir )
 	tt = TweenText( textID,Null,Null,y1,y2,Null,Null,startSize,endSize,beginSpacing,endSpacing,3,Null,TweenEaseIn1() )
 
 	if GetMouseExists() then SetRawMouseVisible( On )
@@ -404,7 +419,6 @@ function GameOver( textID,spinID,r,g,b,spinR,spinG,spinB,message$,sound )
 				SetSpriteColor( spinID,spinR,spinG,spinB,255 )
 				SetSpriteAnimation( spinID,spinDiameter,spinDiameter,32 )
 				PlaySprite( spinID,16 )
-				SetTextColor( textID,r,g,b,255 )
 			endif
 		elseif not GetSpriteVisible( VictorySpinner )
 			SetSpriteVisible( VictorySpinner,On )
@@ -583,6 +597,27 @@ function PlayTweens( tween, sprite )
 	endwhile
 endfunction
 
+
+remstart
+
+function SwarmTest()
+	ns = NodeSize*1
+	SetClearColor( 0,64,8 )
+	ClearScreen()
+	S = LoadImage("SWARMSS.png")
+	CreateSprite(S,S)
+	SetSpriteDepth(S,1)
+	SetSpriteSize(S,ns,ns)
+	SetSpritePosition(S,MiddleX,MiddleY)
+	SetSpriteVisible(S,On)
+	SetSpriteAnimation(S,292.5,292.5,42)
+	PlaySprite(S,42)
+	repeat
+		Sync()
+	until GetPointerPressed()
+	end
+endfunction
+
 function ParticleTest()
 	do
 		PlaySound( ExplodeSound,vol )
@@ -604,17 +639,32 @@ function ParticleTest()
 	loop
 endfunction
 
-remstart
+function WaterTest()
+	f = LoadImage("AchillesBoardClear.png")
+	CreateSprite(f,f)
+	SetSpriteDepth(f,1)
+	SetSpriteSize(f,MaxWidth,MaxHeight)
+	SetSpriteVisible(f,On)
 
-					LoadImage( VictorySpinner,"SpinnerSS.png")
-					CreateSprite( VictorySpinner,VictorySpinner )
-					SetSpriteTransparency( VictorySpinner,1 )
-					SetSpriteVisible( VictorySpinner,Off )
-					SetSpriteDepth ( VictorySpinner,0 )
-					SetSpriteAnimation( VictorySpinner,341.33,341.33,32 )
-					SetSpriteSize( VictorySpinner,576,256)
-					SetSpritePosition( VictorySpinner,MiddleX-(GetSpriteWidth(VictorySpinner)/2),y2-(GetSpriteHeight(VictorySpinner)/2)+(endSize/2) )
-					PlaySprite( VictorySpinner,16 )
+	bw = LoadImage("BlueWaterSS.png")
+	CreateSprite(bw,bw)
+	SetSpriteDepth(bw,0 )
+	SetSpritePosition(bw,270,270)
+	SetSpriteAnimation(bw,90,90,60)
+	SetSpriteSize(bw,45,45)
+	PlaySprite(bw,30)
+	bw2 = CloneSprite(bw)
+	SetSpritePosition(bw2,315,270)
+	bw3 = CloneSprite(bw)
+	SetSpritePosition(bw3,270,315)
+	bw4 = CloneSprite(bw)
+	SetSpritePosition(bw4,315,315)
+	repeat
+		Sync()
+	until GetPointerPressed()
+	end
+endfunction
+
 
 function GameOver( textID,message$,r,g,b,sound )
 	#constant startSize 750

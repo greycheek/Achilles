@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<spriter_data scml_version="1.0" generator="BrashMonkey Spriter" generator_version="r11">
+    <folder id="0">
+        <file id="0" name="SWARMER1.png" width="44" height="44" pivot_x="0.5" pivot_y="0.5"/>
+    </folder>
+    <entity id="0" name="Swarm Cluster">
+        <animation id="0" name="Anim" length="1000" interval="100" l="-225" t="-225" r="225" b="225">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" timeline="0" key="0" z_index="0"/>
+                </key>
+                <key id="1" time="70">
+                    <object_ref id="0" timeline="0" key="1" z_index="0"/>
+                </key>
+                <key id="2" time="144">
+                    <object_ref id="0" timeline="0" key="2" z_index="0"/>
+                </key>
+                <key id="3" time="218">
+                    <object_ref id="0" timeline="0" key="3" z_index="0"/>
+                </key>
+                <key id="4" time="289">
+                    <object_ref id="0" timeline="0" key="4" z_index="0"/>
+                </key>
+                <key id="5" time="354">
+                    <object_ref id="0" timeline="0" key="5" z_index="0"/>
+                </key>
+                <key id="6" time="430">
+                    <object_ref id="0" timeline="0" key="6" z_index="0"/>
+                </key>
+                <key id="7" time="498">
+                    <object_ref id="0" timeline="0" key="7" z_index="0"/>
+                </key>
+                <key id="8" time="563">
+                    <object_ref id="0" timeline="0" key="8" z_index="0"/>
+                </key>
+                <key id="9" time="643">
+                    <object_ref id="0" timeline="0" key="9" z_index="0"/>
+                </key>
+                <key id="10" time="719">
+                    <object_ref id="0" timeline="0" key="10" z_index="0"/>
+                </key>
+                <key id="11" time="788">
+                    <object_ref id="0" timeline="0" key="11" z_index="0"/>
+                </key>
+                <key id="12" time="863">
+                    <object_ref id="0" timeline="0" key="12" z_index="0"/>
+                </key>
+                <key id="13" time="938">
+                    <object_ref id="0" timeline="0" key="13" z_index="0"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="SWARMER1">
+                <key id="0">
+                    <object folder="0" file="0" x="-149.511805" y="136.349991" angle="0"/>
+                </key>
+                <key id="1" time="70">
+                    <object folder="0" file="0" x="-91.156395" y="71.504981" angle="50"/>
+                </key>
+                <key id="2" time="144">
+                    <object folder="0" file="0" x="-14.366468" y="13.690494" angle="100"/>
+                </key>
+                <key id="3" time="218">
+                    <object folder="0" file="0" x="34.010243" y="-34.909583" angle="150"/>
+                </key>
+                <key id="4" time="289">
+                    <object folder="0" file="0" x="109.270649" y="-93.233895" angle="200"/>
+                </key>
+                <key id="5" time="354">
+                    <object folder="0" file="0" x="197.580389" y="-154.949466" angle="250"/>
+                </key>
+                <key id="6" time="430">
+                    <object folder="0" file="0" x="106.825006" y="-82.477377" angle="300"/>
+                </key>
+                <key id="7" time="498">
+                    <object folder="0" file="0" x="43.329491" y="-40.144055" angle="0"/>
+                </key>
+                <key id="8" time="563">
+                    <object folder="0" file="0" x="-10.839508" y="13.006306" angle="50"/>
+                </key>
+                <key id="9" time="643">
+                    <object folder="0" file="0" x="-71.384424" y="61.414469" angle="100"/>
+                </key>
+                <key id="10" time="719">
+                    <object folder="0" file="0" x="-127.427786" y="94.868529" angle="150"/>
+                </key>
+                <key id="11" time="788">
+                    <object folder="0" file="0" x="-194.925938" y="140.913999" angle="200"/>
+                </key>
+                <key id="12" time="863">
+                    <object folder="0" file="0" x="-62.482273" y="72.797843" angle="250"/>
+                </key>
+                <key id="13" time="938">
+                    <object folder="0" file="0" x="-137.83435" y="66.603748" angle="300"/>
+                </key>
+            </timeline>
+        </animation>
+    </entity>
+</spriter_data>

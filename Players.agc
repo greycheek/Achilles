@@ -525,16 +525,20 @@ function GetInput()
 					endif
 				next i
 			elseif baseID and (selection = Undefined) and ( mapTable[pointerNode].moveTarget = False )
-				Markers(Off)
-				selection = BaseProduction( pointerNode )
-				if selection <> Undefined
-					ID = selection
-					WeaponButtons( ID,PlayerTank[ID].vehicle )
-					Produce( ID,PlayerTank,1,1,baseID,pickPL )
+				if PlayerCount = UnitLimit
+					BlockProduction()
 				else
-					WeaponButtons( Null,Undefined )
+					Markers(Off)
+					selection = BaseProduction( pointerNode )
+					if selection <> Undefined
+						ID = selection
+						WeaponButtons( ID,PlayerTank[ID].vehicle )
+						Produce( ID,PlayerTank,1,1,baseID,pickPL )
+					else
+						WeaponButtons( Null,Undefined )
+					endif
+					Markers(On)
 				endif
-				Markers(On)
 			elseif selection <> Undefined
 				if y < ( MapHeight+NodeSize ) `stay within map height
 					TankAlpha(PlayerTank[ID].bodyID,PlayerTank[ID].turretID,Brightest)
@@ -552,7 +556,7 @@ function GetInput()
 						BadMove()
 						CancelMove( ID,PlayerTank )
 
-					elseif mapTable[node].terrain <> Impassable
+					elseif mapTable[node].terrain < Impassable
 						PlayerTank[ID].goalNode = node
 						ResetPath(ID,PlayerTank)
 						if AStar(ID,PlayerTank) > InReach     `node out of range
@@ -572,7 +576,9 @@ function GetInput()
 							selection = Undefined
 							WeaponButtons( Null,Undefined )
 							PlayerTank[ID].moveTarget = node  `record last target
-											SetSpriteVisible(PlayerTank[ID].FOW,Off)
+							SetSpriteVisible(PlayerTank[ID].FOW,Off)
+									//~ TargetLine( PlayerTank[ID].x,PlayerTank[ID].y,mapTable[node].x,mapTable[node].y,1,PlayerTank,ID,128,128,128 )
+									`need to establish separate move line
 						endif
 					else
 						BadMove()
@@ -612,6 +618,22 @@ function GetInput()
 	Zoom(1,0,0,On,1) `TURN THIS OFF FOR CONTINUOS ZOOM OPERATION
 endfunction
 
+function BlockProduction()
+	PlaySound( ClickSound,vol )
+	TSize = 36*dev.scale
+	Text( LimitText,"Unit Maximum",YesNoX1+TSize,YesNoY1+TSize,50,50,50,TSize,255,0 )
+	SetVirtualButtonVisible( AcceptFlipButton,On )
+	SetVirtualButtonSize( AcceptFlipButton,dev.buttSize )
+	SetVirtualButtonPosition( AcceptFlipButton,YesNoX2a,YesNoY2 )
+	AlertDialog( LimitText,On,AcceptFlipButton )
+	repeat
+		Sync()
+	until GetVirtualButtonPressed( AcceptFlipButton ) or GetRawKeyState( Enter )
+	PlaySound( ClickSound,vol )
+	SetVirtualButtonVisible( AcceptFlipButton,Off )
+	AlertDialog( LimitText,Off,AcceptFlipButton )
+endfunction
+
 function Zoom(z,vx#,vy#,state,scale)
 	SetViewZoom(z)
 	SetViewOffset(vx#,vy#)
@@ -632,7 +654,7 @@ function EndGame()
 	Text( QuitText,"Back to Menu?",YesNoX1+TSize,YesNoY1+TSize,50,50,50,TSize,255,0 )
 	ButtonStatus( On, AcceptFlipButton, QuitFlipButton )
 	AlertButtons( YesNoX2a, YesNoY2, YesNoX2b, YesNoY2, dev.buttSize, AcceptFlipButton, QuitFlipButton )
-	AlertDialog( QuitText,On )
+	AlertDialog( QuitText,On,QuitFlipButton )
 	repeat
 		if GetVirtualButtonPressed( AcceptFlipButton )
 			WaitForButtonRelease( AcceptFlipButton )
@@ -646,15 +668,16 @@ function EndGame()
 		endif
 		Sync()
 	until GetVirtualButtonState( QuitFlipButton ) or GetRawKeyPressed( 0x4E ) `N
+	PlaySound( ClickSound,vol )
 	if startOver then Main() `RESTART ACHILLES
 
 	ButtonStatus( Off, AcceptFlipButton, QuitFlipButton )
-	AlertDialog( QuitText,Off )
+	AlertDialog( QuitText,Off,QuitFlipButton )
 endfunction
 
-function TargetLine(x1, y1, x2, y2, thickness, Tank ref as tankType[],ID)
+function TargetLine(x1, y1, x2, y2, thickness, Tank ref as tankType[],ID,r,g,b)
 	Tank[ID].line = createSprite(0)
-	setSpriteColor(Tank[ID].line, 255,255,255,255)
+	setSpriteColor(Tank[ID].line,r,g,b,255)
     length = sqrt(Pow((x1-x2),2) + Pow((y1-y2),2))
     setSpriteSize(Tank[ID].line, length, thickness)
     setSpriteOffset(Tank[ID].line, 0, thickness/2)
@@ -706,7 +729,7 @@ function PlayerAim(ID,x1,y1)
 				SetSpriteVisible(PlayerTank[ID].bullsEye,On)
 				TankAlpha(PlayerTank[ID].bodyID,PlayerTank[ID].turretID,GlowMax)
 				if GetSpriteExists(PlayerTank[ID].line) then DeleteSprite(PlayerTank[ID].line)
-				TargetLine( PlayerTank[ID].x,PlayerTank[ID].y,AITank[PlayerTank[ID].target].x,AITank[PlayerTank[ID].target].y,1,PlayerTank,ID )
+				TargetLine( PlayerTank[ID].x,PlayerTank[ID].y,AITank[PlayerTank[ID].target].x,AITank[PlayerTank[ID].target].y,1,PlayerTank,ID,255,64,0 )
 				exit
 			else
 				exitfunction
@@ -797,6 +820,7 @@ function PlayerOps()
 				if mapTable[nextMove].team then exit
 
 				SetSpriteVisible(PlayerTank[i].healthID,Off)
+
 				Move(i,PlayerTank,PlayerTank[i].parentNode[PlayerTank[i].index],nextMove)
 				//~ PlayerFOW(i)
 				if MineField( i,PlayerTank ) and (not PlayerTank[i].alive) then exit

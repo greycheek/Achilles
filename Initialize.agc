@@ -2,7 +2,7 @@
 function ForceComposition( ID, Tank ref as tankType[], Grid as gridType[] )
 	for i = 0 to Cells-1
 		if Grid[i].imageID
-			Tank[ID].vehicle = Grid[i].imageID-SpriteConSeries
+			Tank[ID].vehicle = Grid[i].vehicle
 			if Tank[ID].vehicle = Question then Tank[ID].vehicle = Random2(1,4)
 			VehicleImage( ID,Tank )
 			inc ID

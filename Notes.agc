@@ -1,4 +1,38 @@
 
+
+function ProtectBase(ID)
+	for i = 0 to AIBaseCount	 `friendly base
+		if mapTable[AIBases[i].node].team = Unoccupied
+			for j = 0 to PlayerCount
+				if  GetSpriteInBox( PlayerTank[j].bodyID, AIBases[i].x1, AIBases[i].y1, AIBases[i].x2, AIBases[i].y2 )
+					if (mapTable[AIBases[i].node].moveTarget && AI) = AI then exit
+					AITank[ID].goalNode = AIBases[i].node
+					//~ AITank[ID].NearestPlayer = Unset
+					AITank[ID].route = PlanMove(ID)
+					mapTable[AITank[ID].goalNode].moveTarget = ( AI || mapTable[AITank[ID].goalNode].moveTarget )
+					exitfunction True
+				endif
+			next j
+		endif
+	next i
+endfunction False
+
+function AttackBase(ID)
+	for i = 0 to PlayerBaseCount
+		if  GetSpriteInBox( AITank[ID].bodyID, PlayerBases[i].x1, PlayerBases[i].y1, PlayerBases[i].x2, PlayerBases[i].y2 )
+			if mapTable[PlayerBases[i].node].team = Unoccupied
+				AITank[ID].goalNode = PlayerBases[i].node
+				//~ AITank[ID].NearestPlayer = Unset
+				AITank[ID].route = PlanMove(ID)
+				mapTable[AITank[ID].goalNode].moveTarget = ( AI || mapTable[AITank[ID].goalNode].moveTarget )
+				exitfunction True
+			endif
+		endif
+	next i
+endfunction False
+
+
+
 remstart
 
 	function TurnAround(ID, Tank ref as tankType[], currentNode)

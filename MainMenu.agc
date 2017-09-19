@@ -17,13 +17,13 @@ function MainMenu()
 			Text( QuitText,"Quit?",YesNoX1+TSize,YesNoY1+TSize,50,50,50,TSize,255,0 )
 			ButtonStatus( On, AcceptFlipButton, QuitFlipButton )
 			AlertButtons( YesNoX2a, YesNoY2, YesNoX2b, YesNoY2, dev.buttSize, AcceptFlipButton, QuitFlipButton )
-			AlertDialog( QuitText,On )
+			AlertDialog( QuitText,On,QuitFlipButton )
 			do
 				Sync()
 				if GetVirtualButtonPressed( AcceptFlipButton ) or GetRawKeyState( Enter ) or GetRawKeyPressed( 0x59 ) then end  `Y
 				if GetVirtualButtonPressed( QuitFlipButton ) //or GetRawKeyReleased( 0x4E ) `N
 					ButtonStatus( Off, AcceptFlipButton, QuitFlipButton )
-					AlertDialog( QuitText,Off )
+					AlertDialog( QuitText,Off,QuitFlipButton )
 					exit
 				endif
 			loop
@@ -38,7 +38,6 @@ function MainMenu()
 		endif
 	loop
 endfunction
-
 
 function Halt(ID1,ID2)
 	StopTweenSprite( ID1,MechGuy[0].bodyID )
@@ -124,11 +123,11 @@ function PatrolMech()
 	MechGuy[0].y = y2
 endfunction t1
 
-function AlertDialog( text,state )
+function AlertDialog( text,state,button )
 	If state = Off
+		PlaySound( ClickSound,vol )
 		DeleteText( text )
 		DeleteSprite( AlertBackGround )
-		WaitForButtonRelease( QuitFlipButton )
 	else
 		SetupSprite( AlertBackGround,AlertBackGround,"Yes-NoBkgnd.png",YesNoX1,YesNoY1,AlertW,AlertH,0,Off,0 )
 	endif
@@ -247,7 +246,11 @@ function Compose()
 					Stats( Null,Null,Null,Null,Null )
 					SetSpriteSize( clone,SpriteConSize,SpriteConSize )
 					SetRawMouseVisible( On )
-					GridCheck( clone )
+					for i = 1 to 7
+						if hit = SpriteCon[i].ID  `identify vehicle type
+							GridCheck( clone,i ) : exit
+						endif
+					next i
 				endcase
 				case AISpectrumSprite
 					pickAI.satur = abs(cy1-y)/100
@@ -283,7 +286,6 @@ function Compose()
 		Sync()
 		if GetRawKeyPressed( Enter ) then exitfunction
 
-
 		`Map Generation
 		if GetVirtualButtonReleased( MapButton )
 			PlaySound( ClickSound )
@@ -302,20 +304,20 @@ function Compose()
 				if GetVirtualButtonReleased( S4 ) then SaveMap( "map4" )
 				if GetVirtualButtonReleased( L5 ) then LoadMap( "map5" )
 				if GetVirtualButtonReleased( S5 ) then SaveMap( "map5" )
-				if GetVirtualButtonReleased( AcceptButton )
-					PlaySound( ClickSound )
-					exit
-				endif
 				if GetVirtualButtonReleased( MapButton )
 					PlaySound( ClickSound )
 					ResetMap()
 					GenerateTerrain()
 				endif
+				if GetVirtualButtonReleased( AcceptButton )
+					PlaySound( ClickSound )
+					exit
+				endif
 			loop
 			ReDisplaySettings( On )
+			SetVirtualButtonPosition( AcceptFlipButton, YesNoX3a,by# )
 			MapLSButtons( Off )
 		endif
-
 
 	until GetVirtualButtonPressed( AcceptFlipButton )
 	WaitForButtonRelease( AcceptFlipbutton )
@@ -347,11 +349,13 @@ function LoadMap( map$ )
 				case PlayerDepot : DepotSetup( node,PlayerDepot,PlayerDepotNode,PlayerDepotSeries ) : endcase
 				case AIDepot     : DepotSetup( node,AIDepot,AIDepotNode,AIDepotSeries ) : endcase
 				case Trees       : DrawTerrain( node,TreeSprite,treeDummy ) : endcase
+				case Rough		 : DrawTerrain( node,RoughSprite,RoughDummy ) : endcase
 				case Impassable  : DrawTerrain( node,Impass,impassDummy ) : endcase
+				case Water		 : DrawTerrain( node,AcquaSprite,waterDummy ) : endcase
 			endselect
 		endif
 	next i
-	rgb( MapFile,Read )
+	LoadForce( MapFile )
 	CloseFile( MapFile )
 	SetDisplayAspect(AspectRatio)  `back to map aspect ratio
 	SetRenderToScreen()
@@ -366,22 +370,74 @@ function LoadMap( map$ )
 endfunction
 
 function SaveMap( map$ )
+	if GetFileExists( map$ )
+		if not Confirm("Overwrite?") then exitfunction
+	endif
 	PlaySound( ClickSound )
-	MapFile = OpenToWrite( map$ )
-	for i = 0 to MapSize-1 : WriteInteger( MapFile, mapTable[i].terrain ) : next i
-	rgb( MapFile,Write )
-	CloseFile( MapFile )
+	file = OpenToWrite( map$ )
+	`save map
+	for i = 0 to MapSize-1 : WriteInteger( file, mapTable[i].terrain ) : next i
+	`save force
+	WriteInteger( file,pickAI.r ) : WriteInteger( file,pickAI.g ) : WriteInteger( file,pickAI.b ) : WriteInteger( file,pickAI.a )
+	WriteInteger( file,pickPL.r ) : WriteInteger( file,pickPL.g ) : WriteInteger( file,pickPL.b ) : WriteInteger( file,pickPL.a )
+	for i = 0 to Cells-1 : WriteInteger( file,AIGrid[i].vehicle ) : next i
+	for i = 0 to Cells-1 : WriteInteger( file,PlayerGrid[i].vehicle ) : next i
+	CloseFile( file )
 	MapLSButtons( On )
 endfunction
 
-function rgb( file,load )
-	if load
-		pickPL.r = ReadInteger( file ) : pickPL.g = ReadInteger( file ) : pickPL.b = ReadInteger( file ) : pickPL.a = ReadInteger( file )
-		pickAI.r = ReadInteger( file ) : pickAI.g = ReadInteger( file ) : pickAI.b = ReadInteger( file ) : pickAI.a = ReadInteger( file )
-	else
-		WriteInteger( file,pickPL.r ) : WriteInteger( file,pickPL.g ) : WriteInteger( file,pickPL.b ) : WriteInteger( file,pickPL.a )
-		WriteInteger( file,pickAI.r ) : WriteInteger( file,pickAI.g ) : WriteInteger( file,pickAI.b ) : WriteInteger( file,pickAI.a )
-	endif
+function Confirm( message$ )
+	PlaySound( ClickSound,vol )
+	TSize = 36*dev.scale
+	Text( ConfirmText,message$,YesNoX1+TSize,YesNoY1+TSize,50,50,50,TSize,255,0 )
+	ButtonStatus( On, AcceptFlipButton, QuitFlipButton )
+	AlertButtons( YesNoX2a, YesNoY2, YesNoX2b, YesNoY2, dev.buttSize, AcceptFlipButton, QuitFlipButton )
+	AlertDialog( ConfirmText, On, QuitFlipButton )
+	do
+		Sync()
+		if GetVirtualButtonPressed( AcceptFlipButton ) or GetRawKeyState( Enter ) or GetRawKeyPressed( 0x59 ) `Y
+			confirmation = True : exit
+		endif
+		if GetVirtualButtonPressed( QuitFlipButton ) or GetRawKeyReleased( 0x4E ) `N
+			confirmation = False : exit
+		endif
+	loop
+	PlaySound( ClickSound,vol )
+	ButtonStatus( Off, AcceptFlipButton, QuitFlipButton )
+	AlertDialog( ConfirmText, Off, QuitFlipButton )
+endfunction confirmation
+
+function LoadForce( file )	`placed at end, after map data
+	pickAI.r = ReadInteger( file ) : pickAI.g = ReadInteger( file ) : pickAI.b = ReadInteger( file ) : pickAI.a = ReadInteger( file )
+	pickPL.r = ReadInteger( file ) : pickPL.g = ReadInteger( file ) : pickPL.b = ReadInteger( file ) : pickPL.a = ReadInteger( file )
+	for i = 0 to Cells-1
+		AIGrid[i].vehicle = ReadInteger( file )
+		if GetSpriteExists( AIGrid[i].ID ) then DeleteSprite( AIGrid[i].ID )
+		if AIGrid[i].vehicle
+			AIGrid[i].ID = CloneSprite( SpriteCon[AIGrid[i].vehicle].ID )
+			AIGrid[i].imageID = GetSpriteImageID( SpriteCon[AIGrid[i].vehicle].ID )
+			SetSpriteSize( AIGrid[i].ID,SpriteConSize,SpriteConSize )
+			SetSpritePosition( AIGrid[i].ID,AIGrid[i].x1,AIGrid[i].y1 )
+			SetSpriteColor( AIGrid[i].ID,pickAI.r,pickAI.g,pickAI.b,pickAI.a )
+		else
+			AIgrid[i].imageID = Null
+			AIgrid[i].ID = Null
+		endif
+	next i
+	for i = 0 to Cells-1
+		PlayerGrid[i].vehicle = ReadInteger( file )
+		if GetSpriteExists( PlayerGrid[i].ID ) then DeleteSprite( PlayerGrid[i].ID )
+		if PlayerGrid[i].vehicle
+			PlayerGrid[i].ID = CloneSprite( SpriteCon[PlayerGrid[i].vehicle].ID )
+			PlayerGrid[i].imageID = GetSpriteImageID( SpriteCon[PlayerGrid[i].vehicle].ID )
+			SetSpriteSize( PlayerGrid[i].ID,SpriteConSize,SpriteConSize )
+			SetSpritePosition( PlayerGrid[i].ID,PlayerGrid[i].x1,PlayerGrid[i].y1 )
+			SetSpriteColor( PlayerGrid[i].ID,pickPL.r,pickPL.g,pickPL.b,pickPL.a )
+		else
+			PlayerGrid[i].imageID = Null
+			PlayerGrid[i].ID = Null
+		endif
+	next i
 endfunction
 
 function DrawTerrain( node,terrain,dummy )
@@ -450,36 +506,42 @@ function ForcesReady()
 	endif
 endfunction ready
 
-function GridCheck(ID)
+function GridCheck( ID,vehicle )
 	for i = 0 to Cells-1
-		if GetSpriteInBox( ID,AIgrid[i].x1, AIgrid[i].y1, AIgrid[i].x2, AIgrid[i].y2 )
+		if GetSpriteInBox( ID,AIGrid[i].x1,AIGrid[i].y1,AIGrid[i].x2,AIGrid[i].y2 )
 			if AIgrid[i].imageID then DeleteSprite( AIgrid[i].ID )
-			AIgrid[i].ID = ID
-			AIgrid[i].imageID = GetSpriteImageID( ID )
-			SetSpritePosition( ID,AIGrid[i].x1, AIGrid[i].y1 )
-			SetSpriteColor( ID,pickAI.r, pickAI.g, pickAI.b, pickAI.a )
-			Clones.insert(ID)
+			AIGrid[i].ID = ID
+			AIGrid[i].imageID = GetSpriteImageID(ID)
+			AIGrid[i].vehicle = vehicle
+			SetSpritePosition( AIGrid[i].ID,AIGrid[i].x1,AIGrid[i].y1 )
+			SetSpriteColor( AIGrid[i].ID,pickAI.r,pickAI.g,pickAI.b,pickAI.a )
 			exitfunction
 		endif
-		if GetSpriteInBox( ID,PlayerGrid[i].x1, PlayerGrid[i].y1, PlayerGrid[i].x2, PlayerGrid[i].y2 )
+		if GetSpriteInBox( ID,PlayerGrid[i].x1,PlayerGrid[i].y1,PlayerGrid[i].x2,PlayerGrid[i].y2 )
 			if PlayerGrid[i].imageID then DeleteSprite( PlayerGrid[i].ID )
 			PlayerGrid[i].ID = ID
-			PlayerGrid[i].imageID = GetSpriteImageID( ID )
-			SetSpritePosition( ID,PlayerGrid[i].x1, PlayerGrid[i].y1 )
-			SetSpriteColor( ID,pickPL.r, pickPL.g, pickPL.b, pickPL.a )
-			Clones.insert(ID)
+			PlayerGrid[i].imageID = GetSpriteImageID(ID)
+			PlayerGrid[i].vehicle = vehicle
+			SetSpritePosition( PlayerGrid[i].ID,PlayerGrid[i].x1,PlayerGrid[i].y1 )
+			SetSpriteColor( PlayerGrid[i].ID,pickPL.r,pickPL.g,pickPL.b,pickPL.a )
 			exitfunction
 		endif
 	next i
 	DeleteSprite(ID)
 endfunction
 
-function RemoveSpriteCon(ID,x,y)
+function RemoveSpriteCon( ID,x,y )
 	DeleteSprite(ID)
 	if x >= PlayerSide
-		PlayerGrid[CalcCell(x-PlayerSide,y)].imageID = Null
+		cell = CalcCell(x-PlayerSide,y)
+		PlayerGrid[cell].ID = Null
+		PlayerGrid[cell].imageID = Null
+		PlayerGrid[cell].vehicle = Null
 	else
-		AIgrid[CalcCell(x-AISide,y)].imageID = Null
+		cell = CalcCell(x-AISide,y)
+		AIGrid[cell].ID = Null
+		AIGrid[cell].imageID = Null
+		AIGrid[cell].vehicle = Null
 	endif
 endfunction
 
@@ -503,7 +565,10 @@ function GameSetup()
 	SetSpriteVisible( Dialog,Off )
 	SetSpriteVisible( Splash,Off )
 	SetSpriteVisible( field,On )
-	for i = 0 to Clones.length : DeleteSprite(Clones[i]) : next i
+	for i = 0 to Cells-1
+		if GetSpriteExists(AIGrid[i].ID) then DeleteSprite(AIGrid[i].ID)
+		if GetSpriteExists(PlayerGrid[i].ID) then DeleteSprite(PlayerGrid[i].ID)
+	next i
 	SetVirtualButtonVisible( SettingsButton,Off )
 	SetVirtualButtonActive( SettingsButton,Off )
 	StopMusicOGG( MusicSound )
@@ -538,6 +603,38 @@ function GameSetup()
 endfunction
 
 remstart
+		for i = 0 to Clones.length : DeleteSprite( Clones[i] ) : next i
+		Clones.length = -1
+			PlayerGrid[i].x1 = ReadInteger( file ) : PlayerGrid[i].y1 = ReadInteger( file )
+			PlayerGrid[i].x2 = ReadInteger( file ) : PlayerGrid[i].y2 = ReadInteger( file )
+			AIGrid[i].x1 = ReadInteger( file ) : AIGrid[i].y1 = ReadInteger( file )
+			AIGrid[i].x2 = ReadInteger( file ) : AIGrid[i].y2 = ReadInteger( file )
+			WriteInteger( file,AIGrid[i].x1 ) : WriteInteger( file,AIGrid[i].y1 )
+			WriteInteger( file,AIGrid[i].x2 ) : WriteInteger( file,AIGrid[i].y2 )
+			WriteInteger( file,PlayerGrid[i].x1 ) : WriteInteger( file,PlayerGrid[i].y1 )
+			WriteInteger( file,PlayerGrid[i].x2 ) : WriteInteger( file,PlayerGrid[i].y2 )
+
+		if GetSpriteExists( AIGrid[i].ID )
+			DeleteSprite(AIGrid[i].ID)
+			AIGrid[i].ID = Null
+			AIGrid[i].imageID = Null
+			AIGrid[i].vehicle = Null
+		endif
+
+		if GetSpriteExists( PlayerGrid[i].ID )
+			DeleteSprite(PlayerGrid[i].ID)
+			PlayerGrid[i].ID = Null
+			PlayerGrid[i].imageID = Null
+			PlayerGrid[i].vehicle = Null
+		endif
+
+		for i = 0 to Cells-1
+			AIGrid[i].ID = Null : AIGrid[i].vehicle = Null
+			AIGrid[i].x1 = Null : AIGrid[i].y1 = Null : AIGrid[i].x2 = Null : AIGrid[i].y2 = Null
+			PlayerGrid[i].ID = Null : PlayerGrid[i].vehicle = Null
+			PlayerGrid[i].x1 = Null : PlayerGrid[i].y1 = Null : PlayerGrid[i].x2 = Null : PlayerGrid[i].y2 = Null
+		next i
+
 	AIProdUnits = AIBaseCount * BaseProdValue
 	PlayerProdUnits = PlayerBaseCount * BaseProdValue
 remend

@@ -265,9 +265,9 @@ function Heuristic(goalNode,currentNode,team)
 	g# = CreateVector3( mapTable[goalNode].nodeX, mapTable[goalNode].nodeY,0 )
 	c# = CreateVector3( mapTable[currentNode].nodeX, mapTable[currentNode].nodeY,0 )
 	h# = GetVector3Distance( g#,c# )
-	if team = PlayerTeam
+	if (team = PlayerTeam) or (mapTable[currentNode].terrain <> Trees)
 		inc h#,mapTable[currentNode].cost
-	else  `reduce heuristic by terrain cost to help AI defensive position
+	else  `reduce heuristic by Tree cost to help AI defensive position
 		dec h#,mapTable[currentNode].cost : h# = Min(0,h#)
 	endif
 endfunction h#

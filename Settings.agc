@@ -6,14 +6,18 @@ function BaseColor()
 	for i = 0 to AIDepotCount     : SetSpriteColor(AIDepotNode[i].spriteID,pickAI.r,pickAI.g,pickAI.b,pickAI.a) : next i
 endfunction
 
-function BaseSetup( spriteID, node, base, baseRef ref as baseType[],group )
+function BaseSetup( spriteID, node, base, baseRef ref as baseType[], group )
 	baseRef.length = baseRef.length + 1
 	ID = baseRef.length
 	baseRef[ID].node = node
 	baseRef[ID].spriteID = spriteID
+	baseRef[ID].x1 = mapTable[node].x-zoneRadius
+	baseRef[ID].y1 = mapTable[node].y-zoneRadius
+	baseRef[ID].x2 = mapTable[node].x+zoneRadius
+	baseRef[ID].y2 = mapTable[node].y+zoneRadius
+
 	maptable[node].base = base
 	mapTable[node].terrain = base
-	//~ mapTable[node].team = team
 
 	LoadImage( baseRef[ID].spriteID,"HEXBASE.png" )
 	CreateSprite( baseRef[ID].spriteID,baseRef[ID].spriteID )
@@ -24,11 +28,8 @@ function BaseSetup( spriteID, node, base, baseRef ref as baseType[],group )
 	SetSpriteDepth( baseRef[ID].spriteID,5 )
 	SetSpriteGroup( baseRef[ID].spriteID, group )
 	SetSpritePositionByOffset( baseRef[ID].spriteID,mapTable[node].x,mapTable[node].y )
-
-	baseRef[ID].zoneID = CreateDummySprite()
-	SetSpriteDepth( baseRef[ID].zoneID,4 )
-	SetSpritePhysicsOn( baseRef[ID].zoneID,1 )
-	SetSpriteShapeBox( baseRef[ID].zoneID, mapTable[node].x-zoneX, mapTable[node].y-zoneY, mapTable[node].x+zoneX, mapTable[node].y+zoneY,0 )
+		SetSpriteCategoryBits( baseRef[ID].spriteID,NoBlock )
+		SetSpritePhysicsOff( baseRef[ID].spriteID )
 endfunction ID
 
 function DepotSetup( node, depot, depotNode ref as depotType[],series )
@@ -48,6 +49,8 @@ function DepotSetup( node, depot, depotNode ref as depotType[],series )
 	SetSpriteSize( depotNode[ID].spriteID, DepotSize, DepotSize )
 	SetSpriteDepth( depotNode[ID].spriteID,DepotDepth )
 	SetSpritePositionByOffset( depotNode[ID].spriteID, mapTable[node].x, mapTable[node].y )
+		SetSpriteCategoryBits( depotNode[ID].spriteID,NoBlock )
+		SetSpritePhysicsOff( depotNode[ID].spriteID )
 endfunction
 
 function GenerateBases()
@@ -55,10 +58,10 @@ function GenerateBases()
 	for i = 0 to Sectors-1
 		repeat
 			node1 = PlayerSectorNodes[i,Random2(0,SectorNodes-1)]
-		until mapTable[node1].terrain <> Impassable
+		until mapTable[node1].terrain < Impassable
 		repeat
 			node2 = AISectorNodes[i,Random2(0,SectorNodes-1)]
-		until mapTable[node2].terrain <> Impassable
+		until mapTable[node2].terrain < Impassable
 		select i	`guarantee either a base or depot in sectors 1 & 4
 			case 1 : if sbd then SetBases(node1,node2)  else SetDepots(node1,node2) : endcase
 			case 4 : if sbd then SetDepots(node1,node2) else SetBases(node1,node2)  : endcase
@@ -93,6 +96,7 @@ endfunction
 
 function GenerateImpassables()
 	SetSpriteVisible(Impass,On)
+	SetSpriteVisible(AcquaSprite,On)
 	for s = 0 to 1 `2 halves of the screen
 		shape = Random2(0,ShapeCount-1) `pick a random shape
 		depth = Random2(0,OpenRows-ShapeHeight) * Columns
@@ -105,44 +109,51 @@ function GenerateImpassables()
 			for c = 0 to ShapeWidth-1
 				columnNode = rowNode+c
 				if mapTable[columnNode].base <> Empty then continue
+				x = mapTable[columnNode].x-NodeOffset
+				y = mapTable[columnNode].y-NodeOffset
 
-				if Shapes[ shape,shapeLine+c ] = Impassable
-					mapTable[columnNode].terrain = Impassable
-					SetSpritePositionByOffset(Impass,mapTable[columnNode].x,mapTable[columnNode].y)
-					DrawSprite( Impass )
-					x = mapTable[columnNode].x-NodeOffset
-					y = mapTable[columnNode].y-NodeOffset
-					AddSpriteShapeBox(impassDummy,x,y,x+NodeSize-1,y+NodeSize-1,0)
-				endif
+				select Shapes[ shape,shapeLine+c ]
+					case Impassable
+						mapTable[columnNode].terrain = Impassable
+						SetSpritePositionByOffset( Impass,mapTable[columnNode].x,mapTable[columnNode].y )
+						DrawSprite( Impass )
+						AddSpriteShapeBox( impassDummy,x,y,x+NodeSize-1,y+NodeSize-1,0 )
+					endcase
+					case Water
+						mapTable[columnNode].terrain = Water
+						SetSpritePositionByOffset( AcquaSprite,mapTable[columnNode].x,mapTable[columnNode].y )
+						DrawSprite( AcquaSprite )
+						AddSpriteShapeBox( waterDummy,x,y,x+NodeSize-1,y+NodeSize-1,0 )
+					endcase
+				endselect
 			next c
 		next r
 	next s
 	SetSpriteVisible(Impass,Off)
+	SetSpriteVisible(AcquaSprite,Off)
 endfunction
 
-function GenerateTrees()
-	SetSpriteVisible(TreeSprite,On)
-	odds = Cells * 2
+function GenerateMapFeature( feature,featureSprite,dummy,oddsMin#,oddsMax#,clumpModifier# )
+	SetSpriteVisible( featureSprite,On )
 	for i = 0 to MapSize-1
-		if ( mapTable[i].terrain <> Impassable ) and ( mapTable[i].team = Unoccupied ) and ( mapTable[i].base = Empty )
-			treeOdds = odds
+		if ( mapTable[i].terrain = Clear ) and ( mapTable[i].team = Unoccupied ) and ( mapTable[i].base = Empty )
+			odds# = oddsMax#   `reset
 			for j = 0 to Cells-1
-				if mapTable[i+offset[j]].terrain = Trees then dec treeOdds,3  `increase tree chance; generate clumps
+				if mapTable[i+offset[j]].terrain = feature then dec odds#,clumpModifier#  `increase chances; generate clumps
 			next j
-			if treeOdds = odds then inc treeOdds,15	`decrease tree chance if surrounded by Clear
-			if Random2(0,treeOdds) <= 3	 `Tree?
-				mapTable[i].terrain = Trees
+			if Random2 ( 0,odds# ) <= oddsMin#	 `add feature?
+				mapTable[i].terrain = feature
 				maptable[i].cost = cost[mapTable[i].terrain]
 				maptable[i].modifier = TRM[mapTable[i].terrain]
-				SetSpritePositionByOffset( TreeSprite,mapTable[i].x,mapTable[i].y )
-				DrawSprite( TreeSprite )
+				SetSpritePositionByOffset( featureSprite,mapTable[i].x,mapTable[i].y )
+				DrawSprite( featureSprite )
 				x = mapTable[i].x-NodeOffset
 				y = mapTable[i].y-NodeOffset
-				AddSpriteShapeBox(treeDummy,x,y,x+NodeSize-1,y+NodeSize-1,0)
+				AddSpriteShapeBox(dummy,x,y,x+NodeSize-1,y+NodeSize-1,0)
 			endif
 		endif
 	next i
-	SetSpriteVisible(TreeSprite,Off)
+	SetSpriteVisible( featureSprite,Off )
 endfunction
 
 function ResetMap()
@@ -153,6 +164,7 @@ function ResetMap()
 
 	SetSpriteVisible(TreeSprite,Off)
 	SetSpriteVisible(Impass,Off)
+	SetSpriteVisible(AcquaSprite,Off)
 	DeleteImage(field)
 	DeleteSprite(field)
 	mapTable = holdTable  `reset mapTable
@@ -172,9 +184,13 @@ function GenerateTerrain()
 	DrawSprite(field)
 	SetRenderToImage(field,0)
 
+	max# = 48
+	min# = ceil( max#*.05 )
+	clumpMod# = ceil( max#*.3)
 	GenerateImpassables()
 	GenerateBases()
-	GenerateTrees()
+	GenerateMapFeature( Trees,TreeSprite,treeDummy,min#,max#,clumpMod# )
+	GenerateMapFeature( Rough,RoughSprite,roughDummy,min#,max#,clumpMod# )
 	BaseColor()
 	SetDisplayAspect(AspectRatio)  `back to map aspect ratio
 	SetRenderToScreen()
@@ -187,7 +203,7 @@ function GenerateMap()
 		mapTable[i].nodeY = trunc(i/Columns)
 		mapTable[i].x = (mapTable[i].nodeX * NodeSize) + NodeOffset
 		mapTable[i].y = (mapTable[i].nodeY * NodeSize) + NodeOffset
-		mapTable[i].terrain = val(chr(ReadByte( MapFile )))
+		mapTable[i].terrain = val(chr(ReadByte( MapFile ))) `base 16 format
 		maptable[i].cost = cost[mapTable[i].terrain]
 		maptable[i].modifier = TRM[mapTable[i].terrain]
 		mapTable[i].base = Empty
@@ -207,10 +223,16 @@ function GenerateMap()
 
 	impassDummy = CreateDummySprite()
 	treeDummy = CreateDummySprite()
+	roughDummy = CreateDummySprite()
+	waterDummy = CreateDummySprite()
 	SetSpriteCategoryBits(treeDummy,Block)
 	SetSpritePhysicsOn(treeDummy,1)
 	SetSpriteCategoryBits(impassDummy,Block) // || ImpassBlock)
 	SetSpritePhysicsOn(impassDummy,1)
+	SetSpriteCategoryBits(roughDummy,NoBlock)
+	SetSpritePhysicsOff(roughDummy)
+	SetSpriteCategoryBits(waterDummy,NoBlock)
+	SetSpritePhysicsOff(waterDummy)
 
 	LoadImage(TreeSprite,"TreeTop290.png")
 	CreateSprite(TreeSprite,TreeSprite )
@@ -227,6 +249,20 @@ function GenerateMap()
 	SetSpriteSize(Impass,NodeSize,NodeSize)
 	SetSpriteOffset(Impass,NodeOffset,NodeOffset)
 	SetSpriteVisible(Impass,Off)
+
+	LoadImage(AcquaSprite,"Water.png")
+	CreateSprite(AcquaSprite,AcquaSprite)
+	SetSpriteTransparency(AcquaSprite,Off)
+	SetSpriteDepth(AcquaSprite,1)
+	SetSpriteSize(AcquaSprite,NodeSize,NodeSize)
+	SetSpriteVisible(AcquaSprite,Off)
+
+	LoadImage(RoughSprite,"Rough3.png")
+	CreateSprite(RoughSprite,RoughSprite)
+	SetSpriteTransparency(RoughSprite,On)
+	SetSpriteDepth(RoughSprite,1)
+	SetSpriteSize(RoughSprite,NodeSize,NodeSize)
+	SetSpriteVisible(RoughSprite,Off)
 
 	BaseHalo = BaseHaloSeries
 	LoadImage(BaseHalo,"BaseHalo.png")
@@ -267,7 +303,6 @@ function Setup()
 	dim SpriteCon[SpriteConUnits] as dialogTankType
 	SpriteCon.length = SpriteConUnits + 1
 	SpriteConSize = CellWidth
-	Clones.length = Empty
 	AICount = DefaultAI
 	PlayerCount = DefaultPlayer
 	vol = 50
@@ -523,24 +558,30 @@ function Setup()
 
 			AIgrid[ID].imageID = Null
 			AIgrid[ID].ID = Null
+			AIgrid[ID].vehicle = Null
+
 			PlayerGrid[ID].imageID = Null
 			PlayerGrid[ID].ID = Null
+			PlayerGrid[ID].vehicle = Null
 		next j
 	next i
 	for i = 0 to UnitTypes-1
-		clone1 = CloneSprite( SpriteCon[i+1].ID )
+		vehicle=i+1
+		clone1 = CloneSprite( SpriteCon[vehicle].ID )
 		AIgrid[i].imageID = GetSpriteImageID( clone1 )
 		AIgrid[i].ID = clone1
+		AIgrid[i].vehicle = vehicle
 		SetSpritePosition( clone1,AIgrid[i].x1,AIgrid[i].y1 )
 		SetSpriteSize( clone1,SpriteConSize,SpriteConSize )
-		SetSpriteColor(  clone1, pickAI.r, pickAI.g, pickAI.b, pickAI.a )
+		SetSpriteColor(  clone1,pickAI.r,pickAI.g,pickAI.b,pickAI.a )
 
-		clone2 = CloneSprite( SpriteCon[i+1].ID )
+		clone2 = CloneSprite( SpriteCon[vehicle].ID )
 		PlayerGrid[i].imageID = AIgrid[i].imageID
 		PlayerGrid[i].ID = clone2
+		PlayerGrid[i].vehicle = vehicle
 		SetSpritePosition( clone2,PlayerGrid[i].x1,PlayerGrid[i].y1 )
 		SetSpriteSize( clone2,SpriteConSize,SpriteConSize )
-		SetSpriteColor(  clone2, pickPL.r, pickPL.g, pickPL.b, pickPL.a )
+		SetSpriteColor(  clone2,pickPL.r,pickPL.g,pickPL.b,pickPL.a )
 	next i
 	Text(VersionText,"v0.9",MaxWidth-90,70,72,72,72,32,255,2)
 	PlayMusicOGG( MusicSound, 1 )
@@ -549,6 +590,35 @@ function Setup()
 endfunction
 
 remstart
+	baseRef[ID].zoneID = CreateDummySprite()
+	SetSpriteDepth( baseRef[ID].zoneID,4 )
+	SetSpritePhysicsOn( baseRef[ID].zoneID,1 )
+	SetSpriteShapeBox( baseRef[ID].zoneID, mapTable[node].x-zoneRadius, mapTable[node].y-zoneRadius, mapTable[node].x+zoneRadius, mapTable[node].y+zoneRadius,0 )
+
+function GenerateTrees()
+	SetSpriteVisible(TreeSprite,On)
+	odds = Cells * 2
+	for i = 0 to MapSize-1
+		if ( mapTable[i].terrain <> Impassable ) and ( mapTable[i].team = Unoccupied ) and ( mapTable[i].base = Empty )
+			treeOdds = odds
+			for j = 0 to Cells-1
+				if mapTable[i+offset[j]].terrain = Trees then dec treeOdds,3  `increase tree chance; generate clumps
+			next j
+			if treeOdds = odds then inc treeOdds,15	`decrease tree chance if surrounded by Clear
+			if Random2(0,treeOdds) <= 3	 `Tree?
+				mapTable[i].terrain = Trees
+				maptable[i].cost = cost[mapTable[i].terrain]
+				maptable[i].modifier = TRM[mapTable[i].terrain]
+				SetSpritePositionByOffset( TreeSprite,mapTable[i].x,mapTable[i].y )
+				DrawSprite( TreeSprite )
+				x = mapTable[i].x-NodeOffset
+				y = mapTable[i].y-NodeOffset
+				AddSpriteShapeBox(treeDummy,x,y,x+NodeSize-1,y+NodeSize-1,0)
+			endif
+		endif
+	next i
+	SetSpriteVisible(TreeSprite,Off)
+endfunction
 
 remend
 

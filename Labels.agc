@@ -20,8 +20,8 @@ global MiddleY as float
 global AspectRatio as float
 global MapWidth as float
 global MapHeight as float
-global zoneX as float
-global zoneY as float
+//~ global zoneX as float
+//~ global zoneY as float
 global NodeSize as integer
 global NodeOffset as integer
 global ScreenWidth as integer
@@ -37,8 +37,12 @@ MapWidth = OpenColumns*NodeSize
 MapHeight = OpenRows*NodeSize
 MiddleX = MaxWidth/2
 MiddleY = MapHeight/2
-zoneX = ((OpenColumns/2)*NodeSize)/2
-zoneY = ((OpenRows/2   )*NodeSize)/2
+
+global zoneRadius as integer
+#constant zoneRange 8
+zoneRadius = zoneRange * NodeSize
+//~ zoneX = ((OpenColumns/2)*NodeSize)/2
+//~ zoneY = ((OpenRows/2   )*NodeSize)/2
 
 `VECTORS
 #constant south 	-32
@@ -143,9 +147,11 @@ global angle  as integer[8]=[0,45,90,135,180,225,270,315]
 #constant SoundText 19
 #constant VictoryText 20
 #constant DefeatText 21
+#constant LimitText 22
+#constant ConfirmText 23
 
 #constant Gill 50
-#constant Impact 60
+#constant Avenir 60
 #constant WeaponText 100
 #constant StatText 200
 
@@ -206,7 +212,11 @@ global angle  as integer[8]=[0,45,90,135,180,225,270,315]
 #constant StunSeries 1600
 #constant TerrainSeries1 1700
 #constant TerrainSeries2 1701
+#constant TerrainSeries3 1703
+#constant TerrainSeries4 1704
 
+global AcquaSprite as integer = TerrainSeries3
+global RoughSprite as integer = TerrainSeries4
 
 `SOUNDS
 global ClickSound
@@ -250,8 +260,8 @@ HeavyLaserSound = LoadSound( "BeamElectro_01.wav" )
 MechSound = LoadSound("MotorClose_01.wav")
 HealSound = LoadSound("HealGlassy.wav")
 //~ GameOverSound = LoadSound( "GameOverRobot2.wav" )
-VictorySound = LoadSound("Victory.wav")
-DefeatSound = LoadSound("Defeat.wav")
+VictorySound = LoadSound("MagicReveal.wav")
+DefeatSound = LoadSound("ExitOpenAztec.wav")
 
 EMPSound = LoadSoundOGG("EMP.ogg")
 TankSound = LoadSoundOGG("Rumble2.ogg")
@@ -270,7 +280,7 @@ TargetSound = LoadSoundOGG("Target Acquired_01.ogg" )
 LockOnSound = LoadSoundOGG( "Locked On_01.ogg" )
 Silence = LoadSoundOGG( "Silent.ogg" )
 
-global vol as integer = 50
+global vol as integer = 100
 global orders as integer[7] `OrderSounds + 1
 #constant OrderSounds 6
 orders[0] = YesSirSound
@@ -357,6 +367,8 @@ cost$[6,0] = "UNIT COST  200"
 
 
 `TANKS
+
+#constant UnitLimit 9
 
 global BarHeight as integer
 BarHeight = NodeSize * .75
@@ -545,12 +557,18 @@ global BaseHalo as integer
 
 
 `--TERRAIN--
+#constant Clear 1
+#constant Rough 2
+#constant Trees 3
 
-#constant Impassable 0
-#constant AIDepot 6
-#constant PlayerDepot 2
-#constant AIBase 5
-#constant PlayerBase 4
+#constant AIBase 4
+#constant AIDepot 5
+#constant PlayerDepot 6
+#constant PlayerBase 7
+
+#constant Impassable 8
+#constant Water 9
+
 
 #constant DepotSize 22
 #constant DepotDepth 3
@@ -560,7 +578,7 @@ depotOffset = NodeOffset/2
 
 
 `RANDOM MAP STUFF
-#constant ShapeCount 32
+#constant ShapeCount 50
 #constant ShapeGrid 98
 #constant ShapeWidth 7
 #constant ShapeHeight 14
@@ -580,7 +598,7 @@ Semi[0] = Columns + 2		  	  `upper left
 Semi[1] = Semi[0] + SemiWidth + 3  `upper right
 
 `create impass shape array
-ImpassFile = OpenToRead("7x14x32.txt")
+ImpassFile = OpenToRead("7x14x50.txt")
 for i = 0 to ShapeCount-1
 	for j = 0 to ShapeGrid-1
 		Shapes[i,j] = val(chr(ReadByte(ImpassFile)))
@@ -611,24 +629,38 @@ for s = 0 to Sectors-1
 	next r
 next s
 
+remstart
+#constant Clear 1
+#constant Rough 2
+#constant Trees 3
+#constant AIBase 4
+#constant AIDepot 5
+#constant PlayerDepot 6
+#constant PlayerBase 7
+#constant Impassable 8
+#constant Water 9
+remend
 
 `TERRAIN MOVEMENT MODIFIER
-#constant Trees 3
-#constant Clear 1
 global cost as integer[10]
 `map terrain to cost
 for i = 0 to 9 : cost[i]=Clear : next i
-cost[0]=Impassable
-cost[3]=Trees
+
+cost[Rough] = Rough + 1
+cost[Trees] = Trees
+cost[Impassable] = Impassable
+cost[Water] = Water
 
 `TERRAIN DAMAGE MODIFIER
 #constant TreeMod .5
 #constant ClearMod 1
+#constant RoughMod 1.5
+
 global TRM as Float[10]
 `map terrain to damage modifier
 for i = 0 to 9 : TRM[i]=ClearMod : next i
-TRM[3]=TreeMod
-
+TRM[Rough]=RoughMod
+TRM[Trees]=TreeMod
 
 global Iris = BaseIris
 global IrisFrames = 62
@@ -654,11 +686,17 @@ global mapTable as mapType[MapSize]
 global holdTable as mapType[MapSize]
 global treeDummy as integer
 global impassDummy as integer
+global roughDummy as integer
+global waterDummy as integer
 
 type baseType
-	node as integer
-	spriteID as integer
-	zoneID as integer
+	x1
+	y1
+	x2
+	y2
+	node
+	spriteID
+	//~ zoneID
 endtype
 global AIBaseCount as integer
 global PlayerBaseCount as integer
@@ -826,8 +864,8 @@ global SD2image
 global SD3image
 global SD4image
 global SD5image
-		global VictorySpinner
-		global DefeatSpinner
+global VictorySpinner
+global DefeatSpinner
 
 turnImage = InterfaceSeries+1
 turnImageDown = InterfaceSeries+2
@@ -908,8 +946,8 @@ SD3image = InterfaceSeries+54
 SD4image = InterfaceSeries+55
 SD5image = InterfaceSeries+56
 
-		VictorySpinner = InterfaceSeries+57
-		DefeatSpinner = InterfaceSeries+58
+VictorySpinner = InterfaceSeries+57
+DefeatSpinner = InterfaceSeries+58
 
 type sliderType
 	ID
@@ -995,6 +1033,7 @@ endtype
 type gridType
 	ID as integer
 	imageID as integer
+	vehicle as integer
 	x1 as integer
 	y1 as integer
 	x2 as integer
@@ -1002,7 +1041,6 @@ type gridType
 endtype
 
 global SpriteConSize as integer = 112
-global Clones as integer[]
 
 remstart
 
