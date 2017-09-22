@@ -454,22 +454,31 @@ function Setup()
 
    `MAP GENERATOR SCREEN
 
+	tx1# = bx#*1.33
+	tx2# = bx#*3
+	tx3# = bx#*4.66
+	tx4# = bx#*6.25
+	ty# = MapHeight + ( NodeSize*2 )
+	bs# = dev.buttSize*1.75
+
+	LoadButton(SLOT1,SLOT1image,SLOTDOWN1image,"SLOT1.png","SLOT1DOWN.png",tx1#,ty#,bs#,Off)
+	LoadButton(SLOT2,SLOT2image,SLOTDOWN2image,"SLOT2.png","SLOT2DOWN.png",tx2#,ty#,bs#,Off)
+	LoadButton(SLOT3,SLOT3image,SLOTDOWN3image,"SLOT3.png","SLOT3DOWN.png",tx3#,ty#,bs#,Off)
+	LoadButton(SLOT4,SLOT4image,SLOTDOWN4image,"SLOT4.png","SLOT4DOWN.png",tx4#,ty#,bs#,Off)
+
+	bs# = bs#*.7
+	tx1# = MiddleX-(bs#/1.25)
+	tx2# = MiddleX+(bs#/1.5)
+	ty# = MiddleY*1.03
+
+	LoadButton(LOADBUTT,LOADBUTTimage,LOADBUTTDOWNimage,"LOADUP.png","LOADDOWN.png",tx1#,ty#,bs#,On)
+	LoadButton(SAVEBUTT,SAVEBUTTimage,SAVEBUTTDOWNimage,"SAVEUP.png","SAVEDOWN.png",tx2#,ty#,bs#,On)
+
 	LoadButton(MapButton,MapButtonImage,MapButtonImageDown,"Globe.png","GlobeDown.png",YesNoX3b,by#,dev.buttSize,On)
 	LoadButton(MapFlipButton,MapFlipButtonImage,MapFlipButtonImageDown,"GlobeFlip.png","GlobeFlipDown.png",YesNoX3b,by#,dev.buttSize,On)
 
-	LoadButton(L1,L1image,LD1image,"l1.png","ld1.png",bx#,by#,dev.buttSize,On) : inc bx#,buttStep#
-	LoadButton(L2,L2image,LD2image,"l2.png","ld2.png",bx#,by#,dev.buttSize,On) : inc bx#,buttStep#
-	LoadButton(L3,L3image,LD3image,"l3.png","ld3.png",bx#,by#,dev.buttSize,On) : inc bx#,buttStep#
-	LoadButton(L4,L4image,LD4image,"l4.png","ld4.png",bx#,by#,dev.buttSize,On) : inc bx#,buttStep#
-	LoadButton(L5,L5image,LD5image,"l5.png","ld5.png",bx#,by#,dev.buttSize,On) : inc bx#,buttStep#*gap#
-
-	LoadButton(S1,S1image,SD1image,"s1.png","sd1.png",bx#,by#,dev.buttSize,On) : inc bx#,buttStep#
-	LoadButton(S2,S2image,SD2image,"s2.png","sd2.png",bx#,by#,dev.buttSize,On) : inc bx#,buttStep#
-	LoadButton(S3,S3image,SD3image,"s3.png","sd3.png",bx#,by#,dev.buttSize,On) : inc bx#,buttStep#
-	LoadButton(S4,S4image,SD4image,"s4.png","sd4.png",bx#,by#,dev.buttSize,On) : inc bx#,buttStep#
-	LoadButton(S5,S5image,SD5image,"s5.png","sd5.png",bx#,by#,dev.buttSize,On)
-
-	MapLSButtons( Off )
+	SetVirtualButtonVisible( LOADBUTT,Off )
+	SetVirtualButtonVisible( SAVEBUTT,Off )
 	SetVirtualButtonVisible( MapButton,Off )
 	SetVirtualButtonVisible( MapFlipButton,Off )
 	ButtonStatus(Off, AcceptFlipButton, QuitFlipButton)

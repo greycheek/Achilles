@@ -84,16 +84,14 @@ zoneRadius = zoneRange * NodeSize
 #constant QuitFlipButton 12
 #constant MapButton 13
 #constant MapFlipButton 14
-#constant L1 15
-#constant L2 16
-#constant L3 17
-#constant L4 18
-#constant L5 19
-#constant S1 20
-#constant S2 21
-#constant S3 22
-#constant S4 23
-#constant S5 24
+
+#constant LOADBUTT 15
+#constant SAVEBUTT 16
+
+#constant SLOT1 17
+#constant SLOT2 18
+#constant SLOT3 19
+#constant SLOT4 20
 
 
 `GENERAL
@@ -149,6 +147,7 @@ global angle  as integer[8]=[0,45,90,135,180,225,270,315]
 #constant DefeatText 21
 #constant LimitText 22
 #constant ConfirmText 23
+#constant MapText 24
 
 #constant Gill 50
 #constant Avenir 60
@@ -844,26 +843,21 @@ global MapButtonImage
 global MapButtonImageDown
 global MapFlipButtonImage
 global MapFlipButtonImageDown
-global L1image
-global L2image
-global L3image
-global L4image
-global L5image
-global LD1image
-global LD2image
-global LD3image
-global LD4image
-global LD5image
-global S1image
-global S2image
-global S3image
-global S4image
-global S5image
-global SD1image
-global SD2image
-global SD3image
-global SD4image
-global SD5image
+
+global LOADBUTTimage
+global LOADBUTTDOWNimage
+global SAVEBUTTimage
+global SAVEBUTTDOWNimage
+
+global SLOT1image
+global SLOT2image
+global SLOT3image
+global SLOT4image
+global SLOTDOWN1image
+global SLOTDOWN2image
+global SLOTDOWN3image
+global SLOTDOWN4image
+
 global VictorySpinner
 global DefeatSpinner
 
@@ -922,32 +916,24 @@ MapButtonImageDown = InterfaceSeries+34
 MapFlipButtonImage = InterfaceSeries+35
 MapFlipButtonImageDown = InterfaceSeries+36
 
-L1image  = InterfaceSeries+37
-L2image  = InterfaceSeries+38
-L3image  = InterfaceSeries+39
-L4image  = InterfaceSeries+40
-L5image  = InterfaceSeries+41
 
-LD1image = InterfaceSeries+42
-LD2image = InterfaceSeries+43
-LD3image = InterfaceSeries+44
-LD4image = InterfaceSeries+45
-LD5image = InterfaceSeries+46
+LOADBUTTimage  = InterfaceSeries+37
+LOADBUTTDOWNimage  = InterfaceSeries+38
+SAVEBUTTimage  = InterfaceSeries+39
+SAVEBUTTDOWNimage  = InterfaceSeries+40
 
-S1image  = InterfaceSeries+47
-S2image  = InterfaceSeries+48
-S3image  = InterfaceSeries+49
-S4image  = InterfaceSeries+50
-S5image  = InterfaceSeries+51
+SLOT1image = InterfaceSeries+41
+SLOT2image = InterfaceSeries+42
+SLOT3image = InterfaceSeries+43
+SLOT4image = InterfaceSeries+44
 
-SD1image = InterfaceSeries+52
-SD2image = InterfaceSeries+53
-SD3image = InterfaceSeries+54
-SD4image = InterfaceSeries+55
-SD5image = InterfaceSeries+56
+SLOTDOWN1image = InterfaceSeries+45
+SLOTDOWN2image = InterfaceSeries+46
+SLOTDOWN3image = InterfaceSeries+47
+SLOTDOWN4image = InterfaceSeries+48
 
-VictorySpinner = InterfaceSeries+57
-DefeatSpinner = InterfaceSeries+58
+VictorySpinner = InterfaceSeries+49
+DefeatSpinner = InterfaceSeries+50
 
 type sliderType
 	ID
@@ -964,10 +950,10 @@ global SoundSlide as sliderType
 global MusicScale as sliderType
 global SoundScale as sliderType
 
-MusicSlide.ID = InterfaceSeries+59
-SoundSlide.ID = InterfaceSeries+60
-MusicScale.ID = InterfaceSeries+61
-SoundScale.ID = InterfaceSeries+62
+MusicSlide.ID = InterfaceSeries+51
+SoundSlide.ID = InterfaceSeries+52
+MusicScale.ID = InterfaceSeries+53
+SoundScale.ID = InterfaceSeries+54
 
 MusicScale.x = MiddleX+95
 MusicScale.y = MiddleY+260

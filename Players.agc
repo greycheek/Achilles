@@ -487,11 +487,9 @@ function GetInput()
 			PlaySound( ClickSound,vol )
 			MaxAlpha(ID)
 			exit
-		elseif GetVirtualButtonState(QuitButton) or GetRawKeyState(0x51) `Q
+		elseif GetVirtualButtonReleased(QuitButton) or GetRawKeyState(0x51) `Q
 			Zoom(1,0,0,On,1)
-			if GetVirtualButtonState(QuitButton) then WaitForButtonRelease(QuitButton)
-			PlaySound( ClickSound,vol )
-			EndGame()
+			if Confirm("Back to Menu?",QuitText) then Main()
 		elseif GetPointerState()
 			x = MinMax(0,MaxWidth-1,ScreenToWorldX(GetPointerX()))	`MinMax, temporary fix for out of bounds erros
 			y = MinMax(0,MaxHeight-1,ScreenToWorldY(GetPointerY()))
@@ -625,13 +623,13 @@ function BlockProduction()
 	SetVirtualButtonVisible( AcceptFlipButton,On )
 	SetVirtualButtonSize( AcceptFlipButton,dev.buttSize )
 	SetVirtualButtonPosition( AcceptFlipButton,YesNoX2a,YesNoY2 )
-	AlertDialog( LimitText,On,AcceptFlipButton )
+	AlertDialog( LimitText,On )
 	repeat
 		Sync()
 	until GetVirtualButtonPressed( AcceptFlipButton ) or GetRawKeyState( Enter )
 	PlaySound( ClickSound,vol )
 	SetVirtualButtonVisible( AcceptFlipButton,Off )
-	AlertDialog( LimitText,Off,AcceptFlipButton )
+	AlertDialog( LimitText,Off )
 endfunction
 
 function Zoom(z,vx#,vy#,state,scale)
@@ -645,34 +643,6 @@ function MaxAlpha(ID)
 	SetSpriteColorAlpha( PlayerTank[ID].bullsEye,Brightest )
 	SetSpriteColorAlpha( PlayerTank[ID].cover,CoverAlpha )
 	TankAlpha(PlayerTank[ID].bodyID,PlayerTank[ID].turretID,GlowMax)
-endfunction
-
-function EndGame()
-	startOver = False
-	Zoom(1,0,0,On,1)
-	TSize = 36*dev.scale
-	Text( QuitText,"Back to Menu?",YesNoX1+TSize,YesNoY1+TSize,50,50,50,TSize,255,0 )
-	ButtonStatus( On, AcceptFlipButton, QuitFlipButton )
-	AlertButtons( YesNoX2a, YesNoY2, YesNoX2b, YesNoY2, dev.buttSize, AcceptFlipButton, QuitFlipButton )
-	AlertDialog( QuitText,On,QuitFlipButton )
-	repeat
-		if GetVirtualButtonPressed( AcceptFlipButton )
-			WaitForButtonRelease( AcceptFlipButton )
-			startOver = True : exit
-		endif
-		if GetRawKeyPressed( Enter )
-			startOver = True : exit
-		endif
-		if GetRawKeyPressed( 0x59 ) `Y
-			startOver = True : exit
-		endif
-		Sync()
-	until GetVirtualButtonState( QuitFlipButton ) or GetRawKeyPressed( 0x4E ) `N
-	PlaySound( ClickSound,vol )
-	if startOver then Main() `RESTART ACHILLES
-
-	ButtonStatus( Off, AcceptFlipButton, QuitFlipButton )
-	AlertDialog( QuitText,Off,QuitFlipButton )
 endfunction
 
 function TargetLine(x1, y1, x2, y2, thickness, Tank ref as tankType[],ID,r,g,b)
@@ -855,6 +825,33 @@ function DisplayError(ID,error$)
 endfunction
 
 remstart
+function EndGame()
+	startOver = False
+	Zoom(1,0,0,On,1)
 
+	TSize = 36*dev.scale
+	Text( QuitText,"Back to Menu?",YesNoX1+TSize,YesNoY1+TSize,50,50,50,TSize,255,0 )
+	ButtonStatus( On, AcceptFlipButton, QuitFlipButton )
+	AlertButtons( YesNoX2a, YesNoY2, YesNoX2b, YesNoY2, dev.buttSize, AcceptFlipButton, QuitFlipButton )
+	AlertDialog( QuitText,On,QuitFlipButton )
+	repeat
+		if GetVirtualButtonPressed( AcceptFlipButton )
+			WaitForButtonRelease( AcceptFlipButton )
+			startOver = True : exit
+		endif
+		if GetRawKeyPressed( Enter )
+			startOver = True : exit
+		endif
+		if GetRawKeyPressed( 0x59 ) `Y
+			startOver = True : exit
+		endif
+		Sync()
+	until GetVirtualButtonState( QuitFlipButton ) or GetRawKeyPressed( 0x4E ) `N
+	PlaySound( ClickSound,vol )
+	if startOver then Main() `RESTART ACHILLES
+
+	ButtonStatus( Off, AcceptFlipButton, QuitFlipButton )
+	AlertDialog( QuitText,Off,QuitFlipButton )
+endfunction
 remend
 

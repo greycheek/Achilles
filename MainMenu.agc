@@ -1,5 +1,4 @@
 
-
 function MainMenu()
 	Setup()
 	t1 = PatrolMech()
@@ -12,21 +11,7 @@ function MainMenu()
 		settings = GetVirtualButtonPressed( SettingsButton )
 		Qkey = GetRawKeyPressed( 0x51 ) `Q
 		if cancel or Qkey
-			PlaySound( ClickSound,vol )
-			TSize = 36*dev.scale
-			Text( QuitText,"Quit?",YesNoX1+TSize,YesNoY1+TSize,50,50,50,TSize,255,0 )
-			ButtonStatus( On, AcceptFlipButton, QuitFlipButton )
-			AlertButtons( YesNoX2a, YesNoY2, YesNoX2b, YesNoY2, dev.buttSize, AcceptFlipButton, QuitFlipButton )
-			AlertDialog( QuitText,On,QuitFlipButton )
-			do
-				Sync()
-				if GetVirtualButtonPressed( AcceptFlipButton ) or GetRawKeyState( Enter ) or GetRawKeyPressed( 0x59 ) then end  `Y
-				if GetVirtualButtonPressed( QuitFlipButton ) //or GetRawKeyReleased( 0x4E ) `N
-					ButtonStatus( Off, AcceptFlipButton, QuitFlipButton )
-					AlertDialog( QuitText,Off,QuitFlipButton )
-					exit
-				endif
-			loop
+			if Confirm("Quit?",QuitText) then end
 		elseif settings
 			PlaySound( ClickSound,vol )
 			AlertButtons( YesNoX3a,by#,YesNoX3b,by#,dev.buttSize,AcceptFlipButton,QuitFlipButton )
@@ -123,12 +108,13 @@ function PatrolMech()
 	MechGuy[0].y = y2
 endfunction t1
 
-function AlertDialog( text,state,button )
+function AlertDialog( text,state )
 	If state = Off
 		PlaySound( ClickSound,vol )
 		DeleteText( text )
 		DeleteSprite( AlertBackGround )
 	else
+		SetTextVisible( MapText,state )
 		SetupSprite( AlertBackGround,AlertBackGround,"Yes-NoBkgnd.png",YesNoX1,YesNoY1,AlertW,AlertH,0,Off,0 )
 	endif
 	SetSpriteActive( AlertBackGround,state )
@@ -290,20 +276,14 @@ function Compose()
 		if GetVirtualButtonReleased( MapButton )
 			PlaySound( ClickSound )
 			ReDisplaySettings( Off )
-			MapLSButtons( On )
+			MapSLOTButtons( On )
 			StopMusicOGG( MusicSound )
 			do
 				Sync()
-				if GetVirtualButtonReleased( L1 ) then LoadMap( "map1" )
-				if GetVirtualButtonReleased( S1 ) then SaveMap( "map1" )
-				if GetVirtualButtonReleased( L2 ) then LoadMap( "map2" )
-				if GetVirtualButtonReleased( S2 ) then SaveMap( "map2" )
-				if GetVirtualButtonReleased( L3 ) then LoadMap( "map3" )
-				if GetVirtualButtonReleased( S3 ) then SaveMap( "map3" )
-				if GetVirtualButtonReleased( L4 ) then LoadMap( "map4" )
-				if GetVirtualButtonReleased( S4 ) then SaveMap( "map4" )
-				if GetVirtualButtonReleased( L5 ) then LoadMap( "map5" )
-				if GetVirtualButtonReleased( S5 ) then SaveMap( "map5" )
+				if GetVirtualButtonReleased( SLOT1 ) then LoadSaveDialog( "map1" )
+				if GetVirtualButtonReleased( SLOT2 ) then LoadSaveDialog( "map2" )
+				if GetVirtualButtonReleased( SLOT3 ) then LoadSaveDialog( "map3" )
+				if GetVirtualButtonReleased( SLOT4 ) then LoadSaveDialog( "map4" )
 				if GetVirtualButtonReleased( MapButton )
 					PlaySound( ClickSound )
 					ResetMap()
@@ -316,11 +296,35 @@ function Compose()
 			loop
 			ReDisplaySettings( On )
 			SetVirtualButtonPosition( AcceptFlipButton, YesNoX3a,by# )
-			MapLSButtons( Off )
+			MapSLOTButtons( Off )
 		endif
 
 	until GetVirtualButtonPressed( AcceptFlipButton )
 	WaitForButtonRelease( AcceptFlipbutton )
+endfunction
+
+function LoadSaveDialog( map$ )
+	PlaySound( ClickSound,vol )
+	TSize = (36*dev.scale)
+	Text( MapText,"MAP",YesNoX1+(TSize*.85),YesNoY1+(TSize*.6),50,50,50,TSize,255,0 )
+	SetVirtualButtonSize( QuitFlipButton,dev.buttSize )
+	SetVirtualButtonPosition( QuitFlipButton,YesNoX2a,YesNoY2 )
+	AlertDialog( MapText,On )
+	MapButtonStatus( On )
+	if GetFileExists( map$ ) then LSButtState( LOADBUTT,On,255 ) else LSButtState( LOADBUTT,Off,128 )
+	do
+		Sync()
+		if GetVirtualButtonReleased( QuitFlipButton ) or GetRawKeyState( Enter ) or GetRawKeyPressed( 0x59 ) `Y
+			exit
+		elseif GetVirtualButtonReleased( LOADBUTT )
+			LoadMap( map$ ) : exit
+		elseif GetVirtualButtonReleased( SAVEBUTT )
+			if SaveMap( map$ ) then exit
+		endif
+	loop
+	PlaySound( ClickSound,vol )
+	MapButtonStatus( Off )
+	AlertDialog( MapText,Off )
 endfunction
 
 function LoadMap( map$ )
@@ -371,7 +375,20 @@ endfunction
 
 function SaveMap( map$ )
 	if GetFileExists( map$ )
-		if not Confirm("Overwrite?") then exitfunction
+		SetVirtualButtonVisible( LOADBUTT,Off )
+		SetVirtualButtonVisible( SAVEBUTT,Off )
+		SetTextColorAlpha( MapText,0 )	`turns the text off; SetTextVisible() doesn't work
+		if Confirm("Overwrite?",ConfirmText)
+			LSButtState( LOADBUTT,On,255 )
+		else
+			SetVirtualButtonSize( QuitFlipButton,dev.buttSize )
+			SetVirtualButtonPosition( QuitFlipButton,YesNoX2a,YesNoY2 )
+			SetTextColorAlpha( MapText,FullAlpha )
+			AlertDialog( MapText,On )
+			WaitForButtonRelease( QuitFlipButton )
+			MapButtonStatus( On )
+			exitfunction False
+		endif
 	endif
 	PlaySound( ClickSound )
 	file = OpenToWrite( map$ )
@@ -383,16 +400,15 @@ function SaveMap( map$ )
 	for i = 0 to Cells-1 : WriteInteger( file,AIGrid[i].vehicle ) : next i
 	for i = 0 to Cells-1 : WriteInteger( file,PlayerGrid[i].vehicle ) : next i
 	CloseFile( file )
-	MapLSButtons( On )
-endfunction
+endfunction True
 
-function Confirm( message$ )
+function Confirm( message$,textID )
 	PlaySound( ClickSound,vol )
 	TSize = 36*dev.scale
-	Text( ConfirmText,message$,YesNoX1+TSize,YesNoY1+TSize,50,50,50,TSize,255,0 )
+	Text( textID,message$,YesNoX1+(TSize*.85),YesNoY1+(TSize*.6),50,50,50,TSize,255,0 )
 	ButtonStatus( On, AcceptFlipButton, QuitFlipButton )
 	AlertButtons( YesNoX2a, YesNoY2, YesNoX2b, YesNoY2, dev.buttSize, AcceptFlipButton, QuitFlipButton )
-	AlertDialog( ConfirmText, On, QuitFlipButton )
+	AlertDialog( textID,On )
 	do
 		Sync()
 		if GetVirtualButtonPressed( AcceptFlipButton ) or GetRawKeyState( Enter ) or GetRawKeyPressed( 0x59 ) `Y
@@ -404,7 +420,7 @@ function Confirm( message$ )
 	loop
 	PlaySound( ClickSound,vol )
 	ButtonStatus( Off, AcceptFlipButton, QuitFlipButton )
-	AlertDialog( ConfirmText, Off, QuitFlipButton )
+	AlertDialog( textID,Off )
 endfunction confirmation
 
 function LoadForce( file )	`placed at end, after map data
@@ -451,26 +467,24 @@ function DrawTerrain( node,terrain,dummy )
 	SetSpriteVisible( terrain,Off )
 endfunction
 
-function MapLSButtons( state )
-	SetVirtualButtonVisible( L1,state )
-	SetVirtualButtonVisible( L2,state )
-	SetVirtualButtonVisible( L3,state )
-	SetVirtualButtonVisible( L4,state )
-	SetVirtualButtonVisible( L5,state )
+function MapSLOTButtons( state )
+	SetVirtualButtonVisible( SLOT1,state )
+	SetVirtualButtonVisible( SLOT2,state )
+	SetVirtualButtonVisible( SLOT3,state )
+	SetVirtualButtonVisible( SLOT4,state )
+	SetVirtualButtonActive( SLOT1,state )
+	SetVirtualButtonActive( SLOT2,state )
+	SetVirtualButtonActive( SLOT3,state )
+	SetVirtualButtonActive( SLOT4,state )
+endfunction
 
-	SetVirtualButtonVisible( S1,state )
-	SetVirtualButtonVisible( S2,state )
-	SetVirtualButtonVisible( S3,state )
-	SetVirtualButtonVisible( S4,state )
-	SetVirtualButtonVisible( S5,state )
-
-	if state
-		if GetFileExists( "map1" ) then LSButtState( L1,On,255 ) else LSButtState( L1,Off,128 )
-		if GetFileExists( "map2" ) then LSButtState( L2,On,255 ) else LSButtState( L2,Off,128 )
-		if GetFileExists( "map3" ) then LSButtState( L3,On,255 ) else LSButtState( L3,Off,128 )
-		if GetFileExists( "map4" ) then LSButtState( L4,On,255 ) else LSButtState( L4,Off,128 )
-		if GetFileExists( "map5" ) then LSButtState( L5,On,255 ) else LSButtState( L5,Off,128 )
-	endif
+function MapButtonStatus( state )
+	SetVirtualButtonVisible( LOADBUTT,state )
+	SetVirtualButtonVisible( SAVEBUTT,state )
+	SetVirtualButtonVisible( QuitFlipButton,state )
+	SetVirtualButtonActive( LOADBUTT,state )
+	SetVirtualButtonActive( SAVEBUTT,state )
+	SetVirtualButtonActive( QuitFlipButton,state )
 endfunction
 
 function LSButtState( button,state,alpha )
@@ -603,6 +617,23 @@ function GameSetup()
 endfunction
 
 remstart
+		FROM MAINMENU: (substituted by Confirm(message$))
+			PlaySound( ClickSound,vol )
+			TSize = 36*dev.scale
+			Text( QuitText,"Quit?",YesNoX1+TSize,YesNoY1+TSize,50,50,50,TSize,255,0 )
+			ButtonStatus( On, AcceptFlipButton, QuitFlipButton )
+			AlertButtons( YesNoX2a, YesNoY2, YesNoX2b, YesNoY2, dev.buttSize, AcceptFlipButton, QuitFlipButton )
+			AlertDialog( QuitText,On,QuitFlipButton )
+			do
+				Sync()
+				if GetVirtualButtonPressed( AcceptFlipButton ) or GetRawKeyState( Enter ) or GetRawKeyPressed( 0x59 ) then end  `Y
+				if GetVirtualButtonPressed( QuitFlipButton ) //or GetRawKeyReleased( 0x4E ) `N
+					ButtonStatus( Off, AcceptFlipButton, QuitFlipButton )
+					AlertDialog( QuitText,Off,QuitFlipButton )
+					exit
+				endif
+			loop
+
 		for i = 0 to Clones.length : DeleteSprite( Clones[i] ) : next i
 		Clones.length = -1
 			PlayerGrid[i].x1 = ReadInteger( file ) : PlayerGrid[i].y1 = ReadInteger( file )
