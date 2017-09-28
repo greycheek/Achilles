@@ -21,15 +21,14 @@ function BaseSetup( spriteID, node, base, baseRef ref as baseType[], group )
 
 	LoadImage( baseRef[ID].spriteID,"HEXBASE.png" )
 	CreateSprite( baseRef[ID].spriteID,baseRef[ID].spriteID )
-	//~ SetSpritePhysicsOn( baseRef[ID].spriteID, On )
 	SetSpriteTransparency( baseRef[ID].spriteID, On )
 	SetSpriteVisible( baseRef[ID].spriteID, On )
 	SetSpriteSize( baseRef[ID].spriteID, NodeSize,NodeSize )
 	SetSpriteDepth( baseRef[ID].spriteID,5 )
 	SetSpriteGroup( baseRef[ID].spriteID, group )
 	SetSpritePositionByOffset( baseRef[ID].spriteID,mapTable[node].x,mapTable[node].y )
+		SetSpritePhysicsOn( baseRef[ID].spriteID,1 )
 		SetSpriteCategoryBits( baseRef[ID].spriteID,NoBlock )
-		SetSpritePhysicsOff( baseRef[ID].spriteID )
 endfunction ID
 
 function DepotSetup( node, depot, depotNode ref as depotType[],series )
@@ -49,11 +48,15 @@ function DepotSetup( node, depot, depotNode ref as depotType[],series )
 	SetSpriteSize( depotNode[ID].spriteID, DepotSize, DepotSize )
 	SetSpriteDepth( depotNode[ID].spriteID,DepotDepth )
 	SetSpritePositionByOffset( depotNode[ID].spriteID, mapTable[node].x, mapTable[node].y )
+		SetSpritePhysicsOn( depotNode[ID].spriteID,1 )
 		SetSpriteCategoryBits( depotNode[ID].spriteID,NoBlock )
-		SetSpritePhysicsOff( depotNode[ID].spriteID )
 endfunction
 
 function GenerateBases()
+	AIBases.length = -1
+	PlayerBases.length = -1
+	AIDepotNode.length = -1
+	PlayerDepotNode.length = -1
 	sbd = Random2( 0,1 )
 	for i = 0 to Sectors-1
 		repeat
@@ -225,14 +228,14 @@ function GenerateMap()
 	treeDummy = CreateDummySprite()
 	roughDummy = CreateDummySprite()
 	waterDummy = CreateDummySprite()
-	SetSpriteCategoryBits(treeDummy,Block)
-	SetSpritePhysicsOn(treeDummy,1)
-	SetSpriteCategoryBits(impassDummy,Block) // || ImpassBlock)
 	SetSpritePhysicsOn(impassDummy,1)
+	SetSpritePhysicsOn(treeDummy,1)
+	SetSpritePhysicsOn(roughDummy,1)
+	SetSpritePhysicsOn(waterDummy,1)
+	SetSpriteCategoryBits(impassDummy,Block)
+	SetSpriteCategoryBits(treeDummy,Block)
 	SetSpriteCategoryBits(roughDummy,NoBlock)
-	SetSpritePhysicsOff(roughDummy)
 	SetSpriteCategoryBits(waterDummy,NoBlock)
-	SetSpritePhysicsOff(waterDummy)
 
 	LoadImage(TreeSprite,"TreeTop290.png")
 	CreateSprite(TreeSprite,TreeSprite )
@@ -452,36 +455,47 @@ function Setup()
 	LoadButton(AcceptFlipButton,AcceptFlipImage,AcceptFlipImageDown,"AcceptFlip.png","AcceptFlipDown.png",YesNoX3a,by#,dev.buttSize,On)
 	LoadButton(QuitFlipButton,CancelFlipImage,CancelFlipImageDown,"CancelFlip.png","CancelFlipDown.png",YesNoX3b,by#,dev.buttSize,On)
 
+
    `MAP GENERATOR SCREEN
 
-	tx1# = bx#*1.33
-	tx2# = bx#*3
-	tx3# = bx#*4.66
-	tx4# = bx#*6.25
-	ty# = MapHeight + ( NodeSize*2 )
-	bs# = dev.buttSize*1.75
+	bs# = 80*dev.scale
+	margin = bs#*1.33
+	tx1# = YesNoX1+(bs#)
+	tx2# = tx1#+margin
+	ty1# = MiddleY*1.03
 
-	LoadButton(SLOT1,SLOT1image,SLOTDOWN1image,"SLOT1.png","SLOT1DOWN.png",tx1#,ty#,bs#,Off)
-	LoadButton(SLOT2,SLOT2image,SLOTDOWN2image,"SLOT2.png","SLOT2DOWN.png",tx2#,ty#,bs#,Off)
-	LoadButton(SLOT3,SLOT3image,SLOTDOWN3image,"SLOT3.png","SLOT3DOWN.png",tx3#,ty#,bs#,Off)
-	LoadButton(SLOT4,SLOT4image,SLOTDOWN4image,"SLOT4.png","SLOT4DOWN.png",tx4#,ty#,bs#,Off)
+	LoadButton(LOADBUTT,LOADBUTTimage,LOADBUTTDOWNimage,"LOADUP.png","LOADDOWN.png",tx1#,ty1#,bs#,On)
+	LoadButton(SAVEBUTT,SAVEBUTTimage,SAVEBUTTDOWNimage,"SAVEUP.png","SAVEDOWN.png",tx2#,ty1#,bs#,On)
 
-	bs# = bs#*.7
-	tx1# = MiddleX-(bs#/1.25)
-	tx2# = MiddleX+(bs#/1.5)
-	ty# = MiddleY*1.03
-
-	LoadButton(LOADBUTT,LOADBUTTimage,LOADBUTTDOWNimage,"LOADUP.png","LOADDOWN.png",tx1#,ty#,bs#,On)
-	LoadButton(SAVEBUTT,SAVEBUTTimage,SAVEBUTTDOWNimage,"SAVEUP.png","SAVEDOWN.png",tx2#,ty#,bs#,On)
-
+	LoadButton(MapSaveFlipButton,MapSaveFlipButtonImage,MapSaveFlipButtonImageDown,"MapSaveFlip.png","MapSaveFlipDown.png",YesNoX3b,by#,dev.buttSize,On)
+	LoadButton(RandomizeFlipButton,RandomizeFlipButtonImage,RandomizeFlipButtonImageDown,"RandomizeFlip.png","RandomizeFlipDown.png",YesNoX3c,by#,dev.buttSize,On)
 	LoadButton(MapButton,MapButtonImage,MapButtonImageDown,"Globe.png","GlobeDown.png",YesNoX3b,by#,dev.buttSize,On)
 	LoadButton(MapFlipButton,MapFlipButtonImage,MapFlipButtonImageDown,"GlobeFlip.png","GlobeFlipDown.png",YesNoX3b,by#,dev.buttSize,On)
 
+	bs# = dev.buttSize
+	margin = bs#*1.3
+	tx1# = MiddleX-(bs#*2.12)
+	tx2# = tx1#+margin
+	tx3# = tx2#+margin
+	tx4# = tx3#+margin
+
+	LoadButton(SLOT1,SLOT1image,SLOTDOWN1image,"SLOT1small.png","SLOT1DOWNsmall.png",tx1#,ty1#,bs#,On)
+	LoadButton(SLOT2,SLOT2image,SLOTDOWN2image,"SLOT2small.png","SLOT2DOWNsmall.png",tx2#,ty1#,bs#,On)
+	LoadButton(SLOT3,SLOT3image,SLOTDOWN3image,"SLOT3small.png","SLOT3DOWNsmall.png",tx3#,ty1#,bs#,On)
+	LoadButton(SLOT4,SLOT4image,SLOTDOWN4image,"SLOT4small.png","SLOT4DOWNsmall.png",tx4#,ty1#,bs#,On)
+
 	SetVirtualButtonVisible( LOADBUTT,Off )
 	SetVirtualButtonVisible( SAVEBUTT,Off )
+	SetVirtualButtonVisible( SLOT1,Off )
+	SetVirtualButtonVisible( SLOT2,Off )
+	SetVirtualButtonVisible( SLOT3,Off )
+	SetVirtualButtonVisible( SLOT4,Off )
+	SetVirtualButtonVisible( MapSaveFlipButton,Off )
+	SetVirtualButtonVisible( RandomizeFlipButton,Off )
 	SetVirtualButtonVisible( MapButton,Off )
 	SetVirtualButtonVisible( MapFlipButton,Off )
 	ButtonStatus(Off, AcceptFlipButton, QuitFlipButton)
+
 
    `FORCE SELECTION
 

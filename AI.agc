@@ -310,7 +310,7 @@ function PlanMove(ID)
 endfunction AITank[ID].route
 
 function AIOps()
-			if AICount < UnitLimit then AIBaseProduction()
+			if AISurviving < UnitLimit then AIBaseProduction()
 	//~ AIBaseProduction()
 	AITarget()
 	Text(MovingText,"moving",MiddleX,MiddleY,255,255,255,36,255,1)

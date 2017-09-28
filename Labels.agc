@@ -84,14 +84,16 @@ zoneRadius = zoneRange * NodeSize
 #constant QuitFlipButton 12
 #constant MapButton 13
 #constant MapFlipButton 14
+#constant MapSaveFlipButton 15
+#constant RandomizeFlipButton 16
 
-#constant LOADBUTT 15
-#constant SAVEBUTT 16
+#constant LOADBUTT 17
+#constant SAVEBUTT 18
 
-#constant SLOT1 17
-#constant SLOT2 18
-#constant SLOT3 19
-#constant SLOT4 20
+#constant SLOT1 19
+#constant SLOT2 20
+#constant SLOT3 21
+#constant SLOT4 22
 
 
 `GENERAL
@@ -843,6 +845,10 @@ global MapButtonImage
 global MapButtonImageDown
 global MapFlipButtonImage
 global MapFlipButtonImageDown
+global MapSaveFlipButtonImage
+global MapSaveFlipButtonImageDown
+global RandomizeFlipButtonImage
+global RandomizeFlipButtonImageDown
 
 global LOADBUTTimage
 global LOADBUTTDOWNimage
@@ -916,24 +922,28 @@ MapButtonImageDown = InterfaceSeries+34
 MapFlipButtonImage = InterfaceSeries+35
 MapFlipButtonImageDown = InterfaceSeries+36
 
+MapSaveFlipButtonImage = InterfaceSeries+37
+MapSaveFlipButtonImageDown = InterfaceSeries+38
+RandomizeFlipButtonImage = InterfaceSeries+39
+RandomizeFlipButtonImageDown = InterfaceSeries+40
 
-LOADBUTTimage  = InterfaceSeries+37
-LOADBUTTDOWNimage  = InterfaceSeries+38
-SAVEBUTTimage  = InterfaceSeries+39
-SAVEBUTTDOWNimage  = InterfaceSeries+40
+LOADBUTTimage = InterfaceSeries+41
+LOADBUTTDOWNimage = InterfaceSeries+42
+SAVEBUTTimage = InterfaceSeries+43
+SAVEBUTTDOWNimage = InterfaceSeries+44
 
-SLOT1image = InterfaceSeries+41
-SLOT2image = InterfaceSeries+42
-SLOT3image = InterfaceSeries+43
-SLOT4image = InterfaceSeries+44
+SLOT1image = InterfaceSeries+45
+SLOT2image = InterfaceSeries+46
+SLOT3image = InterfaceSeries+47
+SLOT4image = InterfaceSeries+48
 
-SLOTDOWN1image = InterfaceSeries+45
-SLOTDOWN2image = InterfaceSeries+46
-SLOTDOWN3image = InterfaceSeries+47
-SLOTDOWN4image = InterfaceSeries+48
+SLOTDOWN1image = InterfaceSeries+49
+SLOTDOWN2image = InterfaceSeries+50
+SLOTDOWN3image = InterfaceSeries+51
+SLOTDOWN4image = InterfaceSeries+52
 
-VictorySpinner = InterfaceSeries+49
-DefeatSpinner = InterfaceSeries+50
+VictorySpinner = InterfaceSeries+53
+DefeatSpinner = InterfaceSeries+54
 
 type sliderType
 	ID
@@ -950,10 +960,10 @@ global SoundSlide as sliderType
 global MusicScale as sliderType
 global SoundScale as sliderType
 
-MusicSlide.ID = InterfaceSeries+51
-SoundSlide.ID = InterfaceSeries+52
-MusicScale.ID = InterfaceSeries+53
-SoundScale.ID = InterfaceSeries+54
+MusicSlide.ID = InterfaceSeries+55
+SoundSlide.ID = InterfaceSeries+56
+MusicScale.ID = InterfaceSeries+57
+SoundScale.ID = InterfaceSeries+58
 
 MusicScale.x = MiddleX+95
 MusicScale.y = MiddleY+260

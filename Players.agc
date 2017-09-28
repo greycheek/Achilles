@@ -490,15 +490,16 @@ function GetInput()
 		elseif GetVirtualButtonReleased(QuitButton) or GetRawKeyState(0x51) `Q
 			Zoom(1,0,0,On,1)
 			if Confirm("Back to Menu?",QuitText) then Main()
-		elseif GetPointerState()
+elseif GetPointerPressed()
 			x = MinMax(0,MaxWidth-1,ScreenToWorldX(GetPointerX()))	`MinMax, temporary fix for out of bounds erros
 			y = MinMax(0,MaxHeight-1,ScreenToWorldY(GetPointerY()))
 				pointerNode = CalcNode( floor(x/NodeSize),floor(y/NodeSize) )
 
 			baseID = GetSpriteHitGroup( BaseGroup,x,y )
-			if GetSpriteHitGroup( PlayerTankGroup,x,y )
+			tankID = GetSpriteHitGroup( PlayerTankGroup,x,y )
+			if tankID
 				for i = 0 to PlayerLast
-					if GetSpriteHitTest( PlayerTank[i].bodyID,x,y )
+					if (tankID = PlayerTank[i].bodyID) or (tankID = PlayerTank[i].turretID)
 						if selection = i
 							PlaySound( ClickSound,vol )
 							CancelMove( ID,PlayerTank )
@@ -523,7 +524,7 @@ function GetInput()
 					endif
 				next i
 			elseif baseID and (selection = Undefined) and ( mapTable[pointerNode].moveTarget = False )
-				if PlayerCount = UnitLimit
+				if PlayerSurviving = UnitLimit
 					BlockProduction()
 				else
 					Markers(Off)
@@ -551,9 +552,9 @@ function GetInput()
 						endif
 						SetSpriteVisible(square,Off)
 					elseif mapTable[node].moveTarget
-						BadMove()
+						PlaySound( ErrorSound,vol )
+						if not ( PlayerTank[ID].moveTarget=node ) then DisplayError( OutofRangeText,"out of reach" )
 						CancelMove( ID,PlayerTank )
-
 					elseif mapTable[node].terrain < Impassable
 						PlayerTank[ID].goalNode = node
 						ResetPath(ID,PlayerTank)
@@ -575,8 +576,6 @@ function GetInput()
 							WeaponButtons( Null,Undefined )
 							PlayerTank[ID].moveTarget = node  `record last target
 							SetSpriteVisible(PlayerTank[ID].FOW,Off)
-									//~ TargetLine( PlayerTank[ID].x,PlayerTank[ID].y,mapTable[node].x,mapTable[node].y,1,PlayerTank,ID,128,128,128 )
-									`need to establish separate move line
 						endif
 					else
 						BadMove()
@@ -607,7 +606,6 @@ function GetInput()
 			SetSpriteColorAlpha( PlayerTank[ID].hilite,alpha )
 			SetSpriteColorAlpha( PlayerTank[ID].bullsEye,alpha )
 			SetSpriteColorAlpha( PlayerTank[ID].cover,alpha )
-					//~ SetSpriteColorAlpha( PlayerTank[ID].FOW,alpha/10 )
 		endif
 		Sync()
 	loop
@@ -623,13 +621,13 @@ function BlockProduction()
 	SetVirtualButtonVisible( AcceptFlipButton,On )
 	SetVirtualButtonSize( AcceptFlipButton,dev.buttSize )
 	SetVirtualButtonPosition( AcceptFlipButton,YesNoX2a,YesNoY2 )
-	AlertDialog( LimitText,On )
+	AlertDialog( LimitText,On,YesNoX1,YesNoY1,AlertW,AlertH )
 	repeat
 		Sync()
 	until GetVirtualButtonPressed( AcceptFlipButton ) or GetRawKeyState( Enter )
 	PlaySound( ClickSound,vol )
 	SetVirtualButtonVisible( AcceptFlipButton,Off )
-	AlertDialog( LimitText,Off )
+	AlertDialog( LimitText,Off,YesNoX1,YesNoY1,AlertW,AlertH )
 endfunction
 
 function Zoom(z,vx#,vy#,state,scale)

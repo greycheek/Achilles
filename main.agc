@@ -4,12 +4,24 @@ remstart
 	Two ways to win - base capture, or eliminate all enemy units
 
 	ISSUES/REVISIONS
-		---BETTER ASTAR??
+		---BETTER ASTAR?? -- AITANKS STUCK BEHIND WALLS
 		---IMPLEMENT SWARM
-		---REVISE MAP LOAD/SAVE BUTTONS
+		---BETTER AI BASE PROTECT
+		---BETTER AI ENGINEER PROTECTION
+		---GREY OUT MAP SLOT SAVE BUTTONS
+		----IMPLEMENT "OUT OF REACH" WARNING FOR MOVE TO OCCUPIED NODE
+
+		---TANKS UNSELECTABLE or DEAD SPOTS ON SCREEN??
+		---BASES BLOCK LOS!!!
+		---MYSTERIOUS LOS BLOCKAGE
 
 	FIXED?
-		---ROUGH TERRAIN BLOCKING LOS
+		---BASES APPEARING OUT OF NOWHERE?
+		---AI BASE SHOWED UP ON PLAYER SIDE IN RANDOM MAP GENERATION (ONLY HAPPENS WHILE RUNNING AND GENERATED AFTER AN ABANDONED GAME)
+		---SELECTING A MOVEMENT SQUARE TWICE GENERATES "OUT OF REACH" MESSAGE
+		---TREES NO LONGER BLOCKED!!!!!!!!!
+		---PRODUCTION UNIT TOTALS TAKEN AWAY WHEN BASE CAPTURED!!!
+		---UNITS NOT SELECTABLE!!!!!!
 		---PHANTOM BASE/UNIT SPAWN??????------
 		---LOS IMPROPERLY BLOCKED!!!!!
 		---HEAVILY DAMAGED AI TANKS DON'T VISIT DEPOTS
@@ -47,11 +59,9 @@ UseNewDefaultFonts( On )
 #include "Miscellaneous.agc"
 
 
-//~ GameOver( DefeatText,DefeatSpinner,150,0,0,0,0,0,"DEFEAT",DefeatSound )
-//~ GameOver( VictoryText,VictorySpinner,0,0,0,255,255,255,"VICTORY",VictorySound )
 //~ WaterTest()
 //~ SwarmTest()
-
+//~ ParticleTest()
 
 
 Main()
@@ -344,10 +354,8 @@ function CaptureBase( capturedIndex, pick ref as ColorSpec, attBase ref as baseT
 	SetSpriteColor( attBase[newBaseIndex].spriteID,pick.r,pick.g,pick.b,i )
 	Sync()
 	defBase.remove( capturedIndex )
-			AIBaseCount = AIBases.length
-			PlayerBaseCount = PlayerBases.length
-			AIProdUnits = (AIBaseCount+1) * BaseProdValue
-			PlayerProdUnits = (PlayerBaseCount+1) * BaseProdValue
+								//~ AIBaseCount = AIBases.length
+								//~ PlayerBaseCount = PlayerBases.length
 	SetSpriteVisible( BaseHalo,Off )
 endfunction
 
@@ -356,9 +364,9 @@ function VictoryConditions( ID,Tank ref as tankType[] )
 	if Tank[ID].health <= 0
 		KillTank(ID,Tank)
 		if Tank[ID].team = PlayerTeam
-			if PlayerSurviving = 0 then GameOver( DefeatText,DefeatSpinner,150,0,0,0,0,0,"DEFEAT",DefeatSound ) `all tanks destroyed?
+			if PlayerSurviving = 0 then GameOver( DefeatText,255,0,0,0,0,0,"DEFEAT",DefeatSound ) `all tanks destroyed?
 		elseif Tank[ID].team = AITeam `not necessary
-			if AISurviving = 0 then GameOver( VictoryText,VictorySpinner,0,0,0,255,255,255,"VICTORY",VictorySound ) `create victory & defeat sounds
+			if AISurviving = 0 then GameOver( VictoryText,0,0,0,255,255,255,"VICTORY",VictorySound ) `create victory & defeat sounds
 		endif
 	else
 		if Tank[ID].team = PlayerTeam
@@ -367,7 +375,9 @@ function VictoryConditions( ID,Tank ref as tankType[] )
 					dec AIBaseCount
 					inc PlayerBaseCount
 					CaptureBase( i,pickPL,PlayerBases,AIBases,PlayerBase,BaseGroup )
-					if AIBaseCount = -1 then GameOver( VictoryText,VictorySpinner,0,0,0,255,255,255,"VICTORY",VictorySound )
+					if AIBaseCount = -1 then GameOver( VictoryText,0,0,0,255,255,255,"VICTORY",VictorySound )
+								AIBaseCount = AIBases.length
+								PlayerBaseCount = PlayerBases.length
 				endif
 			next i
 		else
@@ -378,21 +388,21 @@ function VictoryConditions( ID,Tank ref as tankType[] )
 					dec PlayerBaseCount
 					inc AIBaseCount
 					CaptureBase( i,pickAI,AIBases,PlayerBases,AIBase,AIBaseGroup )
-					if PlayerBaseCount = -1 then GameOver( DefeatText,DefeatSpinner,150,0,0,0,0,0,"DEFEAT",DefeatSound )
+					if PlayerBaseCount = -1 then GameOver( DefeatText,150,0,0,0,0,0,"DEFEAT",DefeatSound )
+								AIBaseCount = AIBases.length
+								PlayerBaseCount = PlayerBases.length
 				endif
 			next i
 		endif
 	endif
 endfunction
 
-function GameOver( textID,spinID,r,g,b,spinR,spinG,spinB,message$,sound )
+function GameOver( textID,r,g,b,Pr,Pg,Pb,message$,sound )
 	#constant startSize 750
 	#constant endSize 100
 	#constant beginSpacing 300
 	#constant endSpacing 0
-	#constant spinDiameter 341.33
-	#constant spinW 576
-	#constant spinH 256
+	part as integer
 
 	PlaySound( sound )
 	DeleteVirtualButton(AcceptButton)
@@ -415,18 +425,26 @@ function GameOver( textID,spinID,r,g,b,spinR,spinG,spinB,message$,sound )
 				DeleteTween( tt )
 				DeleteAllSprites()
 				SetupSprite(field,field,"AchillesBoardClear.png",0,0,MaxWidth,MaxHeight,12,On,0)
-				SetupSprite(spinID,spinID,"SpinnerSS.png",MiddleX-(spinW/2),y2-(spinH/2)+(endSize/2),spinW,spinH,0,On,0)
-				SetSpriteColor( spinID,spinR,spinG,spinB,255 )
-				SetSpriteAnimation( spinID,spinDiameter,spinDiameter,32 )
-				PlaySprite( spinID,16 )
+				part = Particles( MiddleX,y2+(endSize/2),Pr,Pg,Pb )
 			endif
-		elseif not GetSpriteVisible( VictorySpinner )
-			SetSpriteVisible( VictorySpinner,On )
 		endif
+		if GetParticlesExists( part ) then UpdateParticles( part,.25 )
 		Sync()
 	until GetPointerPressed()
+	if GetParticlesExists( part ) then DeleteParticles( part )
 	Main() `restart Achilles
 endfunction
+
+function Particles( x,y,r,g,b )
+	part = CreateParticles( x,y )
+	AddParticlesScaleKeyFrame( part,1,.33 )
+	AddParticlesColorKeyFrame( part,0,r,g,b,96 )
+	SetParticlesLife( part,20 )
+	SetParticlesSize( part,12 )
+	SetParticlesDepth( part,1 )
+	SetParticlesVelocityRange( part,1.25,1)
+	SetParticlesFrequency( part,1000 )
+endfunction part
 
 function KillTank( defID,Tank ref as tankType[] )
 	PlaySound( ExplodeSound,vol )
@@ -597,8 +615,21 @@ function PlayTweens( tween, sprite )
 	endwhile
 endfunction
 
-
-remstart
+function ParticleTest()
+	part = CreateParticles( MiddleX,(MapHeight/2)+50 )
+	AddParticlesScaleKeyFrame( part,1,.33 )
+	AddParticlesColorKeyFrame( part,0,255,255,255,96 )
+	SetParticlesVelocityRange( part,1.25,1)
+	SetParticlesFrequency( part,1000 )
+	SetParticlesDepth( part,1 )
+	SetParticlesLife( part,20 )
+	SetParticlesSize( part,12 )
+	repeat
+		Sync()
+		UpdateParticles( part,.25 )
+	until GetPointerPressed()
+	end
+endfunction
 
 function SwarmTest()
 	ns = NodeSize*1
@@ -618,25 +649,50 @@ function SwarmTest()
 	end
 endfunction
 
-function ParticleTest()
-	do
-		PlaySound( ExplodeSound,vol )
-		smoke1 = CreateParticles( 100,100 )
-		AddParticlesScaleKeyFrame( smoke1, .5, .5 )
-		AddParticlesColorKeyFrame( smoke1, 0, 255, 255, 255, 96 )
-		AddParticlesColorKeyFrame( smoke1, .25, 255, 128, 0, 96 )
-		AddParticlesColorKeyFrame( smoke1, .5, 255, 0, 0, 96 )
-		AddParticlesColorKeyFrame( smoke1, .75, 0, 0, 0, 96 )
-		SetParticlesFrequency( smoke1, 75 )
-		SetParticlesLife( smoke1, 1 )
-		SetParticlesSize( smoke1, 42 )
-		SetParticlesImage( smoke1, whiteSmokeImage )
-		SetParticlesDirection( smoke1, 25, 50 )
-		SetParticlesDepth( smoke1, 0 )
-		SetParticlesVelocityRange( smoke1, .5, .75 )
-		Delay(2)
-		SetParticlesVisible( smoke1,0 )
-	loop
+remstart
+
+GAMEOVER WITH SPINNER
+function GameOver( textID,spinID,r,g,b,spinR,spinG,spinB,message$,sound )
+	#constant startSize 750
+	#constant endSize 100
+	#constant beginSpacing 300
+	#constant endSpacing 0
+	#constant spinDiameter 341.33
+	#constant spinW 576
+	#constant spinH 256
+
+	PlaySound( sound )
+	DeleteVirtualButton(AcceptButton)
+	DeleteVirtualButton(QuitButton)
+	DeleteAllText()
+	ft# = GetFrameTime()
+	y2 = MapHeight/2
+	y1 = y2-(startSize/2)
+
+	Text( textID,message$,MiddleX,y2,r,g,b,startSize,255,1 )
+	SetTextFont( textID,Avenir )
+	tt = TweenText( textID,Null,Null,y1,y2,Null,Null,startSize,endSize,beginSpacing,endSpacing,3,Null,TweenEaseIn1() )
+
+	if GetMouseExists() then SetRawMouseVisible( On )
+	repeat
+		if GetTweenExists( tt )
+			if GetTweenTextPlaying( tt,textID )
+				UpdateAllTweens( ft# )
+			else
+				DeleteTween( tt )
+				DeleteAllSprites()
+				SetupSprite(field,field,"AchillesBoardClear.png",0,0,MaxWidth,MaxHeight,12,On,0)
+				SetupSprite(spinID,spinID,"SpinnerSS.png",MiddleX-(spinW/2),y2-(spinH/2)+(endSize/2),spinW,spinH,0,On,0)
+				SetSpriteColor( spinID,spinR,spinG,spinB,255 )
+				SetSpriteAnimation( spinID,spinDiameter,spinDiameter,32 )
+				PlaySprite( spinID,16 )
+			endif
+		elseif not GetSpriteVisible( VictorySpinner )
+			SetSpriteVisible( VictorySpinner,On )
+		endif
+		Sync()
+	until GetPointerPressed()
+	Main() `restart Achilles
 endfunction
 
 function WaterTest()
