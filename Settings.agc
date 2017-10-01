@@ -27,11 +27,11 @@ function BaseSetup( spriteID, node, base, baseRef ref as baseType[], group )
 	SetSpriteDepth( baseRef[ID].spriteID,5 )
 	SetSpriteGroup( baseRef[ID].spriteID, group )
 	SetSpritePositionByOffset( baseRef[ID].spriteID,mapTable[node].x,mapTable[node].y )
-		SetSpritePhysicsOn( baseRef[ID].spriteID,1 )
-		SetSpriteCategoryBits( baseRef[ID].spriteID,NoBlock )
+		SetSpritePhysicsOff( baseRef[ID].spriteID )
+		//~ SetSpriteCategoryBits( baseRef[ID].spriteID,Null )
 endfunction ID
 
-function DepotSetup( node, depot, depotNode ref as depotType[],series )
+function DepotSetup( node, depot, depotNode ref as depotType[],series,group )
 	depotNode.length = depotNode.length + 1
 	ID = depotNode.length
 	depotNode[ID].node = node
@@ -47,9 +47,10 @@ function DepotSetup( node, depot, depotNode ref as depotType[],series )
 	SetSpriteVisible( depotNode[ID].spriteID, On )
 	SetSpriteSize( depotNode[ID].spriteID, DepotSize, DepotSize )
 	SetSpriteDepth( depotNode[ID].spriteID,DepotDepth )
+	SetSpriteGroup( depotNode[ID].spriteID,group )
 	SetSpritePositionByOffset( depotNode[ID].spriteID, mapTable[node].x, mapTable[node].y )
-		SetSpritePhysicsOn( depotNode[ID].spriteID,1 )
-		SetSpriteCategoryBits( depotNode[ID].spriteID,NoBlock )
+		SetSpritePhysicsOff( depotNode[ID].spriteID )
+		//~ SetSpriteCategoryBits( depotNode[ID].spriteID,Null )
 endfunction
 
 function GenerateBases()
@@ -85,8 +86,8 @@ function SetBases(node1,node2)
 endfunction
 
 function SetDepots(node1,node2)
-	DepotSetup( node1,PlayerDepot,PlayerDepotNode,PlayerDepotSeries )
-	DepotSetup( node2,AIDepot,AIDepotNode,AIDepotSeries )
+	DepotSetup( node1,PlayerDepot,PlayerDepotNode,PlayerDepotSeries,depotGroup )
+	DepotSetup( node2,AIDepot,AIDepotNode,AIDepotSeries,AIDepotGroup )
 endfunction
 
 function SetRandomly(node1,node2)
@@ -228,14 +229,12 @@ function GenerateMap()
 	treeDummy = CreateDummySprite()
 	roughDummy = CreateDummySprite()
 	waterDummy = CreateDummySprite()
+	SetSpriteGroup( impassDummy,blockGroup )
+	SetSpriteGroup( treeDummy,blockGroup )
 	SetSpritePhysicsOn(impassDummy,1)
 	SetSpritePhysicsOn(treeDummy,1)
-	SetSpritePhysicsOn(roughDummy,1)
-	SetSpritePhysicsOn(waterDummy,1)
-	SetSpriteCategoryBits(impassDummy,Block)
-	SetSpriteCategoryBits(treeDummy,Block)
-	SetSpriteCategoryBits(roughDummy,NoBlock)
-	SetSpriteCategoryBits(waterDummy,NoBlock)
+	SetSpritePhysicsOff(roughDummy)
+	SetSpritePhysicsOff(waterDummy)
 
 	LoadImage(TreeSprite,"TreeTop290.png")
 	CreateSprite(TreeSprite,TreeSprite )
@@ -260,7 +259,7 @@ function GenerateMap()
 	SetSpriteSize(AcquaSprite,NodeSize,NodeSize)
 	SetSpriteVisible(AcquaSprite,Off)
 
-	LoadImage(RoughSprite,"Rough3.png")
+	LoadImage(RoughSprite,"Rough4.png")
 	CreateSprite(RoughSprite,RoughSprite)
 	SetSpriteTransparency(RoughSprite,On)
 	SetSpriteDepth(RoughSprite,1)

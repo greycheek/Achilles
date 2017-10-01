@@ -166,6 +166,12 @@ global angle  as integer[8]=[0,45,90,135,180,225,270,315]
 #constant SpriteConBaseGroup 6
 #constant SpriteConUnits 7
 
+	//~ #constant roughGroup 8
+	#constant blockGroup 9
+	#constant depotGroup 10
+	#constant AIdepotGroup 11
+	//~ #constant acquaGroup 12
+
 #constant LightTank 1
 #constant MediumTank 2
 #constant HeavyTank 3

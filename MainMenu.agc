@@ -110,7 +110,7 @@ endfunction t1
 
 function AlertDialog( text,state,x,y,w,h )
 	If state = Off
-		PlaySound( ClickSound,vol )
+		//~ PlaySound( ClickSound,vol )
 		DeleteText( text )
 		DeleteSprite( AlertBackGround )
 	else
@@ -359,7 +359,7 @@ function LoadSaveDialog( map$ )
 endfunction
 
 function LoadMap( map$ )
-	PlaySound( ClickSound )
+	//~ PlaySound( ClickSound )
 	ResetMap()
 	LoadImage(field,"AchillesBoardClear.png")
 	CreateSprite(field,field)
@@ -381,8 +381,8 @@ function LoadMap( map$ )
 			select mapTable[i].terrain
 				case PlayerBase  : BaseSetup( PlayerBaseSeries+PlayerBases.length-1,node,PlayerBase,PlayerBases,BaseGroup ) : endcase
 				case AIBase      : BaseSetup( AIBaseSeries+AIBases.length-1,node,AIBase,AIBases,AIBaseGroup ) : endcase
-				case PlayerDepot : DepotSetup( node,PlayerDepot,PlayerDepotNode,PlayerDepotSeries ) : endcase
-				case AIDepot     : DepotSetup( node,AIDepot,AIDepotNode,AIDepotSeries ) : endcase
+				case PlayerDepot : DepotSetup( node,PlayerDepot,PlayerDepotNode,PlayerDepotSeries,depotGroup ) : endcase
+				case AIDepot     : DepotSetup( node,AIDepot,AIDepotNode,AIDepotSeries,AIdepotGroup ) : endcase
 				case Trees       : DrawTerrain( node,TreeSprite,treeDummy ) : endcase
 				case Rough		 : DrawTerrain( node,RoughSprite,RoughDummy ) : endcase
 				case Impassable  : DrawTerrain( node,Impass,impassDummy ) : endcase
@@ -405,7 +405,7 @@ function LoadMap( map$ )
 endfunction
 
 function SaveMap( map$ )
-	PlaySound( ClickSound )
+	//~ PlaySound( ClickSound )
 	if GetFileExists( map$ )
 		SetVirtualButtonVisible( LOADBUTT,Off )
 		SetVirtualButtonVisible( SAVEBUTT,Off )
@@ -448,7 +448,7 @@ function Confirm( message$,textID )
 			confirmation = False : exit
 		endif
 	loop
-	PlaySound( ClickSound,vol )
+	//~ PlaySound( ClickSound,vol )
 	ButtonStatus( Off, AcceptFlipButton, QuitFlipButton )
 	AlertDialog( textID,Off,YesNoX1,YesNoY1,AlertW,AlertH )
 endfunction confirmation

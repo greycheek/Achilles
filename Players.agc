@@ -490,7 +490,7 @@ function GetInput()
 		elseif GetVirtualButtonReleased(QuitButton) or GetRawKeyState(0x51) `Q
 			Zoom(1,0,0,On,1)
 			if Confirm("Back to Menu?",QuitText) then Main()
-elseif GetPointerPressed()
+		elseif GetPointerState()
 			x = MinMax(0,MaxWidth-1,ScreenToWorldX(GetPointerX()))	`MinMax, temporary fix for out of bounds erros
 			y = MinMax(0,MaxHeight-1,ScreenToWorldY(GetPointerY()))
 				pointerNode = CalcNode( floor(x/NodeSize),floor(y/NodeSize) )
@@ -542,7 +542,8 @@ elseif GetPointerPressed()
 				if y < ( MapHeight+NodeSize ) `stay within map height
 					TankAlpha(PlayerTank[ID].bodyID,PlayerTank[ID].turretID,Brightest)
 
-					node = MoveInput(ID,WorldToScreenX(PlayerTank[ID].x),WorldToScreenY(PlayerTank[ID].y))
+					//~ node = MoveInput(ID,WorldToScreenX(PlayerTank[ID].x),WorldToScreenY(PlayerTank[ID].y))
+					node = MoveInput( ID,PlayerTank[ID].x,PlayerTank[ID].y )
 
 					if mapTable[node].team <> Unoccupied
 						if (PlayerTank[ID].target = Undefined) and (mapTable[node].team = AITeam) and (PlayerTank[ID].vehicle <> Engineer)
@@ -654,18 +655,18 @@ function TargetLine(x1, y1, x2, y2, thickness, Tank ref as tankType[],ID,r,g,b)
     setSpriteAngle(Tank[ID].line,a#)
 endfunction
 
-function PlayerAim(ID,x1,y1)
-	px = ScreenToWorldX(GetPointerX())
-	py = ScreenToWorldY(GetPointerY())
-	rx = ((px/NodeSize)*NodeSize) + NodeOffset
-	ry = ((py/NodeSize)*NodeSize) + NodeOffset
-	node = CalcNode( Floor(px/NodeSize),Floor(py/NodeSize) )
+function PlayerAim( ID,x1,y1 )
+	nx = Floor( ScreenToWorldX(GetPointerX()) / NodeSize )
+	ny = Floor( ScreenToWorldY(GetPointerY()) / NodeSize )
+	x2 = ( nx*NodeSize ) + NodeOffset
+	y2 = ( ny*NodeSize ) + NodeOffset
+	node = CalcNode( nx,ny )
 
 	for i = 0 to AIPlayerLast
 		if not AITank[i].alive then continue
 		//~ PlayerTank[ID].target = Undefined
 
-		if LOSblocked(x1,y1,rx,ry)
+		if LOSblocked(x1,y1,x2,y2)
 			DisplayError( LOSText,"LOS blocked" )
 			exitfunction
 		endif
@@ -674,7 +675,7 @@ function PlayerAim(ID,x1,y1)
 			if GetSpriteVisible( AITank[i].bodyID ) `VISIBILITY CHECK
 				select PlayerTank[ID].weapon
 					case cannon,heavyCannon
-						if VectorDistance(x1,y1,rx,ry) > PlayerTank[ID].range
+						if VectorDistance(x1,y1,x2,y2) > PlayerTank[ID].range
 							DisplayError(OutofRangeText,"out of range")
 							exitfunction
 						endif
@@ -693,7 +694,7 @@ function PlayerAim(ID,x1,y1)
 				endselect
 				PlayerTank[ID].target = i
 				SetRawMouseVisible(Off)
-				SetSpritePositionByOffset(PlayerTank[ID].bullsEye,rx,ry)
+				SetSpritePositionByOffset(PlayerTank[ID].bullsEye,x2,y2)
 				SetSpriteVisible(PlayerTank[ID].bullsEye,On)
 				TankAlpha(PlayerTank[ID].bodyID,PlayerTank[ID].turretID,GlowMax)
 				if GetSpriteExists(PlayerTank[ID].line) then DeleteSprite(PlayerTank[ID].line)

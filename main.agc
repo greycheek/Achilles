@@ -5,17 +5,19 @@ remstart
 
 	ISSUES/REVISIONS
 		---BETTER ASTAR?? -- AITANKS STUCK BEHIND WALLS
+
 		---IMPLEMENT SWARM
-		---BETTER AI BASE PROTECT
+		---BETTER AI BASE PROTECT?
 		---BETTER AI ENGINEER PROTECTION
 		---GREY OUT MAP SLOT SAVE BUTTONS
-		----IMPLEMENT "OUT OF REACH" WARNING FOR MOVE TO OCCUPIED NODE
 
-		---TANKS UNSELECTABLE or DEAD SPOTS ON SCREEN??
-		---BASES BLOCK LOS!!!
-		---MYSTERIOUS LOS BLOCKAGE
+		---IMPLEMENT "OUT OF REACH" WARNING FOR MOVE TO OCCUPIED NODE
+
+		---RESTRICT MOVES TO LOS SPRITE BOUNDARY
 
 	FIXED?
+		---MYSTERIOUS LOS BLOCKAGE??!!
+		---TANKS UNSELECTABLE or DEAD SPOTS ON SCREEN??
 		---BASES APPEARING OUT OF NOWHERE?
 		---AI BASE SHOWED UP ON PLAYER SIDE IN RANDOM MAP GENERATION (ONLY HAPPENS WHILE RUNNING AND GENERATED AFTER AN ABANDONED GAME)
 		---SELECTING A MOVEMENT SQUARE TWICE GENERATES "OUT OF REACH" MESSAGE
@@ -27,13 +29,10 @@ remstart
 		---HEAVILY DAMAGED AI TANKS DON'T VISIT DEPOTS
 		---AI RELUCTANT TO FIRE; MAKING POOR MOVE DECISIONS (dont remove "nearestplayer" from goalset?)
 
-  	ENHANCEMENTS
-		Races/Factions?
-
 	FUTURE
 		Accumulated experience
 		Multiplayer
-		Create movement lines
+		Races/Factions?
 
 		---AITank visibility - Initialize and AIFOW
 		---LOS -- Mod at end of PlayerOps
@@ -167,7 +166,7 @@ function Produce( ID, Tank ref as tankType[], rate, baseProduct, baseID, c as Co
 endfunction
 
 function LOSblocked(x1,y1,x2,y2)
-	if PhysicsRayCastCategory(Block,x1,y1,x2,y2)
+	if PhysicsRayCastGroup(blockGroup,x1,y1,x2,y2)
 		if VectorDistance(x1,y1,x2,y2) > DLS then exitfunction True else exitfunction False  `adjacent nodes are always in LOS
 	endif
 endfunction False
