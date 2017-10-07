@@ -4,32 +4,18 @@ remstart
 	Two ways to win - base capture, or eliminate all enemy units
 
 	ISSUES/REVISIONS
-		---BETTER ASTAR?? -- AITANKS STUCK BEHIND WALLS
-
-		---IMPLEMENT SWARM
+		---BETTER ASTAR??
 		---BETTER AI BASE PROTECT?
 		---BETTER AI ENGINEER PROTECTION
-		---GREY OUT MAP SLOT SAVE BUTTONS
 
+		---VICTORY/DEFEAT GRAPHICS
 		---IMPLEMENT "OUT OF REACH" WARNING FOR MOVE TO OCCUPIED NODE
-
-		---RESTRICT MOVES TO LOS SPRITE BOUNDARY
+			AI MOVE TARGETS INVOLVED??
 
 	FIXED?
-		---MYSTERIOUS LOS BLOCKAGE??!!
-		---TANKS UNSELECTABLE or DEAD SPOTS ON SCREEN??
-		---BASES APPEARING OUT OF NOWHERE?
-		---AI BASE SHOWED UP ON PLAYER SIDE IN RANDOM MAP GENERATION (ONLY HAPPENS WHILE RUNNING AND GENERATED AFTER AN ABANDONED GAME)
-		---SELECTING A MOVEMENT SQUARE TWICE GENERATES "OUT OF REACH" MESSAGE
-		---TREES NO LONGER BLOCKED!!!!!!!!!
-		---PRODUCTION UNIT TOTALS TAKEN AWAY WHEN BASE CAPTURED!!!
-		---UNITS NOT SELECTABLE!!!!!!
-		---PHANTOM BASE/UNIT SPAWN??????------
-		---LOS IMPROPERLY BLOCKED!!!!!
-		---HEAVILY DAMAGED AI TANKS DON'T VISIT DEPOTS
-		---AI RELUCTANT TO FIRE; MAKING POOR MOVE DECISIONS (dont remove "nearestplayer" from goalset?)
 
 	FUTURE
+		IMPLEMENT SWARM
 		Accumulated experience
 		Multiplayer
 		Races/Factions?
@@ -60,7 +46,7 @@ UseNewDefaultFonts( On )
 
 //~ WaterTest()
 //~ SwarmTest()
-//~ ParticleTest()
+ParticleTest()
 
 
 Main()
@@ -616,16 +602,20 @@ endfunction
 
 function ParticleTest()
 	part = CreateParticles( MiddleX,(MapHeight/2)+50 )
-	AddParticlesScaleKeyFrame( part,1,.33 )
-	AddParticlesColorKeyFrame( part,0,255,255,255,96 )
-	SetParticlesVelocityRange( part,1.25,1)
-	SetParticlesFrequency( part,1000 )
+	VictoryImage = LoadImage("VictoryImage.png")
+	DefeatImage = LoadImage("DefeatImage.png")
+	SetParticlesImage( part, DefeatImage )
+	AddParticlesScaleKeyFrame( part,1,2 )
+	//~ AddParticlesColorKeyFrame( part,0,255,255,255,255 )
+	//~ AddParticlesColorKeyFrame( part,2,128,128,128,255 )
+	SetParticlesVelocityRange( part,1.5,3)
+	SetParticlesFrequency( part,5 )
 	SetParticlesDepth( part,1 )
-	SetParticlesLife( part,20 )
-	SetParticlesSize( part,12 )
+	SetParticlesLife( part,30 )
+	SetParticlesSize( part,90 )
 	repeat
 		Sync()
-		UpdateParticles( part,.25 )
+		UpdateParticles( part,0 )
 	until GetPointerPressed()
 	end
 endfunction
@@ -651,6 +641,23 @@ endfunction
 remstart
 
 GAMEOVER WITH SPINNER
+FIXED?
+		---DEAD SPOTS ON SCREEN??
+		---MYSTERIOUS LOS BLOCKAGE??!!
+		---BASES APPEARING OUT OF NOWHERE?
+		---RESTRICT MOVES TO FOW SPRITE BOUNDARY
+		---GREY OUT MAP SLOT SAVE BUTTONS
+		---TOO MANY BUTTON STATUS FUNCTIONS
+		---AI BASE SHOWED UP ON PLAYER SIDE IN RANDOM MAP GENERATION (ONLY HAPPENS WHILE RUNNING AND GENERATED AFTER AN ABANDONED GAME)
+		---SELECTING A MOVEMENT SQUARE TWICE GENERATES "OUT OF REACH" MESSAGE
+		---TREES NO LONGER BLOCKED!!!!!!!!!
+		---PRODUCTION UNIT TOTALS TAKEN AWAY WHEN BASE CAPTURED!!!
+		---UNITS NOT SELECTABLE!!!!!!
+		---PHANTOM BASE/UNIT SPAWN??????------
+		---LOS IMPROPERLY BLOCKED!!!!!
+		---HEAVILY DAMAGED AI TANKS DON'T VISIT DEPOTS
+		---AI RELUCTANT TO FIRE; MAKING POOR MOVE DECISIONS (dont remove "nearestplayer" from goalset?)
+
 function GameOver( textID,spinID,r,g,b,spinR,spinG,spinB,message$,sound )
 	#constant startSize 750
 	#constant endSize 100

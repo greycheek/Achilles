@@ -1,4 +1,142 @@
 
+	global tx1# as float
+	global tx2# as float
+	global tx3# as float
+	global tx4# as float
+	global ty1# as float
+
+`Defunct:
+function ButtonStatus( state,accept,quit )
+	SetVirtualButtonVisible( accept,state )
+	SetVirtualButtonVisible( quit,state )
+	SetVirtualButtonActive( accept,state )
+	SetVirtualButtonActive( quit,state )
+endfunction
+
+function LSButtState( button,state,alpha )
+	SetVirtualButtonActive( button,state )
+	SetVirtualButtonAlpha( button,alpha )
+endfunction
+
+`New
+function ButtonState( button,state )
+	SetVirtualButtonVisible( button,state )
+	SetVirtualButtonActive( button,state )
+endfunction
+
+function MapSLOTButtons( state )
+	SetVirtualButtonVisible( SLOT1,state )
+	SetVirtualButtonVisible( SLOT2,state )
+	SetVirtualButtonVisible( SLOT3,state )
+	SetVirtualButtonVisible( SLOT4,state )
+	SetVirtualButtonActive( SLOT1,state )
+	SetVirtualButtonActive( SLOT2,state )
+	SetVirtualButtonActive( SLOT3,state )
+	SetVirtualButtonActive( SLOT4,state )
+	SetVirtualButtonVisible( QuitFlipButton,state )
+	SetVirtualButtonActive( QuitFlipButton,state )
+endfunction
+
+function MapLoadSaveButtons( state )
+	SetVirtualButtonVisible( LOADBUTT,state )
+	SetVirtualButtonVisible( SAVEBUTT,state )
+	SetVirtualButtonVisible( QuitFlipButton,state )
+	SetVirtualButtonActive( LOADBUTT,state )
+	SetVirtualButtonActive( SAVEBUTT,state )
+	SetVirtualButtonActive( QuitFlipButton,state )
+endfunction
+
+
+
+function ButtonStatus( state,accept,quit )
+	if state
+		SetVirtualButtonPosition( accept,YesNoX3a,by# )
+		SetVirtualButtonPosition( quit,YesNoX3b,by# )
+		SetVirtualButtonVisible( accept,On )
+		SetVirtualButtonVisible( quit,On)
+	else
+		SetVirtualButtonPosition( accept,-100,-100 )
+		SetVirtualButtonPosition( quit,-100,-100 )
+		SetVirtualButtonVisible( accept,Off )
+		SetVirtualButtonVisible( quit,Off)
+	endif
+endfunction
+
+function HideButtons( state )
+	if state
+		SetVirtualButtonPosition( SLOT1,tx1#,ty1# )
+		SetVirtualButtonPosition( SLOT2,tx2#,ty1# )
+		SetVirtualButtonPosition( SLOT3,tx3#,ty1# )
+		SetVirtualButtonPosition( SLOT4,tx4#,ty1# )
+		SetVirtualButtonVisible( SLOT1,On )
+		SetVirtualButtonVisible( SLOT2,On )
+		SetVirtualButtonVisible( SLOT3,On )
+		SetVirtualButtonVisible( SLOT4,On )
+		SetVirtualButtonVisible( LOADBUTT,On )
+		SetVirtualButtonVisible( SAVEBUTT,On )
+		SetVirtualButtonPosition( LOADBUTT,tx1#,ty1# )
+		SetVirtualButtonPosition( SAVEBUTT,tx2#,ty1# )
+		SetVirtualButtonPosition( AcceptFlipButton,YesNoX3a,by# )
+		SetVirtualButtonVisible( AcceptFlipButton,On)
+		SetVirtualButtonPosition( QuitFlipButton,YesNoX3b,by# )
+		SetVirtualButtonVisible( QuitFlipButton,On)
+	else
+		SetVirtualButtonPosition( SLOT1,-100,-100 )
+		SetVirtualButtonPosition( SLOT2,-100,-100 )
+		SetVirtualButtonPosition( SLOT3,-100,-100 )
+		SetVirtualButtonPosition( SLOT4,-100,-100 )
+		SetVirtualButtonPosition( LOADBUTT,-100,-100 )
+		SetVirtualButtonPosition( SAVEBUTT,-100,-100 )
+		SetVirtualButtonVisible( SLOT1,Off )
+		SetVirtualButtonVisible( SLOT2,Off )
+		SetVirtualButtonVisible( SLOT3,Off )
+		SetVirtualButtonVisible( SLOT4,Off )
+		SetVirtualButtonVisible( LOADBUTT,Off )
+		SetVirtualButtonVisible( SAVEBUTT,Off )
+		SetVirtualButtonPosition( AcceptFlipButton,-100,-100)
+		SetVirtualButtonVisible( AcceptFlipButton,Off)
+		SetVirtualButtonPosition( QuitFlipButton,-100,-100 )
+		SetVirtualButtonVisible( QuitFlipButton,Off)
+	endif
+endfunction
+
+function DeleteAllButtons()
+	DeleteVirtualButton(AcceptFlipButton)
+	DeleteVirtualButton(QuitFlipButton)
+	DeleteVirtualButton(LOADBUTT)
+	DeleteVirtualButton(SAVEBUTT)
+	DeleteVirtualButton(SLOT1)
+	DeleteVirtualButton(SLOT2)
+	DeleteVirtualButton(SLOT3)
+	DeleteVirtualButton(SLOT4)
+	DeleteVirtualButton(AcceptButton)
+	DeleteVirtualButton(QuitButton)
+	DeleteVirtualButton(SettingsButton)
+	DeleteVirtualButton(MapSaveFlipButton)
+	DeleteVirtualButton(RandomizeFlipButton)
+	DeleteVirtualButton(MapButton)
+	DeleteVirtualButton(MapFlipButton)
+	DeleteVirtualButton(CannonButton)
+	DeleteVirtualButton(HeavyCannonButton)
+	DeleteVirtualButton(MissileButton)
+	DeleteVirtualButton(LaserButton)
+	DeleteVirtualButton(HeavyLaserButton)
+	DeleteVirtualButton(EMPButton)
+	DeleteVirtualButton(MineButton)
+endfunction
+
+function MapLoadSaveButtons( state )
+	if state
+
+		SetVirtualButtonPosition( QuitFlipButton,YesNoX3b,by# )
+		SetVirtualButtonVisible( QuitFlipButton,On)
+	else
+
+		SetVirtualButtonPosition( QuitFlipButton,-100,-100 )
+		SetVirtualButtonVisible( QuitFlipButton,Off)
+	endif
+endfunction
+
 
 function ProtectBase(ID)
 	for i = 0 to AIBaseCount	 `friendly base
@@ -30,8 +168,6 @@ function AttackBase(ID)
 		endif
 	next i
 endfunction False
-
-
 
 remstart
 

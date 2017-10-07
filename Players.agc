@@ -26,8 +26,12 @@ function BaseProduction( node )
 	SetVirtualButtonVisible( HeavyCannonButton,Off )
 	SetVirtualButtonVisible( MineButton,Off )
 	SetVirtualButtonVisible( EMPButton,Off )
-	ButtonStatus( On, AcceptFlipButton, QuitFlipButton )
-	ButtonStatus( Off, AcceptButton, QuitButton )
+ButtonState( AcceptFlipButton,On )
+ButtonState( QuitFlipButton,On )
+ButtonState( AcceptButton,Off )
+ButtonState( QuitButton,Off )
+	//~ ButtonStatus( On, AcceptFlipButton, QuitFlipButton )
+	//~ ButtonStatus( Off, AcceptButton, QuitButton )
 	AlertButtons( YesNoX3a, YesNoY3, YesNoX3b, YesNoY3, dev.buttSize, AcceptFlipButton, QuitFlipButton )
 
 	for i = 1 to SpriteConUnits-1
@@ -86,9 +90,12 @@ function BaseProduction( node )
 	else
 		WaitForButtonRelease( QuitFlipButton )
 	endif
-
-	ButtonStatus( Off, AcceptFlipButton, QuitFlipButton )
-	ButtonStatus( On, AcceptButton, QuitButton )
+ButtonState( AcceptFlipButton,Off )
+ButtonState( QuitFlipButton,Off )
+ButtonState( AcceptButton,On )
+ButtonState( QuitButton,On )
+	//~ ButtonStatus( Off, AcceptFlipButton, QuitFlipButton )
+	//~ ButtonStatus( On, AcceptButton, QuitButton )
 	AlertButtons( YesNoX4a, YesNoY4, YesNoX4b, YesNoY4, dev.buttSize, AcceptButton, QuitButton )
 	SetSpriteActive( BaseDialog,Off )
 	SetSpriteVisible( BaseDialog,Off )
@@ -481,6 +488,8 @@ function GetInput()
 	WeaponButtons( Null,Undefined )
 	ID as integer
 
+	ButtonActivation(Off)
+
 	do
 		if selection <> Undefined then WeaponInput(ID)
 		if GetVirtualButtonState(AcceptButton) or GetRawKeyState(Enter)
@@ -489,7 +498,9 @@ function GetInput()
 			exit
 		elseif GetVirtualButtonReleased(QuitButton) or GetRawKeyState(0x51) `Q
 			Zoom(1,0,0,On,1)
+			ButtonActivation(On)
 			if Confirm("Back to Menu?",QuitText) then Main()
+			ButtonActivation(Off)
 		elseif GetPointerState()
 			x = MinMax(0,MaxWidth-1,ScreenToWorldX(GetPointerX()))	`MinMax, temporary fix for out of bounds erros
 			y = MinMax(0,MaxHeight-1,ScreenToWorldY(GetPointerY()))
@@ -523,7 +534,7 @@ function GetInput()
 						exit
 					endif
 				next i
-			elseif baseID and (selection = Undefined) and ( mapTable[pointerNode].moveTarget = False )
+			elseif baseID and ( selection = Undefined ) and ( mapTable[pointerNode].moveTarget = False )
 				if PlayerSurviving = UnitLimit
 					BlockProduction()
 				else
@@ -542,8 +553,7 @@ function GetInput()
 				if y < ( MapHeight+NodeSize ) `stay within map height
 					TankAlpha(PlayerTank[ID].bodyID,PlayerTank[ID].turretID,Brightest)
 
-					//~ node = MoveInput(ID,WorldToScreenX(PlayerTank[ID].x),WorldToScreenY(PlayerTank[ID].y))
-					node = MoveInput( ID,PlayerTank[ID].x,PlayerTank[ID].y )
+					node = MoveInput(ID,WorldToScreenX(PlayerTank[ID].x),WorldToScreenY(PlayerTank[ID].y))
 
 					if mapTable[node].team <> Unoccupied
 						if (PlayerTank[ID].target = Undefined) and (mapTable[node].team = AITeam) and (PlayerTank[ID].vehicle <> Engineer)
@@ -611,6 +621,8 @@ function GetInput()
 		Sync()
 	loop
 	SetSpriteVisible(PlayerTank[ID].FOW,Off)
+	ButtonActivation(On)
+
 	//~ SetViewOffset(vx#,vy#)
 	Zoom(1,0,0,On,1) `TURN THIS OFF FOR CONTINUOS ZOOM OPERATION
 endfunction

@@ -94,7 +94,8 @@ function Initialize()
 		SetSpriteTransparency( PlayerTank[i].FOW,1 )
 		SetSpriteColor( PlayerTank[i].FOW,255,255,255,35)
 		SetSpriteScissor( PlayerTank[i].FOW,NodeSize,NodeSize,MaxWidth-NodeSize,MaxHeight-(NodeSize*3) )
-		SetSpriteSize( PlayerTank[i].FOW, PlayerTank[i].FOWSize, PlayerTank[i].FOWSize )
+
+				SetSpriteSize( PlayerTank[i].FOW, PlayerTank[i].FOWSize, PlayerTank[i].FOWSize )
 
 		SetSpriteGroup( PlayerTank[i].bodyID,PlayerTankGroup )
 		SetSpriteGroup( PlayerTank[i].turretID,PlayerTankGroup )
@@ -241,8 +242,8 @@ function TankSetup(ID,Tank ref as tankType[],pick as ColorSpec)
 	Tank[ID].turretH=NodeSize
 	Tank[ID].scale = 1
 
-	Tank[ID].FOWOffset = NodeSize * Tank[ID].movesAllowed
-	Tank[ID].FOWSize = Tank[ID].FOWOffset * 2 //+ NodeSize
+	Tank[ID].FOWOffset = ( NodeSize * Tank[ID].movesAllowed ) + ( NodeSize / 2 )
+	Tank[ID].FOWSize = Tank[ID].FOWOffset * 2
 
 	Tank[ID].stunMarker = CloneSprite( StunSeries )
 

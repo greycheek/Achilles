@@ -166,11 +166,9 @@ global angle  as integer[8]=[0,45,90,135,180,225,270,315]
 #constant SpriteConBaseGroup 6
 #constant SpriteConUnits 7
 
-	//~ #constant roughGroup 8
-	#constant blockGroup 9
-	#constant depotGroup 10
-	#constant AIdepotGroup 11
-	//~ #constant acquaGroup 12
+#constant blockGroup 9
+#constant depotGroup 10
+#constant AIdepotGroup 11
 
 #constant LightTank 1
 #constant MediumTank 2
@@ -636,18 +634,6 @@ for s = 0 to Sectors-1
 	next r
 next s
 
-remstart
-#constant Clear 1
-#constant Rough 2
-#constant Trees 3
-#constant AIBase 4
-#constant AIDepot 5
-#constant PlayerDepot 6
-#constant PlayerBase 7
-#constant Impassable 8
-#constant Water 9
-remend
-
 `TERRAIN MOVEMENT MODIFIER
 global cost as integer[10]
 `map terrain to cost
@@ -870,8 +856,8 @@ global SLOTDOWN2image
 global SLOTDOWN3image
 global SLOTDOWN4image
 
-global VictorySpinner
-global DefeatSpinner
+global VictoryImage
+global DefeatImage
 
 turnImage = InterfaceSeries+1
 turnImageDown = InterfaceSeries+2
@@ -948,8 +934,8 @@ SLOTDOWN2image = InterfaceSeries+50
 SLOTDOWN3image = InterfaceSeries+51
 SLOTDOWN4image = InterfaceSeries+52
 
-VictorySpinner = InterfaceSeries+53
-DefeatSpinner = InterfaceSeries+54
+VictoryImage = InterfaceSeries+53
+DefeatImage = InterfaceSeries+54
 
 type sliderType
 	ID

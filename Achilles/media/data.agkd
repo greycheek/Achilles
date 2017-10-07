@@ -1,0 +1,16 @@
+<project>
+	<settings>
+			<width>0.0</width>
+			<height>0.0</height>
+			<orientation>Landscape</orientation>
+			<grid>0</grid>
+			<gridsnap>0</gridsnap>
+			<gridwidth>64.0</gridwidth>
+			<gridheight>64.0</gridheight>
+			<gridred>64</gridred>
+			<gridgreen>255</gridgreen>
+			<gridblue>255</gridblue>
+			<gridoriginx>0.0</gridoriginx>
+			<gridoriginy>0.0</gridoriginy>
+	</settings>
+</project>
