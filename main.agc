@@ -7,13 +7,11 @@ remstart
 		---BETTER ASTAR??
 		---BETTER AI BASE PROTECT?
 		---BETTER AI ENGINEER PROTECTION
-
-		---VICTORY/DEFEAT GRAPHICS
-		---IMPLEMENT "OUT OF REACH" WARNING FOR MOVE TO OCCUPIED NODE
-			AI MOVE TARGETS INVOLVED??
+		---NEW MECH BEAM WEAPON
 
 	FIXED?
-
+		---IMPLEMENT "OUT OF REACH" WARNING FOR MOVE TO OCCUPIED NODE
+			AI MOVE TARGETS INVOLVED??
 	FUTURE
 		IMPLEMENT SWARM
 		Accumulated experience
@@ -46,7 +44,7 @@ UseNewDefaultFonts( On )
 
 //~ WaterTest()
 //~ SwarmTest()
-ParticleTest()
+//~ ParticleTest()
 
 
 Main()
@@ -349,9 +347,9 @@ function VictoryConditions( ID,Tank ref as tankType[] )
 	if Tank[ID].health <= 0
 		KillTank(ID,Tank)
 		if Tank[ID].team = PlayerTeam
-			if PlayerSurviving = 0 then GameOver( DefeatText,255,0,0,0,0,0,"DEFEAT",DefeatSound ) `all tanks destroyed?
+			if PlayerSurviving = 0 then GameOver( DefeatText,255,0,0,"DEFEAT",DefeatSound ) `all tanks destroyed?
 		elseif Tank[ID].team = AITeam `not necessary
-			if AISurviving = 0 then GameOver( VictoryText,0,0,0,255,255,255,"VICTORY",VictorySound ) `create victory & defeat sounds
+			if AISurviving = 0 then GameOver( VictoryText,0,0,0,"VICTORY",VictorySound ) `create victory & defeat sounds
 		endif
 	else
 		if Tank[ID].team = PlayerTeam
@@ -360,7 +358,7 @@ function VictoryConditions( ID,Tank ref as tankType[] )
 					dec AIBaseCount
 					inc PlayerBaseCount
 					CaptureBase( i,pickPL,PlayerBases,AIBases,PlayerBase,BaseGroup )
-					if AIBaseCount = -1 then GameOver( VictoryText,0,0,0,255,255,255,"VICTORY",VictorySound )
+					if AIBaseCount = -1 then GameOver( VictoryText,0,0,0,"VICTORY",VictorySound )
 								AIBaseCount = AIBases.length
 								PlayerBaseCount = PlayerBases.length
 				endif
@@ -373,7 +371,7 @@ function VictoryConditions( ID,Tank ref as tankType[] )
 					dec PlayerBaseCount
 					inc AIBaseCount
 					CaptureBase( i,pickAI,AIBases,PlayerBases,AIBase,AIBaseGroup )
-					if PlayerBaseCount = -1 then GameOver( DefeatText,150,0,0,0,0,0,"DEFEAT",DefeatSound )
+					if PlayerBaseCount = -1 then GameOver( DefeatText,150,0,0,"DEFEAT",DefeatSound )
 								AIBaseCount = AIBases.length
 								PlayerBaseCount = PlayerBases.length
 				endif
@@ -382,12 +380,12 @@ function VictoryConditions( ID,Tank ref as tankType[] )
 	endif
 endfunction
 
-function GameOver( textID,r,g,b,Pr,Pg,Pb,message$,sound )
+function GameOver( textID,r,g,b,message$,sound )
 	#constant startSize 750
 	#constant endSize 100
 	#constant beginSpacing 300
 	#constant endSpacing 0
-	part as integer
+	fountain as integer
 
 	PlaySound( sound )
 	DeleteVirtualButton(AcceptButton)
@@ -410,25 +408,55 @@ function GameOver( textID,r,g,b,Pr,Pg,Pb,message$,sound )
 				DeleteTween( tt )
 				DeleteAllSprites()
 				SetupSprite(field,field,"AchillesBoardClear.png",0,0,MaxWidth,MaxHeight,12,On,0)
-				part = Particles( MiddleX,y2+(endSize/2),Pr,Pg,Pb )
+				fountain = True
+				if message$ = "VICTORY"
+					part = VictoryParticles()
+					advance# = .2
+				else
+					part = DefeatParticles()
+					advance# = .05
+				endif
 			endif
 		endif
-		if GetParticlesExists( part ) then UpdateParticles( part,.25 )
+		if fountain then UpdateParticles( part,advance# )
 		Sync()
 	until GetPointerPressed()
 	if GetParticlesExists( part ) then DeleteParticles( part )
 	Main() `restart Achilles
 endfunction
 
-function Particles( x,y,r,g,b )
-	part = CreateParticles( x,y )
-	AddParticlesScaleKeyFrame( part,1,.33 )
-	AddParticlesColorKeyFrame( part,0,r,g,b,96 )
-	SetParticlesLife( part,20 )
-	SetParticlesSize( part,12 )
+function VictoryParticles()
+	part = CreateParticles( MiddleX,(MapHeight/2)+50 )
+	VictoryImage = LoadImage("VictoryImage.png")
+	SetParticlesImage( part, VictoryImage )
+	SetParticlesRotationRange( part, 0, 270 )
+	SetParticlesVelocityRange( part,3,1 )
+	SetParticlesFrequency( part,10 )
 	SetParticlesDepth( part,1 )
-	SetParticlesVelocityRange( part,1.25,1)
-	SetParticlesFrequency( part,1000 )
+	SetParticlesLife( part,15 )
+	SetParticlesSize( part,90 )
+	AddParticlesScaleKeyFrame( part,  0, 2.00 )
+	AddParticlesScaleKeyFrame( part,  8, 1.00 )
+	AddParticlesScaleKeyFrame( part, 16,  .10 )
+endfunction part
+
+function DefeatParticles()
+	part = CreateParticles( MiddleX,(MapHeight/2)+50 )
+	DefeatImage = LoadImage("DefeatImage.png")
+	SetParticlesImage( part, DefeatImage )
+	SetParticlesVelocityRange( part,1.5,3)
+	SetParticlesFrequency( part,5 )
+	SetParticlesDepth( part,1 )
+	SetParticlesLife( part,15 )
+	SetParticlesSize( part,90 )
+	SetParticlesAngle( part, 360 )
+	SetParticlesRotationRangeRad( part, 0, .33 )
+	AddParticlesScaleKeyFrame( part,  0, 2.0 )
+	AddParticlesScaleKeyFrame( part,  8, 1.0 )
+	AddParticlesScaleKeyFrame( part, 16,  .1 )
+	AddParticlesColorKeyFrame( part,  0, 255, 255, 255, 255 )
+	AddParticlesColorKeyFrame( part,  8, 255, 255, 255, 128 )
+	AddParticlesColorKeyFrame( part, 16, 255, 255, 255, 0 )
 endfunction part
 
 function KillTank( defID,Tank ref as tankType[] )
@@ -566,10 +594,7 @@ function LaserFire( x1,y1,x2,y2,weapon,t1#,t2#,interrupt )
 	count = 60
 	repeat
 		if interrupt
-			cancel = GetVirtualButtonState( QuitButton )
-			accept = GetVirtualButtonState( AcceptButton )
-			settings = GetVirtualButtonState( SettingsButton )
-			if cancel or settings or accept then exit
+			if (GetVirtualButtonState(QuitButton) + GetVirtualButtonState(AcceptButton) + GetVirtualButtonState(SettingsButton)) then exit
 		endif
 		if Timer() <= t1#  `1.25
 			DrawLine(x1,y1,x2,y2,laserFull,laserOut) : Sync()
@@ -582,8 +607,36 @@ function LaserFire( x1,y1,x2,y2,weapon,t1#,t2#,interrupt )
 		Sync()
 		dec count,5
 	until Timer() >= t2#  `2
-	SetParticlesVisible( laser1,0 )
+	DeleteParticles( laser1 )
 endfunction
+
+remstart
+function DisruptorFire( x1,y1,x2,y2,weapon,t1#,t2#,interrupt )
+	PlaySound( DisruptorSound,vol )
+	SetSoundInstanceRate( ls, 1 )
+	ResetTimer()
+	count = 60
+	repeat
+		if interrupt
+			cancel = GetVirtualButtonState( QuitButton )
+			accept = GetVirtualButtonState( AcceptButton )
+			settings = GetVirtualButtonState( SettingsButton )
+			if cancel or settings or accept then exit
+		endif
+		if Timer() <= t1#  `1.25
+			DrawLine(x1,y1,x2,y2,laserFull,laserOut) : Sync()
+			DrawLine(x1,y1,x2,y2,laserFull,laserOut) : Sync()
+			DrawLine(x1,y1,x2,y2,laserFull,laserFull) : Sync()
+			DrawLine(x1,y1,x2,y2,laserFull,laserFade) : Sync()
+		endif
+		SetParticlesFrequency( disruptor, count )
+		SetParticlesVisible( disruptor,1 )
+		Sync()
+		dec count,5
+	until Timer() >= t2#  `2
+	SetParticlesVisible( disruptor,0 )
+endfunction
+remend
 
 function SetTween( x1,y1,x2,y2,a1#,a2#,sprite,mode,speed#  )
 	t = CreateTweenSprite( speed# )
@@ -604,18 +657,37 @@ function ParticleTest()
 	part = CreateParticles( MiddleX,(MapHeight/2)+50 )
 	VictoryImage = LoadImage("VictoryImage.png")
 	DefeatImage = LoadImage("DefeatImage.png")
+
 	SetParticlesImage( part, DefeatImage )
-	AddParticlesScaleKeyFrame( part,1,2 )
-	//~ AddParticlesColorKeyFrame( part,0,255,255,255,255 )
-	//~ AddParticlesColorKeyFrame( part,2,128,128,128,255 )
 	SetParticlesVelocityRange( part,1.5,3)
 	SetParticlesFrequency( part,5 )
 	SetParticlesDepth( part,1 )
-	SetParticlesLife( part,30 )
+	SetParticlesLife( part,15 )
 	SetParticlesSize( part,90 )
+SetParticlesAngle( part, 360 )
+SetParticlesRotationRangeRad( part, 0, .33 )
+	AddParticlesScaleKeyFrame( part,  0, 2.0 )
+	AddParticlesScaleKeyFrame( part,  8, 1.0 )
+	AddParticlesScaleKeyFrame( part, 16,  .1 )
+	AddParticlesColorKeyFrame( part, 0, 255, 255, 255, 255 )
+	AddParticlesColorKeyFrame( part, 8, 255, 255, 255, 128 )
+	AddParticlesColorKeyFrame( part, 16, 255, 255, 255, 0 )
+	//~ SetParticlesImage( part, VictoryImage )
+	//~ SetParticlesRotationRange( part, 0, 270 )
+	//~ SetParticlesVelocityRange( part,3,1 )
+	//~ SetParticlesFrequency( part,10 )
+	//~ SetParticlesDepth( part,1 )
+	//~ SetParticlesLife( part,15 )
+	//~ SetParticlesSize( part,90 )
+	//~ AddParticlesScaleKeyFrame( part,  0, 2.00 )
+	//~ AddParticlesScaleKeyFrame( part,  8, 1.00 )
+	//~ AddParticlesScaleKeyFrame( part, 16,  .10 )
+	//~ AddParticlesScaleKeyFrame( part, 24,  .25 )
+
 	repeat
 		Sync()
-		UpdateParticles( part,0 )
+		UpdateParticles( part,.05 )
+		//~ UpdateParticles( part,.2 )
 	until GetPointerPressed()
 	end
 endfunction

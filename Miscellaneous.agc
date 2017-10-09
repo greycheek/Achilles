@@ -59,7 +59,7 @@ function PinchToZoom()
 			//*** Get new distance apart, compare with original and adjust zoom accordingly **
 			newDistance# = Abs(GetRawTouchCurrentY(t1)-GetRawTouchCurrentY(t2))
 			difference# = Abs(newDistance#/distance#)
-			zoomFactor = MinMax(1,5,zoomFactor*difference#) `minimum 100%, maximum 500%
+			zoomFactor = MinMax(1,4,zoomFactor*difference#) `minimum 100%, maximum 500%
 			if zoomFactor = 1 then SetViewOffset(0,0) `reset scroll
 			SetViewZoom( zoomFactor )
 		endcase
@@ -68,7 +68,7 @@ endfunction
 
 function PresstoZoom()
 	if GetRawKeyReleased(190) or GetRawKeyReleased(187)  // ">" or "="
-		zoomFactor = Max(5,zoomFactor+.5)
+		zoomFactor = Max(4,zoomFactor+.5)
 		SetViewZoom( zoomFactor )
 		CalcScroll()
 		lastX = xoffset
@@ -262,10 +262,16 @@ function Delay(seconds#)
 	until Timer() >= seconds#
 endfunction
 
-function Heuristic(goalNode,currentNode,team)
+function Heuristic(goalNode,currentNode,team,vehicle)
 	g# = CreateVector3( mapTable[goalNode].nodeX, mapTable[goalNode].nodeY,0 )
 	c# = CreateVector3( mapTable[currentNode].nodeX, mapTable[currentNode].nodeY,0 )
 	h# = GetVector3Distance( g#,c# )
+		if (vehicle = Mech) or (vehicle = Engineer)
+			if team = PlayerTeam `Player Mechs and Engineers not penalised for terrain
+				inc h#,Clear
+				exitfunction h#
+			endif
+		endif
 	if (team = PlayerTeam) or (mapTable[currentNode].terrain <> Trees)
 		inc h#,mapTable[currentNode].cost
 	else  `reduce heuristic by Tree cost to help AI defensive position

@@ -713,6 +713,7 @@ function PlayerAim( ID,x1,y1 )
 				TargetLine( PlayerTank[ID].x,PlayerTank[ID].y,AITank[PlayerTank[ID].target].x,AITank[PlayerTank[ID].target].y,1,PlayerTank,ID,255,64,0 )
 				exit
 			else
+							DisplayError( OutofRangeText,"out of reach" )
 				exitfunction
 			endif
 

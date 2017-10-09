@@ -6,9 +6,9 @@ function MainMenu()
 		if not GetTweenSpritePlaying(t1,MechGuy[0].bodyID) then t1 = PatrolMech()
 		UpdateAllTweens(getframetime())
 		Sync()
-		cancel = GetVirtualButtonPressed( QuitButton )
+		cancel = GetVirtualButtonReleased( QuitButton )
 		accept = GetVirtualButtonReleased( AcceptButton )
-		settings = GetVirtualButtonPressed( SettingsButton )
+		settings = GetVirtualButtonReleased( SettingsButton )
 		Qkey = GetRawKeyPressed( 0x51 ) `Q
 		if cancel or Qkey
 			if Confirm("Quit?",QuitText) then end

@@ -41,15 +41,19 @@ function FindPath( ID, Tank ref as tankType[], currentNode )
 		adjacentNode = offset[i] + currentNode
 
 		if LegalMove(adjacentNode,Tank[ID].team)
-			adjacentHeuristic = Heuristic(currentNode,adjacentNode,Tank[ID].team)
-			heuristic = Heuristic(Tank[ID].goalNode,adjacentNode,Tank[ID].team) + adjacentHeuristic + Tank[ID].costFromStart
+			adjacentHeuristic = Heuristic(currentNode,adjacentNode,Tank[ID].team,Tank[ID].vehicle)
+			heuristic = Heuristic(Tank[ID].goalNode,adjacentNode,Tank[ID].team,Tank[ID].vehicle) + adjacentHeuristic + Tank[ID].costFromStart
 
 			if not OnLists(ID,adjacentNode,Tank)
 				if (heuristic < lowestHeuristic) or (adjacentNode = Tank[ID].goalNode)
 
 					lowestHeuristic = heuristic
 					lowestAdjacentHeuristic = adjacentHeuristic
-					terrainCost = mapTable[adjacentNode].cost
+					if (Tank[ID].vehicle = Mech) or (Tank[ID].vehicle = Engineer) `not penalized for rough or trees
+											terrainCost = Clear
+					else
+						terrainCost = mapTable[adjacentNode].cost
+					endif
 
 					Tank[ID].OpenList.insert(adjacentNode)
 					Tank[ID].node = adjacentNode
