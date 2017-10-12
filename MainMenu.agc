@@ -701,9 +701,8 @@ function GameSetup()
 	AITank.length = AICount
 	PlayerTank.length = PlayerCount
 
-	//~ ButtonStatus( Off, AcceptFlipButton, QuitFlipButton )
-ButtonState( AcceptFlipButton,Off )
-ButtonState( QuitFlipButton,Off )
+	ButtonState( AcceptFlipButton,Off )
+	ButtonState( QuitFlipButton,Off )
 	AlertButtons( YesNoX4a, YesNoY4, YesNoX4b, YesNoY4, dev.buttSize, AcceptButton, QuitButton )
 	LoadButton(CannonButton,cannonImage,cannonImageDown,"Cannon.png","CannonDown.png",dev.buttX1,buttY,dev.buttSize,Off)
 	LoadButton(HeavyCannonButton,heavyCannonImage,heavyCannonImageDown,"HeavyCannon.png","HeavyCannonDown.png",dev.buttX1,buttY,dev.buttSize,Off)
@@ -712,6 +711,8 @@ ButtonState( QuitFlipButton,Off )
 	LoadButton(HeavyLaserButton,heavyLaserImage,heavyLaserImageDown,"HeavyLaser.png","HeavyLaserDown.png",dev.buttX2,buttY,dev.buttSize,Off)
 	LoadButton(EMPButton,EMPImage,EMPImageDown,"EMPButton.png","EMPButtonDown.png",dev.buttX2,buttY,dev.buttSize,Off)
 	LoadButton(MineButton,MineImage,MineImageDown,"MineButton.png","MineButtonDown.png",dev.buttX1,buttY,dev.buttSize,Off)
+	LoadButton(DisruptButton,disruptorImage,disruptorImageDown,"DisruptorButtonUp.png","DisruptorButtonDown.png",dev.buttX2,buttY,dev.buttSize,Off)
+
 	turns = 1
 	ShowInfo( On )
 endfunction

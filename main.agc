@@ -8,6 +8,7 @@ remstart
 		---BETTER AI BASE PROTECT?
 		---BETTER AI ENGINEER PROTECTION
 		---NEW MECH BEAM WEAPON
+		---ENGINEER HEAL FRIENDLY UNITS
 
 	FIXED?
 		---IMPLEMENT "OUT OF REACH" WARNING FOR MOVE TO OCCUPIED NODE
@@ -45,7 +46,7 @@ UseNewDefaultFonts( On )
 //~ WaterTest()
 //~ SwarmTest()
 //~ ParticleTest()
-
+//~ DisruptorTest()
 
 Main()
 
@@ -543,6 +544,28 @@ function Stun( ID, Tank as TankType[], Defender ref as tankType[], lastUnit )
 	next i
 endfunction
 
+function Disrupt( attID, defID, Tank as TankType[], Defender ref as tankType[], lastUnit )
+	SetSpriteVisible( DisruptSprite,On )
+	SetSpriteAngle( DisruptSprite,GetSpriteAngle(Tank[attID].turretID) )
+	PlaySprite( DisruptSprite,50 )
+	for i = 0 to lastUnit
+		if Defender[i].alive
+			//~ if Tank[attID].bodyID = Defender[i].bodyID then continue
+			if GetSpriteInCircle( Defender[i].bodyID, Defender[defID].x, Defender[defID].y, NodeSize * 2 )
+				damage# = maptable[Defender[i].parentNode[Defender[i].index]].modifier
+				damage# = (damage# * Tank[attID].damage) * 100
+				damage# = Min(10,Randomize(damage#-15,damage#+15)) `+/-15%
+				dec Defender[i].health,damage#/100.0
+				VictoryConditions(i,Defender)
+				HealthBar(i,Defender)
+				Tank[attID].target = Undefined
+				Sync()
+			endif
+		endif
+	next i
+	SetSpriteVisible( DisruptSprite,Off )
+endfunction
+
 function Wake( ID, Tank as tankType[] )
 	SetSpriteColor(Tank[ID].turretID,255,255,255,255)
 	SetSpriteVisible( Tank[ID].stunMarker, Off )
@@ -704,6 +727,26 @@ function SwarmTest()
 	SetSpriteVisible(S,On)
 	SetSpriteAnimation(S,292.5,292.5,42)
 	PlaySprite(S,42)
+	repeat
+		Sync()
+	until GetPointerPressed()
+	end
+endfunction
+
+function DisruptorTest()
+	fps# = 50
+	SetClearColor( 0,64,8 )
+	ClearScreen()
+	LoadImage( DisruptSprite,"DisruptorSS.png" )
+	CreateSprite( DisruptSprite,DisruptSprite )
+	SetSpriteTransparency( DisruptSprite, 1 )
+	SetSpriteVisible( DisruptSprite, On )
+	SetSpriteDepth ( DisruptSprite, 0 )
+	SetSpriteSize( DisruptSprite, NodeSize*3,nodeSize*3 )
+	SetSpriteAnimation( DisruptSprite,665,939,5 )
+	SetSpriteOffset( DisruptSprite,NodeOffset,NodeOffset )
+	PlaySprite( DisruptSprite,fps# )
+	SetSpriteAngle( DisruptSprite,-90 )
 	repeat
 		Sync()
 	until GetPointerPressed()

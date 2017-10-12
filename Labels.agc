@@ -80,20 +80,23 @@ zoneRadius = zoneRange * NodeSize
 #constant HeavyCannonButton 8
 #constant EMPButton 9
 #constant MineButton 10
-#constant AcceptFlipButton 11
-#constant QuitFlipButton 12
-#constant MapButton 13
-#constant MapFlipButton 14
-#constant MapSaveFlipButton 15
-#constant RandomizeFlipButton 16
 
-#constant LOADBUTT 17
-#constant SAVEBUTT 18
+	#constant DisruptButton 11
 
-#constant SLOT1 19
-#constant SLOT2 20
-#constant SLOT3 21
-#constant SLOT4 22
+#constant AcceptFlipButton 12
+#constant QuitFlipButton 13
+#constant MapButton 14
+#constant MapFlipButton 15
+#constant MapSaveFlipButton 16
+#constant RandomizeFlipButton 17
+
+#constant LOADBUTT 18
+#constant SAVEBUTT 19
+
+#constant SLOT1 20
+#constant SLOT2 21
+#constant SLOT3 22
+#constant SLOT4 23
 
 
 `GENERAL
@@ -189,6 +192,7 @@ global angle  as integer[8]=[0,45,90,135,180,225,270,315]
 #constant WeaponSeries 200
 #constant MissileSeries 201
 #constant ExplodeSeries 202
+		#constant DisruptorSeries 203
 
 #constant HiliteSeries 250
 #constant PlayerHealthSeries 300
@@ -450,6 +454,11 @@ global mineRange as integer = 0
 #constant empDamage 0
 global empRange as integer
 empRange = nodeSize * 5
+
+	#constant disruptor 7
+	#constant disruptorDamage .25
+	global disruptorRange as integer
+	disruptorRange = cannonRange
 
 
 type tankType
@@ -819,6 +828,10 @@ global EMPImage
 global EMPImageDown
 global MineImage
 global MineImageDown
+
+	global disruptorImage
+	global disruptorImageDown
+
 global quitImage
 global quitImageDown
 global CancelImage
@@ -937,6 +950,9 @@ SLOTDOWN4image = InterfaceSeries+52
 VictoryImage = InterfaceSeries+53
 DefeatImage = InterfaceSeries+54
 
+	disruptorImage = InterfaceSeries+55
+	disruptorImageDown = InterfaceSeries+56
+
 type sliderType
 	ID
 	x
@@ -952,10 +968,10 @@ global SoundSlide as sliderType
 global MusicScale as sliderType
 global SoundScale as sliderType
 
-MusicSlide.ID = InterfaceSeries+55
-SoundSlide.ID = InterfaceSeries+56
-MusicScale.ID = InterfaceSeries+57
-SoundScale.ID = InterfaceSeries+58
+MusicSlide.ID = InterfaceSeries+57
+SoundSlide.ID = InterfaceSeries+58
+MusicScale.ID = InterfaceSeries+59
+SoundScale.ID = InterfaceSeries+60
 
 MusicScale.x = MiddleX+95
 MusicScale.y = MiddleY+260
@@ -992,6 +1008,9 @@ Mine1 = MineSeries + 1
 
 global EMP1
 EMP1 = EMPSeries
+
+		global DisruptSprite
+		DisruptSprite = DisruptorSeries
 
 global field as integer  `board
 global Explode1 as integer
