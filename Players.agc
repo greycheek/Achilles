@@ -201,10 +201,10 @@ function Stats(unit,postStats,y,yOffset,textSize)
 		Text(StatText+3,movement$[unit,0],65,y+(yOffset*3),0,0,0,textSize,255,0)
 		Text(StatText+4,weapon$[unit,0],65,y+(yOffset*4),0,0,0,textSize,255,0)
 		select unit
-			case MediumTank,HeavyTank,Mech
+			case MediumTank,HeavyTank
 				Text(StatText+5,weapon$[unit,1],65,y+(yOffset*5),0,0,0,textSize,255,0)
 			endcase
-			case Engineer
+			case Engineer,Mech
 				Text(StatText+5,weapon$[unit,1],65,y+(yOffset*5),0,0,0,textSize,255,0)
 				Text(StatText+6,weapon$[unit,2],65,y+(yOffset*6),0,0,0,textSize,255,0)
 			endcase
@@ -215,35 +215,25 @@ endfunction
 function WeaponButtons(ID,vehicle)
 	DeleteText( NumeralText  )
 	DeleteText( NumeralText2 )
+	SetVirtualButtonVisible( CannonButton, Off )
+	SetVirtualButtonActive( CannonButton, Off )
+	SetVirtualButtonVisible( HeavyCannonButton, Off )
+	SetVirtualButtonActive( HeavyCannonButton, Off )
+	SetVirtualButtonVisible( LaserButton, Off )
+	SetVirtualButtonActive( LaserButton, Off )
+	SetVirtualButtonVisible( HeavyLaserButton, Off )
+	SetVirtualButtonActive( HeavyLaserButton, Off )
+	SetVirtualButtonVisible( DisruptButton, Off )
+	SetVirtualButtonActive( DisruptButton, Off )
+	SetVirtualButtonVisible( MissileButton, Off )
+	SetVirtualButtonActive( MissileButton, Off )
+	SetVirtualButtonVisible( MineButton, Off )
+	SetVirtualButtonActive( MineButton, Off )
+	SetVirtualButtonVisible( EMPButton, Off )
+	SetVirtualButtonActive( EMPButton, Off )
 	select vehicle
-		case Undefined
-			SetVirtualButtonVisible( CannonButton, Off )
-			SetVirtualButtonActive( CannonButton, Off )
-			SetVirtualButtonVisible( DisruptButton, Off )
-			SetVirtualButtonActive( DisruptButton, Off )
-			SetVirtualButtonVisible( LaserButton, Off )
-			SetVirtualButtonActive( LaserButton, Off )
-			SetVirtualButtonVisible( MissileButton, Off )
-			SetVirtualButtonActive( MissileButton, Off )
-			SetVirtualButtonVisible( HeavyCannonButton, Off )
-			SetVirtualButtonActive( HeavyCannonButton, Off )
-			SetVirtualButtonVisible( HeavyLaserButton, Off )
-			SetVirtualButtonActive( HeavyLaserButton, Off )
-			SetVirtualButtonVisible( MineButton, Off )
-			SetVirtualButtonActive( MineButton, Off )
-			SetVirtualButtonVisible( EMPButton, Off )
-			SetVirtualButtonActive( EMPButton, Off )
-			exitfunction
-		endcase
+		case Undefined : exitfunction : endcase
 		case HeavyTank
-			SetVirtualButtonVisible( CannonButton, Off )
-			SetVirtualButtonActive( CannonButton, Off )
-			SetVirtualButtonVisible( DisruptButton, Off )
-			SetVirtualButtonActive( DisruptButton, Off )
-			SetVirtualButtonVisible( LaserButton, Off )
-			SetVirtualButtonActive( LaserButton, Off )
-			SetVirtualButtonVisible( MissileButton, Off )
-			SetVirtualButtonActive( MissileButton, Off )
 			SetVirtualButtonVisible( HeavyCannonButton, On )
 			SetVirtualButtonActive( HeavyCannonButton, On )
 			SetVirtualButtonPosition( HeavyLaserButton, dev.buttX2, buttY )
@@ -251,20 +241,8 @@ function WeaponButtons(ID,vehicle)
 			SetVirtualButtonActive( HeavyLaserButton, On )
 			SetVirtualButtonImageUp( HeavyCannonButton, heavyCannonImage )
 			SetVirtualButtonImageUp( HeavyLaserButton, heavyLaserImage )
-			SetVirtualButtonVisible( MineButton, Off )
-			SetVirtualButtonActive( MineButton, Off )
-			SetVirtualButtonVisible( EMPButton, Off )
-			SetVirtualButtonActive( EMPButton, Off )
 		endcase
 		case MediumTank
-			SetVirtualButtonVisible( HeavyCannonButton, Off )
-			SetVirtualButtonActive( HeavyCannonButton, Off )
-			SetVirtualButtonVisible( DisruptButton, Off )
-			SetVirtualButtonActive( DisruptButton, Off )
-			SetVirtualButtonVisible( HeavyLaserButton, Off )
-			SetVirtualButtonActive( HeavyLaserButton, Off )
-			SetVirtualButtonVisible( MissileButton, Off )
-			SetVirtualButtonActive( MissileButton, Off )
 			SetVirtualButtonVisible( CannonButton, On )
 			SetVirtualButtonActive( CannonButton, On )
 			SetVirtualButtonPosition( LaserButton, dev.buttX2, buttY )
@@ -272,85 +250,29 @@ function WeaponButtons(ID,vehicle)
 			SetVirtualButtonActive( LaserButton, On )
 			SetVirtualButtonImageUp( CannonButton, cannonImage )
 			SetVirtualButtonImageUp( LaserButton, laserImage )
-			SetVirtualButtonVisible( MineButton, Off )
-			SetVirtualButtonActive( MineButton, Off )
-			SetVirtualButtonVisible( EMPButton, Off )
-			SetVirtualButtonActive( EMPButton, Off )
 		endcase
 		case LightTank
-			SetVirtualButtonVisible( HeavyCannonButton, Off )
-			SetVirtualButtonActive( HeavyCannonButton, Off )
-			SetVirtualButtonVisible( DisruptButton, Off )
-			SetVirtualButtonActive( DisruptButton, Off )
-			SetVirtualButtonVisible( HeavyLaserButton, Off )
-			SetVirtualButtonActive( HeavyLaserButton, Off )
-			SetVirtualButtonVisible( CannonButton, Off )
-			SetVirtualButtonActive( CannonButton, Off )
-			SetVirtualButtonVisible( MissileButton, Off )
-			SetVirtualButtonActive( MissileButton, Off )
 			SetVirtualButtonPosition( LaserButton, dev.buttX1, buttY )
 			SetVirtualButtonVisible( LaserButton, On)
 			SetVirtualButtonActive( LaserButton, On )
 			SetVirtualButtonImageUp( LaserButton, laserImage )
-			SetVirtualButtonVisible( MineButton, Off )
-			SetVirtualButtonActive( MineButton, Off )
-			SetVirtualButtonVisible( EMPButton, Off )
-			SetVirtualButtonActive( EMPButton, Off )
 		endcase
 		case Battery
-			SetVirtualButtonVisible( HeavyCannonButton, Off )
-			SetVirtualButtonActive( HeavyCannonButton, Off )
-			SetVirtualButtonVisible( DisruptButton, Off )
-			SetVirtualButtonActive( DisruptButton, Off )
-			SetVirtualButtonVisible( HeavyLaserButton, Off )
-			SetVirtualButtonActive( HeavyLaserButton, Off )
-			SetVirtualButtonVisible( CannonButton, Off )
-			SetVirtualButtonActive( CannonButton, Off )
-			SetVirtualButtonVisible( LaserButton, Off)
-			SetVirtualButtonActive( LaserButton, Off )
 			SetVirtualButtonVisible( MissileButton, On )
 			SetVirtualButtonActive( MissileButton, On )
 			SetVirtualButtonImageUp( MissileButton, missileImage )
-			SetVirtualButtonVisible( MineButton, Off )
-			SetVirtualButtonActive( MineButton, Off )
-			SetVirtualButtonVisible( EMPButton, Off )
-			SetVirtualButtonActive( EMPButton, Off )
 			Text(NumeralText,str(PlayerTank[ID].missiles),NumX,NumY,255,255,255,30,255,0)
 		endcase
 		case Mech
-			SetVirtualButtonVisible( HeavyCannonButton, Off )
-			SetVirtualButtonActive( HeavyCannonButton, Off )
 			SetVirtualButtonVisible( DisruptButton, On )
 			SetVirtualButtonActive( DisruptButton, On )
-			SetVirtualButtonVisible( CannonButton, Off )
-			SetVirtualButtonActive( CannonButton, Off )
-			SetVirtualButtonVisible( LaserButton, Off)
-			SetVirtualButtonActive( LaserButton, Off )
-			SetVirtualButtonVisible( HeavyLaserButton, Off)
-			SetVirtualButtonActive( HeavyLaserButton, Off )
 			SetVirtualButtonVisible( MissileButton, On )
 			SetVirtualButtonActive( MissileButton, On )
 			SetVirtualButtonImageUp( MissileButton, missileImage )
 			SetVirtualButtonImageUp( DisruptButton, disruptorImage )
-			SetVirtualButtonVisible( MineButton, Off )
-			SetVirtualButtonActive( MineButton, Off )
-			SetVirtualButtonVisible( EMPButton, Off )
-			SetVirtualButtonActive( EMPButton, Off )
 			Text(NumeralText,str(PlayerTank[ID].missiles),NumX,NumY,255,255,255,30,255,0)
 		endcase
 		case Engineer
-			SetVirtualButtonVisible( HeavyCannonButton, Off )
-			SetVirtualButtonActive( HeavyCannonButton, Off )
-			SetVirtualButtonVisible( HeavyLaserButton, Off )
-			SetVirtualButtonActive( HeavyLaserButton, Off )
-			SetVirtualButtonVisible( DisruptButton, Off )
-			SetVirtualButtonActive( DisruptButton, Off )
-			SetVirtualButtonVisible( CannonButton, Off )
-			SetVirtualButtonActive( CannonButton, Off )
-			SetVirtualButtonVisible( LaserButton, Off)
-			SetVirtualButtonActive( LaserButton, Off )
-			SetVirtualButtonVisible( MissileButton, Off )
-			SetVirtualButtonActive( MissileButton, Off )
 			SetVirtualButtonVisible( MineButton, On )
 			SetVirtualButtonActive( MineButton, On )
 			SetVirtualButtonVisible( EMPButton, On )
@@ -368,25 +290,13 @@ function WeaponButtons(ID,vehicle)
 		case heavyLaser  : SetVirtualButtonImageUp( HeavyLaserButton,heavyLaserImageDown ) : endcase
 		case disruptor	 : SetVirtualButtonImageUp( DisruptButton,disruptorImageDown ) : endcase
 		case missile
-			if PlayerTank[ID].missiles
-				SetVirtualButtonImageUp( MissileButton,missileImageDown )
-			else
-				SetVirtualButtonImageUp( MissileButton,missileImage )
-			endif
+			if PlayerTank[ID].missiles then SetVirtualButtonImageUp( MissileButton,missileImageDown ) else SetVirtualButtonImageUp( MissileButton,missileImage )
 		endcase
 		case mine
-			if PlayerTank[ID].mines
-				SetVirtualButtonImageUp( MineButton,MineImageDown )
-			else
-				SetVirtualButtonImageUp( MineButton,MineImage )
-			endif
+			if PlayerTank[ID].mines then SetVirtualButtonImageUp( MineButton,MineImageDown ) else SetVirtualButtonImageUp( MineButton,MineImage )
 		endcase
 		case emp
-			if PlayerTank[ID].charges
-				SetVirtualButtonImageUp( EMPButton,EMPImageDown )
-			else
-				SetVirtualButtonImageUp( EMPButton,EMPImage )
-			endif
+			if PlayerTank[ID].charges then SetVirtualButtonImageUp( EMPButton,EMPImageDown ) else SetVirtualButtonImageUp( EMPButton,EMPImage )
 		endcase
 		case Undefined : SetVirtualButtonImageUp( MineButton,MineImage ) : SetVirtualButtonImageUp( EMPButton,EMPImage ) : endcase
 	endselect

@@ -1,8 +1,4 @@
 
-remstart
-
-remend
-
 function AISpawn( vehicle,node )
 	inc AICount
 	inc AIPlayerLast
@@ -201,14 +197,14 @@ function GoalSet(ID,vehicle)
 		endcase
 		case MediumTank
 			if VisitDepot(ID)  then exitfunction
-			if ProtectBase(ID) then exitfunction
-			if AttackBase(ID)  then exitfunction
+				if AttackBase(ID)  then exitfunction
+				if ProtectBase(ID) then exitfunction
 			DefaultGoal(ID,1)
 		endcase
 		case LightTank
 			if VisitDepot(ID)  then exitfunction
-			if ProtectBase(ID) then exitfunction
-			if AttackBase(ID)  then exitfunction
+				if AttackBase(ID)  then exitfunction
+				if ProtectBase(ID) then exitfunction
 			DefaultGoal(ID,2)
 		endcase
 		case Battery
@@ -303,7 +299,6 @@ endfunction AITank[ID].route
 
 function AIOps()
 	if AISurviving < UnitLimit then AIBaseProduction()
-	//~ AIBaseProduction()
 	AITarget()
 	Text(MovingText,"moving",MiddleX,MiddleY,255,255,255,36,255,1)
 	tt = TweenText( MovingText,Null,Null,Null,Null,255,0,Null,Null,Null,Null,1,0,2 )
@@ -315,10 +310,7 @@ function AIOps()
 			continue
 		endif
 		GoalSet(i,AITank[i].vehicle)
-
 		AITank[i].totalTerrainCost = Null
-
-		//~ bestPosition = BestTacticalPosition(i,AITank)
 		do
 			if AITank[i].index < AITank[i].parentNode.length
 				SetSpriteVisible(AITank[i].healthID,Off)
@@ -326,23 +318,14 @@ function AIOps()
 				nextMove = AITank[i].parentNode[AITank[i].index+1]
 
 				if mapTable[nextMove].team = Unoccupied
-
-					//~ if (mapTable[AITank[i].goalNode].terrain = AIDepot) or (AITank[i].index <= bestPosition)
-						//~ AIFOW(i)
-
-						if AITank[i].totalTerrainCost >= AITank[i].movesAllowed
-							//~ AITank[i].route = PlanMove(i)
-							exit
-						elseif AITank[i].parentNode[AITank[i].index] = AITank[i].goalNode
-							exit
-						else
-							Move( i, AITank, AITank[i].parentNode[AITank[i].index], nextMove )
-							//~ if MineField( i,AITank ) and (not AITank[i].alive) then exit
-									if MineField( i,AITank ) then exit
-						endif
-					//~ else
-						//~ exit
-					//~ endif
+					if AITank[i].totalTerrainCost >= AITank[i].movesAllowed
+						exit
+					elseif AITank[i].parentNode[AITank[i].index] = AITank[i].goalNode
+						exit
+					else
+						Move( i, AITank, AITank[i].parentNode[AITank[i].index], nextMove )
+						if MineField( i,AITank ) then exit
+					endif
 				else
 					AITank[i].route = PlanMove(i)
 					exit
@@ -352,7 +335,7 @@ function AIOps()
 			endif
 			if not GetTweenTextPlaying( tt,MovingText ) then tt = TweenText( MovingText,Null,Null,Null,Null,255,0,Null,Null,Null,Null,1,0,2 )
 		loop
-											PlayerBaseCapture()
+		PlayerBaseCapture()
 		AIFOW(i)
 	next i
 	DeleteText(MovingText)

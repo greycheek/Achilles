@@ -10,13 +10,15 @@ function MainMenu()
 		accept = GetVirtualButtonReleased( AcceptButton )
 		settings = GetVirtualButtonReleased( SettingsButton )
 		Qkey = GetRawKeyPressed( 0x51 ) `Q
+		EKey = GetRawKeyPressed( Enter )
+		SKey = GetRawKeyPressed( 0x53 ) `S
 		if cancel or Qkey
-			if Confirm("Quit?",QuitText) then end
-		elseif settings
+			if Confirm( "Quit?",QuitText ) then end
+		elseif settings or SKey
 			PlaySound( ClickSound,vol )
 			AlertButtons( YesNoX3a,by#,YesNoX3b,by#,dev.buttSize,AcceptFlipButton,QuitFlipButton )
 			SettingsDialog()
-		elseif accept
+		elseif accept or EKey
 			PlaySound( ClickSound,vol )
 			GameSetup()
 			exitfunction
@@ -164,11 +166,11 @@ function DisplaySettings(state)
 	SetVirtualButtonVisible( QuitButton,FlipState )
 	SetVirtualButtonVisible( AcceptFlipButton,state )
 	SetVirtualButtonVisible( MapButton,state )
-		SetVirtualButtonActive( SettingsButton,FlipState )
-		SetVirtualButtonActive( AcceptButton,FlipState )
-		SetVirtualButtonActive( QuitButton,FlipState )
-		SetVirtualButtonActive( AcceptFlipButton,state )
-		SetVirtualButtonActive( MapButton,state )
+	SetVirtualButtonActive( SettingsButton,FlipState )
+	SetVirtualButtonActive( AcceptButton,FlipState )
+	SetVirtualButtonActive( QuitButton,FlipState )
+	SetVirtualButtonActive( AcceptFlipButton,state )
+	SetVirtualButtonActive( MapButton,state )
 
 	CreateGrid(state)
 endfunction
@@ -196,12 +198,12 @@ function ReDisplaySettings(state)
 	SetVirtualButtonVisible( MapFlipButton, not state )
 	SetVirtualButtonVisible( MapSaveFlipButton, not state )
 	SetVirtualButtonVisible( RandomizeFlipButton, not state )
-		SetVirtualButtonActive( AcceptButton, not state )
-		SetVirtualButtonActive( AcceptFlipButton,state )
-		SetVirtualButtonActive( MapButton,state )
-		SetVirtualButtonActive( MapFlipButton, not state )
-		SetVirtualButtonActive( MapSaveFlipButton, not state )
-		SetVirtualButtonActive( RandomizeFlipButton, not state )
+	SetVirtualButtonActive( AcceptButton, not state )
+	SetVirtualButtonActive( AcceptFlipButton,state )
+	SetVirtualButtonActive( MapButton,state )
+	SetVirtualButtonActive( MapFlipButton, not state )
+	SetVirtualButtonActive( MapSaveFlipButton, not state )
+	SetVirtualButtonActive( RandomizeFlipButton, not state )
 	CreateGrid(state)
 endfunction
 
@@ -280,19 +282,19 @@ function Compose()
 		if GetRawKeyPressed( Enter ) then exitfunction
 
 		`Map Generation
-		if GetVirtualButtonReleased( MapButton )
+		if GetVirtualButtonReleased( MapButton ) or GetRawKeyPressed( 0x4D ) `M
 			PlaySound( ClickSound )
 			ReDisplaySettings( Off )
 			StopMusicOGG( MusicSound )
 			do
 				Sync()
-				if GetVirtualButtonReleased( MapSaveFlipButton ) then MapSlotDialog()
-				if GetVirtualButtonReleased( RandomizeFlipButton )
+				if GetVirtualButtonReleased( MapSaveFlipButton ) or GetRawKeyPressed( 0x46 ) then MapSlotDialog() `F
+				if GetVirtualButtonReleased( RandomizeFlipButton ) or GetRawKeyPressed( 0x52 ) `R
 					PlaySound( ClickSound )
 					ResetMap()
 					GenerateTerrain()
 				endif
-				if GetVirtualButtonReleased( AcceptButton )
+				if GetVirtualButtonReleased( AcceptButton ) or GetRawKeyPressed( Enter )
 					PlaySound( ClickSound )
 					exit
 				endif
@@ -562,18 +564,6 @@ function ButtonActivation( state )
 	SetVirtualButtonActive(SLOT4,state)
 endfunction
 
-//~ function ButtonStatus( state,accept,quit )
-	//~ SetVirtualButtonVisible( accept,state )
-	//~ SetVirtualButtonVisible( quit,state )
-	//~ SetVirtualButtonActive( accept,state )
-	//~ SetVirtualButtonActive( quit,state )
-//~ endfunction
-
-//~ function LSButtState( button,state,alpha )
-	//~ SetVirtualButtonActive( button,state )
-	//~ SetVirtualButtonAlpha( button,alpha )
-//~ endfunction
-
 function SliderInput( Slide as sliderType, Scale as sliderType )
 	SetRawMouseVisible( Off )
 	while GetPointerState()
@@ -702,6 +692,18 @@ function GameSetup()
 endfunction
 
 remstart
+		function ButtonStatus( state,accept,quit )
+			SetVirtualButtonVisible( accept,state )
+			SetVirtualButtonVisible( quit,state )
+			SetVirtualButtonActive( accept,state )
+			SetVirtualButtonActive( quit,state )
+		endfunction
+
+		function LSButtState( button,state,alpha )
+			SetVirtualButtonActive( button,state )
+			SetVirtualButtonAlpha( button,alpha )
+		endfunction
+
 		FROM MAINMENU: (substituted by Confirm(message$))
 			PlaySound( ClickSound,vol )
 			TSize = 36*dev.scale

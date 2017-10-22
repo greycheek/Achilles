@@ -4,28 +4,21 @@ remstart
 	Two ways to win - base capture, or eliminate all enemy units
 
 	ISSUES/REVISIONS
-		---BETTER AI DECISIONS
-				BASE PROTECT
-				BASE CAPTURE
-				PLACEMENT RELATIVE TO ENEMY
-				ENGINEER PROTECTION
+	---BETTER AI DECISIONS?
+			BASE PROTECT
+			BASE CAPTURE
+			PLACEMENT RELATIVE TO ENEMY
+			ENGINEER PROTECTION
+	---CHANGE LASER TANK TO ANTI-TANK UNIT
+	---TERRAIN CONTROL SETTINGS
+	---ZOOM KEY DOESNT WORK WHEN UNIT SELECTED
+	---REVISED SETTINGS BACKGROUND
 
 	FIXED?
-		---SPEED UP AI MOVE
-		---WHEN UNITS EMERGE FROM BASE, SHOW HIDDEN UNITS
-		---LASER TANK FOW NOT ALIGNED TO NEAREST NODE?
-		---ARRAY OUT OF BOUNDS LINE 576?
-		---LOS STILL IMPROPERLY BLOCKED!!
-		---BETTER ASTAR?? - UNITS GET IN EACH OTHERS WAY - reset ASTAR
-		---STUNNED UNITS CAN FIRE!!!!
-		---SPONTANEOUS AI TANK DESTRUCTION!! - HAS TO DO WITH VICTORY CONDITIONS!
-		---REPAIR AT DEPOT WHEN NO DAMAGE??
-		---SPONTANEOUS AI TANK DESTRUCTION!!
-		---IMPLEMENT "OUT OF REACH" WARNING FOR MOVE TO OCCUPIED NODE
-			AI MOVE TARGETS INVOLVED??
+
 	FUTURE
-		VARY WATER, IMPASS, TREE AND ROUGH TILES
-		IMPLEMENT SWARM
+		Vary water, impass, tree and rough tiles
+		Implement Swarm
 		Accumulated experience
 		Multiplayer
 		Races/Factions?
@@ -158,7 +151,9 @@ function Produce( ID, Tank ref as tankType[], rate, baseProduct, baseID, c as Co
 		next i
 		if generateFOW
 			for i = 0 to AIPlayerLast
-				if AITank[i].alive and GetSpriteInCircle(AITank[i].bodyID,PlayerTank[ID].x,PlayerTank[ID].y,PlayerTank[ID].FOWOffset-NodeSize) then RevealAIUnit(i)
+				if AITank[i].alive
+					if GetSpriteInCircle(AITank[i].bodyID,PlayerTank[ID].x,PlayerTank[ID].y,PlayerTank[ID].FOWOffset-NodeSize) then RevealAIUnit(i)
+				endif
 			next i
 		endif
 		PlaySprite(Iris,frames,0,IrisFrames,1)
@@ -260,8 +255,8 @@ function ShowMine(ID,Tank as tankType[],node)
 	maptable[node].mineType = PlayerTeam
 	SetSpriteVisible( mapTable[node].mineSprite,On )
 	SetSpriteDepth( mapTable[node].mineSprite,1 )
-	SetSpritePositionByOffset( mapTable[node].mineSprite,Tank[ID].x+1,Tank[ID].y-3 )
-	PlaySprite( mapTable[node].mineSprite,20 )
+	SetSpritePositionByOffset( mapTable[node].mineSprite,Tank[ID].x,Tank[ID].y )
+	PlaySprite( mapTable[node].mineSprite,14 )
 endfunction
 
 function MineField(ID, Tank ref as tankType[])
@@ -292,7 +287,7 @@ function MineField(ID, Tank ref as tankType[])
 		dec Tank[ID].health,damage#/100.0
 		if Tank[ID].health <= 0 then KillTank(ID,Tank)
 		if AISurviving = 0 then GameOver( VictoryText,0,0,0,"VICTORY",VictorySound )
-		if PlayerSurviving = 0 then GameOver( DefeatText,255,0,0,"DEFEAT",DefeatSound )
+		if PlayerSurviving = 0 then GameOver( DefeatText,255,255,255,"DEFEAT",DefeatSound )
 		exitfunction True
 	endif
 endfunction False
@@ -396,7 +391,7 @@ function UnitSurvival()
 		if not PlayerTank[i].alive then continue
 		if PlayerTank[i].health <= 0
 			KillTank(i,PlayerTank)
-			if PlayerSurviving = 0 then GameOver( DefeatText,255,0,0,"DEFEAT",DefeatSound )
+			if PlayerSurviving = 0 then GameOver( DefeatText,255,255,255,"DEFEAT",DefeatSound )
 		endif
 	next i
 endfunction
@@ -411,7 +406,7 @@ function PlayerBaseCapture()
 				dec PlayerBaseCount
 				inc AIBaseCount
 				CaptureBase( j,pickAI,AIBases,PlayerBases,AIBase,AIBaseGroup )
-				if PlayerBaseCount = -1 then GameOver( DefeatText,150,0,0,"DEFEAT",DefeatSound )
+				if PlayerBaseCount = -1 then GameOver( DefeatText,255,255,255,"DEFEAT",DefeatSound )
 				AIBaseCount = AIBases.length
 				PlayerBaseCount = PlayerBases.length
 				exit
@@ -683,7 +678,7 @@ function LaserFire( x1,y1,x2,y2,weapon,t1#,t2#,interrupt )
 	count = 60
 	repeat
 		if interrupt
-			if (GetVirtualButtonState(QuitButton) + GetVirtualButtonState(AcceptButton) + GetVirtualButtonState(SettingsButton)) then exit
+			if GetVirtualButtonState(QuitButton) or GetVirtualButtonState(AcceptButton) or GetVirtualButtonState(SettingsButton) then exit
 		endif
 		if Timer() <= t1#  `1.25
 			DrawLine(x1,y1,x2,y2,laserFull,laserOut) : Sync()
@@ -796,6 +791,8 @@ function DisruptorTest()
 endfunction
 
 remstart
+FROM LASERFIRE
+	if GetRawKeyState( 0x51 ) or GetRawKeyState( Enter ) or GetRawKeyState( 0x53 ) then exit	 `Q,Enter,S
 
 function DisruptorFire( x1,y1,x2,y2,weapon,t1#,t2#,interrupt )
 	PlaySound( DisruptorSound,vol )
@@ -864,6 +861,19 @@ VICTORY CONDITIONS:
 
 GAMEOVER WITH SPINNER
 FIXED?
+		---SPEED UP AI MOVE
+		---WHEN UNITS EMERGE FROM BASE, SHOW HIDDEN UNITS
+		---LASER TANK FOW NOT ALIGNED TO NEAREST NODE?
+		---ARRAY OUT OF BOUNDS LINE 576?
+		---LOS STILL IMPROPERLY BLOCKED!!
+		---BETTER ASTAR?? - UNITS GET IN EACH OTHERS WAY - reset ASTAR
+		---STUNNED UNITS CAN FIRE!!!!
+		---SPONTANEOUS AI TANK DESTRUCTION!! - HAS TO DO WITH VICTORY CONDITIONS!
+		---REPAIR AT DEPOT WHEN NO DAMAGE??
+		---SPONTANEOUS AI TANK DESTRUCTION!!
+		---IMPLEMENT "OUT OF REACH" WARNING FOR MOVE TO OCCUPIED NODE
+			AI MOVE TARGETS INVOLVED??
+
 		---DEAD SPOTS ON SCREEN??
 		---MYSTERIOUS LOS BLOCKAGE??!!
 		---BASES APPEARING OUT OF NOWHERE?

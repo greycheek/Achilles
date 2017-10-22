@@ -272,11 +272,10 @@ MineBangSound = LoadSound("ExplosionPlain.wav")
 HeavyLaserSound = LoadSound( "BeamElectro_01.wav" )
 MechSound = LoadSound("MotorClose_01.wav")
 HealSound = LoadSound("HealGlassy.wav")
-//~ GameOverSound = LoadSound( "GameOverRobot2.wav" )
 VictorySound = LoadSound("MagicReveal.wav")
 DefeatSound = LoadSound("ExitOpenAztec.wav")
 
-		DisruptorSound = LoadSoundOGG("DISRUPTOR.ogg")
+DisruptorSound = LoadSoundOGG("DISRUPTOR.ogg")
 EMPSound = LoadSoundOGG("EMP.ogg")
 TankSound = LoadSoundOGG("Rumble2.ogg")
 ErrorSound = LoadSoundOGG("EdgeHit2.ogg")
@@ -361,7 +360,8 @@ weapon$[3,0] = "HEAVY LASER  range --, damage 25%, rounds --"
 weapon$[3,1] = "HEAVY CANNON  range 4, damage 35%, rounds --"
 weapon$[4,0] = "MISSILES  range --, damage 40%, rounds 10"
 weapon$[5,0] = "MISSILES  range --, damage 40%, rounds 5"
-weapon$[5,1] = "DISRUPTOR  range 4, damage 40%, rounds --"
+weapon$[5,1] = "DISRUPTOR  range 4, damage 40%**, rounds --"
+weapon$[5,2] = "** affects all enemy & friendly units in range"
 weapon$[6,0] = "MINES  range 0, damage 40%, rounds 4"
 weapon$[6,1] = "EMP  range 3, damage **, rounds 4"
 weapon$[6,2] = "** disables enemy & friendly units for 1 turn"
@@ -378,7 +378,7 @@ cost$[2,0] = "UNIT COST  100"
 cost$[3,0] = "UNIT COST  200"
 cost$[4,0] = "UNIT COST  250"
 cost$[5,0] = "UNIT COST  300"
-cost$[6,0] = "UNIT COST  200"
+cost$[6,0] = "UNIT COST  150"
 
 
 `TANKS
