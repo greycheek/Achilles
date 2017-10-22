@@ -11,10 +11,12 @@ function BaseSetup( spriteID, node, base, baseRef ref as baseType[], group )
 	ID = baseRef.length
 	baseRef[ID].node = node
 	baseRef[ID].spriteID = spriteID
-	baseRef[ID].x1 = mapTable[node].x-zoneRadius
-	baseRef[ID].y1 = mapTable[node].y-zoneRadius
-	baseRef[ID].x2 = mapTable[node].x+zoneRadius
-	baseRef[ID].y2 = mapTable[node].y+zoneRadius
+	x = mapTable[node].x
+	y = mapTable[node].y
+	baseRef[ID].x1 = x-zoneRadius
+	baseRef[ID].y1 = y-zoneRadius
+	baseRef[ID].x2 = x+zoneRadius
+	baseRef[ID].y2 = y+zoneRadius
 
 	maptable[node].base = base
 	mapTable[node].terrain = base
@@ -26,9 +28,10 @@ function BaseSetup( spriteID, node, base, baseRef ref as baseType[], group )
 	SetSpriteSize( baseRef[ID].spriteID, NodeSize,NodeSize )
 	SetSpriteDepth( baseRef[ID].spriteID,5 )
 	SetSpriteGroup( baseRef[ID].spriteID, group )
-	SetSpritePositionByOffset( baseRef[ID].spriteID,mapTable[node].x,mapTable[node].y )
-		SetSpritePhysicsOn( baseRef[ID].spriteID,1 )
-		//~ SetSpriteCategoryBits( baseRef[ID].spriteID,Null )
+	SetSpritePositionByOffset( baseRef[ID].spriteID,x,y )
+	SetSpriteCategoryBits( baseRef[ID].spriteID,NoBlock )
+	SetSpritePhysicsOn( baseRef[ID].spriteID,1 )
+	AddSpriteShapeBox( baseRef[ID].spriteID,x,y,x+NodeSize-1,y+NodeSize-1,0 )
 endfunction ID
 
 function DepotSetup( node, depot, depotNode ref as depotType[],series,group )
@@ -39,6 +42,8 @@ function DepotSetup( node, depot, depotNode ref as depotType[],series,group )
 	mapTable[node].depotID = ID
 	maptable[node].base = depot
 	mapTable[node].terrain = depot
+	x = mapTable[node].x
+	y = mapTable[node].y
 	//~ mapTable[node].team = team
 
 	LoadImage( depotNode[ID].spriteID,"REDCROSS.png" )
@@ -48,9 +53,10 @@ function DepotSetup( node, depot, depotNode ref as depotType[],series,group )
 	SetSpriteSize( depotNode[ID].spriteID, DepotSize, DepotSize )
 	SetSpriteDepth( depotNode[ID].spriteID,DepotDepth )
 	SetSpriteGroup( depotNode[ID].spriteID,group )
-	SetSpritePositionByOffset( depotNode[ID].spriteID, mapTable[node].x, mapTable[node].y )
-		SetSpritePhysicsOn( depotNode[ID].spriteID,1 )
-		//~ SetSpriteCategoryBits( depotNode[ID].spriteID,Null )
+	SetSpritePositionByOffset( depotNode[ID].spriteID,x,y )
+	SetSpriteCategoryBits( depotNode[ID].spriteID,NoBlock )
+	SetSpritePhysicsOn( depotNode[ID].spriteID,1 )
+	AddSpriteShapeBox( depotNode[ID].spriteID,x,y,x+NodeSize-1,y+NodeSize-1,0 )
 endfunction
 
 function GenerateBases()
@@ -225,16 +231,20 @@ function GenerateMap()
 	SetSpriteAnimation(Iris,40,46,IrisFrames)
 	SetSpriteOffset(Iris,NodeOffset,NodeOffset)
 
+
 	impassDummy = CreateDummySprite()
 	treeDummy = CreateDummySprite()
 	roughDummy = CreateDummySprite()
 	waterDummy = CreateDummySprite()
-	SetSpriteGroup( impassDummy,blockGroup )
-	SetSpriteGroup( treeDummy,blockGroup )
-	SetSpritePhysicsOn(impassDummy,1)
-	SetSpritePhysicsOn(treeDummy,1)
-	SetSpritePhysicsOn(roughDummy,1)
-	SetSpritePhysicsOn(waterDummy,1)
+	SetSpritePhysicsOn( impassDummy,1 )
+	SetSpritePhysicsOn( treeDummy,1 )
+	SetSpritePhysicsOn( roughDummy,1 )
+	SetSpritePhysicsOn( waterDummy,1 )
+	SetSpriteCategoryBits( impassDummy,Block )
+	SetSpriteCategoryBits( treeDummy,Block )
+	SetSpriteCategoryBits( roughDummy,NoBlock )
+	SetSpriteCategoryBits( waterDummy,NoBlock )
+
 
 	LoadImage(TreeSprite,"TreeTop290.png")
 	CreateSprite(TreeSprite,TreeSprite )
@@ -385,14 +395,14 @@ function Setup()
 	SetSpriteAnimation( Mine1,75,75,35 )
 	SetSpriteSize( Mine1, NodeSize, NodeSize )
 
-			LoadImage( DisruptSprite,"DisruptorSS.png" )
+			DisruptSprite = LoadImage( "DisruptorSS.png" )
 			CreateSprite( DisruptSprite,DisruptSprite )
-			SetSpriteTransparency( DisruptSprite, 1 )
-			SetSpriteVisible( DisruptSprite, 0 )
-			SetSpriteDepth ( DisruptSprite, 0 )
-			SetSpriteSize( DisruptSprite, NodeSize*3,nodeSize*3 )
-			SetSpriteAnimation( DisruptSprite,665,939,5 )
-			SetSpriteOffset( DisruptSprite,NodeOffset,NodeOffset )
+			SetSpriteTransparency( DisruptSprite,1 )
+			SetSpriteVisible( DisruptSprite,Off )
+			SetSpriteDepth ( DisruptSprite,0 )
+			SetSpriteSize( DisruptSprite,180,128.5 )
+			SetSpriteOffset( DisruptSprite,90,128.5 )
+			SetSpriteAnimation( DisruptSprite,360,257,8 )
 
 	LoadImage( StunSeries,"Stunned.png" )
 	CreateSprite( StunSeries,StunSeries )
@@ -634,10 +644,16 @@ function DeleteAllButtons()
 	DeleteVirtualButton(HeavyLaserButton)
 	DeleteVirtualButton(EMPButton)
 	DeleteVirtualButton(MineButton)
+	DeleteVirtualButton(DisruptButton)
 endfunction
 
 
 remstart
+	SetSpriteShape( impassDummy,2 )
+	SetSpriteShape( treeDummy,2 )
+	SetSpriteShape( roughDummy,2 )
+	SetSpriteShape( waterDummy,2 )
+
 from Setup()
 	DeleteVirtualButton(AcceptButton)
 	DeleteVirtualButton(QuitButton)

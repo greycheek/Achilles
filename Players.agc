@@ -26,12 +26,10 @@ function BaseProduction( node )
 	SetVirtualButtonVisible( HeavyCannonButton,Off )
 	SetVirtualButtonVisible( MineButton,Off )
 	SetVirtualButtonVisible( EMPButton,Off )
-ButtonState( AcceptFlipButton,On )
-ButtonState( QuitFlipButton,On )
-ButtonState( AcceptButton,Off )
-ButtonState( QuitButton,Off )
-	//~ ButtonStatus( On, AcceptFlipButton, QuitFlipButton )
-	//~ ButtonStatus( Off, AcceptButton, QuitButton )
+	ButtonState( AcceptFlipButton,On )
+	ButtonState( QuitFlipButton,On )
+	ButtonState( AcceptButton,Off )
+	ButtonState( QuitButton,Off )
 	AlertButtons( YesNoX3a, YesNoY3, YesNoX3b, YesNoY3, dev.buttSize, AcceptFlipButton, QuitFlipButton )
 
 	for i = 1 to SpriteConUnits-1
@@ -90,12 +88,11 @@ ButtonState( QuitButton,Off )
 	else
 		WaitForButtonRelease( QuitFlipButton )
 	endif
-ButtonState( AcceptFlipButton,Off )
-ButtonState( QuitFlipButton,Off )
-ButtonState( AcceptButton,On )
-ButtonState( QuitButton,On )
-	//~ ButtonStatus( Off, AcceptFlipButton, QuitFlipButton )
-	//~ ButtonStatus( On, AcceptButton, QuitButton )
+	ButtonState( AcceptFlipButton,Off )
+	ButtonState( QuitFlipButton,Off )
+	ButtonState( AcceptButton,On )
+	ButtonState( QuitButton,On )
+
 	AlertButtons( YesNoX4a, YesNoY4, YesNoX4b, YesNoY4, dev.buttSize, AcceptButton, QuitButton )
 	SetSpriteActive( BaseDialog,Off )
 	SetSpriteVisible( BaseDialog,Off )
@@ -222,6 +219,8 @@ function WeaponButtons(ID,vehicle)
 		case Undefined
 			SetVirtualButtonVisible( CannonButton, Off )
 			SetVirtualButtonActive( CannonButton, Off )
+			SetVirtualButtonVisible( DisruptButton, Off )
+			SetVirtualButtonActive( DisruptButton, Off )
 			SetVirtualButtonVisible( LaserButton, Off )
 			SetVirtualButtonActive( LaserButton, Off )
 			SetVirtualButtonVisible( MissileButton, Off )
@@ -239,6 +238,8 @@ function WeaponButtons(ID,vehicle)
 		case HeavyTank
 			SetVirtualButtonVisible( CannonButton, Off )
 			SetVirtualButtonActive( CannonButton, Off )
+			SetVirtualButtonVisible( DisruptButton, Off )
+			SetVirtualButtonActive( DisruptButton, Off )
 			SetVirtualButtonVisible( LaserButton, Off )
 			SetVirtualButtonActive( LaserButton, Off )
 			SetVirtualButtonVisible( MissileButton, Off )
@@ -258,6 +259,8 @@ function WeaponButtons(ID,vehicle)
 		case MediumTank
 			SetVirtualButtonVisible( HeavyCannonButton, Off )
 			SetVirtualButtonActive( HeavyCannonButton, Off )
+			SetVirtualButtonVisible( DisruptButton, Off )
+			SetVirtualButtonActive( DisruptButton, Off )
 			SetVirtualButtonVisible( HeavyLaserButton, Off )
 			SetVirtualButtonActive( HeavyLaserButton, Off )
 			SetVirtualButtonVisible( MissileButton, Off )
@@ -277,6 +280,8 @@ function WeaponButtons(ID,vehicle)
 		case LightTank
 			SetVirtualButtonVisible( HeavyCannonButton, Off )
 			SetVirtualButtonActive( HeavyCannonButton, Off )
+			SetVirtualButtonVisible( DisruptButton, Off )
+			SetVirtualButtonActive( DisruptButton, Off )
 			SetVirtualButtonVisible( HeavyLaserButton, Off )
 			SetVirtualButtonActive( HeavyLaserButton, Off )
 			SetVirtualButtonVisible( CannonButton, Off )
@@ -295,6 +300,8 @@ function WeaponButtons(ID,vehicle)
 		case Battery
 			SetVirtualButtonVisible( HeavyCannonButton, Off )
 			SetVirtualButtonActive( HeavyCannonButton, Off )
+			SetVirtualButtonVisible( DisruptButton, Off )
+			SetVirtualButtonActive( DisruptButton, Off )
 			SetVirtualButtonVisible( HeavyLaserButton, Off )
 			SetVirtualButtonActive( HeavyLaserButton, Off )
 			SetVirtualButtonVisible( CannonButton, Off )
@@ -313,16 +320,18 @@ function WeaponButtons(ID,vehicle)
 		case Mech
 			SetVirtualButtonVisible( HeavyCannonButton, Off )
 			SetVirtualButtonActive( HeavyCannonButton, Off )
-			SetVirtualButtonVisible( HeavyLaserButton, On )
-			SetVirtualButtonActive( HeavyLaserButton, On )
+			SetVirtualButtonVisible( DisruptButton, On )
+			SetVirtualButtonActive( DisruptButton, On )
 			SetVirtualButtonVisible( CannonButton, Off )
 			SetVirtualButtonActive( CannonButton, Off )
 			SetVirtualButtonVisible( LaserButton, Off)
 			SetVirtualButtonActive( LaserButton, Off )
+			SetVirtualButtonVisible( HeavyLaserButton, Off)
+			SetVirtualButtonActive( HeavyLaserButton, Off )
 			SetVirtualButtonVisible( MissileButton, On )
 			SetVirtualButtonActive( MissileButton, On )
 			SetVirtualButtonImageUp( MissileButton, missileImage )
-			SetVirtualButtonImageUp( HeavyLaserButton, heavyLaserImage )
+			SetVirtualButtonImageUp( DisruptButton, disruptorImage )
 			SetVirtualButtonVisible( MineButton, Off )
 			SetVirtualButtonActive( MineButton, Off )
 			SetVirtualButtonVisible( EMPButton, Off )
@@ -334,6 +343,8 @@ function WeaponButtons(ID,vehicle)
 			SetVirtualButtonActive( HeavyCannonButton, Off )
 			SetVirtualButtonVisible( HeavyLaserButton, Off )
 			SetVirtualButtonActive( HeavyLaserButton, Off )
+			SetVirtualButtonVisible( DisruptButton, Off )
+			SetVirtualButtonActive( DisruptButton, Off )
 			SetVirtualButtonVisible( CannonButton, Off )
 			SetVirtualButtonActive( CannonButton, Off )
 			SetVirtualButtonVisible( LaserButton, Off)
@@ -355,6 +366,7 @@ function WeaponButtons(ID,vehicle)
 		case heavyCannon : SetVirtualButtonImageUp( HeavyCannonButton,heavyCannonImageDown ) : endcase
 		case laser 		 : SetVirtualButtonImageUp( LaserButton,laserImageDown ) : endcase
 		case heavyLaser  : SetVirtualButtonImageUp( HeavyLaserButton,heavyLaserImageDown ) : endcase
+		case disruptor	 : SetVirtualButtonImageUp( DisruptButton,disruptorImageDown ) : endcase
 		case missile
 			if PlayerTank[ID].missiles
 				SetVirtualButtonImageUp( MissileButton,missileImageDown )
@@ -431,6 +443,10 @@ function WeaponInput(ID)
 	elseif GetVirtualButtonState(HeavyLaserButton) //or GetRawKeyPressed(0x4c) `L
 		WeaponSelect(ID,PlayerTank,heavyLaser,heavyLaserRange,heavyLaserDamage)
 		WaitForButtonRelease(HeavyLaserButton)
+
+	elseif GetVirtualButtonState(DisruptButton)
+		WeaponSelect(ID,PlayerTank,disruptor,disruptorRange,disruptorDamage)
+		WaitForButtonRelease(DisruptButton)
 
 	elseif GetVirtualButtonState(MineButton)
 		if PlayerTank[ID].weapon = mine   `toggle
@@ -510,16 +526,15 @@ function GetInput()
 			tankID = GetSpriteHitGroup( PlayerTankGroup,x,y )
 			if tankID
 				for i = 0 to PlayerLast
-					if (tankID = PlayerTank[i].bodyID) or (tankID = PlayerTank[i].turretID)
+					if PlayerTank[i].stunned
+						continue
+					elseif (tankID = PlayerTank[i].bodyID) or (tankID = PlayerTank[i].turretID)
 						if selection = i
 							PlaySound( ClickSound,vol )
 							CancelMove( ID,PlayerTank )
 							selection = Undefined
 							WeaponButtons(Null,Undefined)
 							SetSpriteVisible(PlayerTank[i].FOW,Off)
-
-						elseif PlayerTank[i].stunned
-							continue
 						else
 							MaxAlpha(ID)
 							SetSpriteVisible(PlayerTank[ID].FOW,Off)
@@ -632,6 +647,7 @@ function BlockProduction()
 	TSize = 36*dev.scale
 	Text( LimitText,"Unit Maximum",YesNoX1+TSize,YesNoY1+TSize,50,50,50,TSize,255,0 )
 	SetVirtualButtonVisible( AcceptFlipButton,On )
+		SetVirtualButtonActive( AcceptFlipButton,On )
 	SetVirtualButtonSize( AcceptFlipButton,dev.buttSize )
 	SetVirtualButtonPosition( AcceptFlipButton,YesNoX2a,YesNoY2 )
 	AlertDialog( LimitText,On,YesNoX1,YesNoY1,AlertW,AlertH )
@@ -640,6 +656,8 @@ function BlockProduction()
 	until GetVirtualButtonPressed( AcceptFlipButton ) or GetRawKeyState( Enter )
 	PlaySound( ClickSound,vol )
 	SetVirtualButtonVisible( AcceptFlipButton,Off )
+		SetVirtualButtonActive( AcceptFlipButton,Off )
+
 	AlertDialog( LimitText,Off,YesNoX1,YesNoY1,AlertW,AlertH )
 endfunction
 
@@ -686,7 +704,7 @@ function PlayerAim( ID,x1,y1 )
 
 			if GetSpriteVisible( AITank[i].bodyID ) `VISIBILITY CHECK
 				select PlayerTank[ID].weapon
-					case cannon,heavyCannon
+					case cannon,heavyCannon,disruptor
 						if VectorDistance(x1,y1,x2,y2) > PlayerTank[ID].range
 							DisplayError(OutofRangeText,"out of range")
 							exitfunction
@@ -795,28 +813,29 @@ function PlayerOps()
 			if PlayerTank[i].parentNode[PlayerTank[i].index] = PlayerTank[i].goalNode
 				SetSpriteVisible(PlayerTank[i].hilite,Off)
 				mapTable[nextMove].moveTarget = False : exit
-			endif
-			if PlayerTank[i].parentNode.length - PlayerTank[i].index
+			elseif PlayerTank[i].parentNode.length - PlayerTank[i].index
+
 				nextMove = PlayerTank[i].parentNode[PlayerTank[i].index+1]
-
-				if mapTable[nextMove].team then exit
-
+				if mapTable[nextMove].team
+					ResetPath(i,PlayerTank)
+					PlayerTank[i].route = AStar(i,PlayerTank)
+					exit
+				endif
 				SetSpriteVisible(PlayerTank[i].healthID,Off)
 
 				Move(i,PlayerTank,PlayerTank[i].parentNode[PlayerTank[i].index],nextMove)
 				//~ PlayerFOW(i)
-				if MineField( i,PlayerTank ) and (not PlayerTank[i].alive) then exit
+				if MineField( i,PlayerTank ) then exit
 			else
 				exit
 			endif
 			Sync()
 		loop
-
+		AIBaseCapture()
 		if PlayerTank[i].alive
 			HealthBar(i,PlayerTank)
 			PlayerTank[i].moves = 0	  `Reset for next turn
 			RepairDepot(i,PlayerTank,PlayerDepotNode,PlayerDepot,PlayerTank[i].maximumHealth) `at depot?
-			VictoryConditions(i,PlayerTank)
 		endif
 	next i
 endfunction
@@ -837,6 +856,10 @@ function DisplayError(ID,error$)
 endfunction
 
 remstart
+
+FROM PLAYEROPS
+	if MineField( i,PlayerTank ) and (not PlayerTank[i].alive) then exit
+
 function EndGame()
 	startOver = False
 	Zoom(1,0,0,On,1)

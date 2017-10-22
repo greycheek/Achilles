@@ -4,16 +4,27 @@ remstart
 	Two ways to win - base capture, or eliminate all enemy units
 
 	ISSUES/REVISIONS
-		---BETTER ASTAR??
-		---BETTER AI BASE PROTECT?
-		---BETTER AI ENGINEER PROTECTION
-		---NEW MECH BEAM WEAPON
-		---ENGINEER HEAL FRIENDLY UNITS
+		---BETTER AI DECISIONS
+				BASE PROTECT
+				BASE CAPTURE
+				PLACEMENT RELATIVE TO ENEMY
+				ENGINEER PROTECTION
 
 	FIXED?
+		---SPEED UP AI MOVE
+		---WHEN UNITS EMERGE FROM BASE, SHOW HIDDEN UNITS
+		---LASER TANK FOW NOT ALIGNED TO NEAREST NODE?
+		---ARRAY OUT OF BOUNDS LINE 576?
+		---LOS STILL IMPROPERLY BLOCKED!!
+		---BETTER ASTAR?? - UNITS GET IN EACH OTHERS WAY - reset ASTAR
+		---STUNNED UNITS CAN FIRE!!!!
+		---SPONTANEOUS AI TANK DESTRUCTION!! - HAS TO DO WITH VICTORY CONDITIONS!
+		---REPAIR AT DEPOT WHEN NO DAMAGE??
+		---SPONTANEOUS AI TANK DESTRUCTION!!
 		---IMPLEMENT "OUT OF REACH" WARNING FOR MOVE TO OCCUPIED NODE
 			AI MOVE TARGETS INVOLVED??
 	FUTURE
+		VARY WATER, IMPASS, TREE AND ROUGH TILES
 		IMPLEMENT SWARM
 		Accumulated experience
 		Multiplayer
@@ -32,6 +43,10 @@ SetOrientationAllowed( 0, 0, 1, 1 )
 //~ LoadFont( Gill,"GillSans.ttf" )
 LoadFont( Avenir,"Avenir Next.ttc" )
 UseNewDefaultFonts( On )
+//~ SetPhysicsWallTop(Off)
+//~ SetPhysicsWallBottom(Off)
+//~ SetPhysicsWallLeft(Off)
+//~ SetPhysicsWallRight(Off)
 
 #insert "Labels.agc"
 #include "Settings.agc"
@@ -47,6 +62,7 @@ UseNewDefaultFonts( On )
 //~ SwarmTest()
 //~ ParticleTest()
 //~ DisruptorTest()
+
 
 Main()
 
@@ -121,8 +137,7 @@ function Produce( ID, Tank ref as tankType[], rate, baseProduct, baseID, c as Co
 	generateFOW = baseproduct and (Tank[ID].team = PlayerTeam)
 	if generateFOW
 		SetSpriteVisible(Tank[ID].FOW,On)
-		FOWSize = Tank[ID].FOWSize / ( NodeSize / rate )
-		SetSpriteSize(Tank[ID].FOWSize,FOWSize,FOWSize)
+		FOWSize = (Tank[ID].FOWSize / ( NodeSize / rate )) + 1
 		SetSpriteSize(Tank[ID].FOWSize,FOWSize,FOWSize)
 	endif
 	SetSpriteVisible(Tank[ID].bodyID,On)
@@ -135,12 +150,17 @@ function Produce( ID, Tank ref as tankType[], rate, baseProduct, baseID, c as Co
 			SetSpriteSize(Tank[ID].turretID,i,i)
 			if generateFOW
 				growth = FOWSize * i
-				growthShift = growth / 2
+				growShift = growth/2
 				SetSpriteSize(Tank[ID].FOW,growth,growth)
-				SetSpritePosition(Tank[ID].FOW, mapTable[Tank[ID].node].x - growthShift, mapTable[Tank[ID].node].y - growthShift)
+				SetSpritePosition(Tank[ID].FOW, mapTable[Tank[ID].node].x - growShift, mapTable[Tank[ID].node].y - growShift )
 			endif
 			Sync()
 		next i
+		if generateFOW
+			for i = 0 to AIPlayerLast
+				if AITank[i].alive and GetSpriteInCircle(AITank[i].bodyID,PlayerTank[ID].x,PlayerTank[ID].y,PlayerTank[ID].FOWOffset-NodeSize) then RevealAIUnit(i)
+			next i
+		endif
 		PlaySprite(Iris,frames,0,IrisFrames,1)
 		Delay(.5)
 		SetSpriteVisible(baseID,On)
@@ -150,8 +170,20 @@ function Produce( ID, Tank ref as tankType[], rate, baseProduct, baseID, c as Co
 	HealthBar(ID,Tank)
 endfunction
 
+function RevealAIUnit(ID)
+	SetSpriteVisible(AITank[ID].bodyID,On)
+	SetSpriteVisible(AITank[ID].turretID,On)
+
+	if mapTable[ AITank[ID].parentNode[AITank[ID].index] ].terrain = Trees
+		SetSpriteVisible(AITank[ID].cover,On)
+		SetSpritePositionByOffset(AITank[ID].cover,AITank[ID].x,AITank[ID].y)
+	endif
+	if AITank[ID].stunned then SetSpriteVisible(AITank[ID].stunMarker,On)
+	HealthBar(ID,AITank)
+endfunction
+
 function LOSblocked(x1,y1,x2,y2)
-	if PhysicsRayCastGroup(blockGroup,x1,y1,x2,y2)
+	if PhysicsRayCastCategory(Block,x1,y1,x2,y2)
 		if VectorDistance(x1,y1,x2,y2) > DLS then exitfunction True else exitfunction False  `adjacent nodes are always in LOS
 	endif
 endfunction False
@@ -180,6 +212,12 @@ function Fire( Attacker ref as tankType[], Defender ref as tankType[], attID, de
 			RotateTurret(attID,Attacker,Defender[defID].x,Defender[defID].y)
 			LaserFire(Attacker[attID].x,Attacker[attID].y,Defender[defID].x,Defender[defID].y,Attacker[attID].weapon,1.25,2,0)
 		endcase
+		case disruptor
+			RotateTurret(attID,Attacker,Defender[defID].x,Defender[defID].y)
+			Disrupt( attID,defID,Attacker,Defender )
+			EndAttack( attID,defID,Attacker,Defender )
+			exitfunction
+		endcase
 		case emp
 			ActivateEMP( attID,Attacker )
 			exitfunction
@@ -191,14 +229,15 @@ function Fire( Attacker ref as tankType[], Defender ref as tankType[], attID, de
 		endcase
 		case Undefined : exitfunction : endcase
 	endselect
-
 	damage# = maptable[Defender[defID].parentNode[Defender[defID].index]].modifier
-
 	damage# = (damage# * Attacker[attID].damage) * 100
 	damage# = Min(10,Randomize(damage#-15,damage#+15)) `+/-15%
 	dec Defender[defID].health,damage#/100.0
+	EndAttack( attID,defID,Attacker,Defender )
+endfunction
 
-	VictoryConditions(defID,Defender)
+function EndAttack( attID, defID, Attacker ref as tankType[], Defender ref as tankType[] )
+	UnitSurvival()
 	HealthBar(defID,Defender)
 	Attacker[attID].target = Undefined
 	Sync()
@@ -251,7 +290,9 @@ function MineField(ID, Tank ref as tankType[])
 		damage# = mineDamage * 100
 		damage# = Min( 10,Randomize(damage#-15,damage#+15) ) `+/-15%
 		dec Tank[ID].health,damage#/100.0
-				VictoryConditions( ID,Tank )
+		if Tank[ID].health <= 0 then KillTank(ID,Tank)
+		if AISurviving = 0 then GameOver( VictoryText,0,0,0,"VICTORY",VictorySound )
+		if PlayerSurviving = 0 then GameOver( DefeatText,255,0,0,"DEFEAT",DefeatSound )
 		exitfunction True
 	endif
 endfunction False
@@ -343,42 +384,57 @@ function CaptureBase( capturedIndex, pick ref as ColorSpec, attBase ref as baseT
 	SetSpriteVisible( BaseHalo,Off )
 endfunction
 
-function VictoryConditions( ID,Tank ref as tankType[] )
-	//~ if not Tank[ID].alive then exitfunction
-	if Tank[ID].health <= 0
-		KillTank(ID,Tank)
-		if Tank[ID].team = PlayerTeam
-			if PlayerSurviving = 0 then GameOver( DefeatText,255,0,0,"DEFEAT",DefeatSound ) `all tanks destroyed?
-		elseif Tank[ID].team = AITeam `not necessary
-			if AISurviving = 0 then GameOver( VictoryText,0,0,0,"VICTORY",VictorySound ) `create victory & defeat sounds
+function UnitSurvival()
+	for i = 0 to AICount
+		if not AITank[i].alive then continue
+		if AITank[i].health <= 0
+			KillTank(i,AITank)
+			if AISurviving = 0 then GameOver( VictoryText,0,0,0,"VICTORY",VictorySound )
 		endif
-	else
-		if Tank[ID].team = PlayerTeam
-			for i = 0 to AIBaseCount
-				if Tank[ID].parentNode[Tank[ID].index] = AIBases[i].node
-					dec AIBaseCount
-					inc PlayerBaseCount
-					CaptureBase( i,pickPL,PlayerBases,AIBases,PlayerBase,BaseGroup )
-					if AIBaseCount = -1 then GameOver( VictoryText,0,0,0,"VICTORY",VictorySound )
-								AIBaseCount = AIBases.length
-								PlayerBaseCount = PlayerBases.length
-				endif
-			next i
-		else
-			for i = 0 to PlayerBaseCount
-				if Tank[ID].parentNode[Tank[ID].index] = PlayerBases[i].node
-					SetSpriteVisible(Tank[ID].bodyID,On)
-					SetSpriteVisible(Tank[ID].turretID,On)
-					dec PlayerBaseCount
-					inc AIBaseCount
-					CaptureBase( i,pickAI,AIBases,PlayerBases,AIBase,AIBaseGroup )
-					if PlayerBaseCount = -1 then GameOver( DefeatText,150,0,0,"DEFEAT",DefeatSound )
-								AIBaseCount = AIBases.length
-								PlayerBaseCount = PlayerBases.length
-				endif
-			next i
+	next i
+	for i = 0 to PlayerCount
+		if not PlayerTank[i].alive then continue
+		if PlayerTank[i].health <= 0
+			KillTank(i,PlayerTank)
+			if PlayerSurviving = 0 then GameOver( DefeatText,255,0,0,"DEFEAT",DefeatSound )
 		endif
-	endif
+	next i
+endfunction
+
+function PlayerBaseCapture()
+	for i = 0 to AICount
+		if not AITank[i].alive then continue
+		for j = 0 to PlayerBaseCount
+			if AITank[i].parentNode[AITank[i].index] = PlayerBases[j].node
+				SetSpriteVisible(AITank[i].bodyID,On)
+				SetSpriteVisible(AITank[i].turretID,On)
+				dec PlayerBaseCount
+				inc AIBaseCount
+				CaptureBase( j,pickAI,AIBases,PlayerBases,AIBase,AIBaseGroup )
+				if PlayerBaseCount = -1 then GameOver( DefeatText,150,0,0,"DEFEAT",DefeatSound )
+				AIBaseCount = AIBases.length
+				PlayerBaseCount = PlayerBases.length
+				exit
+			endif
+		next j
+	next i
+endfunction
+
+function AIBaseCapture()
+	for i = 0 to PlayerCount
+		if not PlayerTank[i].alive then continue
+		for j = 0 to AIBaseCount
+			if PlayerTank[i].parentNode[PlayerTank[i].index] = AIBases[j].node
+				dec AIBaseCount
+				inc PlayerBaseCount
+				CaptureBase( j,pickPL,PlayerBases,AIBases,PlayerBase,BaseGroup )
+				if AIBaseCount = -1 then GameOver( VictoryText,0,0,0,"VICTORY",VictorySound )
+				AIBaseCount = AIBases.length
+				PlayerBaseCount = PlayerBases.length
+				exit
+			endif
+		next j
+	next i
 endfunction
 
 function GameOver( textID,r,g,b,message$,sound )
@@ -544,26 +600,36 @@ function Stun( ID, Tank as TankType[], Defender ref as tankType[], lastUnit )
 	next i
 endfunction
 
-function Disrupt( attID, defID, Tank as TankType[], Defender ref as tankType[], lastUnit )
+function Disrupt( attID, defID, Attacker ref as tankType[], Defender ref as tankType[] )
+	PlaySound( DisruptorSound )
+	SetSpritePositionByOffset( DisruptSprite,Attacker[attID].x,Attacker[attID].y )
 	SetSpriteVisible( DisruptSprite,On )
-	SetSpriteAngle( DisruptSprite,GetSpriteAngle(Tank[attID].turretID) )
-	PlaySprite( DisruptSprite,50 )
-	for i = 0 to lastUnit
+	SetSpriteAngle( DisruptSprite,GetSpriteAngle( Attacker[attID].turretID ) )
+	PlaySprite( DisruptSprite,90 )
+	Delay( 1 )
+	for i = 0 to Defender.length `check for defender caaualties
 		if Defender[i].alive
-			//~ if Tank[attID].bodyID = Defender[i].bodyID then continue
-			if GetSpriteInCircle( Defender[i].bodyID, Defender[defID].x, Defender[defID].y, NodeSize * 2 )
+			if GetSpriteInCircle( Defender[i].bodyID, Defender[defID].x, Defender[defID].y, disruptorRadius )
 				damage# = maptable[Defender[i].parentNode[Defender[i].index]].modifier
-				damage# = (damage# * Tank[attID].damage) * 100
+				damage# = (damage# * Attacker[attID].damage) * 100
 				damage# = Min(10,Randomize(damage#-15,damage#+15)) `+/-15%
 				dec Defender[i].health,damage#/100.0
-				VictoryConditions(i,Defender)
-				HealthBar(i,Defender)
-				Tank[attID].target = Undefined
-				Sync()
+			endif
+		endif
+	next i
+	for i = 0 to Attacker.length `check for attacker caaualties
+		if Attacker[i].alive
+			if Attacker[attID].bodyID = Attacker[i].bodyID then continue
+			if GetSpriteInCircle( Attacker[i].bodyID, Defender[defID].x, Defender[defID].y, disruptorRadius )
+				damage# = maptable[Attacker[i].parentNode[Attacker[i].index]].modifier
+				damage# = (damage# * Attacker[attID].damage) * 100
+				damage# = Min(10,Randomize(damage#-15,damage#+15)) `+/-15%
+				dec Attacker[i].health,damage#/100.0
 			endif
 		endif
 	next i
 	SetSpriteVisible( DisruptSprite,Off )
+	StopSprite( DisruptSprite )
 endfunction
 
 function Wake( ID, Tank as tankType[] )
@@ -634,31 +700,7 @@ function LaserFire( x1,y1,x2,y2,weapon,t1#,t2#,interrupt )
 endfunction
 
 remstart
-function DisruptorFire( x1,y1,x2,y2,weapon,t1#,t2#,interrupt )
-	PlaySound( DisruptorSound,vol )
-	SetSoundInstanceRate( ls, 1 )
-	ResetTimer()
-	count = 60
-	repeat
-		if interrupt
-			cancel = GetVirtualButtonState( QuitButton )
-			accept = GetVirtualButtonState( AcceptButton )
-			settings = GetVirtualButtonState( SettingsButton )
-			if cancel or settings or accept then exit
-		endif
-		if Timer() <= t1#  `1.25
-			DrawLine(x1,y1,x2,y2,laserFull,laserOut) : Sync()
-			DrawLine(x1,y1,x2,y2,laserFull,laserOut) : Sync()
-			DrawLine(x1,y1,x2,y2,laserFull,laserFull) : Sync()
-			DrawLine(x1,y1,x2,y2,laserFull,laserFade) : Sync()
-		endif
-		SetParticlesFrequency( disruptor, count )
-		SetParticlesVisible( disruptor,1 )
-		Sync()
-		dec count,5
-	until Timer() >= t2#  `2
-	SetParticlesVisible( disruptor,0 )
-endfunction
+
 remend
 
 function SetTween( x1,y1,x2,y2,a1#,a2#,sprite,mode,speed#  )
@@ -687,8 +729,8 @@ function ParticleTest()
 	SetParticlesDepth( part,1 )
 	SetParticlesLife( part,15 )
 	SetParticlesSize( part,90 )
-SetParticlesAngle( part, 360 )
-SetParticlesRotationRangeRad( part, 0, .33 )
+	SetParticlesAngle( part, 360 )
+	SetParticlesRotationRangeRad( part, 0, .33 )
 	AddParticlesScaleKeyFrame( part,  0, 2.0 )
 	AddParticlesScaleKeyFrame( part,  8, 1.0 )
 	AddParticlesScaleKeyFrame( part, 16,  .1 )
@@ -734,19 +776,19 @@ function SwarmTest()
 endfunction
 
 function DisruptorTest()
-	fps# = 50
+	PlaySound( DisruptorSound )
 	SetClearColor( 0,64,8 )
 	ClearScreen()
-	LoadImage( DisruptSprite,"DisruptorSS.png" )
+	DisruptSprite = LoadImage( "DisruptorSS.png" )
 	CreateSprite( DisruptSprite,DisruptSprite )
-	SetSpriteTransparency( DisruptSprite, 1 )
-	SetSpriteVisible( DisruptSprite, On )
-	SetSpriteDepth ( DisruptSprite, 0 )
-	SetSpriteSize( DisruptSprite, NodeSize*3,nodeSize*3 )
-	SetSpriteAnimation( DisruptSprite,665,939,5 )
-	SetSpriteOffset( DisruptSprite,NodeOffset,NodeOffset )
-	PlaySprite( DisruptSprite,fps# )
-	SetSpriteAngle( DisruptSprite,-90 )
+	SetSpriteTransparency( DisruptSprite,1 )
+	SetSpriteVisible( DisruptSprite,On )
+	SetSpriteDepth ( DisruptSprite,0 )
+	SetSpriteSize( DisruptSprite,disruptorRange,128.5 )
+	SetSpriteAnimation( DisruptSprite,360,257,8 )
+	SetSpriteOffset( DisruptSprite,disruptorRange/2,128.5 )
+	SetSpritePositionByOffset( DisruptSprite,200,200 )
+	PlaySprite( DisruptSprite,64 )
 	repeat
 		Sync()
 	until GetPointerPressed()
@@ -754,6 +796,71 @@ function DisruptorTest()
 endfunction
 
 remstart
+
+function DisruptorFire( x1,y1,x2,y2,weapon,t1#,t2#,interrupt )
+	PlaySound( DisruptorSound,vol )
+	SetSoundInstanceRate( ls, 1 )
+	ResetTimer()
+	count = 60
+	repeat
+		if interrupt
+			cancel = GetVirtualButtonState( QuitButton )
+			accept = GetVirtualButtonState( AcceptButton )
+			settings = GetVirtualButtonState( SettingsButton )
+			if cancel or settings or accept then exit
+		endif
+		if Timer() <= t1#  `1.25
+			DrawLine(x1,y1,x2,y2,laserFull,laserOut) : Sync()
+			DrawLine(x1,y1,x2,y2,laserFull,laserOut) : Sync()
+			DrawLine(x1,y1,x2,y2,laserFull,laserFull) : Sync()
+			DrawLine(x1,y1,x2,y2,laserFull,laserFade) : Sync()
+		endif
+		SetParticlesFrequency( disruptor, count )
+		SetParticlesVisible( disruptor,1 )
+		Sync()
+		dec count,5
+	until Timer() >= t2#  `2
+	SetParticlesVisible( disruptor,0 )
+endfunction
+
+function ShowRayCast()
+	//~ ObjectRayCast(0, 0,100,5 , 0,-1,5)
+	//~ n = GetObjectRayCastNumHits()
+	//~ print("GetObjectRayCastNumHits "+str(n))
+	//~ for i = 0 to n - 1
+	 obj = GetRayCastSpriteID()
+	 print("Object ID: "+str(obj))
+	 //~ print(GetObjectRayCastY(i))
+	//~ next
+endfunction
+
+VICTORY CONDITIONS:
+
+		if Tank[ID].team = PlayerTeam
+			for i = 0 to AIBaseCount
+				if Tank[ID].parentNode[Tank[ID].index] = AIBases[i].node
+					dec AIBaseCount
+					inc PlayerBaseCount
+					CaptureBase( i,pickPL,PlayerBases,AIBases,PlayerBase,BaseGroup )
+					if AIBaseCount = -1 then GameOver( VictoryText,0,0,0,"VICTORY",VictorySound )
+								AIBaseCount = AIBases.length
+								PlayerBaseCount = PlayerBases.length
+				endif
+			next i
+		else
+			for i = 0 to PlayerBaseCount
+				if Tank[ID].parentNode[Tank[ID].index] = PlayerBases[i].node
+					SetSpriteVisible(Tank[ID].bodyID,On)
+					SetSpriteVisible(Tank[ID].turretID,On)
+					dec PlayerBaseCount
+					inc AIBaseCount
+					CaptureBase( i,pickAI,AIBases,PlayerBases,AIBase,AIBaseGroup )
+					if PlayerBaseCount = -1 then GameOver( DefeatText,150,0,0,"DEFEAT",DefeatSound )
+								AIBaseCount = AIBases.length
+								PlayerBaseCount = PlayerBases.length
+				endif
+			next i
+		endif
 
 GAMEOVER WITH SPINNER
 FIXED?
@@ -772,6 +879,9 @@ FIXED?
 		---LOS IMPROPERLY BLOCKED!!!!!
 		---HEAVILY DAMAGED AI TANKS DON'T VISIT DEPOTS
 		---AI RELUCTANT TO FIRE; MAKING POOR MOVE DECISIONS (dont remove "nearestplayer" from goalset?)
+disrupt:
+			if Attacker[attID].bodyID = Defender[i].bodyID then continue
+
 
 function GameOver( textID,spinID,r,g,b,spinR,spinG,spinB,message$,sound )
 	#constant startSize 750

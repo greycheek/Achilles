@@ -192,7 +192,7 @@ global angle  as integer[8]=[0,45,90,135,180,225,270,315]
 #constant WeaponSeries 200
 #constant MissileSeries 201
 #constant ExplodeSeries 202
-		#constant DisruptorSeries 203
+		//~ #constant DisruptorSeries 203
 
 #constant HiliteSeries 250
 #constant PlayerHealthSeries 300
@@ -223,6 +223,9 @@ global angle  as integer[8]=[0,45,90,135,180,225,270,315]
 #constant TerrainSeries2 1701
 #constant TerrainSeries3 1703
 #constant TerrainSeries4 1704
+	//~ #constant TerrainSeries5 1705
+	//~ #constant TerrainSeries6 1706
+	//~ #constant TerrainSeries7 1707
 
 global AcquaSprite as integer = TerrainSeries3
 global RoughSprite as integer = TerrainSeries4
@@ -257,6 +260,7 @@ global RogerThatSound
 global TargetSound
 global LockOnSound
 global Silence
+global DisruptorSound
 
 BangSound = LoadSound("bang2.wav")
 BuildBaseSound = LoadSound( "HoverbikeEnd.wav" )
@@ -272,6 +276,7 @@ HealSound = LoadSound("HealGlassy.wav")
 VictorySound = LoadSound("MagicReveal.wav")
 DefeatSound = LoadSound("ExitOpenAztec.wav")
 
+		DisruptorSound = LoadSoundOGG("DISRUPTOR.ogg")
 EMPSound = LoadSoundOGG("EMP.ogg")
 TankSound = LoadSoundOGG("Rumble2.ogg")
 ErrorSound = LoadSoundOGG("EdgeHit2.ogg")
@@ -319,6 +324,7 @@ function SoundVolume()
 	SetSoundInstanceVolume( LaserSound, vol )
 	SetSoundInstanceVolume( TargetSound, vol )
 	SetSoundInstanceVolume( LockOnSound, vol )
+	SetSoundInstanceVolume( DisruptorSound, vol )
 	for i = 0 to OrderSounds
 		SetSoundInstanceRate( orders[i],.5 )
 		SetSoundInstanceVolume( orders[i],vol )
@@ -350,12 +356,12 @@ armor$[6,0] = "ARMOR  10%"
 
 weapon$[1,0] = "MEDIUM LASER  range --, damage 10%, rounds --"
 weapon$[2,0] = "MEDIUM LASER  range --, damage 10%, rounds --"
-weapon$[2,1] = "MEDIUM CANNON  range 3, damage 25%, rounds --"
+weapon$[2,1] = "MEDIUM CANNON  range 4, damage 25%, rounds --"
 weapon$[3,0] = "HEAVY LASER  range --, damage 25%, rounds --"
-weapon$[3,1] = "HEAVY CANNON  range 3, damage 35%, rounds --"
+weapon$[3,1] = "HEAVY CANNON  range 4, damage 35%, rounds --"
 weapon$[4,0] = "MISSILES  range --, damage 40%, rounds 10"
 weapon$[5,0] = "MISSILES  range --, damage 40%, rounds 5"
-weapon$[5,1] = "HEAVY LASER  range --, damage 25%, rounds --"
+weapon$[5,1] = "DISRUPTOR  range 4, damage 40%, rounds --"
 weapon$[6,0] = "MINES  range 0, damage 40%, rounds 4"
 weapon$[6,1] = "EMP  range 3, damage **, rounds 4"
 weapon$[6,2] = "** disables enemy & friendly units for 1 turn"
@@ -455,10 +461,12 @@ global mineRange as integer = 0
 global empRange as integer
 empRange = nodeSize * 5
 
-	#constant disruptor 7
-	#constant disruptorDamage .25
-	global disruptorRange as integer
-	disruptorRange = cannonRange
+#constant disruptor 7
+#constant disruptorDamage .4
+global disruptorRange as integer
+global disruptorRadius as float
+disruptorRange = nodeSize * 3
+disruptorRadius = disruptorRange/2
 
 
 type tankType
@@ -950,8 +958,8 @@ SLOTDOWN4image = InterfaceSeries+52
 VictoryImage = InterfaceSeries+53
 DefeatImage = InterfaceSeries+54
 
-	disruptorImage = InterfaceSeries+55
-	disruptorImageDown = InterfaceSeries+56
+		disruptorImage = InterfaceSeries+55
+		disruptorImageDown = InterfaceSeries+56
 
 type sliderType
 	ID
@@ -1009,8 +1017,7 @@ Mine1 = MineSeries + 1
 global EMP1
 EMP1 = EMPSeries
 
-		global DisruptSprite
-		DisruptSprite = DisruptorSeries
+		global DisruptSprite `= DisruptorSeries
 
 global field as integer  `board
 global Explode1 as integer

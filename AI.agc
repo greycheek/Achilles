@@ -156,11 +156,11 @@ function AITarget()
 								endif
 							endcase
 							case Mech
-								if AITank[i].missiles
+								if VectorDistance(x1,y1,PlayerTank[AITank[i].NearestPlayer].x,PlayerTank[AITank[i].NearestPlayer].y) <= disruptorRange
+									WeaponSelect(I,AITank,disruptor,disruptorRange,disruptorDamage)
+								elseif AITank[i].missiles
 									dec AITank[i].missiles
 									WeaponSelect(i,AITank,missile,missileRange,missileDamage)
-								else
-									WeaponSelect(i,AITank,heavyLaser,heavyLaserRange,heavyLaserDamage)
 								endif
 							endcase
 						endselect
@@ -180,23 +180,15 @@ endfunction
 function AIFOW(ID)
 	for i = 0 to PlayerLast
 		if PlayerTank[i].alive and GetSpriteInCircle(AITank[ID].bodyID,PlayerTank[i].x,PlayerTank[i].y,PlayerTank[i].FOWOffset-NodeSize)
-			SetSpriteVisible(AITank[ID].bodyID,On)
-			SetSpriteVisible(AITank[ID].turretID,On)
-
-						if mapTable[ AITank[ID].parentNode[AITank[ID].index] ].terrain = Trees
-							SetSpriteVisible(AITank[ID].cover,On)
-							SetSpritePositionByOffset(AITank[ID].cover,AITank[ID].x,AITank[ID].y)
-						endif
-			if AITank[ID].stunned then SetSpriteVisible(AITank[ID].stunMarker,On)
-			HealthBar(ID,AITank)
+			RevealAIUnit(ID)
 			exitfunction True
 		endif
 	next i
-						SetSpriteVisible(AITank[ID].bodyID,Off)
-						SetSpriteVisible(AITank[ID].turretID,Off)
-						SetSpriteVisible(AITank[ID].healthID,Off)
-						SetSpriteVisible(AITank[ID].stunMarker,Off)
-								SetSpriteVisible(AITank[ID].cover,Off)
+	SetSpriteVisible(AITank[ID].bodyID,Off)
+	SetSpriteVisible(AITank[ID].turretID,Off)
+	SetSpriteVisible(AITank[ID].healthID,Off)
+	SetSpriteVisible(AITank[ID].stunMarker,Off)
+	SetSpriteVisible(AITank[ID].cover,Off)
 endfunction False
 
 function GoalSet(ID,vehicle)
@@ -310,7 +302,7 @@ function PlanMove(ID)
 endfunction AITank[ID].route
 
 function AIOps()
-			if AISurviving < UnitLimit then AIBaseProduction()
+	if AISurviving < UnitLimit then AIBaseProduction()
 	//~ AIBaseProduction()
 	AITarget()
 	Text(MovingText,"moving",MiddleX,MiddleY,255,255,255,36,255,1)
@@ -345,7 +337,8 @@ function AIOps()
 							exit
 						else
 							Move( i, AITank, AITank[i].parentNode[AITank[i].index], nextMove )
-							if MineField( i,AITank ) and (not AITank[i].alive) then exit
+							//~ if MineField( i,AITank ) and (not AITank[i].alive) then exit
+									if MineField( i,AITank ) then exit
 						endif
 					//~ else
 						//~ exit
@@ -359,13 +352,13 @@ function AIOps()
 			endif
 			if not GetTweenTextPlaying( tt,MovingText ) then tt = TweenText( MovingText,Null,Null,Null,Null,255,0,Null,Null,Null,Null,1,0,2 )
 		loop
+											PlayerBaseCapture()
 		AIFOW(i)
 	next i
 	DeleteText(MovingText)
 	for i = 0 to AIPlayerLast
 		if not AITank[i].alive then continue
 		RepairDepot( i,AITank,AIDepotNode,AIDepot,AITank[i].maximumHealth ) `at depot?
-		VictoryConditions( i,AITank )
 		AIFOW(i)
 	next i
 	SetRawMouseVisible(On)
@@ -373,6 +366,16 @@ endfunction
 
 
 remstart
+from AIFOW
+		SetSpriteVisible(AITank[ID].bodyID,On)
+		SetSpriteVisible(AITank[ID].turretID,On)
+
+		if mapTable[ AITank[ID].parentNode[AITank[ID].index] ].terrain = Trees
+			SetSpriteVisible(AITank[ID].cover,On)
+			SetSpritePositionByOffset(AITank[ID].cover,AITank[ID].x,AITank[ID].y)
+		endif
+		if AITank[ID].stunned then SetSpriteVisible(AITank[ID].stunMarker,On)
+		HealthBar(ID,AITank)
 
 from ProtectBase and VisitDepot and AttackBase:
 				AITank[ID].NearestPlayer = Unset

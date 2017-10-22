@@ -101,6 +101,7 @@ function ResetPath(ID,Tank ref as tankType[])
 endfunction
 
 function Move(ID,Tank ref as tankType[],node1,node2)
+	speed# = Tank[ID].speed
 	x1 = Tank[ID].x
 	y1 = Tank[ID].y
 	x2 = mapTable[node2].x
@@ -115,17 +116,23 @@ function Move(ID,Tank ref as tankType[],node1,node2)
 	next i
 	tankArc# = SetTurnArc(b#,a#)
 	turretArc# = SetTurnArc(t#,a#)
-	t1 = SetTween(x1,y1,x2,y2,b#,tankArc#,  Tank[ID].bodyID,  TweenLinear(),Tank[ID].speed)
-	t2 = SetTween(x1,y1,x2,y2,t#,turretArc#,Tank[ID].turretID,TweenLinear(),Tank[ID].speed)
 
-	if Tank[ID].team = PlayerTeam then f1 = SetTween(x1,y1,x2,y2,0,0,Tank[ID].FOW,TweenLinear(),Tank[ID].speed)
+	if Tank[ID].team = PlayerTeam
+		f1 = SetTween(x1,y1,x2,y2,0,0,Tank[ID].FOW,TweenLinear(),speed#)
+		SetSoundInstanceRate( PlaySound( Tank[ID].sound,Tank[ID].volume ),3.5 )
+	elseif not GetSpriteVisible( Tank[ID].bodyID )
+		speed# = .01	`speed up invisible AI moves
+	else
+		SetSoundInstanceRate( PlaySound( Tank[ID].sound,Tank[ID].volume ),3.5 )
+	endif
+	t1 = SetTween(x1,y1,x2,y2,b#,tankArc#,  Tank[ID].bodyID,  TweenLinear(),speed#)
+	t2 = SetTween(x1,y1,x2,y2,t#,turretArc#,Tank[ID].turretID,TweenLinear(),speed#)
 
 	select Tank[ID].Vehicle
 		case Mech	  : PlaySprite( Tank[ID].bodyID,20,0 ) : endcase
 		case Engineer : if not GetSpritePlaying( Tank[ID].bodyID ) then PlaySprite( Tank[ID].bodyID,80,0 ) : endcase
 	endselect
 
-	if GetSpriteVisible( Tank[ID].bodyID ) then SetSoundInstanceRate( PlaySound( Tank[ID].sound,Tank[ID].volume ),3.5 )
 	PlayTweens( t1, Tank[ID].bodyID )
 	Tank[ID].x = x2
 	Tank[ID].y = y2

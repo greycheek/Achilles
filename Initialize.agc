@@ -178,7 +178,7 @@ function TankSetup(ID,Tank ref as tankType[],pick as ColorSpec)
 			Tank[ID].range = laserRange
 			Tank[ID].damage = laserDamage
 			Tank[ID].rounds = True
-			Tank[ID].movesAllowed = 8
+			Tank[ID].movesAllowed = 7
 			Tank[ID].health = LightHealthMax
 			Tank[ID].minimumHealth = LightHealthMax *.33
 			Tank[ID].maximumHealth = LightHealthMax
@@ -191,7 +191,7 @@ function TankSetup(ID,Tank ref as tankType[],pick as ColorSpec)
 			Tank[ID].range = missileRange
 			Tank[ID].damage = missileDamage
 			Tank[ID].rounds = 9
-			Tank[ID].movesAllowed = 7
+			Tank[ID].movesAllowed = 6
 			Tank[ID].health = BatteryHealthMax
 			Tank[ID].minimumHealth = BatteryHealthMax *.33
 			Tank[ID].maximumHealth = BatteryHealthMax
@@ -200,9 +200,9 @@ function TankSetup(ID,Tank ref as tankType[],pick as ColorSpec)
 			Tank[ID].speed = .4
 			Tank[ID].sound = MechSound
 			Tank[ID].volume = vol
-			Tank[ID].weapon = heavyLaser
-			Tank[ID].range = laserRange
-			Tank[ID].damage = heavyLaserDamage
+			Tank[ID].weapon = disruptor
+			Tank[ID].range = disruptorRange
+			Tank[ID].damage = disruptorDamage
 			Tank[ID].rounds = 4
 			Tank[ID].movesAllowed = 4
 			Tank[ID].health = MediumHealthMax
@@ -259,7 +259,10 @@ function TankSetup(ID,Tank ref as tankType[],pick as ColorSpec)
 	LoadImage(Tank[ID].healthBarImageID,"health3.png")
 
 	CreateSprite(Tank[ID].bodyID, Tank[ID].bodyImageID)
-	SetSpritePhysicsOff(Tank[ID].bodyID)
+			SetSpritePhysicsOn(Tank[ID].bodyID,1)
+			SetSpritePhysicsOn(Tank[ID].turretID,1)
+			SetSpriteCategoryBits( Tank[ID].bodyID,NoBlock )
+			SetSpriteCategoryBits( Tank[ID].turretID,NoBlock )
 	CreateSprite(Tank[ID].turretID, Tank[ID].turretImageID)
 	CreateSprite(Tank[ID].healthID, Tank[ID].healthBarImageID)
 	SetSpriteVisible(Tank[ID].healthID,Off)
