@@ -251,7 +251,7 @@ function WeaponButtons(ID,vehicle)
 			SetVirtualButtonImageUp( CannonButton, cannonImage )
 			SetVirtualButtonImageUp( LaserButton, laserImage )
 		endcase
-		case LightTank
+		case HoverCraft
 			SetVirtualButtonPosition( LaserButton, dev.buttX1, buttY )
 			SetVirtualButtonVisible( LaserButton, On)
 			SetVirtualButtonActive( LaserButton, On )
@@ -524,8 +524,9 @@ function GetInput()
 
 		select dev.device
 			case "windows","mac"
+				PressToZoom()
 				MouseScroll()
-				if selection = Undefined then PressToZoom()
+				KeyScroll()
 			endcase
 			case "ios","android" : PinchToZoom() : endcase
 		endselect
@@ -747,6 +748,7 @@ function PlayerOps()
 			PlayerTank[i].moves = 0	  `Reset for next turn
 			RepairDepot(i,PlayerTank,PlayerDepotNode,PlayerDepot,PlayerTank[i].maximumHealth) `at depot?
 		endif
+		if PlayerTank[i].Vehicle = Hovercraft then Hover( i,PlayerTank )
 	next i
 endfunction
 
@@ -766,6 +768,9 @@ function DisplayError(ID,error$)
 endfunction
 
 remstart
+
+FROM GETINPUT
+	if selection = Undefined then PressToZoom()
 
 FROM PLAYEROPS
 	if MineField( i,PlayerTank ) and (not PlayerTank[i].alive) then exit

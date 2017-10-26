@@ -11,7 +11,7 @@ remstart
 			ENGINEER PROTECTION
 	---CHANGE LASER TANK TO ANTI-TANK UNIT
 	---TERRAIN CONTROL SETTINGS
-	---ZOOM KEY DOESNT WORK WHEN UNIT SELECTED
+	---INSTRUCTIONS
 
 	FIXED?
 
@@ -693,9 +693,25 @@ function LaserFire( x1,y1,x2,y2,weapon,t1#,t2#,interrupt )
 	DeleteParticles( laser1 )
 endfunction
 
-remstart
-
-remend
+function Hover( ID,Tank as tankType[] )
+	if GetSpriteCurrentFrame( Tank[ID].bodyID ) <> 1
+		sx# = GetSpriteScaleX( Tank[ID].bodyID )
+		sy# = GetSpriteScaleY( Tank[ID].bodyID )
+		PlaySprite( Tank[ID].bodyID,20,0,22,28 )
+		repeat
+			SetSpriteScaleByOffset(Tank[ID].bodyID,sx#,sy#)
+			SetSpriteScaleByOffset(Tank[ID].turretID,sx#,sy#)
+			Sync()
+			if sx# > 1
+				dec sx#,.01
+				dec sy#,.01
+			endif
+		until GetSpriteCurrentFrame( Tank[ID].bodyID ) = 28
+		SetSpriteScaleByOffset(Tank[ID].bodyID,1,1)
+		SetSpriteScaleByOffset(Tank[ID].turretID,1,1)
+		PlaySprite( Tank[ID].bodyID,28,0,1,1 )
+	endif
+endfunction
 
 function SetTween( x1,y1,x2,y2,a1#,a2#,sprite,mode,speed#  )
 	t = CreateTweenSprite( speed# )
@@ -790,6 +806,7 @@ function DisruptorTest()
 endfunction
 
 remstart
+
 FROM LASERFIRE
 	if GetRawKeyState( 0x51 ) or GetRawKeyState( Enter ) or GetRawKeyState( 0x53 ) then exit	 `Q,Enter,S
 

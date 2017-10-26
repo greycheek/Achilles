@@ -173,7 +173,7 @@ global angle  as integer[8]=[0,45,90,135,180,225,270,315]
 #constant depotGroup 10
 #constant AIdepotGroup 11
 
-#constant LightTank 1
+#constant HoverCraft 1
 #constant MediumTank 2
 #constant HeavyTank 3
 #constant Battery 4
@@ -339,7 +339,7 @@ global weapon$ as string[9,2]
 global movement$ as string[9,1]
 global cost$ as string[9,1]
 
-type$[1,0] = "LASER TANK"
+type$[1,0] = "HOVERCRAFT"
 type$[2,0] = "MEDIUM TANK"
 type$[3,0] = "HEAVY TANK"
 type$[4,0] = "BATTERY"
@@ -535,7 +535,7 @@ endtype
 
 
 global unitCost as integer[unitTypes]
-unitCost[LightTank] = 50
+unitCost[HoverCraft] = 50
 unitCost[MediumTank] = 100
 unitCost[HeavyTank] = 200
 unitCost[Battery] = 250

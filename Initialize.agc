@@ -12,9 +12,9 @@ endfunction
 
 function VehicleImage( ID, Tank ref as tankType[] )
 	select Tank[ID].vehicle
-		case LightTank
-			Tank[ID].body$ = "GENLIGHT300.png"
-			Tank[ID].turret$ = "LIGHTTURRET.png"
+		case HoverCraft
+			Tank[ID].body$ = "HovercraftSS2.png"
+			Tank[ID].turret$ = "HOVERTURRET.png"
 		endcase
 		case MediumTank
 			Tank[ID].body$ = "GENMEDIUM300.png"
@@ -133,9 +133,9 @@ function Initialize()
 						//~ SetSpriteVisible(AITank[i].cover,Off)
 		Patrol(i)
 		AITank[i].route = AStar(i,AITank)
-						SetSpriteVisible(AITank[i].bodyID,Off)
-						SetSpriteVisible(AITank[i].turretID,Off)
-						SetSpriteVisible(AITank[i].stunMarker,Off)
+		SetSpriteVisible(AITank[i].bodyID,Off)
+		SetSpriteVisible(AITank[i].turretID,Off)
+		SetSpriteVisible(AITank[i].stunMarker,Off)
 		//~ SetSpriteVisible(AITank[i].healthID,Off) `keep off
 		SetSpriteAngle(AITank[i].bodyID,270)
 		SetSpriteAngle(AITank[i].turretID,270)
@@ -170,7 +170,7 @@ function TankSetup(ID,Tank ref as tankType[],pick as ColorSpec)
 			Tank[ID].minimumHealth = MediumHealthMax *.33
 			Tank[ID].maximumHealth = MediumHealthMax
 		endcase
-		case LightTank
+		case HoverCraft
 			Tank[ID].speed = .2
 			Tank[ID].sound = TankSound
 			Tank[ID].volume = vol
@@ -259,10 +259,10 @@ function TankSetup(ID,Tank ref as tankType[],pick as ColorSpec)
 	LoadImage(Tank[ID].healthBarImageID,"health3.png")
 
 	CreateSprite(Tank[ID].bodyID, Tank[ID].bodyImageID)
-			SetSpritePhysicsOn(Tank[ID].bodyID,1)
-			SetSpritePhysicsOn(Tank[ID].turretID,1)
-			SetSpriteCategoryBits( Tank[ID].bodyID,NoBlock )
-			SetSpriteCategoryBits( Tank[ID].turretID,NoBlock )
+	SetSpritePhysicsOn(Tank[ID].bodyID,1)
+	SetSpritePhysicsOn(Tank[ID].turretID,1)
+	SetSpriteCategoryBits( Tank[ID].bodyID,NoBlock )
+	SetSpriteCategoryBits( Tank[ID].turretID,NoBlock )
 	CreateSprite(Tank[ID].turretID, Tank[ID].turretImageID)
 	CreateSprite(Tank[ID].healthID, Tank[ID].healthBarImageID)
 	SetSpriteVisible(Tank[ID].healthID,Off)
@@ -282,8 +282,12 @@ function TankSetup(ID,Tank ref as tankType[],pick as ColorSpec)
 	SetSpritePositionByOffset(Tank[ID].turretID, Tank[ID].x, Tank[ID].y)
 
 	select Tank[ID].Vehicle
-		case Mech 	  :	SetSpriteAnimation( Tank[ID].bodyID,314,322,15 ) : endcase
-		case Engineer : SetSpriteAnimation( Tank[ID].bodyID,200,200,16 ) : endcase
+		case HoverCraft
+			SetSpriteAnimation( Tank[ID].bodyID,292,292,28 )
+			PlaySprite( Tank[ID].bodyID,14,0,1,1 )
+		endcase
+		case Mech 	    : SetSpriteAnimation( Tank[ID].bodyID,314,322,15 ) : endcase
+		case Engineer   : SetSpriteAnimation( Tank[ID].bodyID,200,200,16 ) : endcase
 	endselect
 endfunction
 

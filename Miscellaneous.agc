@@ -13,13 +13,13 @@
 #constant FullAlpha 255
 #constant HalfAlpha 128
 #constant NoBlock %0000000000000000
-#constant Block	  %0000000000000010	  `#constant Block %0000000000000100
+#constant Block	  %0000000000000010
 
 global zoomFactor as float = 1.0
 global lastX as float
 global lastY as float
-global newX as float
-global newY as float
+global newX as float = 0
+global newY as float = 0
 global xoffset as float = 0
 global yoffset as float = 0
 global dragMode as integer
@@ -69,18 +69,16 @@ endfunction
 function PresstoZoom()
 	if GetRawKeyReleased(190) or GetRawKeyReleased(187)  // ">" or "="
 		zoomFactor = Max(4,zoomFactor+.5)
-		SetViewZoom( zoomFactor )
-		CalcScroll()
-		lastX = xoffset
-		lastY = yoffset
 	elseif GetRawKeyReleased(188) or GetRawKeyReleased(189)  // "<" or "-"
 		zoomFactor = Min(1,zoomFactor-.5)
 		if zoomFactor = 1 then SetViewOffset(0,0) `reset scroll
-		SetViewZoom( zoomFactor )
-		CalcScroll()
-		lastX = xoffset
-		lastY = yoffset
+	else
+		exitfunction
 	endif
+	SetViewZoom( zoomFactor )
+	CalcScroll()
+	lastX = xoffset
+	lastY = yoffset
 endfunction
 
 function MouseScroll()
@@ -110,7 +108,43 @@ function CalcScroll()
 	//*** Calculate new scroll position ***
 	xoffset = MinMax( minX#,maxX#,lastX+( (newX-GetPointerX())/zoomFactor ))
 	yoffset = MinMax( minY#,maxY#,lastY+( (newY-GetPointerY())/zoomFactor ))
-	SetViewOffset(xoffset,yoffset)
+	SetViewOffset( xoffset,yoffset )
+endfunction
+
+function KeyScroll()
+	if zoomFactor > 1 `only scroll if zoomed-in
+		nodeStep = NodeSize/zoomFactor
+
+		if GetRawKeyState(37)     `KEY_LEFT
+			dec newX,nodeStep
+		elseif GetRawKeyState(39) `KEY_RIGHT
+			inc newX,nodeStep
+		elseif GetRawKeyState(38) `KEY_UP
+			dec newY,nodeStep
+		elseif GetRawKeyState(40) `KEY_DOWN
+			inc newY,nodeStep
+		else
+			exitfunction
+		endif
+		CalcKeyScroll()
+	else
+		lastX = xoffset
+		lastY = yoffset
+	endif
+endfunction
+
+function CalcKeyScroll()
+	zoom# =  zoomFactor - 1.0
+	ZFx2# =  zoomFactor * 2.0
+	minX# = -zoom# * MaxWidth  / ZFx2# `should zoom * MaxWidth/MaxHeight be in ( )??
+	maxX# =  zoom# * MaxWidth  / ZFx2#
+	minY# = -zoom# * MaxHeight / ZFx2#
+	maxY# =  zoom# * MaxHeight / ZFx2#
+
+	//*** Calculate new scroll position ***
+	xoffset = MinMax( minX#,maxX#,lastX+newX )
+	yoffset = MinMax( minY#,maxY#,lastY+newY )
+	SetViewOffset( xoffset,yoffset )
 endfunction
 
 type ColorSpec

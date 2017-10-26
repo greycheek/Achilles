@@ -554,7 +554,7 @@ function Setup()
 	SetSpritePhysicsOn(PlayerValueSprite,1)
 
 
-	SpriteCon[LightTank].image$ = "GENLIGHT.png"
+	SpriteCon[HoverCraft].image$ = "GENHOVER.png"
 	SpriteCon[MediumTank].image$ = "GENMEDIUM.png"
 	SpriteCon[HeavyTank].image$ = "GENHEAVY.png"
 	SpriteCon[Battery].image$ = "GENMISSILE.png"

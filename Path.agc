@@ -127,6 +127,20 @@ function Move(ID,Tank ref as tankType[],node1,node2)
 	t2 = SetTween(x1,y1,x2,y2,t#,turretArc#,Tank[ID].turretID,TweenLinear(),speed#)
 
 	select Tank[ID].Vehicle
+		case HoverCraft
+			if GetSpriteCurrentFrame( Tank[ID].bodyID ) = 1
+				sx# = 1
+				sy# = 1
+				PlaySprite( Tank[ID].bodyID,40,0,1,21 )
+				repeat
+					SetSpriteScaleByOffset(Tank[ID].bodyID,sx#,sy#)
+					SetSpriteScaleByOffset(Tank[ID].turretID,sx#,sy#)
+					Sync()
+					inc sx#,.01
+					inc sy#,.01
+				until GetSpriteCurrentFrame( Tank[ID].bodyID ) = 21
+			endif
+		endcase
 		case Mech	  : PlaySprite( Tank[ID].bodyID,20,0 ) : endcase
 		case Engineer : if not GetSpritePlaying( Tank[ID].bodyID ) then PlaySprite( Tank[ID].bodyID,80,0 ) : endcase
 	endselect

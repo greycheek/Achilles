@@ -51,7 +51,7 @@ function AIBaseProduction()
 	i = Random2(0,AIBaseCount)
 	if AIProdUnits > 0
 		if maptable[AIBases[i].node].team = Unoccupied
-			randomUnitType = Random2( LightTank,Engineer )
+			randomUnitType = Random2( HoverCraft,Engineer )
 			if ( AIProdUnits - unitCost[randomUnitType] ) >= 0
 				ID = AISpawn( randomUnitType,AIBases[i].node )
 				if AIFOW(ID) then Produce( ID,AITank,1,1,AIBases[i].spriteID,pickAI )
@@ -134,7 +134,7 @@ function AITarget()
 									WeaponSelect(i,AITank,missile,missileRange,missileDamage)
 								endif
 							endcase
-							case LightTank
+							case HoverCraft
 								WeaponSelect(i,AITank,laser,laserRange,laserDamage)
 							endcase
 							case MediumTank
@@ -201,7 +201,7 @@ function GoalSet(ID,vehicle)
 				if ProtectBase(ID) then exitfunction
 			DefaultGoal(ID,1)
 		endcase
-		case LightTank
+		case HoverCraft
 			if VisitDepot(ID)  then exitfunction
 				if AttackBase(ID)  then exitfunction
 				if ProtectBase(ID) then exitfunction
@@ -337,6 +337,7 @@ function AIOps()
 		loop
 		PlayerBaseCapture()
 		AIFOW(i)
+		if AITank[i].Vehicle = Hovercraft then Hover( i,AITank )
 	next i
 	DeleteText(MovingText)
 	for i = 0 to AIPlayerLast
