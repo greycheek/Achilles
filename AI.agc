@@ -33,20 +33,6 @@ function AISpawn( vehicle,node )
 	dec AIProdUnits,unitCost[vehicle]
 endfunction ID
 
-function Patrol(ID)
-	v = Random2(0,7)                    `Random starting vector
-	for j = PatrolRadius to 1 step -1   `Linear search
-		for i = 0 to 7                  `Circular search
-			node = AITank[ID].parentNode[AITank[ID].index] + (patrolScan[ v+i ] * j)  `Advance to next node vector
-			node = MinMax(1,OpenMapSize,node)
-			if mapTable[node].terrain < Impassable //and (mapTable[node].team = Unoccupied) //TURN OFF OCCUPY CHECK????
-				AITank[ID].goalNode = node
-				exitfunction
-			endif
-		next i
-	next j
-endfunction
-
 function AIBaseProduction()
 	i = Random2(0,AIBaseCount)
 	if AIProdUnits > 0
@@ -66,12 +52,9 @@ function FindEnemy(ID)
 
 	for j = 0 to PlayerLast
 		if not PlayerTank[j].alive then continue
-		xa = AITank[ID].x - AITank[ID].FOWOffset
-		ya = AITank[ID].y - AITank[ID].FOWOffset
-		xb = AITank[ID].x + AITank[ID].FOWOffset
-		yb = AITank[ID].y + AITank[ID].FOWOffset
+		SetFOWbox( ID,AITank )
 
-		if GetSpriteInBox( PlayerTank[j].bodyID,xa,ya,xb,yb )
+		if GetSpriteInBox( PlayerTank[j].bodyID,box.x1,box.y1,box.x2,box.y2 )
 			//~ if not GetSpriteVisible(AITank[ID].bodyID)
 				//~ SetSpriteVisible(AITank[ID].bodyID,On)
 				//~ SetSpriteVisible(AITank[ID].turretID,On)
@@ -180,31 +163,31 @@ function AIFOW(ID)
 			exitfunction True
 		endif
 	next i
-	SetSpriteVisible(AITank[ID].bodyID,Off)
-	SetSpriteVisible(AITank[ID].turretID,Off)
-	SetSpriteVisible(AITank[ID].healthID,Off)
-	SetSpriteVisible(AITank[ID].stunMarker,Off)
-	SetSpriteVisible(AITank[ID].cover,Off)
+				//~ SetSpriteVisible(AITank[ID].bodyID,Off)
+				//~ SetSpriteVisible(AITank[ID].turretID,Off)
+				//~ SetSpriteVisible(AITank[ID].healthID,Off)
+				//~ SetSpriteVisible(AITank[ID].stunMarker,Off)
+				//~ SetSpriteVisible(AITank[ID].cover,Off)
 endfunction False
 
 function GoalSet(ID,vehicle)
 	select vehicle
 		case HeavyTank
 			if VisitDepot(ID)  then exitfunction
-			if ProtectBase(ID) then exitfunction
 			if AttackBase(ID)  then exitfunction
+			if ProtectBase(ID) then exitfunction
 			DefaultGoal(ID,1)
 		endcase
 		case MediumTank
 			if VisitDepot(ID)  then exitfunction
-				if AttackBase(ID)  then exitfunction
-				if ProtectBase(ID) then exitfunction
+			if AttackBase(ID)  then exitfunction
+			if ProtectBase(ID) then exitfunction
 			DefaultGoal(ID,1)
 		endcase
 		case HoverCraft
 			if VisitDepot(ID)  then exitfunction
-				if AttackBase(ID)  then exitfunction
-				if ProtectBase(ID) then exitfunction
+			if AttackBase(ID)  then exitfunction
+			if ProtectBase(ID) then exitfunction
 			DefaultGoal(ID,2)
 		endcase
 		case Battery
@@ -214,8 +197,8 @@ function GoalSet(ID,vehicle)
 		endcase
 		case Mech
 			if VisitDepot(ID)  then exitfunction
-			if ProtectBase(ID) then exitfunction
 			if AttackBase(ID)  then exitfunction
+			if ProtectBase(ID) then exitfunction
 			DefaultGoal(ID,1)
 		endcase
 		case Engineer
@@ -231,14 +214,26 @@ function VisitDepot(ID)
 		if (AITank[ID].health <= AITank[ID].minimumHealth) or (not AITank[ID].missiles) or (not AITank[ID].mines) or (not AITank[ID].charges)
 			shortestRange = Unset
 			for i = 0 to AIDepotNode.length
-				distance = VectorDistance( AITank[ID].x,AITank[ID].y, mapTable[AIDepotNode[i].node].x, mapTable[AIDepotNode[i].node].y )
+
+				if AITank[ID].vehicle = HoverCraft
+					if not GetSpriteInCircle( AIDepotNode[i].spriteID, AITank[ID].x, AITank[ID].y, AITank[ID].FOWOffset-NodeSize )
+						continue
+					endif
+				endif
+				distance = VectorDistance( AITank[ID].x, AITank[ID].y, mapTable[AIDepotNode[i].node].x, mapTable[AIDepotNode[i].node].y )
 				if distance < shortestRange
 					shortestRange = distance
 					targetDepot = AIDepotNode[i].node
 				endif
 			next i
+
+			if shortestRange = Unset  `For Hovercraft - no depot in range
+				Patrol(ID)
+				exitfunction True
+			endif
+
 			AITank[ID].goalNode = targetDepot
-			AITank[ID].route = PlanMove(ID)
+			if AITank[ID].vehicle <> HoverCraft then AITank[ID].route = PlanMove(ID)
 			//~ if AITank[ID].route = NoPath then NewGoal(ID)
 			exitfunction True
 		endif
@@ -250,10 +245,20 @@ function ProtectBase(ID)	`routine to select other than 1st base examined?
 		if mapTable[AIBases[i].node].team then continue `friendly tank already at base?
 		for j = 0 to PlayerCount
 			if  GetSpriteInBox( PlayerTank[j].bodyID, AIBases[i].x1, AIBases[i].y1, AIBases[i].x2, AIBases[i].y2 )
-				AITank[ID].goalNode = AIBases[i].node
-				AITank[ID].route = PlanMove(ID)
-				//~ if AITank[ID].route = NoPath then NewGoal(ID)
-				exitfunction True
+
+				if AITank[ID].vehicle = HoverCraft
+					if not GetSpriteInCircle( AIBases[i].node,AITank[ID].x,AITank[ID].y,AITank[ID].FOWOffset-NodeSize )	`WAS PlayerTank[j].bodyID IN CIRCLE
+						continue
+					else
+						AITank[ID].goalNode = AIBases[i].node
+						exitfunction True
+					endif
+				else
+					AITank[ID].goalNode = AIBases[i].node
+					AITank[ID].route = PlanMove(ID)
+					//~ if AITank[ID].route = NoPath then NewGoal(ID)
+					exitfunction True
+				endif
 			endif
 		next j
 	next i
@@ -261,10 +266,10 @@ endfunction False
 
 function AttackBase(ID)
 	for i = 0 to PlayerBaseCount
-		if  GetSpriteInBox( AITank[ID].bodyID, PlayerBases[i].x1, PlayerBases[i].y1, PlayerBases[i].x2, PlayerBases[i].y2 )
+		if  GetSpriteInCircle( PlayerBases[i].spriteID,AITank[ID].x,AITank[ID].y,AITank[ID].FOWOffset-NodeSize )
 			if mapTable[PlayerBases[i].node].team = Unoccupied
 				AITank[ID].goalNode = PlayerBases[i].node
-				AITank[ID].route = PlanMove(ID)
+				if AITank[ID].vehicle <> HoverCraft then AITank[ID].route = PlanMove(ID)
 				//~ if AITank[ID].route = NoPath then NewGoal(ID)
 				exitfunction True
 			endif
@@ -273,7 +278,15 @@ function AttackBase(ID)
 endfunction False
 
 function DefaultGoal(ID,standOff)
-	//~ NearestPlayer = FindEnemy(ID)
+	if AITank[ID].vehicle = Hovercraft
+		if AITank[ID].NearestPlayer <> Unset
+			AITank[ID].goalNode = PlayerTank[AITank[ID].NearestPlayer].node
+		else
+			Patrol(ID)
+		endif
+		exitfunction
+	endif
+
 	if (AITank[ID].NearestPlayer <> Unset) //and (AITank[ID].NearestPlayer <> Nearestplayer)
 		AITank[ID].goalNode = PlayerTank[AITank[ID].NearestPlayer].parentNode[PlayerTank[AITank[ID].NearestPlayer].index]
 
@@ -282,14 +295,32 @@ function DefaultGoal(ID,standOff)
 			for i = 0 to standOff : AITank[ID].parentNode.remove() : next i `stay at least 'standOff nodes + 1' away from enemy
 			AITank[ID].goalNode = AITank[ID].parentNode[AITank[ID].parentNode.length]
 		endif
+
 	elseif (AITank[ID].parentNode[AITank[ID].index] = AITank[ID].goalNode) or (AITank[ID].route = NoPath)
-		NewGoal(ID)
+		Patrol(ID)
+		PlanMove(ID)
 	endif
 endfunction
 
-function NewGoal(ID)
-	Patrol(ID)
-	PlanMove(ID)
+function Patrol(ID)
+	v = Random2( 0,7 )                  `Random start vector
+	for j = AITank[ID].FOWOffset to 1 step -1   `Linear search	START INDEX WAS PATROLRADIUS
+		for i = 0 to 7                  `Circular search
+			nextNode=patrolScan[v+i]*j  `Next inward vector
+
+			node = AITank[ID].parentNode[ AITank[ID].index ] + nextNode
+			SetFOWbox( ID,AITank )
+			x = mod(node,Columns) * NodeSize
+			y = floor(node/Columns) * NodeSize
+			if ( x > box.x2 ) or ( x < box.x1 ) then continue
+			if ( y > box.y2 ) or ( y < box.y1 ) then continue
+
+			if ( mapTable[node].terrain < Impassable ) //and (mapTable[node].team = Unoccupied)
+				AITank[ID].goalNode = node
+				exitfunction
+			endif
+		next i
+	next j
 endfunction
 
 function PlanMove(ID)
@@ -312,7 +343,16 @@ function AIOps()
 		GoalSet(i,AITank[i].vehicle)
 		AITank[i].totalTerrainCost = Null
 		do
-			if AITank[i].index < AITank[i].parentNode.length
+			if AITank[i].vehicle = Hovercraft
+				if mapTable[AITank[i].goalNode].team = Unoccupied
+					if AITank[i].node <> AITank[i].goalNode
+						SetSpriteVisible(AITank[i].healthID,Off)
+						Fly( i,AITank,AITank[i].node,AITank[i].goalNode )
+						MineField( i,AITank )
+					endif
+				endif
+				exit
+			elseif AITank[i].index < AITank[i].parentNode.length
 				SetSpriteVisible(AITank[i].healthID,Off)
 
 				nextMove = AITank[i].parentNode[AITank[i].index+1]
@@ -320,10 +360,10 @@ function AIOps()
 				if mapTable[nextMove].team = Unoccupied
 					if AITank[i].totalTerrainCost >= AITank[i].movesAllowed
 						exit
-					elseif AITank[i].parentNode[AITank[i].index] = AITank[i].goalNode
+					elseif AITank[i].parentNode[AITank[i].index] = AITank[i].goalNode `is this necessary?
 						exit
 					else
-						Move( i, AITank, AITank[i].parentNode[AITank[i].index], nextMove )
+						Move( i,AITank,AITank[i].parentNode[AITank[i].index],nextMove )
 						if MineField( i,AITank ) then exit
 					endif
 				else
@@ -337,7 +377,9 @@ function AIOps()
 		loop
 		PlayerBaseCapture()
 		AIFOW(i)
-		if AITank[i].Vehicle = Hovercraft then Hover( i,AITank )
+		if GetSpriteVisible( AITank[i].bodyID )
+			if AITank[i].Vehicle = Hovercraft then Hover( i,AITank )
+		endif
 	next i
 	DeleteText(MovingText)
 	for i = 0 to AIPlayerLast
@@ -350,6 +392,18 @@ endfunction
 
 
 remstart
+FROM FIND ENEMY
+		xa = AITank[ID].x - AITank[ID].FOWOffset
+		ya = AITank[ID].y - AITank[ID].FOWOffset
+		xb = AITank[ID].x + AITank[ID].FOWOffset
+		yb = AITank[ID].y + AITank[ID].FOWOffset
+
+			if AITank[ID].vehicle = Hovercraft
+				v# = VectorDistance( AITank[ID].x,AITAnk[ID].y,mapTable[AITank[ID].goalNode].x,mapTable[AITank[ID].goalNode].x )
+				if v# > AITank[ID].FOWOffset
+				endif
+			endif
+
 from AIFOW
 		SetSpriteVisible(AITank[ID].bodyID,On)
 		SetSpriteVisible(AITank[ID].turretID,On)

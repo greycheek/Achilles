@@ -115,8 +115,9 @@ function Move(ID,Tank ref as tankType[],node1,node2)
 	next i
 	tankArc# = SetTurnArc(b#,a#)
 	turretArc# = SetTurnArc(t#,a#)
+	visible = GetSpriteVisible( Tank[ID].bodyID )
 
-	if not GetSpriteVisible( Tank[ID].bodyID )
+	if not visible
 		speed# = .01  `speed up invisible AI moves
 	else
 		speed# = Tank[ID].speed
@@ -127,20 +128,6 @@ function Move(ID,Tank ref as tankType[],node1,node2)
 	t2 = SetTween(x1,y1,x2,y2,t#,turretArc#,Tank[ID].turretID,TweenLinear(),speed#)
 
 	select Tank[ID].Vehicle
-		case HoverCraft
-			if GetSpriteCurrentFrame( Tank[ID].bodyID ) = 1
-				sx# = 1
-				sy# = 1
-				PlaySprite( Tank[ID].bodyID,40,0,1,21 )
-				repeat
-					SetSpriteScaleByOffset(Tank[ID].bodyID,sx#,sy#)
-					SetSpriteScaleByOffset(Tank[ID].turretID,sx#,sy#)
-					Sync()
-					inc sx#,.01
-					inc sy#,.01
-				until GetSpriteCurrentFrame( Tank[ID].bodyID ) = 21
-			endif
-		endcase
 		case Mech	  : PlaySprite( Tank[ID].bodyID,20,0 ) : endcase
 		case Engineer : if not GetSpritePlaying( Tank[ID].bodyID ) then PlaySprite( Tank[ID].bodyID,80,0 ) : endcase
 	endselect
@@ -151,6 +138,48 @@ function Move(ID,Tank ref as tankType[],node1,node2)
 	Deploy(ID,Tank,node1,node2)
 	inc Tank[ID].index
 	inc Tank[ID].totalTerrainCost,mapTable[node2].cost
+endfunction
+
+function Fly( ID,Tank ref as tankType[],node1,node2 )	`NOT CONTROLLED BY ASTAR
+	x1 = Tank[ID].x
+	y1 = Tank[ID].y
+	x2 = mapTable[node2].x
+	y2 = mapTable[node2].y
+	endArc# = atan2( y1-y2,x1-x2 )-90
+	tankArc# = GetSpriteAngle( Tank[ID].bodyID )
+	turretArc# = GetSpriteAngle( Tank[ID].turretID )
+	b# = SetTurnArc( tankArc#,endArc# )
+	t# = SetTurnArc( turretArc#,endArc# )
+
+	visible = GetSpriteVisible( Tank[ID].bodyID )
+	if not visible
+		speed# = .01  `speed up invisible AI moves
+	else
+		speed# = Tank[ID].speed
+		SetSoundInstanceRate( PlaySound( Tank[ID].sound,Tank[ID].volume ),3.5 )	 `sound for visible units
+	endif
+
+	if Tank[ID].team = PlayerTeam then SetTween( x1,y1,x2,y2,0,0,Tank[ID].FOW,TweenLinear(),speed# )
+	t1 = SetTween( x1,y1,x2,y2,tankArc#,b#,Tank[ID].bodyID,TweenLinear(),speed# )
+	t2 = SetTween( x1,y1,x2,y2,turretArc#,t#,Tank[ID].turretID,TweenLinear(),speed# )
+
+	if visible and ( GetSpriteCurrentFrame( Tank[ID].bodyID ) = 1 )
+		for i# = 1 to 1.3 step .025	`Take Off
+			SetSpriteScaleByOffset( Tank[ID].bodyID,i#,i# )
+			SetSpriteScaleByOffset( Tank[ID].turretID,i#,i# )
+			Sync()
+		next i#
+		PlaySprite( Tank[ID].bodyID,50,0,1,FullyOpen )
+		repeat
+			Sync()
+		until GetSpriteCurrentFrame( Tank[ID].bodyID ) = FullyOpen
+	endif
+	PlayTweens( t1, Tank[ID].bodyID )
+	Tank[ID].parentNode[Tank[ID].index] = node2
+	Tank[ID].node = node2
+	Tank[ID].x = x2
+	Tank[ID].y = y2
+	Deploy(ID,Tank,node1,node2)
 endfunction
 
 function Deploy(ID,Tank ref as tankType[],node1,node2)
@@ -180,7 +209,20 @@ function ShowNode(node,cost) `debug
 endfunction
 
 remstart
-
+FROM MOVE:
+		case HoverCraft
+			if visible and ( GetSpriteCurrentFrame( Tank[ID].bodyID ) = 1 )
+				for i# = 1 to 1.3 step .025	`Take Off
+					SetSpriteScaleByOffset(Tank[ID].bodyID,i#,i#)
+					SetSpriteScaleByOffset(Tank[ID].turretID,i#,i#)
+					Sync()
+				next i#
+				PlaySprite( Tank[ID].bodyID,50,0,1,21 )
+				repeat
+					Sync()
+				until GetSpriteCurrentFrame( Tank[ID].bodyID ) = 21
+			endif
+		endcase
 remend
 
 

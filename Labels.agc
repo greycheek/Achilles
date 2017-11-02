@@ -20,8 +20,6 @@ global MiddleY as float
 global AspectRatio as float
 global MapWidth as float
 global MapHeight as float
-//~ global zoneX as float
-//~ global zoneY as float
 global NodeSize as integer
 global NodeOffset as integer
 global ScreenWidth as integer
@@ -39,10 +37,9 @@ MiddleX = MaxWidth/2
 MiddleY = MapHeight/2
 
 global zoneRadius as integer
-#constant zoneRange 8
-zoneRadius = zoneRange * NodeSize
-//~ zoneX = ((OpenColumns/2)*NodeSize)/2
-//~ zoneY = ((OpenRows/2   )*NodeSize)/2
+#constant FlyRadius 8
+#constant PatrolRadius 8
+zoneRadius = FlyRadius * NodeSize
 
 `VECTORS
 #constant south 	-32
@@ -80,8 +77,7 @@ zoneRadius = zoneRange * NodeSize
 #constant HeavyCannonButton 8
 #constant EMPButton 9
 #constant MineButton 10
-
-	#constant DisruptButton 11
+#constant DisruptButton 11
 
 #constant AcceptFlipButton 12
 #constant QuitFlipButton 13
@@ -108,7 +104,6 @@ zoneRadius = zoneRange * NodeSize
 #constant turret 1
 #constant Goal 1
 #constant Complete 1
-#constant PatrolRadius 7
 #constant BarWidth 3	 `Health Bar
 
 global DLS as integer
@@ -168,6 +163,11 @@ global angle  as integer[8]=[0,45,90,135,180,225,270,315]
 #constant SpriteConGroup 5
 #constant SpriteConBaseGroup 6
 #constant SpriteConUnits 7
+
+`Hovercraft
+#constant FullyOpen 21
+#constant Closing 22
+#constant FullyClosed 40
 
 #constant blockGroup 9
 #constant depotGroup 10
@@ -230,6 +230,16 @@ global angle  as integer[8]=[0,45,90,135,180,225,270,315]
 global AcquaSprite as integer = TerrainSeries3
 global RoughSprite as integer = TerrainSeries4
 
+type boxType
+	x1
+	y1
+	x2
+	y2
+endtype
+
+global Box as boxType	`for FOW Offset
+
+
 `SOUNDS
 global ClickSound
 global OKSound
@@ -261,6 +271,8 @@ global TargetSound
 global LockOnSound
 global Silence
 global DisruptorSound
+global EngineSound
+global MachineGun
 
 BangSound = LoadSound("bang2.wav")
 BuildBaseSound = LoadSound( "HoverbikeEnd.wav" )
@@ -292,6 +304,8 @@ OKSound = LoadSoundOGG( "Ok_01.ogg" )
 TargetSound = LoadSoundOGG("Target Acquired_01.ogg" )
 LockOnSound = LoadSoundOGG( "Locked On_01.ogg" )
 Silence = LoadSoundOGG( "Silent.ogg" )
+EngineSound = LoadSoundOGG( "Jet.ogg" )
+MachineGun = LoadSoundOGG( "MachineGun.ogg" )
 
 global vol as integer = 100
 global orders as integer[7] `OrderSounds + 1
@@ -324,6 +338,7 @@ function SoundVolume()
 	SetSoundInstanceVolume( TargetSound, vol )
 	SetSoundInstanceVolume( LockOnSound, vol )
 	SetSoundInstanceVolume( DisruptorSound, vol )
+	SetSoundInstanceVolume( EngineSound, vol )
 	for i = 0 to OrderSounds
 		SetSoundInstanceRate( orders[i],.5 )
 		SetSoundInstanceVolume( orders[i],vol )
@@ -706,7 +721,6 @@ type baseType
 	y2
 	node
 	spriteID
-	//~ zoneID
 endtype
 global AIBaseCount as integer
 global PlayerBaseCount as integer
@@ -1017,7 +1031,7 @@ Mine1 = MineSeries + 1
 global EMP1
 EMP1 = EMPSeries
 
-		global DisruptSprite `= DisruptorSeries
+global DisruptSprite `= DisruptorSeries
 
 global field as integer  `board
 global Explode1 as integer

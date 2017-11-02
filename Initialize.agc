@@ -13,7 +13,7 @@ endfunction
 function VehicleImage( ID, Tank ref as tankType[] )
 	select Tank[ID].vehicle
 		case HoverCraft
-			Tank[ID].body$ = "HovercraftSS2.png"
+			Tank[ID].body$ = "HovercraftSS.png"
 			Tank[ID].turret$ = "HOVERTURRET.png"
 		endcase
 		case MediumTank
@@ -53,8 +53,14 @@ function Initialize()
 		PlayerTank[i].node = CalcNode( 1,randomRow ) `starting node
 
 		mapTable[PlayerTank[i].node].team = PlayerTeam
-		PlayerTank[i].goalNode = PlayerTank[i].node
-		PlayerTank[i].parentNode.insert(PlayerTank[i].node)
+
+			if PlayerTank[i].parentNode.length = -1
+				PlayerTank[i].parentNode.insert(PlayerTank[i].node)
+			else
+				PlayerTank[i].parentNode[0] = PlayerTank[i].node
+			endif
+			PlayerTank[i].goalNode = PlayerTank[i].node
+
 		PlayerTank[i].cover = PlayercoverSeries+i
 		PlayerTank[i].team = PlayerTeam
 
@@ -64,8 +70,6 @@ function Initialize()
 		PlayerTank[i].turretImageID = PlayerTank[i].turretID
 		PlayerTank[i].healthID = PlayerHealthSeries+i
 		PlayerTank[i].healthBarImageID = PlayerTank[i].healthID
-		//~ PlayerTank[i].weapon = Undefined
-				//~ PlayerTank[i].stunMarker = PlayerEMPSeries+i
 
 		PlayerTank[i].hilite = HiliteSeries+i
 		LoadImage(PlayerTank[i].hilite,"hilite45.png")
@@ -95,7 +99,7 @@ function Initialize()
 		SetSpriteColor( PlayerTank[i].FOW,255,255,255,35)
 		SetSpriteScissor( PlayerTank[i].FOW,NodeSize,NodeSize,MaxWidth-NodeSize,MaxHeight-(NodeSize*3) )
 
-				SetSpriteSize( PlayerTank[i].FOW, PlayerTank[i].FOWSize, PlayerTank[i].FOWSize )
+		SetSpriteSize( PlayerTank[i].FOW, PlayerTank[i].FOWSize, PlayerTank[i].FOWSize )
 
 		SetSpriteGroup( PlayerTank[i].bodyID,PlayerTankGroup )
 		SetSpriteGroup( PlayerTank[i].turretID,PlayerTankGroup )
@@ -115,7 +119,13 @@ function Initialize()
 		randomColumn = Random2(20,OpenColumns) : z = (i*zone)+1
 		randomRow = Random2(z,z+zone-1)
 		AITank[i].node = CalcNode( OpenColumns,randomRow ) `starting node
-		AITank[i].parentNode.insert(AITank[i].node)
+
+			if AITank[i].parentNode.length = -1
+				AITank[i].parentNode.insert(AITank[i].node)
+			else
+				AITank[i].parentNode[0] = AITank[i].node
+			endif
+			AITank[i].goalNode = AITank[i].node
 
 		AITank[i].team = AITeam
 		mapTable[AITank[i].node].team = AITeam
@@ -123,19 +133,19 @@ function Initialize()
 		AITank[i].bodyID = AITankSeries+i
 		AITank[i].turretID = AITurretSeries+i
 		AITank[i].cover = AICoverSeries+i
-				//~ AITank[i].stunMarker = AIEMPSeries+i
 		AITank[i].bodyImageID = AITank[i].bodyID
 		AITank[i].turretImageID = AITank[i].turretID
 		AITank[i].healthID = AIHealthSeries+i
 		AITank[i].healthBarImageID = AITank[i].healthID
 
 		TankSetup(i,AITank,pickAI)
+
 						//~ SetSpriteVisible(AITank[i].cover,Off)
-		Patrol(i)
-		AITank[i].route = AStar(i,AITank)
-		SetSpriteVisible(AITank[i].bodyID,Off)
-		SetSpriteVisible(AITank[i].turretID,Off)
-		SetSpriteVisible(AITank[i].stunMarker,Off)
+						//~ Patrol(i)
+		if AITank[i].vehicle <> Hovercraft then AITank[i].route = AStar(i,AITank)
+					//~ SetSpriteVisible(AITank[i].bodyID,Off)
+					//~ SetSpriteVisible(AITank[i].turretID,Off)
+					//~ SetSpriteVisible(AITank[i].stunMarker,Off)
 		//~ SetSpriteVisible(AITank[i].healthID,Off) `keep off
 		SetSpriteAngle(AITank[i].bodyID,270)
 		SetSpriteAngle(AITank[i].turretID,270)
@@ -171,14 +181,14 @@ function TankSetup(ID,Tank ref as tankType[],pick as ColorSpec)
 			Tank[ID].maximumHealth = MediumHealthMax
 		endcase
 		case HoverCraft
-			Tank[ID].speed = .2
-			Tank[ID].sound = TankSound
+			Tank[ID].speed = .5
+			Tank[ID].sound = EngineSound
 			Tank[ID].volume = vol
 			Tank[ID].weapon = laser
 			Tank[ID].range = laserRange
 			Tank[ID].damage = laserDamage
 			Tank[ID].rounds = True
-			Tank[ID].movesAllowed = 7
+			Tank[ID].movesAllowed = FlyRadius
 			Tank[ID].health = LightHealthMax
 			Tank[ID].minimumHealth = LightHealthMax *.33
 			Tank[ID].maximumHealth = LightHealthMax
@@ -283,8 +293,10 @@ function TankSetup(ID,Tank ref as tankType[],pick as ColorSpec)
 
 	select Tank[ID].Vehicle
 		case HoverCraft
-			SetSpriteAnimation( Tank[ID].bodyID,292,292,28 )
+			SetSpriteAnimation( Tank[ID].bodyID,280,294,40 )
 			PlaySprite( Tank[ID].bodyID,14,0,1,1 )
+			SetSpriteDepth( Tank[ID].turretID,2 )
+			SetSpriteDepth( Tank[ID].bodyID,2 )
 		endcase
 		case Mech 	    : SetSpriteAnimation( Tank[ID].bodyID,314,322,15 ) : endcase
 		case Engineer   : SetSpriteAnimation( Tank[ID].bodyID,200,200,16 ) : endcase

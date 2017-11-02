@@ -73,7 +73,7 @@ function BaseProduction( node )
 			endif
 		endif
 		Sync()
-		accept = GetVirtualButtonPressed( AcceptFlipButton )
+		accept = GetVirtualButtonPressed( AcceptFlipButton ) // or GetRawKeyPressed(Enter)
 		quit = GetVirtualButtonPressed( QuitFlipButton )
 	until accept or quit
 	DeleteText(IllegalText)
@@ -395,11 +395,13 @@ endfunction
 function CancelMove( ID,Tank ref as tankType[] )
 	SetSpriteVisible(square,Off)
 	SetSpriteVisible(Tank[ID].hilite,Off)
+	MaxAlpha(ID)
+	if Tank[ID].moveTarget then mapTable[Tank[ID].moveTarget].moveTarget = False
+	if Tank[ID].vehicle = Hovercraft then exitfunction
+
 	Tank[ID].goalNode = Tank[ID].parentNode[Tank[ID].index]
 	ResetPath(ID,Tank)
 	AStar(ID,Tank)
-	MaxAlpha(ID)
-	if Tank[ID].moveTarget then mapTable[Tank[ID].moveTarget].moveTarget = False
 endfunction
 
 function BadMove()
@@ -492,27 +494,35 @@ function GetInput()
 						if not ( PlayerTank[ID].moveTarget=node ) then DisplayError( OutofRangeText,"out of reach" )
 						CancelMove( ID,PlayerTank )
 					elseif mapTable[node].terrain < Impassable
-						PlayerTank[ID].goalNode = node
-						ResetPath(ID,PlayerTank)
-						if AStar(ID,PlayerTank) > InReach     `node out of range
-							BadMove()
-							CancelMove( ID,PlayerTank )
+						if PlayerTank[ID].vehicle = Hovercraft
+							SetFOWbox( ID,PlayerTank )
+							if not GetSpriteInBox( square,box.x1,box.y1,box.x2,box.y2 )
+								BadMove()
+								continue
+							else
+								PlayerTank[ID].goalNode = node
+							endif
 						else
-							PlaySound(orders[Randomize(0,OrderSounds)])
-
-							if PlayerTank[ID].moveTarget then mapTable[PlayerTank[ID].moveTarget].moveTarget = False  `clear previous target
-							mapTable[node].moveTarget = True
-							PlaySound( ClickSound,vol )
-							SetSpriteVisible(square,Off)
-							SetSpriteVisible(PlayerTank[ID].hilite,On)
-							SetSpriteColor(PlayerTank[ID].hilite,255,255,255,255 )
-							SetSpritePositionByOffset( PlayerTank[ID].hilite, mapTable[PlayerTank[ID].goalNode].x, mapTable[PlayerTank[ID].goalNode].y )
-							MaxAlpha(ID)
-							selection = Undefined
-							WeaponButtons( Null,Undefined )
-							PlayerTank[ID].moveTarget = node  `record last target
-							SetSpriteVisible(PlayerTank[ID].FOW,Off)
+							ResetPath(ID,PlayerTank)
+							PlayerTank[ID].goalNode = node
+							if  AStar(ID,PlayerTank) > InReach     `node out of range
+								BadMove()
+								CancelMove( ID,PlayerTank )
+								continue
+							endif
 						endif
+						PlaySound(orders[Randomize(0,OrderSounds)])
+						if PlayerTank[ID].moveTarget then mapTable[PlayerTank[ID].moveTarget].moveTarget = False  `clear previous target
+						mapTable[node].moveTarget = True
+						PlaySound( ClickSound,vol )
+						SetSpriteVisible(square,Off)
+						SetSpriteVisible(PlayerTank[ID].hilite,On)
+						SetSpriteColor(PlayerTank[ID].hilite,255,255,255,255 )
+						SetSpritePositionByOffset( PlayerTank[ID].hilite, mapTable[PlayerTank[ID].goalNode].x, mapTable[PlayerTank[ID].goalNode].y )
+						MaxAlpha(ID)
+						selection = Undefined
+						WeaponButtons( Null,Undefined )
+						PlayerTank[ID].moveTarget = node  `record last target
 					else
 						BadMove()
 						SetSpriteVisible(square,Off)
@@ -721,7 +731,15 @@ function PlayerOps()
 
 		WeaponButtons( Null,Undefined )
 		do
-			if PlayerTank[i].parentNode[PlayerTank[i].index] = PlayerTank[i].goalNode
+			if PlayerTank[i].vehicle = Hovercraft
+				if PlayerTank[i].goalNode <> PlayerTank[i].node
+					SetSpriteVisible( PlayerTank[i].healthID,Off )
+									SetSpriteVisible(PlayerTank[i].hilite,Off)
+					Fly( i,PlayerTank,PlayerTank[i].node,PlayerTank[i].goalNode )
+					MineField( i,PlayerTank )
+				endif
+				exit
+			elseif PlayerTank[i].parentNode[PlayerTank[i].index] = PlayerTank[i].goalNode
 				SetSpriteVisible(PlayerTank[i].hilite,Off)
 				mapTable[nextMove].moveTarget = False : exit
 			elseif PlayerTank[i].parentNode.length - PlayerTank[i].index
@@ -733,7 +751,6 @@ function PlayerOps()
 					exit
 				endif
 				SetSpriteVisible(PlayerTank[i].healthID,Off)
-
 				Move(i,PlayerTank,PlayerTank[i].parentNode[PlayerTank[i].index],nextMove)
 				//~ PlayerFOW(i)
 				if MineField( i,PlayerTank ) then exit

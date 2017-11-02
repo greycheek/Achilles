@@ -4,17 +4,22 @@ remstart
 	Two ways to win - base capture, or eliminate all enemy units
 
 	ISSUES/REVISIONS
+	---TEST HOVERCRAFT ON MINES
+	---FOW SPRITE FAILED TO TURN OFF!!!!
+
+	---GETSPRITEINCIRCLE VS GETSPRITEINBOX??
 	---BETTER AI DECISIONS?
 			BASE PROTECT
 			BASE CAPTURE
 			PLACEMENT RELATIVE TO ENEMY
 			ENGINEER PROTECTION
-	---CHANGE LASER TANK TO ANTI-TANK UNIT
+	---MORE WATER
 	---TERRAIN CONTROL SETTINGS
 	---INSTRUCTIONS
 
 	FIXED?
-
+		---HOVERCRAFT NOT VISITING DEPOTS
+		---BRING HOVERCRAFT TO FRONT WHILE FLYING
 	FUTURE
 		Vary water, impass, tree and rough tiles
 		Implement Swarm
@@ -54,8 +59,6 @@ UseNewDefaultFonts( On )
 //~ SwarmTest()
 //~ ParticleTest()
 //~ DisruptorTest()
-
-
 Main()
 
 function Main()
@@ -78,6 +81,13 @@ function Turn()
 	inc AIProdUnits,(AIBaseCount+1)*BaseProdValue
 	ShowInfo(On)
 	Sync()
+endfunction
+
+function SetFOWbox( ID, Tank as tankType[] )
+	box.x1 = Min(NodeSize,Tank[ID].x - Tank[ID].FOWOffset)
+	box.y1 = Min(NodeSize,Tank[ID].y - Tank[ID].FOWOffset)
+	box.x2 = Max(MapWidth,Tank[ID].x + Tank[ID].FOWOffset)
+	box.y2 = Max(MapHeight,Tank[ID].y + Tank[ID].FOWOffset)
 endfunction
 
 function LegalMove(node,team)
@@ -578,6 +588,10 @@ function ActivateEMP( ID, Tank ref as tankType[] )
 	dec Tank[ID].charges
 endfunction
 
+function Ballistics( x1,y1,x2,y2 )
+
+endfunction
+
 function Stun( ID, Tank as TankType[], Defender ref as tankType[], lastUnit )
 	for i = 0 to lastUnit
 		if Defender[i].alive
@@ -695,21 +709,17 @@ endfunction
 
 function Hover( ID,Tank as tankType[] )
 	if GetSpriteCurrentFrame( Tank[ID].bodyID ) <> 1
-		sx# = GetSpriteScaleX( Tank[ID].bodyID )
-		sy# = GetSpriteScaleY( Tank[ID].bodyID )
-		PlaySprite( Tank[ID].bodyID,20,0,22,28 )
+		PlaySprite( Tank[ID].bodyID,50,0,Closing,FullyClosed )
 		repeat
-			SetSpriteScaleByOffset(Tank[ID].bodyID,sx#,sy#)
-			SetSpriteScaleByOffset(Tank[ID].turretID,sx#,sy#)
 			Sync()
-			if sx# > 1
-				dec sx#,.01
-				dec sy#,.01
-			endif
-		until GetSpriteCurrentFrame( Tank[ID].bodyID ) = 28
-		SetSpriteScaleByOffset(Tank[ID].bodyID,1,1)
-		SetSpriteScaleByOffset(Tank[ID].turretID,1,1)
-		PlaySprite( Tank[ID].bodyID,28,0,1,1 )
+		until GetSpriteCurrentFrame( Tank[ID].bodyID ) = FullyClosed
+		s# = GetSpriteScaleX( Tank[ID].bodyID )
+		for i# = s# to 1 step -.01	`Land
+			SetSpriteScaleByOffset(Tank[ID].bodyID,i#,i#)
+			SetSpriteScaleByOffset(Tank[ID].turretID,i#,i#)
+			Sync()
+		next i#
+		PlaySprite( Tank[ID].bodyID,FullyClosed,0,1,1 )
 	endif
 endfunction
 
