@@ -231,6 +231,9 @@ function WeaponButtons(ID,vehicle)
 	SetVirtualButtonActive( MineButton, Off )
 	SetVirtualButtonVisible( EMPButton, Off )
 	SetVirtualButtonActive( EMPButton, Off )
+	SetVirtualButtonVisible( BulletButton, Off )
+	SetVirtualButtonActive( BulletButton, Off )
+
 	select vehicle
 		case Undefined : exitfunction : endcase
 		case HeavyTank
@@ -252,10 +255,10 @@ function WeaponButtons(ID,vehicle)
 			SetVirtualButtonImageUp( LaserButton, laserImage )
 		endcase
 		case HoverCraft
-			SetVirtualButtonPosition( LaserButton, dev.buttX1, buttY )
-			SetVirtualButtonVisible( LaserButton, On)
-			SetVirtualButtonActive( LaserButton, On )
-			SetVirtualButtonImageUp( LaserButton, laserImage )
+			SetVirtualButtonPosition( BulletButton, dev.buttX1, buttY )
+			SetVirtualButtonVisible( BulletButton, On)
+			SetVirtualButtonActive( BulletButton, On )
+			SetVirtualButtonImageUp( BulletButton,BulletImage )
 		endcase
 		case Battery
 			SetVirtualButtonVisible( MissileButton, On )
@@ -289,6 +292,7 @@ function WeaponButtons(ID,vehicle)
 		case laser 		 : SetVirtualButtonImageUp( LaserButton,laserImageDown ) : endcase
 		case heavyLaser  : SetVirtualButtonImageUp( HeavyLaserButton,heavyLaserImageDown ) : endcase
 		case disruptor	 : SetVirtualButtonImageUp( DisruptButton,disruptorImageDown ) : endcase
+				case machineGun  : SetVirtualButtonImageUp( BulletButton,BulletImage ) : endcase
 		case missile
 			if PlayerTank[ID].missiles then SetVirtualButtonImageUp( MissileButton,missileImageDown ) else SetVirtualButtonImageUp( MissileButton,missileImage )
 		endcase
@@ -349,6 +353,10 @@ function WeaponInput(ID)
 	elseif GetVirtualButtonState(LaserButton) //or GetRawKeyPressed(0x4c) `L
 		WeaponSelect(ID,PlayerTank,laser,laserRange,laserDamage)
 		WaitForButtonRelease(LaserButton)
+
+			elseif GetVirtualButtonState(BulletButton)
+				WeaponSelect(ID,PlayerTank,machineGun,machineGunRange,machineGunDamage)
+				WaitForButtonRelease(BulletButton)
 
 	elseif GetVirtualButtonState(HeavyLaserButton) //or GetRawKeyPressed(0x4c) `L
 		WeaponSelect(ID,PlayerTank,heavyLaser,heavyLaserRange,heavyLaserDamage)
@@ -652,7 +660,7 @@ function PlayerAim( ID,x1,y1 )
 				TargetLine( PlayerTank[ID].x,PlayerTank[ID].y,AITank[PlayerTank[ID].target].x,AITank[PlayerTank[ID].target].y,1,PlayerTank,ID,255,64,0 )
 				exit
 			else
-							DisplayError( OutofRangeText,"out of reach" )
+				DisplayError( OutofRangeText,"out of reach" )
 				exitfunction
 			endif
 

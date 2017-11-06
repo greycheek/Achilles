@@ -1,26 +1,39 @@
+#constant comment 1
 remstart
 
 	ACHILLES v0.9 ~ Created 3/14/16 by Bob Tedesco Jr
 	Two ways to win - base capture, or eliminate all enemy units
 
 	ISSUES/REVISIONS
-	---TEST HOVERCRAFT ON MINES
-	---FOW SPRITE FAILED TO TURN OFF!!!!
 
-	---GETSPRITEINCIRCLE VS GETSPRITEINBOX??
+	---LOS STILL BLOCKED??!!
+
 	---BETTER AI DECISIONS?
 			BASE PROTECT
 			BASE CAPTURE
 			PLACEMENT RELATIVE TO ENEMY
 			ENGINEER PROTECTION
-	---MORE WATER
+			--VERY REPETITIVE MOVEMENT PATTERNS??
+
+	---RESET MOVEMENT WHEN BLOCKED
+	---CROOKED HOVERCRAFT TURRET ANGLES
 	---TERRAIN CONTROL SETTINGS
+			SLIDERS NOT PROPERLY POSITIONED IN iOS
+			BASE AND DEPOT SLIDERS?
+	---REVERT MECH TO PAYING TERRAIN COSTS
 	---INSTRUCTIONS
+	---WHY DO SETTINGS BUTTONS GET TURNED ON, THEN IMMEDIATELY OFF?
 
 	FIXED?
+		---iOS - BASES AND DEPOTS DON'T LINE UP DURING RANDOM MAP GENERATION
+		---FOW SPRITE FAILED TO TURN OFF!!!!
+		---UNITS SHOULD NOT GO AFTER MORE POWERFUL UNITS
+		---TEST HOVERCRAFT ON MINES
+		---AI HOVERCRAFT IS GETTING STUCK because nearestplayer node is occupied
 		---HOVERCRAFT NOT VISITING DEPOTS
 		---BRING HOVERCRAFT TO FRONT WHILE FLYING
 	FUTURE
+		getspriteincircle vs getspriteinbox??
 		Vary water, impass, tree and rough tiles
 		Implement Swarm
 		Accumulated experience
@@ -32,7 +45,6 @@ remstart
 remend
 
 SetVirtualResolution( MaxWidth,MaxHeight )
-SetDisplayAspect( AspectRatio )
 SetWindowSize( MaxWidth,MaxHeight,1,1 )
 MaximizeWindow()
 SetWindowPosition( 0,0 )
@@ -216,6 +228,10 @@ function Fire( Attacker ref as tankType[], Defender ref as tankType[], attID, de
 			RotateTurret(attID,Attacker,Defender[defID].x,Defender[defID].y)
 			LaserFire(Attacker[attID].x,Attacker[attID].y,Defender[defID].x,Defender[defID].y,Attacker[attID].weapon,1.25,2,0)
 		endcase
+				case machineGun
+					RotateTurret(attID,Attacker,Defender[defID].x,Defender[defID].y)
+					Ballistics(Attacker[attID].x,Attacker[attID].y,Defender[defID].x,Defender[defID].y)
+				endcase
 		case disruptor
 			RotateTurret(attID,Attacker,Defender[defID].x,Defender[defID].y)
 			Disrupt( attID,defID,Attacker,Defender )
@@ -589,7 +605,23 @@ function ActivateEMP( ID, Tank ref as tankType[] )
 endfunction
 
 function Ballistics( x1,y1,x2,y2 )
-
+	#constant bulletMax 9
+	Bullets as integer[bulletMax]
+	t as integer[bulletMax]
+	PlaySound( MachineGunSound,vol )
+	for i = 0 to bulletMax
+		Bullets[i] = CloneSprite( Bullet1 )
+		SetSpriteSize( Bullets[i],NodeSize*2,NodeSize*2.25 )
+		SetSpriteVisible( Bullets[i],On )
+		SetSpritePositionByOffset( Bullets[i], x1, y1 )
+		a = GetSpriteAngle( Bullets[i] )
+		t[i] = SetTween( x1,y1,x2,y2,a,a,Bullets[i],TweenLinear(),i*.01 )
+		Delay(.01)
+		UpdateAllTweens(getframetime())
+	next i
+	PlayTweens( t[bulletMax],Bullets[bulletMax] )
+	for i = 0 to bulletMax : SetSpriteVisible( Bullets[i],Off ) : next i
+	Explosion( x2,y2,Explode3,ExplodeSound,22 )
 endfunction
 
 function Stun( ID, Tank as TankType[], Defender ref as tankType[], lastUnit )

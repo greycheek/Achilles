@@ -49,10 +49,10 @@ endfunction
 function FindEnemy(ID)
 	ShortestDistance = Unset
 	NearestPlayer = Unset
+	SetFOWbox( ID,AITank )
 
 	for j = 0 to PlayerLast
 		if not PlayerTank[j].alive then continue
-		SetFOWbox( ID,AITank )
 
 		if GetSpriteInBox( PlayerTank[j].bodyID,box.x1,box.y1,box.x2,box.y2 )
 			//~ if not GetSpriteVisible(AITank[ID].bodyID)
@@ -78,8 +78,7 @@ function AITarget()
 		else
 			continue
 		endif
-
-			AITank[i].NearestPlayer = FindEnemy(i)
+		AITank[i].NearestPlayer = FindEnemy(i)
 
 		if AITank[i].NearestPlayer <> Unset
 			x1 = AITank[i].x
@@ -118,7 +117,7 @@ function AITarget()
 								endif
 							endcase
 							case HoverCraft
-								WeaponSelect(i,AITank,laser,laserRange,laserDamage)
+								WeaponSelect(i,AITank,machineGun,machineGunRange,machineGunDamage)
 							endcase
 							case MediumTank
 								if VectorDistance(x1,y1,PlayerTank[AITank[i].NearestPlayer].x,PlayerTank[AITank[i].NearestPlayer].y) <= cannonRange
@@ -172,11 +171,16 @@ endfunction False
 
 function GoalSet(ID,vehicle)
 	select vehicle
-		case HeavyTank
+		case HoverCraft
 			if VisitDepot(ID)  then exitfunction
 			if AttackBase(ID)  then exitfunction
 			if ProtectBase(ID) then exitfunction
 			DefaultGoal(ID,1)
+		endcase
+		case Battery
+			if VisitDepot(ID) then exitfunction
+			if AttackBase(ID) then exitfunction
+			DefaultGoal(ID,3)
 		endcase
 		case MediumTank
 			if VisitDepot(ID)  then exitfunction
@@ -184,16 +188,11 @@ function GoalSet(ID,vehicle)
 			if ProtectBase(ID) then exitfunction
 			DefaultGoal(ID,1)
 		endcase
-		case HoverCraft
+		case HeavyTank
 			if VisitDepot(ID)  then exitfunction
 			if AttackBase(ID)  then exitfunction
 			if ProtectBase(ID) then exitfunction
-			DefaultGoal(ID,2)
-		endcase
-		case Battery
-			if VisitDepot(ID) then exitfunction
-			if AttackBase(ID) then exitfunction
-			DefaultGoal(ID,3)
+			DefaultGoal(ID,1)
 		endcase
 		case Mech
 			if VisitDepot(ID)  then exitfunction
@@ -247,11 +246,11 @@ function ProtectBase(ID)	`routine to select other than 1st base examined?
 			if  GetSpriteInBox( PlayerTank[j].bodyID, AIBases[i].x1, AIBases[i].y1, AIBases[i].x2, AIBases[i].y2 )
 
 				if AITank[ID].vehicle = HoverCraft
-					if not GetSpriteInCircle( AIBases[i].node,AITank[ID].x,AITank[ID].y,AITank[ID].FOWOffset-NodeSize )	`WAS PlayerTank[j].bodyID IN CIRCLE
-						continue
-					else
+					if GetSpriteInCircle( AIBases[i].spriteID,AITank[ID].x,AITank[ID].y,AITank[ID].FOWOffset-NodeSize )	`WAS PlayerTank[j].bodyID IN CIRCLE
 						AITank[ID].goalNode = AIBases[i].node
 						exitfunction True
+					else
+						continue
 					endif
 				else
 					AITank[ID].goalNode = AIBases[i].node
@@ -279,23 +278,41 @@ endfunction False
 
 function DefaultGoal(ID,standOff)
 	if AITank[ID].vehicle = Hovercraft
+		finalGoal = Unset
 		if AITank[ID].NearestPlayer <> Unset
-			AITank[ID].goalNode = PlayerTank[AITank[ID].NearestPlayer].node
-		else
-			Patrol(ID)
+			if PlayerTank[AITank[ID].NearestPlayer].vehicle <= AITank[ID].vehicle `<= in strength
+				node = PlayerTank[AITank[ID].NearestPlayer].node
+				for i = 0 to 7
+					nextNode = node + offset[i]	 `find open node near enemy
+					if (mapTable[nextNode].team = Unoccupied) and (mapTable[nextNode].terrain < Impassable)
+						if finalGoal = Unset
+							finalGoal = nextNode `get at least one destination
+						elseif mapTable[nextNode].terrain = Rough
+							continue             `reject rough
+						elseif mapTable[nextNode].terrain = Trees
+							finalGoal = nextNode `prefer trees
+						elseif mapTable[finalGoal].terrain <> Trees
+							finalGoal = nextNode `clear terain if trees not already selected
+						endif
+					endif
+				next i
+			endif
 		endif
+		if finalGoal = Unset then Patrol(ID) else AITank[ID].goalNode = finalGoal
 		exitfunction
 	endif
-
-	if (AITank[ID].NearestPlayer <> Unset) //and (AITank[ID].NearestPlayer <> Nearestplayer)
-		AITank[ID].goalNode = PlayerTank[AITank[ID].NearestPlayer].parentNode[PlayerTank[AITank[ID].NearestPlayer].index]
-
-		AITank[ID].route = PlanMove(ID)
-		if AITank[ID].parentNode.length > standOff
-			for i = 0 to standOff : AITank[ID].parentNode.remove() : next i `stay at least 'standOff nodes + 1' away from enemy
-			AITank[ID].goalNode = AITank[ID].parentNode[AITank[ID].parentNode.length]
+	if AITank[ID].NearestPlayer <> Unset
+		if PlayerTank[AITank[ID].NearestPlayer].vehicle <= AITank[ID].vehicle `<= in strength
+			AITank[ID].goalNode = PlayerTank[AITank[ID].NearestPlayer].parentNode[PlayerTank[AITank[ID].NearestPlayer].index]
+			AITank[ID].route = PlanMove(ID)
+			if AITank[ID].parentNode.length > standOff
+				for i = 0 to standOff : AITank[ID].parentNode.remove() : next i `stay at least 'standOff nodes + 1' away from enemy
+				AITank[ID].goalNode = AITank[ID].parentNode[AITank[ID].parentNode.length]
+			endif
+		else
+			Patrol(ID)
+			PlanMove(ID)
 		endif
-
 	elseif (AITank[ID].parentNode[AITank[ID].index] = AITank[ID].goalNode) or (AITank[ID].route = NoPath)
 		Patrol(ID)
 		PlanMove(ID)
@@ -303,24 +320,21 @@ function DefaultGoal(ID,standOff)
 endfunction
 
 function Patrol(ID)
-	v = Random2( 0,7 )                  `Random start vector
-	for j = AITank[ID].FOWOffset to 1 step -1   `Linear search	START INDEX WAS PATROLRADIUS
-		for i = 0 to 7                  `Circular search
-			nextNode=patrolScan[v+i]*j  `Next inward vector
-
-			node = AITank[ID].parentNode[ AITank[ID].index ] + nextNode
-			SetFOWbox( ID,AITank )
-			x = mod(node,Columns) * NodeSize
-			y = floor(node/Columns) * NodeSize
-			if ( x > box.x2 ) or ( x < box.x1 ) then continue
-			if ( y > box.y2 ) or ( y < box.y1 ) then continue
-
-			if ( mapTable[node].terrain < Impassable ) //and (mapTable[node].team = Unoccupied)
+	SetFOWbox( ID,AITank )
+	vector = Random2( 0,7 )           					    `Random start vector
+	for radius = AITank[ID].movesAllowed to 1 Step -1 	    `Out to in linear search radius
+		for i = 0 to 7           						    `Circular search
+			x = (patrolScanX[vector+i]*radius)+AITank[ID].x  `Next inward vector
+			y = (patrolScanY[vector+i]*radius)+AITank[ID].y
+			if (x > box.x2) or (x < box.x1) then continue
+			if (y > box.y2) or (y < box.y1) then continue
+			node = CalcNodeFromScreen( x,y )
+			if (mapTable[node].terrain < Impassable) and (mapTable[node].team = Unoccupied)
 				AITank[ID].goalNode = node
 				exitfunction
 			endif
 		next i
-	next j
+	next radius
 endfunction
 
 function PlanMove(ID)
@@ -392,6 +406,53 @@ endfunction
 
 
 remstart
+
+function Patrol(ID)
+	v = Random2( 0,7 )                  			`Random start vector
+	for j = AITank[ID].FOWOffset to 1 step -1   	`Linear search	(start index was PATROLRADIUS)
+		for i = 0 to 7                  		    `Circular search
+			nextNode=patrolScan[v+i]*j  			`Next inward vector
+
+			node = AITank[ID].parentNode[ AITank[ID].index ] + nextNode
+			SetFOWbox( ID,AITank )
+			x = mod( node,Columns ) * NodeSize
+			y = floor( node/Columns ) * NodeSize
+			if ( x > box.x2 ) or ( x < box.x1 ) then continue
+			if ( y > box.y2 ) or ( y < box.y1 ) then continue
+
+			if ( mapTable[node].terrain < Impassable ) //and (mapTable[node].team = Unoccupied)
+				AITank[ID].goalNode = node
+				exitfunction
+			endif
+		next i
+	next j
+endfunction
+
+OLD PATROL
+global patrolVectors as integer[16] = [0,1,2,3,4,5,6,7,0,1,2,3,4,5,6,7]
+global patrolScanX as integer[8]=[0,DLSpos,NodePos,DLSpos,0,DLSneg,NodeNeg,DLSneg]	 `starting at 12:00 and going clockwise
+global patrolScanY as integer[8]=[NodeNeg,DLSneg,0,DLSpos,NodePos,DLSpos,0,DLSneg]
+
+function Patrol(ID)	`Old PATROL
+	v = patrolVectors[Random2(0,7)]				`Random starting vector
+	for j = AITank[ID].FOWOffset to 1 step -1	`Linear search	(start index was PATROLRADIUS)
+		for i = 0 to 7							`Circular search
+			dir = patrolVectors[v+i]				`Advance to next vector
+					SetFOWbox( ID,AITank )
+			x = patrolScanX[dir] * j
+			y = patrolScanY[dir] * j
+					if ( x > box.x2 ) or ( x < box.x1 ) then continue
+					if ( y > box.y2 ) or ( y < box.y1 ) then continue
+			node = CalcNodeFromScreen(x,y)
+			if ( mapTable[node].terrain < Impassable ) // and (mapTable[node].team = Unoccupied)
+				AITank[ID].goalNode = node
+				exitfunction
+			endif
+		next i
+	next j
+endfunction
+
+
 FROM FIND ENEMY
 		xa = AITank[ID].x - AITank[ID].FOWOffset
 		ya = AITank[ID].y - AITank[ID].FOWOffset

@@ -40,11 +40,11 @@
                </rdf:li>
             </rdf:Bag>
          </xmpDM:Tracks>
-         <xmp:MetadataDate>2017-10-31T21:11:51-04:00</xmp:MetadataDate>
+         <xmp:MetadataDate>2017-11-04T19:42:54-04:00</xmp:MetadataDate>
          <xmp:CreateDate> </xmp:CreateDate>
          <xmp:CreatorTool>Adobe Soundbooth CS3</xmp:CreatorTool>
-         <xmp:ModifyDate>2017-10-31T21:11:51-04:00</xmp:ModifyDate>
-         <xmpMM:InstanceID>xmp.iid:861564e5-715d-4428-9784-1f8d6d411716</xmpMM:InstanceID>
+         <xmp:ModifyDate>2017-11-04T19:42:54-04:00</xmp:ModifyDate>
+         <xmpMM:InstanceID>xmp.iid:be71c9ae-9cfe-4d7d-a039-56e96883211d</xmpMM:InstanceID>
          <xmpMM:DocumentID>xmp.did:861564e5-715d-4428-9784-1f8d6d411716</xmpMM:DocumentID>
          <xmpMM:OriginalDocumentID>xmp.did:8AADF00C8F8DDE118012AA34D956B6D9</xmpMM:OriginalDocumentID>
          <xmpMM:History>
@@ -94,6 +94,20 @@
                   <stEvt:action>saved</stEvt:action>
                   <stEvt:instanceID>xmp.iid:861564e5-715d-4428-9784-1f8d6d411716</stEvt:instanceID>
                   <stEvt:when>2017-10-31T21:11:51-04:00</stEvt:when>
+                  <stEvt:softwareAgent>Adobe Audition CC 2017.0 (Macintosh)</stEvt:softwareAgent>
+                  <stEvt:changed>/</stEvt:changed>
+               </rdf:li>
+               <rdf:li rdf:parseType="Resource">
+                  <stEvt:action>saved</stEvt:action>
+                  <stEvt:instanceID>xmp.iid:8ee630af-f41b-4fc9-b7e8-f0749cfb355a</stEvt:instanceID>
+                  <stEvt:when>2017-11-04T19:42:54-04:00</stEvt:when>
+                  <stEvt:softwareAgent>Adobe Audition CC 2017.0 (Macintosh)</stEvt:softwareAgent>
+                  <stEvt:changed>/metadata</stEvt:changed>
+               </rdf:li>
+               <rdf:li rdf:parseType="Resource">
+                  <stEvt:action>saved</stEvt:action>
+                  <stEvt:instanceID>xmp.iid:be71c9ae-9cfe-4d7d-a039-56e96883211d</stEvt:instanceID>
+                  <stEvt:when>2017-11-04T19:42:54-04:00</stEvt:when>
                   <stEvt:softwareAgent>Adobe Audition CC 2017.0 (Macintosh)</stEvt:softwareAgent>
                   <stEvt:changed>/</stEvt:changed>
                </rdf:li>

@@ -28,6 +28,7 @@ function BaseSetup( spriteID, node, base, baseRef ref as baseType[], group )
 	SetSpriteSize( baseRef[ID].spriteID, NodeSize,NodeSize )
 	SetSpriteDepth( baseRef[ID].spriteID,5 )
 	SetSpriteGroup( baseRef[ID].spriteID, group )
+	//~ SetSpriteOffset( baseRef[ID].spriteID,NodeOffset,NodeOffset )
 	SetSpritePositionByOffset( baseRef[ID].spriteID,x,y )
 	SetSpriteCategoryBits( baseRef[ID].spriteID,NoBlock )
 	SetSpritePhysicsOn( baseRef[ID].spriteID,1 )
@@ -53,6 +54,7 @@ function DepotSetup( node, depot, depotNode ref as depotType[],series,group )
 	SetSpriteSize( depotNode[ID].spriteID, DepotSize, DepotSize )
 	SetSpriteDepth( depotNode[ID].spriteID,DepotDepth )
 	SetSpriteGroup( depotNode[ID].spriteID,group )
+	//~ SetSpriteOffset( depotNode[ID].spriteID,NodeOffset,NodeOffset )
 	SetSpritePositionByOffset( depotNode[ID].spriteID,x,y )
 	SetSpriteCategoryBits( depotNode[ID].spriteID,NoBlock )
 	SetSpritePhysicsOn( depotNode[ID].spriteID,1 )
@@ -60,18 +62,22 @@ function DepotSetup( node, depot, depotNode ref as depotType[],series,group )
 endfunction
 
 function GenerateBases()
+	SetDisplayAspect(AspectRatio)  `map aspect ratio
 	AIBases.length = -1
 	PlayerBases.length = -1
 	AIDepotNode.length = -1
 	PlayerDepotNode.length = -1
 	sbd = Random2( 0,1 )
 	for i = 0 to Sectors-1
+
 		repeat
 			node1 = PlayerSectorNodes[i,Random2(0,SectorNodes-1)]
 		until mapTable[node1].terrain < Impassable
+
 		repeat
 			node2 = AISectorNodes[i,Random2(0,SectorNodes-1)]
 		until mapTable[node2].terrain < Impassable
+
 		select i	`guarantee either a base or depot in sectors 1 & 4
 			case 1 : if sbd then SetBases(node1,node2)  else SetDepots(node1,node2) : endcase
 			case 4 : if sbd then SetDepots(node1,node2) else SetBases(node1,node2)  : endcase
@@ -84,6 +90,7 @@ function GenerateBases()
 	PlayerDepotCount = PlayerDepotNode.length
 	AIProdUnits = (AIBaseCount+1) * BaseProdValue
 	PlayerProdUnits = (PlayerBaseCount+1) * BaseProdValue
+	SetDisplayAspect(-1)  `set device aspect ratio
 endfunction
 
 function SetBases(node1,node2)
@@ -105,6 +112,7 @@ function SetRandomly(node1,node2)
 endfunction
 
 function GenerateImpassables()
+	shapeTypes = mapImpass + mapWater
 	SetSpriteVisible(Impass,On)
 	SetSpriteVisible(AcquaSprite,On)
 	for s = 0 to 1 `2 halves of the screen
@@ -122,7 +130,7 @@ function GenerateImpassables()
 				x = mapTable[columnNode].x-NodeOffset
 				y = mapTable[columnNode].y-NodeOffset
 
-				select Shapes[ shape,shapeLine+c ]
+				select Shapes[ shapeTypes,shape,shapeLine+c ]
 					case Impassable
 						mapTable[columnNode].terrain = Impassable
 						SetSpritePositionByOffset( Impass,mapTable[columnNode].x,mapTable[columnNode].y )
@@ -185,12 +193,11 @@ function ResetMap()
 endfunction
 
 function GenerateTerrain()
+	SetDisplayAspect(-1)  `set device aspect ratio
 	LoadImage(field,"AchillesBoardClear.png")
 	CreateSprite(field,field)
 	SetSpriteDepth(field,12)
 	SetSpriteSize(field,MaxWidth,MaxHeight)
-
-	SetDisplayAspect(-1)  `set current device aspect ratio
 	DrawSprite(field)
 	SetRenderToImage(field,0)
 
@@ -198,15 +205,18 @@ function GenerateTerrain()
 	min# = ceil( max#*.05 )
 	clumpMod# = ceil( max#*.3)
 	GenerateImpassables()
+	SetRenderToScreen()
 	GenerateBases()
+	SetRenderToImage(field,0)
 	GenerateMapFeature( Trees,TreeSprite,treeDummy,min#,max#,clumpMod# )
 	GenerateMapFeature( Rough,RoughSprite,roughDummy,min#,max#,clumpMod# )
 	BaseColor()
-	SetDisplayAspect(AspectRatio)  `back to map aspect ratio
 	SetRenderToScreen()
+	SetDisplayAspect(AspectRatio)  `back to map aspect ratio
 endfunction
 
 function GenerateMap()
+
 	MapFile = OpenToRead( "AchillesBoardClear.txt" )
 	for i = 0 to MapSize-1
 		mapTable[i].nodeX = i-(trunc(i/Columns)*Columns)
@@ -419,13 +429,19 @@ function Setup()
 	SetSpriteAnimation(  MineExplode,100,100,12 )
 	SetSpriteSize(  MineExplode, NodeSize*3, NodeSize*3 )
 
-	LoadImage(Missile1,"MissileSheet.png")
+	LoadImage( Missile1,"MissileSheet.png" )
 	CreateSprite( Missile1,Missile1 )
 	SetSpriteTransparency( Missile1, 1 )
 	SetSpriteVisible( Missile1, 0 )
 	SetSpriteDepth ( Missile1, 0 )
 	SetSpriteAnimation( Missile1,9,40,4 )
-	SetSpriteSize(Missile1,12,43 )
+	SetSpriteSize( Missile1,12,43 )
+
+	LoadImage( Bullet1,"Bullet.png" )
+	CreateSprite( Bullet1,Bullet1 )
+	SetSpriteTransparency( Bullet1, 1 )
+	SetSpriteVisible( Bullet1, 0 )
+	SetSpriteDepth ( Bullet1, 0 )
 
 	Explode1 = ExplodeSeries + 1
 	LoadImage( Explode1,"red_strip16.png")
@@ -445,6 +461,14 @@ function Setup()
 	SetSpriteAnimation( Explode2,109,81,32 )
 	SetSpriteSize( Explode2,75,60 )
 
+	Explode3 = ExplodeSeries + 3
+	LoadImage( Explode3,"shiphit_strip11.png")
+	CreateSprite( Explode3,Explode3 )
+	SetSpriteTransparency( Explode3, 1 )
+	SetSpriteVisible( Explode3, 0 )
+	SetSpriteDepth ( Explode3, 0 )
+	SetSpriteAnimation( Explode3,64,48,11 )
+	SetSpriteSize( Explode3,96,72 )
 
    `SPLASHSCREEN
 
@@ -481,6 +505,9 @@ function Setup()
 	LoadButton(MapButton,MapButtonImage,MapButtonImageDown,"Globe.png","GlobeDown.png",YesNoX3b,by#,dev.buttSize,On)
 	LoadButton(MapFlipButton,MapFlipButtonImage,MapFlipButtonImageDown,"GlobeFlip.png","GlobeFlipDown.png",YesNoX3b,by#,dev.buttSize,On)
 
+	LoadButton(ImpassButton,ImpassButtonImage,ImpassButtonImageDown,"ImpassUp.png","ImpassDown.png",dev.buttX1,by#,dev.buttSize,On)
+	LoadButton(WaterButton,WaterButtonImage,WaterButtonImageDown,"WaterUp.png","WaterDown.png",dev.buttX2*.9,by#,dev.buttSize,On)
+
 	bs# = dev.buttSize
 	margin = bs#*1.3
 	tx1# = MiddleX-(bs#*2.12)
@@ -493,6 +520,7 @@ function Setup()
 	LoadButton(SLOT3,SLOT3image,SLOTDOWN3image,"SLOT3small.png","SLOT3DOWNsmall.png",tx3#,ty1#,bs#,On)
 	LoadButton(SLOT4,SLOT4image,SLOTDOWN4image,"SLOT4small.png","SLOT4DOWNsmall.png",tx4#,ty1#,bs#,On)
 
+	`is this necessary??
 	SetVirtualButtonVisible( LOADBUTT,Off )
 	SetVirtualButtonVisible( SAVEBUTT,Off )
 	SetVirtualButtonVisible( SLOT1,Off )
@@ -503,6 +531,9 @@ function Setup()
 	SetVirtualButtonVisible( RandomizeFlipButton,Off )
 	SetVirtualButtonVisible( MapButton,Off )
 	SetVirtualButtonVisible( MapFlipButton,Off )
+	SetVirtualButtonVisible( ImpassButton,Off )
+	SetVirtualButtonVisible( WaterButton,Off )
+
 	ButtonState( AcceptFlipButton,Off )
 	ButtonState( QuitFlipButton,Off )
 
@@ -532,6 +563,21 @@ function Setup()
 	CloneSprite( SoundSlide.ID,MusicSlide.ID )
 	SetSpritePosition( SoundSlide.ID,SoundSlide.x,SoundSlide.y )
 
+		CloneSprite( RoughScale.ID,MusicScale.ID )
+		SetSpritePosition( RoughScale.ID,RoughScale.x,RoughScale.y )
+		SetSpriteSize( RoughScale.ID,RoughScale.w,RoughScale.h )
+
+		CloneSprite( RoughSlide.ID,MusicSlide.ID )
+		SetSpritePosition( RoughSlide.ID,RoughSlide.x,RoughSlide.y )
+		SetSpriteSize( RoughSlide.ID,RoughSlide.w,RoughSlide.h  )
+
+		CloneSprite( TreeScale.ID,MusicScale.ID )
+		SetSpritePosition( TreeScale.ID,TreeScale.x,TreeScale.y )
+		SetSpriteSize( TreeScale.ID,TreeScale.w,TreeScale.h )
+
+		CloneSprite( TreeSlide.ID,MusicSlide.ID )
+		SetSpritePosition( TreeSlide.ID,TreeSlide.x,TreeSlide.y )
+		SetSpriteSize( TreeSlide.ID,TreeSlide.w,TreeSlide.h  )
 
 	AISpectrumSprite = CreateDummySprite()
 	AIValueSprite = CreateDummySprite()
@@ -645,6 +691,9 @@ function DeleteAllButtons()
 	DeleteVirtualButton(EMPButton)
 	DeleteVirtualButton(MineButton)
 	DeleteVirtualButton(DisruptButton)
+	DeleteVirtualButton(BulletButton)
+	DeleteVirtualButton(ImpassButton)
+	DeleteVirtualButton(WaterButton)
 endfunction
 
 

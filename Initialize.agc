@@ -86,7 +86,7 @@ function Initialize()
 		SetSpriteSize(PlayerTank[i].bullsEye, NodeSize, NodeSize)
 		SetSpriteTransparency( PlayerTank[i].bullsEye, 1 )
 		SetSpriteVisible( PlayerTank[i].bullsEye, 0 )
-		SetSpriteDepth( PlayerTank[i].bullsEye, 2 )
+		SetSpriteDepth( PlayerTank[i].bullsEye,0 )
 
 		TankSetup(i,PlayerTank,pickPL)
 						//~ SetSpriteVisible(PlayerTank[i].cover,Off)
@@ -184,9 +184,9 @@ function TankSetup(ID,Tank ref as tankType[],pick as ColorSpec)
 			Tank[ID].speed = .5
 			Tank[ID].sound = EngineSound
 			Tank[ID].volume = vol
-			Tank[ID].weapon = laser
-			Tank[ID].range = laserRange
-			Tank[ID].damage = laserDamage
+			Tank[ID].weapon = machineGun
+			Tank[ID].range = machineGunRange
+			Tank[ID].damage = machineGunDamage
 			Tank[ID].rounds = True
 			Tank[ID].movesAllowed = FlyRadius
 			Tank[ID].health = LightHealthMax

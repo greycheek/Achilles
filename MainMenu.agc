@@ -182,10 +182,19 @@ function ReDisplaySettings(state)
 	SetSpriteVisible( SoundSlide.ID,state )
 	SetSpriteVisible( MusicScale.ID,state )
 	SetSpriteVisible( SoundScale.ID,state )
+		SetSpriteVisible( RoughScale.ID, not state )
+		SetSpriteVisible( TreeScale.ID, not state  )
+		SetSpriteVisible( RoughSlide.ID, not state  )
+		SetSpriteVisible( TreeSlide.ID, not state  )
 	SetSpriteActive( MusicSlide.ID,state )
 	SetSpriteActive( SoundSlide.ID,state )
 	SetSpriteActive( MusicScale.ID,state )
 	SetSpriteActive( SoundScale.ID,state )
+		SetSpriteActive( RoughScale.ID, not state  )
+		SetSpriteActive( TreeScale.ID, not state  )
+		SetSpriteActive( RoughSlide.ID, not state  )
+		SetSpriteActive( TreeSlide.ID, not state  )
+
 	SetSpriteActive( AISpectrumSprite,state )
 	SetSpriteActive( AIValueSprite,state )
 	SetSpriteActive( PlayerSpectrumSprite,state )
@@ -198,12 +207,16 @@ function ReDisplaySettings(state)
 	SetVirtualButtonVisible( MapFlipButton, not state )
 	SetVirtualButtonVisible( MapSaveFlipButton, not state )
 	SetVirtualButtonVisible( RandomizeFlipButton, not state )
+	SetVirtualButtonVisible( ImpassButton, not state )
+	SetVirtualButtonVisible( WaterButton, not state )
 	SetVirtualButtonActive( AcceptButton, not state )
 	SetVirtualButtonActive( AcceptFlipButton,state )
 	SetVirtualButtonActive( MapButton,state )
 	SetVirtualButtonActive( MapFlipButton, not state )
 	SetVirtualButtonActive( MapSaveFlipButton, not state )
 	SetVirtualButtonActive( RandomizeFlipButton, not state )
+	SetVirtualButtonActive( ImpassButton, not state )
+	SetVirtualButtonActive( WaterButton, not state )
 	CreateGrid(state)
 endfunction
 
@@ -284,10 +297,29 @@ function Compose()
 		`Map Generation
 		if GetVirtualButtonReleased( MapButton ) or GetRawKeyPressed( 0x4D ) `M
 			PlaySound( ClickSound )
+			if mapImpass then SetVirtualButtonImageUp(ImpassButton,ImpassButtonImageDown) else SetVirtualButtonImageUp(ImpassButton,ImpassButtonImage)
+			if mapWater	 then SetVirtualButtonImageUp(WaterButton,WaterButtonImageDown)   else SetVirtualButtonImageUp(WaterButton,WaterButtonImage)
+
 			ReDisplaySettings( Off )
 			StopMusicOGG( MusicSound )
 			do
 				Sync()
+				if GetVirtualButtonReleased( ImpassButton )
+					PlaySound( ClickSound )
+					if mapImpass
+						mapImpass=0 : SetVirtualButtonImageUp( ImpassButton,ImpassButtonImage )
+					else
+						mapImpass=ImpassOn : SetVirtualButtonImageUp( ImpassButton,ImpassButtonImageDown )
+					endif
+				endif
+				if GetVirtualButtonReleased( WaterButton )
+					PlaySound( ClickSound )
+					if mapWater
+						mapWater=0 : SetVirtualButtonImageUp( WaterButton,WaterButtonImage )
+					else
+						mapWater=WaterOn : SetVirtualButtonImageUp( WaterButton,WaterButtonImageDown )
+					endif
+				endif
 				if GetVirtualButtonReleased( MapSaveFlipButton ) or GetRawKeyPressed( 0x46 ) then MapSlotDialog() `F
 				if GetVirtualButtonReleased( RandomizeFlipButton ) or GetRawKeyPressed( 0x52 ) `R
 					PlaySound( ClickSound )
@@ -391,14 +423,13 @@ function LoadSaveDialog( map$ )
 endfunction
 
 function LoadMap( map$ )
-	//~ PlaySound( ClickSound )
 	ResetMap()
 	LoadImage(field,"AchillesBoardClear.png")
 	CreateSprite(field,field)
 	SetSpriteDepth(field,12)
 	SetSpriteSize(field,MaxWidth,MaxHeight)
 
-	SetDisplayAspect(-1)  `set current device aspect ratio
+	//~ SetDisplayAspect(-1)  `set current device aspect ratio
 	DrawSprite(field)
 	SetRenderToImage(field,0)
 	MapFile = OpenToRead( map$ )
@@ -424,7 +455,7 @@ function LoadMap( map$ )
 	next i
 	LoadForce( MapFile )
 	CloseFile( MapFile )
-	SetDisplayAspect(AspectRatio)  `back to map aspect ratio
+			//~ SetDisplayAspect(AspectRatio)  `back to map aspect ratio
 	SetRenderToScreen()
 
 	AIBaseCount = AIBases.length
@@ -437,7 +468,6 @@ function LoadMap( map$ )
 endfunction
 
 function SaveMap( map$ )
-	//~ PlaySound( ClickSound )
 	if GetFileExists( map$ )
 		SetVirtualButtonVisible( LOADBUTT,Off )
 		SetVirtualButtonVisible( SAVEBUTT,Off )
@@ -469,9 +499,8 @@ endfunction True
 function Confirm( message$,textID )
 	TSize = 36*dev.scale
 	Text( textID,message$,YesNoX1+(TSize*.85),YesNoY1+(TSize*.6),50,50,50,TSize,255,0 )
-ButtonState( AcceptFlipButton,On )
-ButtonState( QuitFlipButton,On )
-	//~ ButtonStatus( On, AcceptFlipButton, QuitFlipButton )
+	ButtonState( AcceptFlipButton,On )
+	ButtonState( QuitFlipButton,On )
 	AlertButtons( YesNoX2a, YesNoY2, YesNoX2b, YesNoY2, dev.buttSize, AcceptFlipButton, QuitFlipButton )
 	AlertDialog( textID,On,YesNoX1,YesNoY1,AlertW,AlertH )
 	do
@@ -484,8 +513,8 @@ ButtonState( QuitFlipButton,On )
 		endif
 	loop
 	PlaySound( ClickSound,vol )
-ButtonState( AcceptFlipButton,Off )
-ButtonState( QuitFlipButton,Off )
+	ButtonState( AcceptFlipButton,Off )
+	ButtonState( QuitFlipButton,Off )
 	AlertDialog( textID,Off,YesNoX1,YesNoY1,AlertW,AlertH )
 endfunction confirmation
 
@@ -686,6 +715,7 @@ function GameSetup()
 	LoadButton(EMPButton,EMPImage,EMPImageDown,"EMPButton.png","EMPButtonDown.png",dev.buttX2,buttY,dev.buttSize,Off)
 	LoadButton(MineButton,MineImage,MineImageDown,"MineButton.png","MineButtonDown.png",dev.buttX1,buttY,dev.buttSize,Off)
 	LoadButton(DisruptButton,disruptorImage,disruptorImageDown,"DisruptorButtonUp.png","DisruptorButtonDown.png",dev.buttX2,buttY,dev.buttSize,Off)
+	LoadButton(BulletButton,BulletImage,BulletImage,"BulletButton.png","BulletButton.png",dev.buttX2,buttY,dev.buttSize,Off)
 
 	turns = 1
 	ShowInfo( On )

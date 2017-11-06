@@ -78,22 +78,25 @@ zoneRadius = FlyRadius * NodeSize
 #constant EMPButton 9
 #constant MineButton 10
 #constant DisruptButton 11
+#constant BulletButton 12
 
-#constant AcceptFlipButton 12
-#constant QuitFlipButton 13
-#constant MapButton 14
-#constant MapFlipButton 15
-#constant MapSaveFlipButton 16
-#constant RandomizeFlipButton 17
+#constant AcceptFlipButton 13
+#constant QuitFlipButton 14
+#constant MapButton 15
+#constant MapFlipButton 16
+#constant MapSaveFlipButton 17
+#constant RandomizeFlipButton 18
 
-#constant LOADBUTT 18
-#constant SAVEBUTT 19
+#constant LOADBUTT 19
+#constant SAVEBUTT 20
 
-#constant SLOT1 20
-#constant SLOT2 21
-#constant SLOT3 22
-#constant SLOT4 23
+#constant SLOT1 21
+#constant SLOT2 22
+#constant SLOT3 23
+#constant SLOT4 24
 
+#constant ImpassButton 25
+#constant WaterButton 26
 
 `GENERAL
 #constant Unset 100000
@@ -113,8 +116,10 @@ DLS = NodeSize*sqrt(2) `Diagonal Length of Square
 #constant NodeNeg -45
 #constant NodePos 45
 
-`DON'T NEED FOR OLD PATROL
-global patrolScan as integer[16]=[-32,-31,1,33,32,31,-1,-33,-32,-31,1,33,32,31,-1,-33]	 `starting at 12:00 and going clockwise(twice)
+`starting at 12:00 and going clockwise
+global patrolScanX as integer[16]=[0,DLSpos,NodePos,DLSpos,0,DLSneg,NodeNeg,DLSneg,0,DLSpos,NodePos,DLSpos,0,DLSneg,NodeNeg,DLSneg]
+global patrolScanY as integer[16]=[NodeNeg,DLSneg,0,DLSpos,NodePos,DLSpos,0,DLSneg,NodeNeg,DLSneg,0,DLSpos,NodePos,DLSpos,0,DLSneg]
+
 
 global turnX as integer[8]=[0,NodePos,NodePos,NodePos,0,NodeNeg,NodeNeg,NodeNeg]	 `starting at 12:00 and going clockwise
 global turnY as integer[8]=[NodeNeg,NodeNeg,0,NodePos,NodePos,NodePos,0,NodeNeg]
@@ -174,9 +179,9 @@ global angle  as integer[8]=[0,45,90,135,180,225,270,315]
 #constant AIdepotGroup 11
 
 #constant HoverCraft 1
-#constant MediumTank 2
-#constant HeavyTank 3
-#constant Battery 4
+#constant Battery 2
+#constant MediumTank 3
+#constant HeavyTank 4
 #constant Mech 5
 #constant Engineer 6
 #constant Question 7
@@ -192,8 +197,8 @@ global angle  as integer[8]=[0,45,90,135,180,225,270,315]
 #constant WeaponSeries 200
 #constant MissileSeries 201
 #constant ExplodeSeries 202
-		//~ #constant DisruptorSeries 203
 
+#constant BulletSeries 240
 #constant HiliteSeries 250
 #constant PlayerHealthSeries 300
 #constant AIHealthSeries 350
@@ -223,9 +228,6 @@ global angle  as integer[8]=[0,45,90,135,180,225,270,315]
 #constant TerrainSeries2 1701
 #constant TerrainSeries3 1703
 #constant TerrainSeries4 1704
-	//~ #constant TerrainSeries5 1705
-	//~ #constant TerrainSeries6 1706
-	//~ #constant TerrainSeries7 1707
 
 global AcquaSprite as integer = TerrainSeries3
 global RoughSprite as integer = TerrainSeries4
@@ -272,7 +274,7 @@ global LockOnSound
 global Silence
 global DisruptorSound
 global EngineSound
-global MachineGun
+global MachineGunSound
 
 BangSound = LoadSound("bang2.wav")
 BuildBaseSound = LoadSound( "HoverbikeEnd.wav" )
@@ -304,8 +306,8 @@ OKSound = LoadSoundOGG( "Ok_01.ogg" )
 TargetSound = LoadSoundOGG("Target Acquired_01.ogg" )
 LockOnSound = LoadSoundOGG( "Locked On_01.ogg" )
 Silence = LoadSoundOGG( "Silent.ogg" )
-EngineSound = LoadSoundOGG( "Jet.ogg" )
-MachineGun = LoadSoundOGG( "MachineGun.ogg" )
+EngineSound = LoadSoundOGG( "Jet2_01.ogg" )
+MachineGunSound = LoadSoundOGG( "MachineGun.ogg" )
 
 global vol as integer = 100
 global orders as integer[7] `OrderSounds + 1
@@ -339,6 +341,7 @@ function SoundVolume()
 	SetSoundInstanceVolume( LockOnSound, vol )
 	SetSoundInstanceVolume( DisruptorSound, vol )
 	SetSoundInstanceVolume( EngineSound, vol )
+	SetSoundInstanceVolume( MachineGunSound, vol )
 	for i = 0 to OrderSounds
 		SetSoundInstanceRate( orders[i],.5 )
 		SetSoundInstanceVolume( orders[i],vol )
@@ -355,25 +358,26 @@ global movement$ as string[9,1]
 global cost$ as string[9,1]
 
 type$[1,0] = "HOVERCRAFT"
-type$[2,0] = "MEDIUM TANK"
-type$[3,0] = "HEAVY TANK"
-type$[4,0] = "BATTERY"
+type$[2,0] = "BATTERY"
+type$[3,0] = "MEDIUM TANK"
+type$[4,0] = "HEAVY TANK"
 type$[5,0] = "MECH"
 type$[6,0] = "ENGINEER"
 
 armor$[1,0] = "ARMOR  50%"
-armor$[2,0] = "ARMOR  75%"
-armor$[3,0] = "ARMOR  100%"
-armor$[4,0] = "ARMOR  33%"
+armor$[2,0] = "ARMOR  33%"
+armor$[3,0] = "ARMOR  75%"
+armor$[4,0] = "ARMOR  100%"
 armor$[5,0] = "ARMOR  75%"
 armor$[6,0] = "ARMOR  10%"
 
-weapon$[1,0] = "MEDIUM LASER  range --, damage 10%, rounds --"
-weapon$[2,0] = "MEDIUM LASER  range --, damage 10%, rounds --"
-weapon$[2,1] = "MEDIUM CANNON  range 4, damage 25%, rounds --"
-weapon$[3,0] = "HEAVY LASER  range --, damage 25%, rounds --"
-weapon$[3,1] = "HEAVY CANNON  range 4, damage 35%, rounds --"
-weapon$[4,0] = "MISSILES  range --, damage 40%, rounds 10"
+
+weapon$[1,0] = "BALLISTIC WEAPON  range 4, damage 10%, rounds --"
+weapon$[2,0] = "MISSILES  range --, damage 40%, rounds 10"
+weapon$[3,0] = "MEDIUM LASER  range --, damage 10%, rounds --"
+weapon$[3,1] = "MEDIUM CANNON  range 4, damage 25%, rounds --"
+weapon$[4,0] = "HEAVY LASER  range --, damage 25%, rounds --"
+weapon$[4,1] = "HEAVY CANNON  range 4, damage 35%, rounds --"
 weapon$[5,0] = "MISSILES  range --, damage 40%, rounds 5"
 weapon$[5,1] = "DISRUPTOR  range 4, damage 40%**, rounds --"
 weapon$[5,2] = "** affects all enemy & friendly units in range"
@@ -381,17 +385,17 @@ weapon$[6,0] = "MINES  range 0, damage 40%, rounds 4"
 weapon$[6,1] = "EMP  range 3, damage **, rounds 4"
 weapon$[6,2] = "** disables enemy & friendly units for 1 turn"
 
-movement$[1,0] = "MOVES  8, PENALTY: Rough -1, Trees -2"
-movement$[2,0] = "MOVES  5, PENALTY: Rough -1, Trees -2"
-movement$[3,0] = "MOVES  3, PENALTY: Rough -1, Trees -2"
-movement$[4,0] = "MOVES  7, PENALTY: Rough -1, Trees -2"
+movement$[1,0] = "MOVES  8, NO TERRAIN MOVEMENT PENALTY"
+movement$[2,0] = "MOVES  7, PENALTY: Rough -1, Trees -2"
+movement$[3,0] = "MOVES  5, PENALTY: Rough -1, Trees -2"
+movement$[4,0] = "MOVES  3, PENALTY: Rough -1, Trees -2"
 movement$[5,0] = "MOVES  4, NO TERRAIN MOVEMENT PENALTY"
 movement$[6,0] = "MOVES  3, NO TERRAIN MOVEMENT PENALTY"
 
 cost$[1,0] = "UNIT COST  50"
-cost$[2,0] = "UNIT COST  100"
-cost$[3,0] = "UNIT COST  200"
-cost$[4,0] = "UNIT COST  250"
+cost$[2,0] = "UNIT COST  250"
+cost$[3,0] = "UNIT COST  100"
+cost$[4,0] = "UNIT COST  200"
 cost$[5,0] = "UNIT COST  300"
 cost$[6,0] = "UNIT COST  150"
 
@@ -483,6 +487,11 @@ global disruptorRadius as float
 disruptorRange = nodeSize * 3
 disruptorRadius = disruptorRange/2
 
+#constant machineGun 8
+#constant machineGunDamage .1
+global machineGunRange as integer
+machineGunRange = cannonRange
+
 
 type tankType
 	OpenList as integer[]
@@ -551,9 +560,9 @@ endtype
 
 global unitCost as integer[unitTypes]
 unitCost[HoverCraft] = 50
+unitCost[Battery] = 250
 unitCost[MediumTank] = 100
 unitCost[HeavyTank] = 200
-unitCost[Battery] = 250
 unitCost[Mech] = 300
 unitCost[Engineer] = 200
 
@@ -615,18 +624,23 @@ depotOffset = NodeOffset/2
 
 
 `RANDOM MAP STUFF
-#constant ShapeCount 50
+#constant ImpassOn 1
+#constant WaterOn 2
+#constant ShapeFile 4
+#constant ShapeCount 26
 #constant ShapeGrid 98
 #constant ShapeWidth 7
 #constant ShapeHeight 14
 #constant OpenNodeCount 392
 global Semi as integer[2]
-global Shapes as integer[ShapeCount,ShapeGrid]
+global Shapes as integer[Shapefile,ShapeCount,ShapeGrid]
 global MaxMapX
 global MaxMapY
 global TreeSprite = TerrainSeries1
 global Impass = TerrainSeries2
 global SemiWidth
+global mapImpass as integer = ImpassOn
+global mapWater as integer = WaterOn
 MaxMapX = OpenColumns * NodeSize
 MaxMapY = OpenRows * NodeSize
 SemiWidth = (Columns/2)-4
@@ -635,13 +649,18 @@ Semi[0] = Columns + 2		  	  `upper left
 Semi[1] = Semi[0] + SemiWidth + 3  `upper right
 
 `create impass shape array
-ImpassFile = OpenToRead("7x14x50.txt")
-for i = 0 to ShapeCount-1
-	for j = 0 to ShapeGrid-1
-		Shapes[i,j] = val(chr(ReadByte(ImpassFile)))
+
+for i = 1 to ShapeFile
+	select i	`case 0 is zero'ed out
+		case 1 : ImpassFile = OpenToRead("Impass7x14x26.txt") : endcase
+		case 2 : ImpassFile = OpenToRead("Water7x14x26.txt")  : endcase
+		case 3 : ImpassFile = OpenToRead("All7x14x26.txt")    : endcase
+	endselect
+	for j = 0 to ShapeCount-1
+		for k = 0 to ShapeGrid-1 : Shapes[i,j,k] = val(chr(ReadByte(ImpassFile))) : next k
 	next j
+	CloseFile(ImpassFile)
 next i
-CloseFile(ImpassFile)
 
 
 `RANDOM BASES/DEPOTS
@@ -694,7 +713,7 @@ global IrisFrames = 62
 type mapType
 	x as integer	`screen coordinates
 	y as integer
-		base as integer
+	base as integer
 	nodeX as integer
 	nodeY as integer
 	team as integer
@@ -850,9 +869,9 @@ global EMPImage
 global EMPImageDown
 global MineImage
 global MineImageDown
-
-	global disruptorImage
-	global disruptorImageDown
+global disruptorImage
+global disruptorImageDown
+global BulletImage
 
 global quitImage
 global quitImageDown
@@ -876,6 +895,10 @@ global MapSaveFlipButtonImage
 global MapSaveFlipButtonImageDown
 global RandomizeFlipButtonImage
 global RandomizeFlipButtonImageDown
+global ImpassButtonImage
+global ImpassButtonImageDown
+global WaterButtonImage
+global WaterButtonImageDown
 
 global LOADBUTTimage
 global LOADBUTTDOWNimage
@@ -972,8 +995,15 @@ SLOTDOWN4image = InterfaceSeries+52
 VictoryImage = InterfaceSeries+53
 DefeatImage = InterfaceSeries+54
 
-		disruptorImage = InterfaceSeries+55
-		disruptorImageDown = InterfaceSeries+56
+disruptorImage = InterfaceSeries+55
+disruptorImageDown = InterfaceSeries+56
+
+BulletImage = InterfaceSeries+57
+
+ImpassButtonImage = InterfaceSeries+58
+ImpassButtonImageDown = InterfaceSeries+59
+WaterButtonImage = InterfaceSeries+60
+WaterButtonImageDown = InterfaceSeries+61
 
 type sliderType
 	ID
@@ -989,11 +1019,20 @@ global MusicSlide as sliderType
 global SoundSlide as sliderType
 global MusicScale as sliderType
 global SoundScale as sliderType
+	global RoughSlide as sliderType
+	global TreeSlide  as sliderType
+	global RoughScale as sliderType
+	global TreeScale  as sliderType
 
-MusicSlide.ID = InterfaceSeries+57
-SoundSlide.ID = InterfaceSeries+58
-MusicScale.ID = InterfaceSeries+59
-SoundScale.ID = InterfaceSeries+60
+MusicSlide.ID = InterfaceSeries+62
+SoundSlide.ID = InterfaceSeries+63
+MusicScale.ID = InterfaceSeries+64
+SoundScale.ID = InterfaceSeries+65
+
+	RoughSlide.ID = InterfaceSeries+66
+	TreeSlide.ID  = InterfaceSeries+67
+	RoughScale.ID = InterfaceSeries+68
+	TreeScale.ID  = InterfaceSeries+69
 
 MusicScale.x = MiddleX+95
 MusicScale.y = MiddleY+260
@@ -1019,23 +1058,49 @@ SoundSlide.h = MusicSlide.h
 SoundSlide.x = MusicSlide.x
 SoundSlide.y = MusicSlide.y+90
 
+
+	RoughScale.x = dev.buttSize * 5
+	RoughScale.y = MapHeight + (dev.buttSize*1.5)
+	RoughScale.w = 300
+	RoughScale.h = 15
+	RoughScale.tx = RoughScale.x
+	RoughScale.ty = RoughScale.y+RoughScale.h
+
+	TreeScale.x = dev.buttSize * 12
+	TreeScale.y = RoughScale.y
+	TreeScale.w = RoughScale.w
+	TreeScale.h = RoughScale.h
+	TreeScale.tx = TreeScale.x
+	TreeScale.ty = TreeScale.y+TreeScale.h
+
+	RoughSlide.w = 45
+	RoughSlide.h = 45
+	RoughSlide.x = RoughScale.x+(RoughScale.w/2)-(RoughSlide.w/2)
+	RoughSlide.y = RoughScale.y-(RoughSlide.h/4)
+
+	TreeSlide.w = RoughSlide.w
+	TreeSlide.h = RoughSlide.h
+	TreeSlide.x = TreeScale.x+(TreeScale.w/2)-(TreeSlide.w/2)
+	TreeSlide.y = RoughSlide.y
+
+
 `SPRITES Misc
 
 global Fire1 = WeaponSeries
 global Missile1 = MissileSeries
+global Bullet1 = BulletSeries
+global EMP1 = EMPSeries
 
 global MineExplode = MineSeries
 global Mine1
 Mine1 = MineSeries + 1
-
-global EMP1
-EMP1 = EMPSeries
 
 global DisruptSprite `= DisruptorSeries
 
 global field as integer  `board
 global Explode1 as integer
 global Explode2 as integer
+global Explode3 as integer
 
 `SPLASHSCREEN
 
@@ -1071,10 +1136,11 @@ endtype
 global SpriteConSize as integer = 112
 
 remstart
+`DON'T NEED FOR OLD PATROL
+global patrolScan as integer[16]=[-32,-31,1,33,32,31,-1,-33,-32,-31,1,33,32,31,-1,-33]	 `starting at 12:00 and going clockwise(twice)
+		`OLD PATROLSCAN
+		global patrolVectors as integer[16] = [0,1,2,3,4,5,6,7,0,1,2,3,4,5,6,7]
+		global patrolScanX as integer[8]=[0,DLSpos,NodePos,DLSpos,0,DLSneg,NodeNeg,DLSneg]	 `starting at 12:00 and going clockwise
+		global patrolScanY as integer[8]=[NodeNeg,DLSneg,0,DLSpos,NodePos,DLSpos,0,DLSneg]
 
-`DON'T NEED FOR NEW PATROL
-global patrolVectors as integer[16] = [0,1,2,3,4,5,6,7,0,1,2,3,4,5,6,7
-`OLD PATROLSCAN
-global patrolScanX as integer[8]=[0,DLSpos,NodePos,DLSpos,0,DLSneg,NodeNeg,DLSneg]	 `starting at 12:00 and going clockwise
-global patrolScanY as integer[8]=[NodeNeg,DLSneg,0,DLSpos,NodePos,DLSpos,0,DLSneg]
 remend
