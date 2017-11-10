@@ -389,7 +389,7 @@ movement$[1,0] = "MOVES  8, NO TERRAIN MOVEMENT PENALTY"
 movement$[2,0] = "MOVES  7, PENALTY: Rough -1, Trees -2"
 movement$[3,0] = "MOVES  5, PENALTY: Rough -1, Trees -2"
 movement$[4,0] = "MOVES  3, PENALTY: Rough -1, Trees -2"
-movement$[5,0] = "MOVES  4, NO TERRAIN MOVEMENT PENALTY"
+movement$[5,0] = "MOVES  4, PENALTY: Rough -1, Trees -2"
 movement$[6,0] = "MOVES  3, NO TERRAIN MOVEMENT PENALTY"
 
 cost$[1,0] = "UNIT COST  50"
@@ -1019,20 +1019,35 @@ global MusicSlide as sliderType
 global SoundSlide as sliderType
 global MusicScale as sliderType
 global SoundScale as sliderType
+
+//~ remstart
 	global RoughSlide as sliderType
 	global TreeSlide  as sliderType
+	global BaseSlide as sliderType
+	global DepotSlide as sliderType
+
 	global RoughScale as sliderType
 	global TreeScale  as sliderType
+	global BaseScale as sliderType
+	global DepotScale as sliderType
+//~ remend
 
 MusicSlide.ID = InterfaceSeries+62
 SoundSlide.ID = InterfaceSeries+63
 MusicScale.ID = InterfaceSeries+64
 SoundScale.ID = InterfaceSeries+65
 
+//~ remstart
 	RoughSlide.ID = InterfaceSeries+66
-	TreeSlide.ID  = InterfaceSeries+67
-	RoughScale.ID = InterfaceSeries+68
-	TreeScale.ID  = InterfaceSeries+69
+	TreeSlide.ID = InterfaceSeries+67
+	BaseSlide.ID = InterfaceSeries+68
+	DepotSlide.ID = InterfaceSeries+69
+
+	RoughScale.ID = InterfaceSeries+70
+	TreeScale.ID = InterfaceSeries+71
+	BaseScale.ID = InterfaceSeries+72
+	DepotScale.ID = InterfaceSeries+73
+//~ remend
 
 MusicScale.x = MiddleX+95
 MusicScale.y = MiddleY+260
@@ -1058,31 +1073,47 @@ SoundSlide.h = MusicSlide.h
 SoundSlide.x = MusicSlide.x
 SoundSlide.y = MusicSlide.y+90
 
+//~ remstart
+	RoughScale.w = 210
+	RoughScale.h = 64
+	RoughScale.x = MapWidth - (dev.buttSize * 3.25) - RoughScale.w
+	RoughScale.y = buttY + (dev.buttSize / dev.scale)
 
-	RoughScale.x = dev.buttSize * 5
-	RoughScale.y = MapHeight + (dev.buttSize*1.5)
-	RoughScale.w = 300
-	RoughScale.h = 15
-	RoughScale.tx = RoughScale.x
-	RoughScale.ty = RoughScale.y+RoughScale.h
-
-	TreeScale.x = dev.buttSize * 12
+	TreeScale.x = RoughScale.x - (RoughScale.w * 1.15)
 	TreeScale.y = RoughScale.y
 	TreeScale.w = RoughScale.w
 	TreeScale.h = RoughScale.h
-	TreeScale.tx = TreeScale.x
-	TreeScale.ty = TreeScale.y+TreeScale.h
 
-	RoughSlide.w = 45
-	RoughSlide.h = 45
+	BaseScale.x = TreeScale.x - (RoughScale.w * 1.15)
+	BaseScale.y = RoughScale.y
+	BaseScale.w = RoughScale.w
+	BaseScale.h = RoughScale.h
+
+	DepotScale.x = BaseScale.x - (RoughScale.w * 1.15)
+	DepotScale.y = RoughScale.y
+	DepotScale.w = RoughScale.w
+	DepotScale.h = RoughScale.h
+
+	RoughSlide.w = 60
+	RoughSlide.h = 60
 	RoughSlide.x = RoughScale.x+(RoughScale.w/2)-(RoughSlide.w/2)
-	RoughSlide.y = RoughScale.y-(RoughSlide.h/4)
+	RoughSlide.y = RoughScale.y+(RoughSlide.h/4)
 
 	TreeSlide.w = RoughSlide.w
 	TreeSlide.h = RoughSlide.h
 	TreeSlide.x = TreeScale.x+(TreeScale.w/2)-(TreeSlide.w/2)
 	TreeSlide.y = RoughSlide.y
 
+	BaseSlide.w = RoughSlide.w
+	BaseSlide.h = RoughSlide.h
+	BaseSlide.x = BaseScale.x+(RoughScale.w/2)-(RoughSlide.w/2)
+	BaseSlide.y = RoughSlide.y
+
+	DepotSlide.w = RoughSlide.w
+	DepotSlide.h = RoughSlide.h
+	DepotSlide.x = DepotScale.x+(TreeScale.w/2)-(TreeSlide.w/2)
+	DepotSlide.y = RoughSlide.y
+//~ remend
 
 `SPRITES Misc
 

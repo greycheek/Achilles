@@ -1,0 +1,292 @@
+<project>
+	<settings>
+			<width>960.0</>
+			<height>640.0</>
+			<orientation>Landscape</>
+			<autosave>1</>
+			<autoupdate>0</>
+			<grid>0</>
+			<gridsnap>0</>
+			<gridwidth>64.0</>
+			<gridheight>64.0</>
+			<gridred>64</>
+			<gridgreen>255</>
+			<gridblue>255</>
+			<gridoriginx>0.0</>
+			<gridoriginy>0.0</>
+			<scene colours>0 0 0 255 255 255 </>
+			<scene sizes>0 1 1280 720 1 1 960 640 </>
+	</settings>
+</project>
+<entity>
+	<properties>
+			<type>sprite</>
+			<scene>0</>
+			<name>sprite 1</>
+			<x>467.0</>
+			<y>-219.0</>
+			<size x>450.0</>
+			<size y>200.0</>
+			<scale x>1.0</>
+			<scale y>1.0</>
+			<offset x>225.0</>
+			<offset y>100.0</>
+			<angle>0.0</>
+			<depth>5000</>
+			<visible>1</>
+			<red>255</>
+			<green>255</>
+			<blue>255</>
+			<alpha>255</>
+			<locked>0</>
+			<fixed>0</>
+			<custom></>
+			<custom></>
+			<custom></>
+			<custom></>
+			<physics>0</>
+			<fliph>0</>
+			<flipv>0</>
+			<active>0</>
+			<collision>0</>
+			<image>DepotScale.png</>
+	</properties>
+</entity>
+<entity>
+	<properties>
+			<type>sprite</>
+			<scene>0</>
+			<name>sprite 2</>
+			<x>615.0</>
+			<y>-196.0</>
+			<size x>139.0</>
+			<size y>147.0</>
+			<scale x>1.0</>
+			<scale y>1.0</>
+			<offset x>69.5</>
+			<offset y>73.5</>
+			<angle>0.0</>
+			<depth>5000</>
+			<visible>1</>
+			<red>255</>
+			<green>255</>
+			<blue>255</>
+			<alpha>255</>
+			<locked>0</>
+			<fixed>0</>
+			<custom></>
+			<custom></>
+			<custom></>
+			<custom></>
+			<physics>0</>
+			<fliph>0</>
+			<flipv>0</>
+			<active>0</>
+			<collision>0</>
+			<image>REDCROSS.png</>
+	</properties>
+</entity>
+<entity>
+	<properties>
+			<type>sprite</>
+			<scene>0</>
+			<name>sprite 4</>
+			<x>929.0</>
+			<y>-219.0</>
+			<size x>450.0</>
+			<size y>200.0</>
+			<scale x>1.0</>
+			<scale y>1.0</>
+			<offset x>225.0</>
+			<offset y>100.0</>
+			<angle>0.0</>
+			<depth>5000</>
+			<visible>1</>
+			<red>255</>
+			<green>255</>
+			<blue>255</>
+			<alpha>255</>
+			<locked>0</>
+			<fixed>0</>
+			<custom></>
+			<custom></>
+			<custom></>
+			<custom></>
+			<physics>0</>
+			<fliph>0</>
+			<flipv>0</>
+			<active>0</>
+			<collision>0</>
+			<image>BaseScale.png</>
+	</properties>
+</entity>
+<entity>
+	<properties>
+			<type>sprite</>
+			<scene>0</>
+			<name>sprite 6</>
+			<x>1048.0</>
+			<y>-204.0</>
+			<size x>186.0</>
+			<size y>171.2</>
+			<scale x>1.0</>
+			<scale y>1.0</>
+			<offset x>93.0</>
+			<offset y>85.6</>
+			<angle>0.0</>
+			<depth>5000</>
+			<visible>1</>
+			<red>255</>
+			<green>255</>
+			<blue>255</>
+			<alpha>255</>
+			<locked>0</>
+			<fixed>0</>
+			<custom></>
+			<custom></>
+			<custom></>
+			<custom></>
+			<physics>0</>
+			<fliph>0</>
+			<flipv>0</>
+			<active>0</>
+			<collision>0</>
+			<image>HEXBASE.png</>
+	</properties>
+</entity>
+<entity>
+	<properties>
+			<type>sprite</>
+			<scene>0</>
+			<name>sprite 7</>
+			<x>11.0</>
+			<y>-227.0</>
+			<size x>450.0</>
+			<size y>200.0</>
+			<scale x>1.0</>
+			<scale y>1.0</>
+			<offset x>225.0</>
+			<offset y>100.0</>
+			<angle>0.0</>
+			<depth>5000</>
+			<visible>1</>
+			<red>255</>
+			<green>255</>
+			<blue>255</>
+			<alpha>255</>
+			<locked>0</>
+			<fixed>0</>
+			<custom></>
+			<custom></>
+			<custom></>
+			<custom></>
+			<physics>0</>
+			<fliph>0</>
+			<flipv>0</>
+			<active>0</>
+			<collision>0</>
+			<image>RoughScale.png</>
+	</properties>
+</entity>
+<entity>
+	<properties>
+			<type>sprite</>
+			<scene>0</>
+			<name>sprite 8</>
+			<x>141.0</>
+			<y>-194.0</>
+			<size x>154.0</>
+			<size y>148.0</>
+			<scale x>1.0</>
+			<scale y>1.0</>
+			<offset x>77.0</>
+			<offset y>74.0</>
+			<angle>0.0</>
+			<depth>5000</>
+			<visible>1</>
+			<red>255</>
+			<green>255</>
+			<blue>255</>
+			<alpha>255</>
+			<locked>0</>
+			<fixed>0</>
+			<custom></>
+			<custom></>
+			<custom></>
+			<custom></>
+			<physics>0</>
+			<fliph>0</>
+			<flipv>0</>
+			<active>0</>
+			<collision>0</>
+			<image>Rough4.png</>
+	</properties>
+</entity>
+<entity>
+	<properties>
+			<type>sprite</>
+			<scene>0</>
+			<name>sprite 9</>
+			<x>-452.0</>
+			<y>-229.0</>
+			<size x>450.0</>
+			<size y>200.0</>
+			<scale x>1.0</>
+			<scale y>1.0</>
+			<offset x>225.0</>
+			<offset y>100.0</>
+			<angle>0.0</>
+			<depth>5000</>
+			<visible>1</>
+			<red>255</>
+			<green>255</>
+			<blue>255</>
+			<alpha>255</>
+			<locked>0</>
+			<fixed>0</>
+			<custom></>
+			<custom></>
+			<custom></>
+			<custom></>
+			<physics>0</>
+			<fliph>0</>
+			<flipv>0</>
+			<active>0</>
+			<collision>0</>
+			<image>TreesScale.png</>
+	</properties>
+</entity>
+<entity>
+	<properties>
+			<type>sprite</>
+			<scene>0</>
+			<name>sprite 10</>
+			<x>-333.0</>
+			<y>-236.0</>
+			<size x>201.0</>
+			<size y>218.0</>
+			<scale x>1.0</>
+			<scale y>1.0</>
+			<offset x>100.5</>
+			<offset y>109.0</>
+			<angle>0.0</>
+			<depth>5000</>
+			<visible>1</>
+			<red>255</>
+			<green>255</>
+			<blue>255</>
+			<alpha>255</>
+			<locked>0</>
+			<fixed>0</>
+			<custom></>
+			<custom></>
+			<custom></>
+			<custom></>
+			<physics>0</>
+			<fliph>0</>
+			<flipv>0</>
+			<active>0</>
+			<collision>0</>
+			<image>TreeTop290.png</>
+	</properties>
+</entity>

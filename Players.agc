@@ -742,7 +742,7 @@ function PlayerOps()
 			if PlayerTank[i].vehicle = Hovercraft
 				if PlayerTank[i].goalNode <> PlayerTank[i].node
 					SetSpriteVisible( PlayerTank[i].healthID,Off )
-									SetSpriteVisible(PlayerTank[i].hilite,Off)
+					SetSpriteVisible(PlayerTank[i].hilite,Off)
 					Fly( i,PlayerTank,PlayerTank[i].node,PlayerTank[i].goalNode )
 					MineField( i,PlayerTank )
 				endif

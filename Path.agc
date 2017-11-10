@@ -49,8 +49,8 @@ function FindPath( ID, Tank ref as tankType[], currentNode )
 
 					lowestHeuristic = heuristic
 					lowestAdjacentHeuristic = adjacentHeuristic
-					if (Tank[ID].vehicle = Mech) or (Tank[ID].vehicle = Engineer) `not penalized for rough or trees
-											terrainCost = Clear
+					if Tank[ID].vehicle = Engineer `not penalized for rough or trees; or (Tank[ID].vehicle = Mech)
+						terrainCost = Clear
 					else
 						terrainCost = mapTable[adjacentNode].cost
 					endif
