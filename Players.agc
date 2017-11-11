@@ -519,7 +519,7 @@ function GetInput()
 								continue
 							endif
 						endif
-						PlaySound(orders[Randomize(0,OrderSounds)])
+						PlaySound(orders[Randomize(0,OrderSounds)],vol)
 						if PlayerTank[ID].moveTarget then mapTable[PlayerTank[ID].moveTarget].moveTarget = False  `clear previous target
 						mapTable[node].moveTarget = True
 						PlaySound( ClickSound,vol )

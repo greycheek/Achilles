@@ -246,6 +246,26 @@ function ChangeColor( grid as gridType[], c as ColorSpec )
 	next i
 endfunction
 
+function SliderInput( Slide as sliderType, Scale as sliderType )
+	SetRawMouseVisible( Off )
+	while GetPointerState()
+		px = GetPointerX() - (Slide.w/2)
+		Slide.x = MinMax( Scale.x, Scale.x+Scale.w-Slide.w, px )
+		SetSpriteX( Slide.ID,Slide.x )
+		Sync()
+	endwhile
+	SetRawMouseVisible( On )
+	select Slide.ID
+		case BaseSlide.ID, DepotSlide.ID, RoughSlide.ID, TreeSlide.ID
+			si# = (Slide.x-Scale.x) / Scale.w
+		endcase
+		case SoundSlide.ID, MusicSlide.ID
+			si# = Slide.x - Scale.x
+			si# = si# / SpectrumW
+			si# = si# * 100
+		endcase
+	endselect
+endfunction si#
 
 function Compose()
 	repeat
@@ -297,7 +317,10 @@ function Compose()
 					vol = SliderInput( SoundSlide,SoundScale )
 					SoundVolume()
 				endcase
-				case MusicSlide.ID : SetMusicVolumeOGG( MusicSound, SliderInput(MusicSlide,MusicScale) ) : endcase
+				case MusicSlide.ID
+					m = SliderInput(MusicSlide,MusicScale)
+					SetMusicVolumeOGG( MusicSound,m )
+				endcase
 				case Dialog,Splash,MusicScale.ID,SoundScale.ID : endcase
 				case default : RemoveSpriteCon( hit,x,y ) : endcase
 			endselect
@@ -307,6 +330,7 @@ function Compose()
 
 		`Map Generation
 		if GetVirtualButtonReleased( MapButton ) or GetRawKeyPressed( 0x4D ) `M
+
 			PlaySound( ClickSound )
 			if mapImpass then SetVirtualButtonImageUp(ImpassButton,ImpassButtonImageDown) else SetVirtualButtonImageUp(ImpassButton,ImpassButtonImage)
 			if mapWater	 then SetVirtualButtonImageUp(WaterButton,WaterButtonImageDown)   else SetVirtualButtonImageUp(WaterButton,WaterButtonImage)
@@ -314,6 +338,20 @@ function Compose()
 			ReDisplaySettings( Off )
 			StopMusicOGG( MusicSound )
 			do
+				if GetPointerState()
+					x = GetPointerX()
+					y = GetPointery()
+					slideHit = GetSpriteHit(x,y)
+					if slideHit
+						select slideHit
+							case BaseSlide.ID  : baseQTY  = SliderInput(BaseSlide,BaseScale)   : endcase
+							case DepotSlide.ID : depotQTY = SliderInput(DepotSlide,DepotScale) : endcase
+							case RoughSlide.ID : roughQTY = SliderInput(RoughSlide,RoughScale) : endcase
+							case TreeSlide.ID  : treeQTY  = SliderInput(TreeSlide,TreeScale)   : endcase
+						endselect
+					endif
+				endif
+
 				Sync()
 				if GetVirtualButtonReleased( ImpassButton )
 					PlaySound( ClickSound )
@@ -341,6 +379,7 @@ function Compose()
 					PlaySound( ClickSound )
 					exit
 				endif
+
 			loop
 			ReDisplaySettings( On )
 			SetVirtualButtonPosition( AcceptFlipButton,YesNoX3a,by# )
@@ -349,6 +388,7 @@ function Compose()
 	until GetVirtualButtonPressed( AcceptFlipButton )
 	WaitForButtonRelease( AcceptFlipbutton )
 endfunction
+
 
 function MapSlotDialog()
 	PlaySound( ClickSound,vol )
@@ -604,19 +644,6 @@ function ButtonActivation( state )
 	SetVirtualButtonActive(SLOT4,state)
 endfunction
 
-function SliderInput( Slide as sliderType, Scale as sliderType )
-	SetRawMouseVisible( Off )
-	while GetPointerState()
-		x = MinMax( Scale.x, Scale.x+Scale.w-Slide.w, GetPointerX() )
-		SetSpritePosition( Slide.ID,x,Slide.y)
-		Sync()
-	endwhile
-	SetRawMouseVisible( On )
-	volume# = x - Scale.x
-	volume# = volume# / SpectrumW
-	volume# = volume# * 100
-endfunction volume#
-
 function ForcesReady()
 	AICount = 0
 	PlayerCount = 0
@@ -733,6 +760,19 @@ function GameSetup()
 endfunction
 
 remstart
+		function SliderInput( Slide as sliderType, Scale as sliderType )
+			SetRawMouseVisible( Off )
+			while GetPointerState()
+				x = MinMax( Scale.x, Scale.x+Scale.w-Slide.w, GetPointerX() )
+				SetSpritePosition( Slide.ID,x,Slide.y)
+				Sync()
+			endwhile
+			SetRawMouseVisible( On )
+			volume# = x - Scale.x
+			volume# = volume# / SpectrumW
+			volume# = volume# * 100
+		endfunction volume#
+
 		function ButtonStatus( state,accept,quit )
 			SetVirtualButtonVisible( accept,state )
 			SetVirtualButtonVisible( quit,state )

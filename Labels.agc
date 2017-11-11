@@ -632,6 +632,12 @@ depotOffset = NodeOffset/2
 #constant ShapeWidth 7
 #constant ShapeHeight 14
 #constant OpenNodeCount 392
+
+global baseQTY as float = .5
+global depotQTY as float = .5
+global roughQTY as float = .5
+global treeQTY as float = .5
+
 global Semi as integer[2]
 global Shapes as integer[Shapefile,ShapeCount,ShapeGrid]
 global MaxMapX
