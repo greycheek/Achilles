@@ -633,11 +633,6 @@ depotOffset = NodeOffset/2
 #constant ShapeHeight 14
 #constant OpenNodeCount 392
 
-global baseQTY as float = .5
-global depotQTY as float = .5
-global roughQTY as float = .5
-global treeQTY as float = .5
-
 global Semi as integer[2]
 global Shapes as integer[Shapefile,ShapeCount,ShapeGrid]
 global MaxMapX
@@ -671,6 +666,8 @@ next i
 
 `RANDOM BASES/DEPOTS
 #constant Sectors 6
+	//~ #constant maxBases 6  `equal to Sectors
+	//~ #constant maxDepots 6  `equal to Sectors
 #constant SectorNodes 32
 #constant SectorWidth 4
 #constant SectorHeight 8
@@ -738,8 +735,7 @@ global treeDummy as integer
 global impassDummy as integer
 global roughDummy as integer
 global waterDummy as integer
-	#constant maxBases 5
-	#constant maxDepots 5
+
 
 type baseType
 	x1
@@ -1117,6 +1113,20 @@ DepotSlide.h = RoughSlide.h
 DepotSlide.x = DepotScale.x+(TreeScale.w/2)-(TreeSlide.w/2)
 DepotSlide.y = RoughSlide.y
 
+global scaleLength as Float[Sectors]
+
+segment# = RoughScale.w / Sectors
+for i = 1 to Sectors : scaleLength[i] = segment# * i : next i
+
+global baseQTY as float
+global depotQTY as float
+global roughQTY as float
+global treeQTY as float
+
+baseQTY = RoughScale.w/2
+depotQTY = baseQTY
+roughQTY = baseQTY
+treeQTY = baseQTY
 
 `SPRITES Misc
 

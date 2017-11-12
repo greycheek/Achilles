@@ -57,29 +57,37 @@ function DepotSetup( ID, spriteID, node, depot, depotNode ref as depotType[], gr
 	AddSpriteShapeBox( depotNode[ID].spriteID,x,y,x+NodeSize-1,y+NodeSize-1,0 )
 endfunction
 
-function ChooseSectors( baseCount,baseSector ref as integer[] )
-	count = 0
+function Placement( baseSector ref as integer[], Nodes as integer[][] )
 	do
 		s = Random2( 0,Sectors-1 )
-		if not baseSector[count]
-			baseSector[count] = s
-			inc count
-			if count = baseCount then exitfunction
+		if baseSector.find(s) = -1	`sector not already chosen?
+			baseSector.insertsorted(s)
+			repeat
+				node = Nodes[ s, Random2(0,SectorNodes-1) ]
+			until (mapTable[node].terrain < Impassable) and (maptable[node].base = Empty)
+			exit
 		endif
 	loop
-endfunction
+endfunction node
 
 function GenerateBases()
-	PlayerBaseSector as integer[Sectors]
-	PlayerDepotSector as integer[Sectors]
-	AIBaseSector as integer[Sectors]
-	AIDepotSector as integer[Sectors]
+	PlayerBaseSector as integer[]
+	PlayerDepotSector as integer[]
+	AIBaseSector as integer[]
+	AIDepotSector as integer[]
 
 	SetDisplayAspect(AspectRatio)  `map aspect ratio
-
-	AIBases.length = floor(Min(1,floor(baseQTY * maxBases)))
+	for i = 1 to Sectors
+		if baseQTY <= scaleLength[i]
+			AIBases.length = i : exit
+		endif
+	next i
+	for i = 1 to Sectors
+		if depotQTY <= scaleLength[i]
+			AIDepotNode.length = i : exit
+		endif
+	next i
 	PlayerBases.length = AIBases.length
-	AIDepotNode.length = floor(Min(1,floor(depotQTY * maxDepots)))
 	PlayerDepotNode.length = AIDepotNode.length
 
 	AIBaseCount = AIBases.length
@@ -89,33 +97,20 @@ function GenerateBases()
 	AIProdUnits = (AIBaseCount+1) * BaseProdValue
 	PlayerProdUnits = (PlayerBaseCount+1) * BaseProdValue
 
-	ChooseSectors(PlayerBaseCount,PlayerBaseSector)
-	ChooseSectors(PlayerDepotCount,PlayerDepotSector)
-	ChooseSectors(AIBaseCount,AIBaseSector)
-	ChooseSectors(AIDepotCount,AIDepotSector)
-
 	for i = 0 to PlayerBaseCount-1
-		repeat
-			node = PlayerSectorNodes[PlayerBaseSector[i],Random2(0,SectorNodes-1)]
-		until (mapTable[node].terrain < Impassable) and (maptable[node].base = Empty)
+		node = Placement( PlayerBaseSector,PlayerSectorNodes )
 		BaseSetup( i,PlayerBaseSeries+i,node,PlayerBase,PlayerBases,BaseGroup )
 	next i
 	for i = 0 to PlayerDepotCount-1
-		repeat
-			node = PlayerSectorNodes[PlayerDepotSector[i],Random2(0,SectorNodes-1)]
-		until (mapTable[node].terrain < Impassable) and (maptable[node].base = Empty)
+		node = Placement( PlayerDepotSector,PlayerSectorNodes )
 		DepotSetup( i,PlayerDepotSeries+i,node,PlayerDepot,PlayerDepotNode,depotGroup )
 	next i
 	for i = 0 to AIBaseCount-1
-		repeat
-			node = AISectorNodes[AIBaseSector[i],Random2(0,SectorNodes-1)]
-		until (mapTable[node].terrain < Impassable) and (maptable[node].base = Empty)
+		node = Placement( AIBaseSector,AISectorNodes )
 		BaseSetup( i,AIBaseSeries+i,node,AIBase,AIBases,AIBaseGroup )
 	next i
 	for i = 0 to AIDepotCount-1
-		repeat
-			node = AISectorNodes[AIDepotSector[i],Random2(0,SectorNodes-1)]
-		until (mapTable[node].terrain < Impassable) and (maptable[node].base = Empty)
+		node = Placement( AIDepotSector,AISectorNodes )
 		DepotSetup( i,AIDepotSeries+i,node,AIDepot,AIDepotNode,AIdepotGroup )
 	next i
 	SetDisplayAspect(-1)  `device aspect ratio

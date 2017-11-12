@@ -261,7 +261,6 @@ function SliderInput( Slide as sliderType, Scale as sliderType )
 	select Slide.ID
 		case BaseSlide.ID, DepotSlide.ID, RoughSlide.ID, TreeSlide.ID
 			si# = px - Scale.x
-			si# = si# / Scale.w
 		endcase
 		case SoundSlide.ID, MusicSlide.ID
 			si# = px - Scale.x
