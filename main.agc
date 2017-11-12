@@ -11,12 +11,9 @@ remstart
 			PLACEMENT RELATIVE TO ENEMY
 			ENGINEER PROTECTION
 			--VERY REPETITIVE MOVEMENT PATTERNS??
-
+	---BASE AND DEPOT PLACEMENT ISSUES
 	---RESET MOVEMENT WHEN BLOCKED
 	---CROOKED HOVERCRAFT TURRET ANGLES
-	---TERRAIN CONTROL SETTINGS
-			SLIDERS NOT PROPERLY POSITIONED IN iOS
-			BASE AND DEPOT SLIDERS?
 	---INSTRUCTIONS
 	---WHY DO SETTINGS BUTTONS GET TURNED ON, THEN IMMEDIATELY OFF?
 
@@ -380,7 +377,7 @@ endfunction
 
 function CaptureBase( capturedIndex, pick ref as ColorSpec, attBase ref as baseType[], defBase ref as baseType[], base, group )
 	DeleteSprite( defBase[capturedIndex].spriteID )
-	newBaseIndex = BaseSetup( defBase[capturedIndex].spriteID,defBase[capturedIndex].node,base,attBase,group )
+	newBaseIndex = BaseSetup( capturedIndex,defBase[capturedIndex].spriteID,defBase[capturedIndex].node,base,attBase,group )
 	PlaySound( BuildBaseSound )
 
 	SetSpritePositionByOffset( BaseHalo,mapTable[defBase[capturedIndex].node].x,mapTable[defBase[capturedIndex].node].y )

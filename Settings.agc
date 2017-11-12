@@ -6,9 +6,7 @@ function BaseColor()
 	for i = 0 to AIDepotCount     : SetSpriteColor(AIDepotNode[i].spriteID,pickAI.r,pickAI.g,pickAI.b,pickAI.a) : next i
 endfunction
 
-function BaseSetup( spriteID, node, base, baseRef ref as baseType[], group )
-	baseRef.length = baseRef.length + 1
-	ID = baseRef.length
+function BaseSetup( ID, spriteID, node, base, baseRef ref as baseType[], group )
 	baseRef[ID].node = node
 	baseRef[ID].spriteID = spriteID
 	x = mapTable[node].x
@@ -35,11 +33,9 @@ function BaseSetup( spriteID, node, base, baseRef ref as baseType[], group )
 	AddSpriteShapeBox( baseRef[ID].spriteID,x,y,x+NodeSize-1,y+NodeSize-1,0 )
 endfunction ID
 
-function DepotSetup( node, depot, depotNode ref as depotType[],series,group )
-	depotNode.length = depotNode.length + 1
-	ID = depotNode.length
+function DepotSetup( ID, spriteID, node, depot, depotNode ref as depotType[], group )
 	depotNode[ID].node = node
-	depotNode[ID].spriteID = series+depotNode.length-1
+	depotNode[ID].spriteID = spriteID
 	mapTable[node].depotID = ID
 	maptable[node].base = depot
 	mapTable[node].terrain = depot
@@ -61,54 +57,68 @@ function DepotSetup( node, depot, depotNode ref as depotType[],series,group )
 	AddSpriteShapeBox( depotNode[ID].spriteID,x,y,x+NodeSize-1,y+NodeSize-1,0 )
 endfunction
 
+function ChooseSectors( baseCount,baseSector ref as integer[] )
+	count = 0
+	do
+		s = Random2( 0,Sectors-1 )
+		if not baseSector[count]
+			baseSector[count] = s
+			inc count
+			if count = baseCount then exitfunction
+		endif
+	loop
+endfunction
+
 function GenerateBases()
+	PlayerBaseSector as integer[Sectors]
+	PlayerDepotSector as integer[Sectors]
+	AIBaseSector as integer[Sectors]
+	AIDepotSector as integer[Sectors]
+
 	SetDisplayAspect(AspectRatio)  `map aspect ratio
-	AIBases.length = -1
-	PlayerBases.length = -1
-	AIDepotNode.length = -1
-	PlayerDepotNode.length = -1
-	sbd = Random2( 0,1 )
-	for i = 0 to Sectors-1
 
-		repeat
-			node1 = PlayerSectorNodes[i,Random2(0,SectorNodes-1)]
-		until mapTable[node1].terrain < Impassable
+	AIBases.length = floor(Min(1,floor(baseQTY * maxBases)))
+	PlayerBases.length = AIBases.length
+	AIDepotNode.length = floor(Min(1,floor(depotQTY * maxDepots)))
+	PlayerDepotNode.length = AIDepotNode.length
 
-		repeat
-			node2 = AISectorNodes[i,Random2(0,SectorNodes-1)]
-		until mapTable[node2].terrain < Impassable
-
-		select i	`guarantee either a base or depot in sectors 1 & 4
-			case 1 : if sbd then SetBases(node1,node2)  else SetDepots(node1,node2) : endcase
-			case 4 : if sbd then SetDepots(node1,node2) else SetBases(node1,node2)  : endcase
-			case default : SetRandomly(node1,node2) : endcase
-		endselect
-	next i
 	AIBaseCount = AIBases.length
 	PlayerBaseCount = PlayerBases.length
 	AIDepotCount = AIDepotNode.length
 	PlayerDepotCount = PlayerDepotNode.length
 	AIProdUnits = (AIBaseCount+1) * BaseProdValue
 	PlayerProdUnits = (PlayerBaseCount+1) * BaseProdValue
-	SetDisplayAspect(-1)  `set device aspect ratio
-endfunction
 
-function SetBases(node1,node2)
-	BaseSetup( PlayerBaseSeries+PlayerBases.length-1,node1,PlayerBase,PlayerBases,BaseGroup )
-	BaseSetup( AIBaseSeries+AIBases.length-1,node2,AIBase,AIBases,AIBaseGroup )
-endfunction
+	ChooseSectors(PlayerBaseCount,PlayerBaseSector)
+	ChooseSectors(PlayerDepotCount,PlayerDepotSector)
+	ChooseSectors(AIBaseCount,AIBaseSector)
+	ChooseSectors(AIDepotCount,AIDepotSector)
 
-function SetDepots(node1,node2)
-	DepotSetup( node1,PlayerDepot,PlayerDepotNode,PlayerDepotSeries,depotGroup )
-	DepotSetup( node2,AIDepot,AIDepotNode,AIDepotSeries,AIDepotGroup )
-endfunction
-
-function SetRandomly(node1,node2)
-	select Random2( 1,4 )
-		case 1 : SetBases(node1,node2) : endcase
-		case 2 : SetDepots(node1,node2) : endcase
-		case 3,4 : endcase	`no base or depot
-	endselect
+	for i = 0 to PlayerBaseCount-1
+		repeat
+			node = PlayerSectorNodes[PlayerBaseSector[i],Random2(0,SectorNodes-1)]
+		until (mapTable[node].terrain < Impassable) and (maptable[node].base = Empty)
+		BaseSetup( i,PlayerBaseSeries+i,node,PlayerBase,PlayerBases,BaseGroup )
+	next i
+	for i = 0 to PlayerDepotCount-1
+		repeat
+			node = PlayerSectorNodes[PlayerDepotSector[i],Random2(0,SectorNodes-1)]
+		until (mapTable[node].terrain < Impassable) and (maptable[node].base = Empty)
+		DepotSetup( i,PlayerDepotSeries+i,node,PlayerDepot,PlayerDepotNode,depotGroup )
+	next i
+	for i = 0 to AIBaseCount-1
+		repeat
+			node = AISectorNodes[AIBaseSector[i],Random2(0,SectorNodes-1)]
+		until (mapTable[node].terrain < Impassable) and (maptable[node].base = Empty)
+		BaseSetup( i,AIBaseSeries+i,node,AIBase,AIBases,AIBaseGroup )
+	next i
+	for i = 0 to AIDepotCount-1
+		repeat
+			node = AISectorNodes[AIDepotSector[i],Random2(0,SectorNodes-1)]
+		until (mapTable[node].terrain < Impassable) and (maptable[node].base = Empty)
+		DepotSetup( i,AIDepotSeries+i,node,AIDepot,AIDepotNode,AIdepotGroup )
+	next i
+	SetDisplayAspect(-1)  `device aspect ratio
 endfunction
 
 function GenerateImpassables()
@@ -746,6 +756,25 @@ endfunction
 
 
 remstart
+
+function SetBases(node1,node2)
+	BaseSetup( PlayerBaseSeries+PlayerBases.length-1,node1,PlayerBase,PlayerBases,BaseGroup )
+	BaseSetup( AIBaseSeries+AIBases.length-1,node2,AIBase,AIBases,AIBaseGroup )
+endfunction
+
+function SetDepots(node1,node2)
+	DepotSetup( node1,PlayerDepot,PlayerDepotNode,PlayerDepotSeries,depotGroup )
+	DepotSetup( node2,AIDepot,AIDepotNode,AIDepotSeries,AIDepotGroup )
+endfunction
+
+function SetRandomly(node1,node2)
+	select Random2( 1,4 )
+		case 1 : SetBases(node1,node2) : endcase
+		case 2 : SetDepots(node1,node2) : endcase
+		case 3,4 : endcase	`no base or depot
+	endselect
+endfunction
+
 	SetSpriteShape( impassDummy,2 )
 	SetSpriteShape( treeDummy,2 )
 	SetSpriteShape( roughDummy,2 )

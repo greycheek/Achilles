@@ -738,6 +738,8 @@ global treeDummy as integer
 global impassDummy as integer
 global roughDummy as integer
 global waterDummy as integer
+	#constant maxBases 5
+	#constant maxDepots 5
 
 type baseType
 	x1

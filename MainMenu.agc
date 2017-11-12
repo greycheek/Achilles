@@ -247,20 +247,24 @@ function ChangeColor( grid as gridType[], c as ColorSpec )
 endfunction
 
 function SliderInput( Slide as sliderType, Scale as sliderType )
+	ScaleMax = Scale.x+Scale.w-Slide.w
+	SlideOffset = Slide.w/2
 	SetRawMouseVisible( Off )
 	while GetPointerState()
-		px = GetPointerX() - (Slide.w/2)
-		Slide.x = MinMax( Scale.x, Scale.x+Scale.w-Slide.w, px )
+		px = GetPointerX()
+		Slide.x = MinMax( Scale.x,ScaleMax,px-SlideOffset )
 		SetSpriteX( Slide.ID,Slide.x )
 		Sync()
 	endwhile
 	SetRawMouseVisible( On )
+	px = MinMax( Scale.x,Scale.x+Scale.w,px )
 	select Slide.ID
 		case BaseSlide.ID, DepotSlide.ID, RoughSlide.ID, TreeSlide.ID
-			si# = (Slide.x-Scale.x) / Scale.w
+			si# = px - Scale.x
+			si# = si# / Scale.w
 		endcase
 		case SoundSlide.ID, MusicSlide.ID
-			si# = Slide.x - Scale.x
+			si# = px - Scale.x
 			si# = si# / SpectrumW
 			si# = si# * 100
 		endcase
@@ -493,10 +497,22 @@ function LoadMap( map$ )
 		node = CalcNode( mapTable[i].nodeX,mapTable[i].nodeY )
 		if node < LiveArea  `before button area
 			select mapTable[i].terrain
-				case PlayerBase  : BaseSetup( PlayerBaseSeries+PlayerBases.length-1,node,PlayerBase,PlayerBases,BaseGroup ) : endcase
-				case AIBase      : BaseSetup( AIBaseSeries+AIBases.length-1,node,AIBase,AIBases,AIBaseGroup ) : endcase
-				case PlayerDepot : DepotSetup( node,PlayerDepot,PlayerDepotNode,PlayerDepotSeries,depotGroup ) : endcase
-				case AIDepot     : DepotSetup( node,AIDepot,AIDepotNode,AIDepotSeries,AIdepotGroup ) : endcase
+				case PlayerBase
+					PlayerBases.length = PlayerBases.length+1
+					BaseSetup( PlayerBases.length,PlayerBaseSeries+PlayerBases.length,node,PlayerBase,PlayerBases,BaseGroup )
+				endcase
+				case AIBase
+					AIBases.length = AIBases.length+1
+					BaseSetup( AIBases.length,AIBaseSeries+AIBases.length,node,AIBase,AIBases,AIBaseGroup )
+				endcase
+				case PlayerDepot
+					PlayerDepotNode.length = PlayerDepotNode.length+1
+					DepotSetup(PlayerDepotNode.length,PlayerDepotSeries+PlayerDepotNode.length,node,PlayerDepot,PlayerDepotNode,depotGroup )
+				endcase
+				case AIDepot
+					AIDepotNode.length = AIDepotNode.length+1
+					DepotSetup( AIDepotNode.length,AIDepotSeries+AIDepotNode.length,node,AIDepot,AIDepotNode,AIdepotGroup )
+				endcase
 				case Trees       : DrawTerrain( node,TreeSprite,treeDummy ) : endcase
 				case Rough		 : DrawTerrain( node,RoughSprite,RoughDummy ) : endcase
 				case Impassable  : DrawTerrain( node,Impass,impassDummy ) : endcase
