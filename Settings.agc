@@ -228,18 +228,7 @@ function GenerateTerrain()
 	SetRenderToScreen()
 	GenerateBases()
 	SetRenderToImage(field,0)
-
-	//~ max# = RandomTerrainMultiplier * treeQty
-	//~ min# = ceil( max#*.05 )
-	//~ clumpMod# = ceil( max#*.3)
-	//~ GenerateMapFeature( Trees,TreeSprite,treeDummy,min#,max#,clumpMod# )
-
-	//~ max# = RandomTerrainMultiplier * roughQty
-	//~ min# = ceil( max#*.05 )
-	//~ clumpMod# = ceil( max#*.3)
-	//~ GenerateMapFeature( Rough,RoughSprite,roughDummy,min#,max#,clumpMod# )
 	GenerateMapFeature()
-
 	BaseColor()
 	SetRenderToScreen()
 	SetDisplayAspect(AspectRatio)  `back to map aspect ratio
