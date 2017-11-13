@@ -258,12 +258,16 @@ function SliderInput( Slide as sliderType, Scale as sliderType )
 	endwhile
 	SetRawMouseVisible( On )
 	px = MinMax( Scale.x,Scale.x+Scale.w,px )
+	si# = px - Scale.x
 	select Slide.ID
-		case BaseSlide.ID, DepotSlide.ID, RoughSlide.ID, TreeSlide.ID
-			si# = px - Scale.x
+		case RoughSlide.ID, TreeSlide.ID
+			for i = 1 to Sectors
+				if si# <= scaleLength[i]
+					si# = reverseScale[i] : exit
+				endif
+			next i
 		endcase
 		case SoundSlide.ID, MusicSlide.ID
-			si# = px - Scale.x
 			si# = si# / SpectrumW
 			si# = si# * 100
 		endcase

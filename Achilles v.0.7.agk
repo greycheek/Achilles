@@ -60,9 +60,9 @@ FILE_NAME_2=0;AI.agc;10501;6
 FILE_NAME_3=0;Initialize.agc;6000;3
 FILE_NAME_4=0;Miscellaneous.agc;7842;8
 FILE_NAME_5=0;Players.agc;19014;5
-FILE_NAME_6=1;Settings.agc;8972;1
-FILE_NAME_7=0;Labels.agc;26908;0
-FILE_NAME_8=0;MainMenu.agc;8567;2
+FILE_NAME_6=0;Settings.agc;5711;1
+FILE_NAME_7=1;Labels.agc;26477;0
+FILE_NAME_8=0;MainMenu.agc;7921;2
 
 [project]
 description=

@@ -2,6 +2,7 @@
 
 `SCREEN/MAP
 #constant Columns 32	 `nodes
+#constant FirstCell = 33
 #constant OpenColumns 30
 #constant Rows 20
 #constant OpenRows 16
@@ -666,6 +667,7 @@ next i
 
 `RANDOM BASES/DEPOTS
 #constant Sectors 6
+#constant SectorsPlus 7
 	//~ #constant maxBases 6  `equal to Sectors
 	//~ #constant maxDepots 6  `equal to Sectors
 #constant SectorNodes 32
@@ -1113,7 +1115,8 @@ DepotSlide.h = RoughSlide.h
 DepotSlide.x = DepotScale.x+(TreeScale.w/2)-(TreeSlide.w/2)
 DepotSlide.y = RoughSlide.y
 
-global scaleLength as Float[Sectors]
+global scaleLength as Float[SectorsPlus]
+global reverseScale as integer[SectorsPlus] = [NULL,6,5,4,3,2,1] `for trees and rough; 1st index not needed
 
 segment# = RoughScale.w / Sectors
 for i = 1 to Sectors : scaleLength[i] = segment# * i : next i
@@ -1122,11 +1125,13 @@ global baseQTY as float
 global depotQTY as float
 global roughQTY as float
 global treeQTY as float
+#constant RandomTerrainMultiplier 5
 
 baseQTY = RoughScale.w/2
 depotQTY = baseQTY
-roughQTY = baseQTY
-treeQTY = baseQTY
+roughQTY = RandomTerrainMultiplier * ( Sectors/2 )
+treeQTY = roughQTY
+
 
 `SPRITES Misc
 

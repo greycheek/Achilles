@@ -156,27 +156,45 @@ function GenerateImpassables()
 	SetSpriteVisible(AcquaSprite,Off)
 endfunction
 
-function GenerateMapFeature( feature,featureSprite,dummy,oddsMin#,oddsMax#,clumpModifier# )
-	SetSpriteVisible( featureSprite,On )
-	for i = 0 to MapSize-1
-		if ( mapTable[i].terrain = Clear ) and ( mapTable[i].team = Unoccupied ) and ( mapTable[i].base = Empty )
-			odds# = oddsMax#   `reset
-			for j = 0 to Cells-1
-				if mapTable[i+offset[j]].terrain = feature then dec odds#,clumpModifier#  `increase chances; generate clumps
-			next j
-			if Random2 ( 0,odds# ) <= oddsMin#	 `add feature?
-				mapTable[i].terrain = feature
-				maptable[i].cost = cost[mapTable[i].terrain]
-				maptable[i].modifier = TRM[mapTable[i].terrain]
-				SetSpritePositionByOffset( featureSprite,mapTable[i].x,mapTable[i].y )
-				DrawSprite( featureSprite )
-				x = mapTable[i].x-NodeOffset
-				y = mapTable[i].y-NodeOffset
-				AddSpriteShapeBox(dummy,x,y,x+NodeSize-1,y+NodeSize-1,0)
-			endif
+function GenerateMapFeature()
+	treeMax# = RandomTerrainMultiplier * treeQty
+	treeMin# = ceil( treeMax#*.05 )
+	treeClumpMod# = ceil( treeMax#*.3)
+	roughMax# = RandomTerrainMultiplier * roughQty
+	roughMin# = ceil( roughMax#*.05 )
+	roughClumpMod# = ceil( roughMax#*.3)
+
+	SetSpriteVisible( TreeSprite,On )
+	SetSpriteVisible( RoughSprite,On )
+	for i = FirstCell to MapSize-1
+		if Random2(0,100) > 50
+			PlaceFeature( i,Trees,TreeSprite,treeDummy,treeMin#,treeMax#,treeClumpMod# )
+		else
+			PlaceFeature( i,Rough,RoughSprite,roughDummy,roughMin#,roughMax#,roughClumpMod# )
 		endif
 	next i
-	SetSpriteVisible( featureSprite,Off )
+	SetSpriteVisible( TreeSprite,Off )
+	SetSpriteVisible( RoughSprite,Off )
+endfunction
+
+function PlaceFeature( i,feature,featureSprite,dummy,oddsMin#,oddsMax#,clumpModifier# )
+	if ( mapTable[i].terrain = Clear ) and ( mapTable[i].team = Unoccupied ) and ( mapTable[i].base = Empty )
+		odds# = oddsMax#   `reset
+		for j = 0 to Cells-1
+			k = Max( MapSize-1,i+offset[j] )
+			if mapTable[k].terrain = feature then dec odds#,clumpModifier#  `increase chances; generate clumps
+		next j
+		if Random2 ( 0,odds# ) <= oddsMin#	 `add feature?
+			mapTable[i].terrain = feature
+			maptable[i].cost = cost[mapTable[i].terrain]
+			maptable[i].modifier = TRM[mapTable[i].terrain]
+			SetSpritePositionByOffset( featureSprite,mapTable[i].x,mapTable[i].y )
+			DrawSprite( featureSprite )
+			x = mapTable[i].x-NodeOffset
+			y = mapTable[i].y-NodeOffset
+			AddSpriteShapeBox(dummy,x,y,x+NodeSize-1,y+NodeSize-1,0)
+		endif
+	endif
 endfunction
 
 function ResetMap()
@@ -206,15 +224,22 @@ function GenerateTerrain()
 	DrawSprite(field)
 	SetRenderToImage(field,0)
 
-	max# = 48
-	min# = ceil( max#*.05 )
-	clumpMod# = ceil( max#*.3)
 	GenerateImpassables()
 	SetRenderToScreen()
 	GenerateBases()
 	SetRenderToImage(field,0)
-	GenerateMapFeature( Trees,TreeSprite,treeDummy,min#,max#,clumpMod# )
-	GenerateMapFeature( Rough,RoughSprite,roughDummy,min#,max#,clumpMod# )
+
+	//~ max# = RandomTerrainMultiplier * treeQty
+	//~ min# = ceil( max#*.05 )
+	//~ clumpMod# = ceil( max#*.3)
+	//~ GenerateMapFeature( Trees,TreeSprite,treeDummy,min#,max#,clumpMod# )
+
+	//~ max# = RandomTerrainMultiplier * roughQty
+	//~ min# = ceil( max#*.05 )
+	//~ clumpMod# = ceil( max#*.3)
+	//~ GenerateMapFeature( Rough,RoughSprite,roughDummy,min#,max#,clumpMod# )
+	GenerateMapFeature()
+
 	BaseColor()
 	SetRenderToScreen()
 	SetDisplayAspect(AspectRatio)  `back to map aspect ratio
