@@ -261,10 +261,8 @@ function SliderInput( Slide as sliderType, Scale as sliderType )
 	si# = px - Scale.x
 	select Slide.ID
 		case RoughSlide.ID, TreeSlide.ID
-			for i = 1 to Sectors
-				if si# <= scaleLength[i]
-					si# = reverseScale[i] : exit
-				endif
+			for i = 0 to Sectors-1		 `level of terrain
+				if si# <= scaleLength[i] then exit
 			next i
 		endcase
 		case SoundSlide.ID, MusicSlide.ID

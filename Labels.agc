@@ -667,9 +667,6 @@ next i
 
 `RANDOM BASES/DEPOTS
 #constant Sectors 6
-#constant SectorsPlus 7
-	//~ #constant maxBases 6  `equal to Sectors
-	//~ #constant maxDepots 6  `equal to Sectors
 #constant SectorNodes 32
 #constant SectorWidth 4
 #constant SectorHeight 8
@@ -769,9 +766,14 @@ type deviceType
 	buttX1
 	buttX2
 	YesNoX4a
+	slidescaleW
+	slidescaleH
+	slidescaleX
+	slidescaleY
 	device as string
 endtype
 global dev as deviceType
+
 
 dev.device = GetDeviceBaseName()
 select dev.device
@@ -782,6 +784,10 @@ select dev.device
 		dev.buttX1 = dev.buttSize + 8
 		dev.buttX2 = dev.buttSize * 2.7
 		dev.YesNoX4a = MaxWidth-dev.buttSize - 6
+		dev.slidescaleW = 210
+		dev.slidescaleH = dev.buttSize
+		dev.slidescaleX = MapWidth - (dev.buttSize * 3.25) - dev.slidescaleW
+		dev.slidescaleY = MapHeight + NodeSize + 15
 		UnitX = 450
 		NumX = dev.buttSize*1.7
 		NumX1 = NumX*1.93
@@ -794,6 +800,10 @@ select dev.device
 			dev.buttX1 = dev.buttSize + 8
 			dev.buttX2 = dev.buttSize * 2.7
 			dev.YesNoX4a = MaxWidth-dev.buttSize - 6
+			dev.slidescaleW = 210
+			dev.slidescaleH = dev.buttSize
+			dev.slidescaleX = MapWidth - (dev.buttSize * 3.25) - dev.slidescaleW
+			dev.slidescaleY = MapHeight + NodeSize + 15
 			UnitX = 450
 			NumX = dev.buttSize*1.7
 			NumX1 = NumX*1.93
@@ -804,6 +814,10 @@ select dev.device
 			dev.buttX1 = dev.buttSize - 4
 			dev.buttX2 = dev.buttSize * 2.6
 			dev.YesNoX4a = MaxWidth-dev.buttSize + 3
+			dev.slidescaleW = 198
+			dev.slidescaleH = dev.buttSize
+			dev.slidescaleX = MapWidth - (dev.buttSize * 3.25) - dev.slidescaleW
+			dev.slidescaleY = MapHeight + NodeSize + 15 + 5
 			UnitX = 415
 			NumX = dev.buttSize*1.5
 			NumX1 = NumX*2.1
@@ -1075,10 +1089,12 @@ SoundSlide.h = MusicSlide.h
 SoundSlide.x = MusicSlide.x
 SoundSlide.y = MusicSlide.y+90
 
-RoughScale.w = 225 - (15 * dev.scale)
-RoughScale.h = dev.buttSize
-RoughScale.x = MapWidth - (dev.buttSize * 3.25) - RoughScale.w
-RoughScale.y = MapHeight + NodeSize + 18
+
+`Terrain Sliders
+RoughScale.w = dev.slidescaleW
+RoughScale.h = dev.slidescaleH
+RoughScale.x = dev.slidescaleX
+RoughScale.y = dev.slidescaleY
 
 TreeScale.x = RoughScale.x - (RoughScale.w * 1.1)
 TreeScale.y = RoughScale.y
@@ -1095,42 +1111,40 @@ DepotScale.y = RoughScale.y
 DepotScale.w = RoughScale.w
 DepotScale.h = RoughScale.h
 
-RoughSlide.w = 60
-RoughSlide.h = 60
+RoughSlide.w = 40 + (dev.scale * 20)
+RoughSlide.h = 40 + (dev.scale * 20)
 RoughSlide.x = RoughScale.x + (RoughScale.w/2)-(RoughSlide.w/2)
 RoughSlide.y = RoughScale.y + ((RoughScale.h - RoughSlide.h)/2)
 
 TreeSlide.w = RoughSlide.w
 TreeSlide.h = RoughSlide.h
-TreeSlide.x = TreeScale.x+(TreeScale.w/2)-(TreeSlide.w/2)
+TreeSlide.x = TreeScale.x + (TreeScale.w/2)-(TreeSlide.w/2)
 TreeSlide.y = RoughSlide.y
 
 BaseSlide.w = RoughSlide.w
 BaseSlide.h = RoughSlide.h
-BaseSlide.x = BaseScale.x+(RoughScale.w/2)-(RoughSlide.w/2)
+BaseSlide.x = BaseScale.x + (RoughScale.w/2)-(RoughSlide.w/2)
 BaseSlide.y = RoughSlide.y
 
 DepotSlide.w = RoughSlide.w
 DepotSlide.h = RoughSlide.h
-DepotSlide.x = DepotScale.x+(TreeScale.w/2)-(TreeSlide.w/2)
+DepotSlide.x = DepotScale.x + (TreeScale.w/2)-(TreeSlide.w/2)
 DepotSlide.y = RoughSlide.y
 
-global scaleLength as Float[SectorsPlus]
-global reverseScale as integer[SectorsPlus] = [NULL,6,5,4,3,2,1] `for trees and rough; 1st index not needed
+global scaleLength as Float[Sectors]
 
 segment# = RoughScale.w / Sectors
-for i = 1 to Sectors : scaleLength[i] = segment# * i : next i
+for i = 0 to Sectors-1 : scaleLength[i] = segment#*(i+1) : next i
 
 global baseQTY as float
 global depotQTY as float
 global roughQTY as float
 global treeQTY as float
-#constant RandomTerrainMultiplier 5
 
-baseQTY = RoughScale.w/2
+baseQTY = RoughScale.w / 2
 depotQTY = baseQTY
-roughQTY = RandomTerrainMultiplier * ( Sectors/2 )
-treeQTY = roughQTY
+roughQTY = baseQTY
+treeQTY = baseQTY
 
 
 `SPRITES Misc
