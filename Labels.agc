@@ -774,60 +774,7 @@ type deviceType
 endtype
 global dev as deviceType
 
-
-dev.device = GetDeviceBaseName()
-select dev.device
-	case "windows","mac"
-		dev.buttSize = 64
-		dev.textSize = 28
-		dev.scale = 1
-		dev.buttX1 = dev.buttSize + 8
-		dev.buttX2 = dev.buttSize * 2.7
-		dev.YesNoX4a = MaxWidth-dev.buttSize - 6
-		dev.slidescaleW = 210
-		dev.slidescaleH = dev.buttSize
-		dev.slidescaleX = MapWidth - (dev.buttSize * 3.25) - dev.slidescaleW
-		dev.slidescaleY = MapHeight + NodeSize + 15
-		UnitX = 450
-		NumX = dev.buttSize*1.7
-		NumX1 = NumX*1.93
-	endcase
-	case "ios","android"
-		if FindString( GetDeviceType(),"ipad" )
-			dev.buttSize = 64
-			dev.textSize = 28
-			dev.scale = 1
-			dev.buttX1 = dev.buttSize + 8
-			dev.buttX2 = dev.buttSize * 2.7
-			dev.YesNoX4a = MaxWidth-dev.buttSize - 6
-			dev.slidescaleW = 210
-			dev.slidescaleH = dev.buttSize
-			dev.slidescaleX = MapWidth - (dev.buttSize * 3.25) - dev.slidescaleW
-			dev.slidescaleY = MapHeight + NodeSize + 15
-			UnitX = 450
-			NumX = dev.buttSize*1.7
-			NumX1 = NumX*1.93
-		else
-			dev.buttSize = 80
-			dev.textSize = 32
-			dev.scale = 2
-			dev.buttX1 = dev.buttSize - 4
-			dev.buttX2 = dev.buttSize * 2.6
-			dev.YesNoX4a = MaxWidth-dev.buttSize + 3
-			dev.slidescaleW = 198
-			dev.slidescaleH = dev.buttSize
-			dev.slidescaleX = MapWidth - (dev.buttSize * 3.25) - dev.slidescaleW
-			dev.slidescaleY = MapHeight + NodeSize + 15 + 5
-			UnitX = 415
-			NumX = dev.buttSize*1.5
-			NumX1 = NumX*2.1
-		endif
-	endcase
-endselect
-
 global buttY as integer
-buttY = MaxHeight - 65
-NumY = buttY - (dev.ButtSize/1.5)
 
 global AlertW
 global AlertH
@@ -852,6 +799,64 @@ global YesNoY4
 global bx# as float	`for bottom row buttons
 global by# as float
 
+dev.device = GetDeviceBaseName()
+select dev.device
+	case "windows","mac"
+		dev.buttSize = 64
+		dev.textSize = 28
+		dev.scale = 1
+		dev.buttX1 = NodeSize * 1.5
+		dev.buttX2 = dev.buttX1 + (dev.buttSize * 1.4)
+		dev.YesNoX4a = MaxWidth-dev.buttSize - 6
+		YesNoX3a = MaxWidth-(dev.buttSize)			`splash screen
+		buttY = MaxHeight - 65
+		NumY = buttY - (dev.ButtSize/1.5)
+		dev.slidescaleW = 222
+		dev.slidescaleH = dev.buttSize
+		dev.slidescaleX = MapWidth - (dev.buttSize * 2.75) - dev.slidescaleW
+		dev.slidescaleY = MapHeight + NodeSize + 15
+		UnitX = 450
+		NumX = dev.buttSize*1.7
+		NumX1 = NumX*1.93
+	endcase
+	case "ios","android"
+		if FindString( GetDeviceType(),"ipad" )
+			dev.buttSize = 64
+			dev.textSize = 28
+			dev.scale = 1
+			dev.buttX1 = NodeSize * 1.5
+			dev.buttX2 = dev.buttX1 + (dev.buttSize * 1.4)
+			dev.YesNoX4a = MaxWidth-dev.buttSize - 6
+			YesNoX3a = MaxWidth-(dev.buttSize)			`splash screen
+			buttY = MaxHeight - 65
+			NumY = buttY - (dev.ButtSize/1.5)
+			dev.slidescaleW = 222
+			dev.slidescaleH = dev.buttSize
+			dev.slidescaleX = MapWidth - (dev.buttSize * 2.75) - dev.slidescaleW
+			dev.slidescaleY = MapHeight + NodeSize + 15
+			UnitX = 450
+			NumX = dev.buttSize*1.7
+			NumX1 = NumX*1.93
+		else
+			dev.buttSize = 80
+			dev.textSize = 32
+			dev.scale = 2
+			dev.buttX1 = NodeSize * 1.5
+			dev.buttX2 = dev.buttX1 + (dev.buttSize * 1.4)
+			dev.YesNoX4a = MaxWidth-dev.buttSize + 3
+			YesNoX3a = MaxWidth-(dev.buttSize*.9)			`splash screen
+			buttY = MaxHeight - 55
+			NumY = buttY - (dev.ButtSize/1.5)
+			dev.slidescaleW = 222
+			dev.slidescaleH = dev.buttSize
+			dev.slidescaleX = MapWidth - (dev.buttSize * 2.75) - dev.slidescaleW
+			dev.slidescaleY = MapHeight + NodeSize + 15 + 5
+			UnitX = 415
+			NumX = dev.buttSize*1.5
+			NumX1 = NumX*2.1
+		endif
+	endcase
+endselect
 
 AlertW = 300*dev.scale
 AlertH = 250*dev.scale
@@ -863,9 +868,8 @@ YesNoX2a = (YesNoX1+AlertW)-dev.buttSize-10					`base production
 YesNoX2b = (YesNoX1+AlertW)-(dev.buttSize*2)-20
 YesNoY2  = (YesNoY1+AlertH)-dev.buttSize-(dev.scale*10)
 
-YesNoX3a = MaxWidth-(dev.buttSize*1.25)						`splash screen
-YesNoX3b = MaxWidth-(dev.buttSize*2.5)
-YesNoX3c = MaxWidth-(dev.buttSize*3.75)
+YesNoX3b = YesNoX3a-(dev.buttSize*1.15)							`splash screen
+YesNoX3c = YesNoX3b-(dev.buttSize*1.15)
 YesNoY3  = buttY-50
 YesNoY3a = buttY-dev.buttSize+50
 
@@ -1096,29 +1100,29 @@ RoughScale.h = dev.slidescaleH
 RoughScale.x = dev.slidescaleX
 RoughScale.y = dev.slidescaleY
 
-TreeScale.x = RoughScale.x - (RoughScale.w * 1.1)
+TreeScale.x = RoughScale.x - (RoughScale.w * 1.05)
 TreeScale.y = RoughScale.y
 TreeScale.w = RoughScale.w
 TreeScale.h = RoughScale.h
 
-BaseScale.x = TreeScale.x - (RoughScale.w * 1.1)
+BaseScale.x = TreeScale.x - (RoughScale.w * 1.05)
 BaseScale.y = RoughScale.y
 BaseScale.w = RoughScale.w
 BaseScale.h = RoughScale.h
 
-DepotScale.x = BaseScale.x - (RoughScale.w * 1.1)
+DepotScale.x = BaseScale.x - (RoughScale.w * 1.05)
 DepotScale.y = RoughScale.y
 DepotScale.w = RoughScale.w
 DepotScale.h = RoughScale.h
 
-RoughSlide.w = 40 + (dev.scale * 20)
-RoughSlide.h = 40 + (dev.scale * 20)
-RoughSlide.x = RoughScale.x + (RoughScale.w/2)-(RoughSlide.w/2)
+RoughSlide.w = 40 + (dev.scale * 10)
+RoughSlide.h = 40 + (dev.scale * 10)
+RoughSlide.x = RoughScale.x + (RoughScale.w/3)-(RoughSlide.w/3)
 RoughSlide.y = RoughScale.y + ((RoughScale.h - RoughSlide.h)/2)
 
 TreeSlide.w = RoughSlide.w
 TreeSlide.h = RoughSlide.h
-TreeSlide.x = TreeScale.x + (TreeScale.w/2)-(TreeSlide.w/2)
+TreeSlide.x = TreeScale.x + (TreeScale.w/3)-(TreeSlide.w/3)
 TreeSlide.y = RoughSlide.y
 
 BaseSlide.w = RoughSlide.w
@@ -1143,8 +1147,8 @@ global treeQTY as float
 
 baseQTY = RoughScale.w / 2
 depotQTY = baseQTY
-roughQTY = baseQTY
-treeQTY = baseQTY
+roughQTY = RoughScale.w / 3
+treeQTY = roughQTY
 
 
 `SPRITES Misc

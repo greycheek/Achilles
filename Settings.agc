@@ -492,14 +492,14 @@ function Setup()
 	by# = buttY - ( buttOffset# / dev.scale )
 	gap# = 1 + ( .75 / dev.scale )
 
-	SetupSprite( Splash,Splash,"SplashScreen.png",0,0,MaxWidth,MaxHeight,2,On,0 )
+	SetupSprite( Splash,Splash,"Achilles3D.png",0,0,MaxWidth,MaxHeight,2,On,0 )
 	SetupSprite( Dialog,Dialog,"Dialog2.png",0,0,MaxWidth,MaxHeight,1,Off,0 )
 	SetupSprite( BaseDialog,BaseDialog,"BaseDialog.png",0,0,MaxWidth,MaxHeight,1,Off,2 )
 
-	LoadButton(AcceptButton,AcceptImage,AcceptImageDown,"Accept.png","AcceptDown.png",YesNoX3a,by#,dev.buttSize,On)
-	LoadButton(QuitButton,CancelImage,CancelImageDown,"Cancel.png","CancelDown.png",YesNoX3b,by#,dev.buttSize,On)
+	LoadButton(AcceptButton,AcceptImage,AcceptImageDown,"CheckUp.png","CheckDown.png",YesNoX3a,by#,dev.buttSize,On)
+	LoadButton(QuitButton,CancelImage,CancelImageDown,"CancelUp.png","CancelDown2.png",YesNoX3b,by#,dev.buttSize,On)
 	LoadButton(SettingsButton,SettingsImage,SettingsImageDown,"SettingsButton.png","SettingsButtonDown.png",YesNoX3c,by#,dev.buttSize,On)
-	LoadButton(AcceptFlipButton,AcceptFlipImage,AcceptFlipImageDown,"AcceptFlip.png","AcceptFlipDown.png",YesNoX3a,by#,dev.buttSize,On)
+	LoadButton(AcceptFlipButton,AcceptFlipImage,AcceptFlipImageDown,"CheckUp.png","CheckDown.png",YesNoX3a,by#,dev.buttSize,On)
 	LoadButton(QuitFlipButton,CancelFlipImage,CancelFlipImageDown,"CancelFlip.png","CancelFlipDown.png",YesNoX3b,by#,dev.buttSize,On)
 
 
@@ -514,10 +514,10 @@ function Setup()
 	LoadButton(LOADBUTT,LOADBUTTimage,LOADBUTTDOWNimage,"LOADUP.png","LOADDOWN.png",tx1#,ty1#,bs#,On)
 	LoadButton(SAVEBUTT,SAVEBUTTimage,SAVEBUTTDOWNimage,"SAVEUP.png","SAVEDOWN.png",tx2#,ty1#,bs#,On)
 
-	LoadButton(MapSaveFlipButton,MapSaveFlipButtonImage,MapSaveFlipButtonImageDown,"MapSaveFlip.png","MapSaveFlipDown.png",YesNoX3b,by#,dev.buttSize,On)
-	LoadButton(RandomizeFlipButton,RandomizeFlipButtonImage,RandomizeFlipButtonImageDown,"RandomizeFlip.png","RandomizeFlipDown.png",YesNoX3c,by#,dev.buttSize,On)
+	LoadButton(MapSaveFlipButton,MapSaveFlipButtonImage,MapSaveFlipButtonImageDown,"DiskUp.png","DiskDown.png",YesNoX3b,by#,dev.buttSize,On)
+	LoadButton(RandomizeFlipButton,RandomizeFlipButtonImage,RandomizeFlipButtonImageDown,"RandomizeUp.png","RandomizeDown.png",YesNoX3c,by#,dev.buttSize,On)
 	LoadButton(MapButton,MapButtonImage,MapButtonImageDown,"Globe.png","GlobeDown.png",YesNoX3b,by#,dev.buttSize,On)
-	LoadButton(MapFlipButton,MapFlipButtonImage,MapFlipButtonImageDown,"GlobeFlip.png","GlobeFlipDown.png",YesNoX3b,by#,dev.buttSize,On)
+	//~ LoadButton(MapFlipButton,MapFlipButtonImage,MapFlipButtonImageDown,"GlobeFlip.png","GlobeFlipDown.png",YesNoX3b,by#,dev.buttSize,On)
 
 	LoadButton(ImpassButton,ImpassButtonImage,ImpassButtonImageDown,"ImpassUp.png","ImpassDown.png",dev.buttX1,by#,dev.buttSize,On)
 	LoadButton(WaterButton,WaterButtonImage,WaterButtonImageDown,"WaterUp.png","WaterDown.png",dev.buttX2*.9,by#,dev.buttSize,On)

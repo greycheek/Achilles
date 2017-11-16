@@ -260,11 +260,6 @@ function SliderInput( Slide as sliderType, Scale as sliderType )
 	px = MinMax( Scale.x,Scale.x+Scale.w,px )
 	si# = px - Scale.x
 	select Slide.ID
-		case RoughSlide.ID, TreeSlide.ID
-			for i = 0 to Sectors-1		 `level of terrain
-				if si# <= scaleLength[i] then exit
-			next i
-		endcase
 		case SoundSlide.ID, MusicSlide.ID
 			si# = si# / SpectrumW
 			si# = si# * 100
