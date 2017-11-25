@@ -1092,13 +1092,15 @@ global DefeatImage
 
 type sliderType
 	ID
-	x
-	y
-	tx
-	ty
+	x as Float
+	y as Float
+	tx as Float
+	ty as Float
 	w
 	h
 endtype
+
+#constant SliderGroup 16
 
 global MusicSlide as sliderType
 global SoundSlide as sliderType
@@ -1176,40 +1178,47 @@ DepotScale.y = RoughScale.y
 DepotScale.w = RoughScale.w
 DepotScale.h = RoughScale.h
 
+
 RoughSlide.w = 35 + (dev.scale * 15)
+
+global SliderOffset as Float
+SliderOffset = RoughSlide.w/2
+HalfScale# = (RoughScale.w/2)-SliderOffset
+
 RoughSlide.h = 35 + (dev.scale * 15)
-RoughSlide.x = RoughScale.x + (RoughScale.w/3)-(RoughSlide.w/3)
+RoughSlide.x = RoughScale.x + HalfScale#
 RoughSlide.y = RoughScale.y + ((RoughScale.h - RoughSlide.h)/2)
 
 TreeSlide.w = RoughSlide.w
 TreeSlide.h = RoughSlide.h
-TreeSlide.x = TreeScale.x + (TreeScale.w/3)-(TreeSlide.w/3)
+TreeSlide.x = TreeScale.x + HalfScale#
 TreeSlide.y = RoughSlide.y
 
 BaseSlide.w = RoughSlide.w
 BaseSlide.h = RoughSlide.h
-BaseSlide.x = BaseScale.x + (RoughScale.w/2)-(RoughSlide.w/2)
+BaseSlide.x = BaseScale.x + HalfScale#
 BaseSlide.y = RoughSlide.y
 
 DepotSlide.w = RoughSlide.w
 DepotSlide.h = RoughSlide.h
-DepotSlide.x = DepotScale.x + (TreeScale.w/2)-(TreeSlide.w/2)
+DepotSlide.x = DepotScale.x + HalfScale#
 DepotSlide.y = RoughSlide.y
 
-global scaleLength as Float[Sectors]
+global scaleLength as Float[]
+scaleLength.length = Sectors+1
 
-segment# = RoughScale.w / Sectors
-for i = 0 to Sectors-1 : scaleLength[i] = segment#*(i+1) : next i
+segment# = (RoughScale.w-SliderOffset) / Sectors
+for i = 1 to Sectors : scaleLength[i] = segment#*i : next i
 
 global baseQTY as float
 global depotQTY as float
 global roughQTY as float
 global treeQTY as float
 
-baseQTY = RoughScale.w / 2
-depotQTY = baseQTY
-roughQTY = RoughScale.w / 3
-treeQTY = roughQTY
+baseQTY = HalfScale#
+depotQTY = HalfScale#
+roughQTY = HalfScale#
+treeQTY = HalfScale#
 
 
 `SPRITES Misc

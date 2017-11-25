@@ -5,8 +5,8 @@ function ShowInfo( shown )
 	SetSpriteVisible( TurnCount,shown )
 	SetSpriteVisible( ProductionUnits,shown )
 	if shown
-		Text(TurnText,str(turns),MiddleX+UnitX+6,MaxHeight-(UnitY/1.5),255,255,255,36,255,2)
-		Text(UnitText,str(PlayerProdUnits),MiddleX+UnitX+4,MaxHeight-UnitY-3,255,255,255,36,255,2)
+		Text(TurnText,str(turns),settingsButt.x-18,MaxHeight-(UnitY/1.4),255,255,255,36,255,2)
+		Text(UnitText,str(PlayerProdUnits),settingsButt.x-18,MaxHeight-UnitY-5,255,255,255,36,255,2)
 	endif
 endfunction
 

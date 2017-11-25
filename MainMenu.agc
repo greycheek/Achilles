@@ -162,11 +162,9 @@ function DisplaySettings(state)
 	SetSpriteVisible( Splash,FlipState )
 
 	SetVirtualButtonVisible( settingsButt.ID,FlipState )
-	//~ SetVirtualButtonVisible( acceptButt.ID,FlipState )
 	SetVirtualButtonVisible( cancelButt.ID,FlipState )
 	SetVirtualButtonVisible( mapButt.ID,state )
 	SetVirtualButtonActive( settingsButt.ID,FlipState )
-	//~ SetVirtualButtonActive( acceptButt.ID,FlipState )
 	SetVirtualButtonActive( cancelButt.ID,FlipState )
 	SetVirtualButtonActive( mapButt.ID,state )
 
@@ -211,14 +209,12 @@ function ReDisplaySettings(state)
 	SetSpriteVisible( MechGuy[0].bodyID,state )
 	SetSpriteVisible( MechGuy[0].turretID,state )
 
-	//~ SetVirtualButtonVisible( acceptButt.ID, not state )
 	SetVirtualButtonVisible( mapButt.ID,state )
 	SetVirtualButtonVisible( diceButt.ID, not state )
 	SetVirtualButtonVisible( diskButt.ID, not state )
 	SetVirtualButtonVisible( ImpassButt.ID, not state )
 	SetVirtualButtonVisible( WaterButt.ID, not state )
 
-	//~ SetVirtualButtonActive( acceptButt.ID, not state )
 	SetVirtualButtonActive( mapButt.ID,state )
 	SetVirtualButtonActive( diceButt.ID, not state )
 	SetVirtualButtonActive( diskButt.ID, not state )
@@ -242,26 +238,20 @@ function ChangeColor( grid as gridType[], c as ColorSpec )
 	next i
 endfunction
 
-function SliderInput( Slide as sliderType, Scale as sliderType )
-	ScaleMax = Scale.x+Scale.w-Slide.w
-	SlideOffset = Slide.w/2
+function SliderInput( Slide ref as sliderType, Scale as sliderType )
+	ScaleMax = Scale.x + Scale.w - Slide.w
 	SetRawMouseVisible( Off )
 	while GetPointerState()
-		px = GetPointerX()
-		Slide.x = MinMax( Scale.x,ScaleMax,px-SlideOffset )
+		Slide.x = MinMax( Scale.x,ScaleMax,GetPointerX()-SliderOffset )
 		SetSpriteX( Slide.ID,Slide.x )
 		Sync()
 	endwhile
 	SetRawMouseVisible( On )
-	px = MinMax( Scale.x,Scale.x+Scale.w,px )
-	si# = px - Scale.x
+	dec Slide.x,Scale.x
 	select Slide.ID
-		case SoundSlide.ID, MusicSlide.ID
-			si# = si# / SpectrumW
-			si# = si# * 100
-		endcase
+		case SoundSlide.ID,MusicSlide.ID : Slide.x=(Slide.x/SpectrumW)*100 : endcase
 	endselect
-endfunction si#
+endfunction Slide.x
 
 function Compose()
 	repeat
@@ -327,17 +317,17 @@ function Compose()
 		`Map Generation
 		if GetVirtualButtonReleased( mapButt.ID ) or GetRawKeyPressed( 0x4D ) `M
 
+			ReDisplaySettings( Off )
+			StopMusicOGG( MusicSound )
 			PlaySound( ClickSound )
 			if mapImpass then SetVirtualButtonImageUp(ImpassButt.ID,ImpassButt.DN) else SetVirtualButtonImageUp(ImpassButt.ID,ImpassButt.UP)
 			if mapWater	 then SetVirtualButtonImageUp(WaterButt.ID,WaterButt.DN) else SetVirtualButtonImageUp(WaterButt.ID,WaterButt.UP)
 
-			ReDisplaySettings( Off )
-			StopMusicOGG( MusicSound )
 			do
 				if GetPointerState()
 					x = GetPointerX()
 					y = GetPointery()
-					slideHit = GetSpriteHit(x,y)
+					slideHit = GetSpriteHitGroup(SliderGroup,x,y)
 					if slideHit
 						select slideHit
 							case BaseSlide.ID  : baseQTY  = SliderInput(BaseSlide,BaseScale)   : endcase
@@ -377,8 +367,8 @@ function Compose()
 				endif
 
 			loop
+
 			ReDisplaySettings( On )
-			//~ SetVirtualButtonPosition( acceptButt.ID,acceptButt.x,acceptButt.y )
 		endif
 
 	until GetVirtualButtonPressed( acceptButt.ID )
@@ -728,16 +718,10 @@ function GameSetup()
 		if GetSpriteExists(AIGrid[i].ID) then DeleteSprite(AIGrid[i].ID)
 		if GetSpriteExists(PlayerGrid[i].ID) then DeleteSprite(PlayerGrid[i].ID)
 	next i
+			for i = 1 to SpriteConUnits : DeleteSprite( SpriteCon[i].ID ) : next i
 	SetVirtualButtonVisible( settingsButt.ID,Off )
 	SetVirtualButtonActive( settingsButt.ID,Off )
 	StopMusicOGG( MusicSound )
-
-	LoadImage( EMP1,"EMP.png" )
-	CreateSprite( EMP1,EMP1 )
-	SetSpriteTransparency( EMP1, 1 )
-	SetSpriteVisible( EMP1, 0 )
-	SetSpriteDepth ( EMP1, 0 )
-	SetSpriteScissor( EMP1,NodeSize,NodeSize,MaxWidth-NodeSize,MaxHeight-(NodeSize*3) )
 
 	AISurviving = AICount
 	PlayerSurviving = PlayerCount

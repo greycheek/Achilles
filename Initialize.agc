@@ -142,8 +142,6 @@ function Initialize()
 
 		TankSetup(i,AITank,pickAI)
 
-						//~ SetSpriteVisible(AITank[i].cover,Off)
-						//~ Patrol(i)
 		if AITank[i].vehicle <> Hovercraft then AITank[i].route = AStar(i,AITank)
 					//~ SetSpriteVisible(AITank[i].bodyID,Off)
 					//~ SetSpriteVisible(AITank[i].turretID,Off)
@@ -315,6 +313,7 @@ function CalcNodeFromScreen(x,y)	`screen coordinates
 endfunction node
 
 remstart
-
+	SetSpriteVisible(AITank[i].cover,Off)
+	Patrol(i)
 remend
 

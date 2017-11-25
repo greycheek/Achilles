@@ -15,15 +15,12 @@ remstart
 
 	--- HEALTH BARS NOT RESETTING AFTER DEPOT VISIT????
 
-	--- +/- BUTTONS FOR SLIDERS
-	--- FIX CANCEL & ACCEPT BUTTON POSITION
-
 	---RESET MOVEMENT WHEN BLOCKED
 	---CROOKED HOVERCRAFT TURRET ANGLES
 	---INSTRUCTIONS
-	---WHY DO SETTINGS BUTTONS GET TURNED ON, THEN IMMEDIATELY OFF?
 
 	FIXED?
+	--- FIX CANCEL & ACCEPT BUTTON POSITION
 	--- LOS STILL BLOCKED!! - BLOCK/NOBLOCK WORKS, BUT MAYBE SHAPE BOXES OUT OF WHACK
 	---BASECOUNTS ARE CAUSING BASE CAPTURE/END GAME PROBLEMS!!!!!! - review PlayerBaseCount and AIBaseCount routines
 		ARRAY INDEX OUT OF BOUNDS!!!!
@@ -48,10 +45,7 @@ SetOrientationAllowed( 0, 0, 1, 1 )
 //~ LoadFont( Gill,"GillSans.ttf" )
 LoadFont( Avenir,"Avenir Next.ttc" )
 UseNewDefaultFonts( On )
-//~ SetPhysicsWallTop(Off)
-//~ SetPhysicsWallBottom(Off)
-//~ SetPhysicsWallLeft(Off)
-//~ SetPhysicsWallRight(Off)
+
 
 #insert "Labels.agc"
 #include "Settings.agc"
@@ -843,6 +837,10 @@ function DisruptorTest()
 endfunction
 
 remstart
+SetPhysicsWallTop(Off)
+SetPhysicsWallBottom(Off)
+SetPhysicsWallLeft(Off)
+SetPhysicsWallRight(Off)
 
 FROM LASERFIRE
 	if GetRawKeyState( 0x51 ) or GetRawKeyState( Enter ) or GetRawKeyState( 0x53 ) then exit	 `Q,Enter,S
@@ -914,6 +912,7 @@ VICTORY CONDITIONS:
 
 
 FIXED?
+
 		---LOS STILL BLOCKED??!! Make NoBlock = 1 ??? --BASES BLOCKING LOS??
 		---REVERT MECH TO PAYING TERRAIN COSTS
 		---iOS - BASES AND DEPOTS DON'T LINE UP DURING RANDOM MAP GENERATION

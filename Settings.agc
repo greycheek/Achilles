@@ -162,7 +162,8 @@ function GenerateMapFeature( i,feature,featureSprite,dummy,sliderQTY#,clumpModif
 			k = Max( MapSize-1,i+offset[j] )
 			if mapTable[k].terrain = feature then inc sliderQTY#,clumpModifier#  `increase chances; generate clumps
 		next j
-		if Random2 ( 0,RoughScale.w ) <= sliderQTY#	 `add feature?
+		randomSpread# = RoughScale.w * Random2( 1, 1.5 )	 `decrease chances?
+		if Random2( 0,randomSpread# ) <= sliderQTY#	 `add features randomly
 			mapTable[i].terrain = feature
 			maptable[i].cost = cost[mapTable[i].terrain]
 			maptable[i].modifier = TRM[mapTable[i].terrain]
@@ -386,22 +387,29 @@ function Setup()
 
 	LoadImage( ProductionUnits,"Units.png" )
 	CreateSprite( ProductionUnits,ProductionUnits )
-	SetSpriteSize( ProductionUnits,28,28 )
+	SetSpriteSize( ProductionUnits,26,26 )
 	SetSpriteTransparency( ProductionUnits, 1 )
-	SetSpritePosition( ProductionUnits,MiddleX+UnitX+15,MaxHeight-UnitY)
+	SetSpritePosition( ProductionUnits,settingsButt.x-10,MaxHeight-UnitY)
 	SetSpriteColor( ProductionUnits,255,255,255,255 )
 
 	LoadImage( TurnCount,"Turn.png")
 	CreateSprite( TurnCount,TurnCount )
-	SetSpriteSize( TurnCount,30,30 )
+	SetSpriteSize( TurnCount,28,28 )
 	SetSpriteTransparency( TurnCount, 1 )
 	SetSpriteDepth( TurnCount,0 )
-	SetSpritePosition( TurnCount,MiddleX+UnitX+17,MaxHeight-(UnitY/1.6) )
+	SetSpritePosition( TurnCount,settingsButt.x-10,MaxHeight-(UnitY/1.5) )
 	SetSpriteColor( TurnCount,255,255,255,255 )
 
 	ShowInfo( Off )
 
    `SPRITES Misc
+
+	LoadImage( EMP1,"EMP.png" )
+	CreateSprite( EMP1,EMP1 )
+	SetSpriteTransparency( EMP1, 1 )
+	SetSpriteVisible( EMP1, 0 )
+	SetSpriteDepth ( EMP1, 0 )
+	SetSpriteScissor( EMP1,NodeSize,NodeSize,MaxWidth-NodeSize,MaxHeight-(NodeSize*3) )
 
 	LoadImage(Fire1,"Energy.png")
 	CreateSprite( Fire1,Fire1 )
@@ -486,7 +494,7 @@ function Setup()
 
    `SPLASHSCREEN
 
-	SetupSprite( Splash,Splash,"Achilles3D.png",0,0,MaxWidth,MaxHeight,2,On,0 )
+	SetupSprite( Splash,Splash,"achillesRich.png",0,0,MaxWidth,MaxHeight,2,On,0 )
 	SetupSprite( Dialog,Dialog,"Dialog2.png",0,0,MaxWidth,MaxHeight,1,Off,0 )
 	SetupSprite( BaseDialog,BaseDialog,"BaseDialog.png",0,0,MaxWidth,MaxHeight,1,Off,2 )
 
@@ -496,32 +504,21 @@ function Setup()
 
    `MAP GENERATOR SCREEN
 
-	LoadButton(LOADBUTT.ID,LOADBUTT.UP,LOADBUTT.DN,"LOADUP.png","LOADDOWN.png",LOADBUTT.x,LOADBUTT.y,LOADBUTT.w,On)
-	LoadButton(SAVEBUTT.ID,SAVEBUTT.UP,SAVEBUTT.DN,"SAVEUP.png","SAVEDOWN.png",SAVEBUTT.x,SAVEBUTT.y,SAVEBUTT.w,On)
+	LoadButton(LOADBUTT.ID,LOADBUTT.UP,LOADBUTT.DN,"LOADUP.png","LOADDOWN.png",LOADBUTT.x,LOADBUTT.y,LOADBUTT.w,Off)
+	LoadButton(SAVEBUTT.ID,SAVEBUTT.UP,SAVEBUTT.DN,"SAVEUP.png","SAVEDOWN.png",SAVEBUTT.x,SAVEBUTT.y,SAVEBUTT.w,Off)
 
 	LoadButton(mapButt.ID,mapButt.UP,mapButt.DN,"Globe.png","GlobeDown.png",mapButt.x,mapButt.y,mapButt.w,Off)
 	LoadButton(diskButt.ID,diskButt.UP,diskButt.DN,"DiskUp.png","DiskDown.png",diskButt.x,diskButt.y,diskButt.w,Off)
 	LoadButton(diceButt.ID,diceButt.UP,diceButt.DN,"RandomizeUp.png","RandomizeDown.png",diceButt.x,diceButt.y,diceButt.w,Off)
 
-	LoadButton(ImpassButt.ID,ImpassButt.UP,ImpassButt.DN,"ImpassUp.png","ImpassDown.png",ImpassButt.x,ImpassButt.y,ImpassButt.w,On)
-	LoadButton(WaterButt.ID,WaterButt.UP,WaterButt.DN,"WaterUp.png","WaterDown.png",WaterButt.x,WaterButt.y,WaterButt.w,On)
+	LoadButton(ImpassButt.ID,ImpassButt.UP,ImpassButt.DN,"ImpassUp.png","ImpassDown.png",ImpassButt.x,ImpassButt.y,ImpassButt.w,Off)
+	LoadButton(WaterButt.ID,WaterButt.UP,WaterButt.DN,"WaterUp.png","WaterDown.png",WaterButt.x,WaterButt.y,WaterButt.w,Off)
 
-	LoadButton(SLOT1.ID,SLOT1.UP,SLOT1.DN,"SLOT1small.png","SLOT1DOWNsmall.png",SLOT1.x,SLOT1.y,SLOT1.w,On)
-	LoadButton(SLOT2.ID,SLOT2.UP,SLOT2.DN,"SLOT2small.png","SLOT2DOWNsmall.png",SLOT2.x,SLOT2.y,SLOT2.w,On)
-	LoadButton(SLOT3.ID,SLOT3.UP,SLOT3.DN,"SLOT3small.png","SLOT3DOWNsmall.png",SLOT3.x,SLOT3.y,SLOT3.w,On)
-	LoadButton(SLOT4.ID,SLOT4.UP,SLOT4.DN,"SLOT4small.png","SLOT4DOWNsmall.png",SLOT4.x,SLOT4.y,SLOT4.w,On)
+	LoadButton(SLOT1.ID,SLOT1.UP,SLOT1.DN,"SLOT1small.png","SLOT1DOWNsmall.png",SLOT1.x,SLOT1.y,SLOT1.w,Off)
+	LoadButton(SLOT2.ID,SLOT2.UP,SLOT2.DN,"SLOT2small.png","SLOT2DOWNsmall.png",SLOT2.x,SLOT2.y,SLOT2.w,Off)
+	LoadButton(SLOT3.ID,SLOT3.UP,SLOT3.DN,"SLOT3small.png","SLOT3DOWNsmall.png",SLOT3.x,SLOT3.y,SLOT3.w,Off)
+	LoadButton(SLOT4.ID,SLOT4.UP,SLOT4.DN,"SLOT4small.png","SLOT4DOWNsmall.png",SLOT4.x,SLOT4.y,SLOT4.w,Off)
 
-
-	`is this necessary??
-	SetVirtualButtonVisible( LOADBUTT.ID,Off )
-	SetVirtualButtonVisible( SAVEBUTT.ID,Off )
-	SetVirtualButtonVisible( SLOT1.ID,Off )
-	SetVirtualButtonVisible( SLOT2.ID,Off )
-	SetVirtualButtonVisible( SLOT3.ID,Off )
-	SetVirtualButtonVisible( SLOT4.ID,Off )
-	SetVirtualButtonVisible( mapButt.ID,Off )
-	SetVirtualButtonVisible( ImpassButt.ID,Off )
-	SetVirtualButtonVisible( WaterButt.ID,Off )
 
    `FORCE SELECTION
 
@@ -613,6 +610,12 @@ function Setup()
 	SetSpritePosition( DepotSlide.ID,DepotSlide.x,DepotSlide.y )
 	SetSpriteDepth( DepotSlide.ID,0 )
 
+	SetSpriteGroup( RoughSlide.ID,SliderGroup )
+	SetSpriteGroup( TreeSlide.ID,SliderGroup )
+	SetSpriteGroup( BaseSlide.ID,SliderGroup )
+	SetSpriteGroup( DepotSlide.ID,SliderGroup )
+
+
 	AISpectrumSprite = CreateDummySprite()
 	AIValueSprite = CreateDummySprite()
 	PlayerSpectrumSprite = CreateDummySprite()
@@ -695,7 +698,7 @@ function Setup()
 		SetSpriteSize( clone2,SpriteConSize,SpriteConSize )
 		SetSpriteColor(  clone2,pickPL.r,pickPL.g,pickPL.b,pickPL.a )
 	next i
-	Text(VersionText,"v0.9",MaxWidth-90,70,72,72,72,32,255,2)
+	Text(VersionText,"v0.9",MaxWidth-90,70,255,255,255,32,255,2)
 	PlayMusicOGG( MusicSound, 1 )
 
 	GenerateMap()
