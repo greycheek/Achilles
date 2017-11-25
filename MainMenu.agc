@@ -6,9 +6,9 @@ function MainMenu()
 		if not GetTweenSpritePlaying(t1,MechGuy[0].bodyID) then t1 = PatrolMech()
 		UpdateAllTweens(getframetime())
 		Sync()
-		cancel = GetVirtualButtonReleased( QuitButton )
-		accept = GetVirtualButtonReleased( AcceptButton )
-		settings = GetVirtualButtonReleased( SettingsButton )
+		cancel = GetVirtualButtonReleased( cancelButt.ID )
+		accept = GetVirtualButtonReleased( acceptButt.ID )
+		settings = GetVirtualButtonReleased( settingsButt.ID )
 		Qkey = GetRawKeyPressed( 0x51 ) `Q
 		EKey = GetRawKeyPressed( Enter )
 		SKey = GetRawKeyPressed( 0x53 ) `S
@@ -16,7 +16,7 @@ function MainMenu()
 			if Confirm( "Quit?",QuitText ) then end
 		elseif settings or SKey
 			PlaySound( ClickSound,vol )
-			AlertButtons( YesNoX3a,by#,YesNoX3b,by#,dev.buttSize,AcceptFlipButton,QuitFlipButton )
+			AlertButtons( acceptButt.x,acceptButt.y,cancelButt.x,cancelButt.y,dev.buttSize,acceptButt.ID,cancelButt.ID )
 			SettingsDialog()
 		elseif accept or EKey
 			PlaySound( ClickSound,vol )
@@ -32,12 +32,12 @@ function Halt(ID1,ID2)
 	StopSprite( MechGuy[0].bodyID )
 endfunction
 
-function AlertButtons( x1,y1,x2,y2,size,accept,quit )
+function AlertButtons( x1,y1,x2,y2,size,accept,cancel )
 	PlaySound( ClickSound,vol )
 	SetVirtualButtonSize( accept,size )
-	SetVirtualButtonSize( quit,size )
+	SetVirtualButtonSize( cancel,size )
 	SetVirtualButtonPosition( accept,x1,y1 )
-	SetVirtualButtonPosition( quit,x2,y2 )
+	SetVirtualButtonPosition( cancel,x2,y2 )
 endfunction
 
 
@@ -161,16 +161,14 @@ function DisplaySettings(state)
 	SetSpriteActive( Splash,FlipState )
 	SetSpriteVisible( Splash,FlipState )
 
-	SetVirtualButtonVisible( SettingsButton,FlipState )
-	SetVirtualButtonVisible( AcceptButton,FlipState )
-	SetVirtualButtonVisible( QuitButton,FlipState )
-	SetVirtualButtonVisible( AcceptFlipButton,state )
-	SetVirtualButtonVisible( MapButton,state )
-	SetVirtualButtonActive( SettingsButton,FlipState )
-	SetVirtualButtonActive( AcceptButton,FlipState )
-	SetVirtualButtonActive( QuitButton,FlipState )
-	SetVirtualButtonActive( AcceptFlipButton,state )
-	SetVirtualButtonActive( MapButton,state )
+	SetVirtualButtonVisible( settingsButt.ID,FlipState )
+	//~ SetVirtualButtonVisible( acceptButt.ID,FlipState )
+	SetVirtualButtonVisible( cancelButt.ID,FlipState )
+	SetVirtualButtonVisible( mapButt.ID,state )
+	SetVirtualButtonActive( settingsButt.ID,FlipState )
+	//~ SetVirtualButtonActive( acceptButt.ID,FlipState )
+	SetVirtualButtonActive( cancelButt.ID,FlipState )
+	SetVirtualButtonActive( mapButt.ID,state )
 
 	CreateGrid(state)
 endfunction
@@ -212,22 +210,20 @@ function ReDisplaySettings(state)
 	SetSpriteActive( PlayerValueSprite,state )
 	SetSpriteVisible( MechGuy[0].bodyID,state )
 	SetSpriteVisible( MechGuy[0].turretID,state )
-	SetVirtualButtonVisible( AcceptButton, not state )
-	SetVirtualButtonVisible( AcceptFlipButton,state )
-	SetVirtualButtonVisible( MapButton,state )
-	SetVirtualButtonVisible( MapFlipButton, not state )
-	SetVirtualButtonVisible( MapSaveFlipButton, not state )
-	SetVirtualButtonVisible( RandomizeFlipButton, not state )
-	SetVirtualButtonVisible( ImpassButton, not state )
-	SetVirtualButtonVisible( WaterButton, not state )
-	SetVirtualButtonActive( AcceptButton, not state )
-	SetVirtualButtonActive( AcceptFlipButton,state )
-	SetVirtualButtonActive( MapButton,state )
-	SetVirtualButtonActive( MapFlipButton, not state )
-	SetVirtualButtonActive( MapSaveFlipButton, not state )
-	SetVirtualButtonActive( RandomizeFlipButton, not state )
-	SetVirtualButtonActive( ImpassButton, not state )
-	SetVirtualButtonActive( WaterButton, not state )
+
+	//~ SetVirtualButtonVisible( acceptButt.ID, not state )
+	SetVirtualButtonVisible( mapButt.ID,state )
+	SetVirtualButtonVisible( diceButt.ID, not state )
+	SetVirtualButtonVisible( diskButt.ID, not state )
+	SetVirtualButtonVisible( ImpassButt.ID, not state )
+	SetVirtualButtonVisible( WaterButt.ID, not state )
+
+	//~ SetVirtualButtonActive( acceptButt.ID, not state )
+	SetVirtualButtonActive( mapButt.ID,state )
+	SetVirtualButtonActive( diceButt.ID, not state )
+	SetVirtualButtonActive( diskButt.ID, not state )
+	SetVirtualButtonActive( ImpassButt.ID, not state )
+	SetVirtualButtonActive( WaterButt.ID, not state )
 	CreateGrid(state)
 endfunction
 
@@ -329,11 +325,11 @@ function Compose()
 		if GetRawKeyPressed( Enter ) then exitfunction
 
 		`Map Generation
-		if GetVirtualButtonReleased( MapButton ) or GetRawKeyPressed( 0x4D ) `M
+		if GetVirtualButtonReleased( mapButt.ID ) or GetRawKeyPressed( 0x4D ) `M
 
 			PlaySound( ClickSound )
-			if mapImpass then SetVirtualButtonImageUp(ImpassButton,ImpassButtonImageDown) else SetVirtualButtonImageUp(ImpassButton,ImpassButtonImage)
-			if mapWater	 then SetVirtualButtonImageUp(WaterButton,WaterButtonImageDown)   else SetVirtualButtonImageUp(WaterButton,WaterButtonImage)
+			if mapImpass then SetVirtualButtonImageUp(ImpassButt.ID,ImpassButt.DN) else SetVirtualButtonImageUp(ImpassButt.ID,ImpassButt.UP)
+			if mapWater	 then SetVirtualButtonImageUp(WaterButt.ID,WaterButt.DN) else SetVirtualButtonImageUp(WaterButt.ID,WaterButt.UP)
 
 			ReDisplaySettings( Off )
 			StopMusicOGG( MusicSound )
@@ -353,124 +349,121 @@ function Compose()
 				endif
 
 				Sync()
-				if GetVirtualButtonReleased( ImpassButton )
+				if GetVirtualButtonReleased( ImpassButt.ID )
 					PlaySound( ClickSound )
 					if mapImpass
-						mapImpass=0 : SetVirtualButtonImageUp( ImpassButton,ImpassButtonImage )
+						mapImpass=0 : SetVirtualButtonImageUp( ImpassButt.ID,ImpassButt.UP )
 					else
-						mapImpass=ImpassOn : SetVirtualButtonImageUp( ImpassButton,ImpassButtonImageDown )
+						mapImpass=ImpassOn : SetVirtualButtonImageUp( ImpassButt.ID,ImpassButt.DN )
 					endif
 				endif
-				if GetVirtualButtonReleased( WaterButton )
+				if GetVirtualButtonReleased( WaterButt.ID )
 					PlaySound( ClickSound )
 					if mapWater
-						mapWater=0 : SetVirtualButtonImageUp( WaterButton,WaterButtonImage )
+						mapWater=0 : SetVirtualButtonImageUp( WaterButt.ID,WaterButt.UP )
 					else
-						mapWater=WaterOn : SetVirtualButtonImageUp( WaterButton,WaterButtonImageDown )
+						mapWater=WaterOn : SetVirtualButtonImageUp( WaterButt.ID,WaterButt.DN )
 					endif
 				endif
-				if GetVirtualButtonReleased( MapSaveFlipButton ) or GetRawKeyPressed( 0x46 ) then MapSlotDialog() `F
-				if GetVirtualButtonReleased( RandomizeFlipButton ) or GetRawKeyPressed( 0x52 ) `R
+				if GetVirtualButtonReleased( diskButt.ID ) or GetRawKeyPressed( 0x46 ) then MapSlotDialog() `F
+				if GetVirtualButtonReleased( diceButt.ID ) or GetRawKeyPressed( 0x52 ) `R
 					PlaySound( ClickSound )
 					ResetMap()
 					GenerateTerrain()
 				endif
-				if GetVirtualButtonReleased( AcceptButton ) or GetRawKeyPressed( Enter )
+				if GetVirtualButtonReleased( acceptButt.ID ) or GetRawKeyPressed( Enter )
 					PlaySound( ClickSound )
 					exit
 				endif
 
 			loop
 			ReDisplaySettings( On )
-			SetVirtualButtonPosition( AcceptFlipButton,YesNoX3a,by# )
+			//~ SetVirtualButtonPosition( acceptButt.ID,acceptButt.x,acceptButt.y )
 		endif
 
-	until GetVirtualButtonPressed( AcceptFlipButton )
-	WaitForButtonRelease( AcceptFlipbutton )
+	until GetVirtualButtonPressed( acceptButt.ID )
+	WaitForButtonRelease( acceptButt.ID )
 endfunction
 
 
 function MapSlotDialog()
 	PlaySound( ClickSound,vol )
 	map$ = ""
-	x = MiddleX-(dev.buttSize*3)
-	y = YesNoY1-(dev.buttSize/4)
-	w = (MiddleX-x)*1.95
-	h = AlertH+(dev.buttSize/2)
 	TSize = (32*dev.scale)
-	Text( MapText,"MAP SAVE SLOTS",x+20,YesNoY1,50,50,50,TSize,255,0 )
-	SetVirtualButtonSize( QuitFlipButton,dev.buttSize )
-	SetVirtualButtonPosition( QuitFlipButton,x+w-dev.buttSize,YesNoY2+(dev.ButtSize/3) )
-	AlertDialog( MapText,On,x,y,w,h )
+	Text( MapText,"MAP SAVE SLOTS",mapSlotDialog.x+20,mapSlotDialog.y+20,50,50,50,TSize,255,0 )
+	SetVirtualButtonPosition( cancelButt.ID,mapSlotDialog.cancel.x,mapSlotDialog.cancel.y )
+	ButtonState( cancelButt.ID,On )
+	AlertDialog( MapText,On,mapSlotDialog.x,mapSlotDialog.y,mapSlotDialog.w,mapSlotDialog.h )
 	MapSLOTButtons( On )
 
 	for i = 1 to 4
 		m$ = "map"+str(i)
 		if GetFileExists( m$ )
 			select m$
-				case "map1" : SetVirtualButtonAlpha( SLOT1,FullAlpha ) : endcase
-				case "map2" : SetVirtualButtonAlpha( SLOT2,FullAlpha ) : endcase
-				case "map3" : SetVirtualButtonAlpha( SLOT3,FullAlpha ) : endcase
-				case "map4" : SetVirtualButtonAlpha( SLOT4,FullAlpha ) : endcase
+				case "map1" : SetVirtualButtonAlpha( SLOT1.ID,FullAlpha ) : endcase
+				case "map2" : SetVirtualButtonAlpha( SLOT2.ID,FullAlpha ) : endcase
+				case "map3" : SetVirtualButtonAlpha( SLOT3.ID,FullAlpha ) : endcase
+				case "map4" : SetVirtualButtonAlpha( SLOT4.ID,FullAlpha ) : endcase
 			endselect
 		else
 			select m$
-				case "map1" : SetVirtualButtonAlpha( SLOT1,HalfAlpha ) : endcase
-				case "map2" : SetVirtualButtonAlpha( SLOT2,HalfAlpha ) : endcase
-				case "map3" : SetVirtualButtonAlpha( SLOT3,HalfAlpha ) : endcase
-				case "map4" : SetVirtualButtonAlpha( SLOT4,HalfAlpha ) : endcase
+				case "map1" : SetVirtualButtonAlpha( SLOT1.ID,HalfAlpha ) : endcase
+				case "map2" : SetVirtualButtonAlpha( SLOT2.ID,HalfAlpha ) : endcase
+				case "map3" : SetVirtualButtonAlpha( SLOT3.ID,HalfAlpha ) : endcase
+				case "map4" : SetVirtualButtonAlpha( SLOT4.ID,HalfAlpha ) : endcase
 			endselect
 		endif
 	next i
 	do
 		Sync()
-		if GetVirtualButtonReleased( SLOT1 ) then map$ = "map1"
-		if GetVirtualButtonReleased( SLOT2 ) then map$ = "map2"
-		if GetVirtualButtonReleased( SLOT3 ) then map$ = "map3"
-		if GetVirtualButtonReleased( SLOT4 ) then map$ = "map4"
+		if GetVirtualButtonReleased( SLOT1.ID ) then map$ = "map1"
+		if GetVirtualButtonReleased( SLOT2.ID ) then map$ = "map2"
+		if GetVirtualButtonReleased( SLOT3.ID ) then map$ = "map3"
+		if GetVirtualButtonReleased( SLOT4.ID ) then map$ = "map4"
 		if map$ <> ""
-			SetVirtualButtonVisible( SLOT1,Off )
-			SetVirtualButtonVisible( SLOT2,Off )
-			SetVirtualButtonVisible( SLOT3,Off )
-			SetVirtualButtonVisible( SLOT4,Off )
+			SetVirtualButtonVisible( SLOT1.ID,Off )
+			SetVirtualButtonVisible( SLOT2.ID,Off )
+			SetVirtualButtonVisible( SLOT3.ID,Off )
+			SetVirtualButtonVisible( SLOT4.ID,Off )
 			LoadSaveDialog( map$ )
 			exit
 		endif
-		if GetVirtualButtonReleased( QuitFlipButton ) then exit
+		if GetVirtualButtonReleased( cancelButt.ID ) then exit
 	loop
 	PlaySound( ClickSound,vol )
-	AlertDialog( MapText,Off,x,y,w,h )
+	AlertDialog( MapText,Off,mapSlotDialog.x,mapSlotDialog.y,mapSlotDialog.w,mapSlotDialog.h )
 	MapSLOTButtons( Off )
+	ButtonState( cancelButt.ID,Off )
+	SetVirtualButtonPosition( cancelButt.ID,cancelButt.x,cancelButt.y )
 endfunction
 
 function LoadSaveDialog( map$ )
 	PlaySound( ClickSound,vol )
 	TSize = (32*dev.scale)
-	Text( MapText,"MAP SAVE SLOTS",YesNoX1+(TSize*.85),YesNoY1+(TSize*.6),50,50,50,TSize,255,0 )
-	SetVirtualButtonSize( QuitFlipButton,dev.buttSize )
-	SetVirtualButtonPosition( QuitFlipButton,YesNoX2a,YesNoY2 )
-	SetVirtualButtonVisible( QuitFlipButton,On )
-	AlertDialog( MapText,On,YesNoX1,YesNoY1,AlertW,AlertH )
+	Text( MapText,"MAP SAVE SLOTS",alertDialog.x+(TSize*.85),alertDialog.y+(TSize*.6),50,50,50,TSize,255,0 )
+	SetVirtualButtonPosition( cancelButt.ID,mapSaveDialog.cancel.x,mapSaveDialog.cancel.y )
+	AlertDialog( MapText,On,alertDialog.x,alertDialog.y,alertDialog.w,alertDialog.h )
 	MapLoadSaveButtons( On )
 	if GetFileExists( map$ )
-		SetVirtualButtonActive( LOADBUTT,On )
-		SetVirtualButtonAlpha( LOADBUTT,255 )
+		SetVirtualButtonActive( LOADBUTT.ID,On )
+		SetVirtualButtonAlpha( LOADBUTT.ID,255 )
 	else
-		SetVirtualButtonActive( LOADBUTT,Off )
-		SetVirtualButtonAlpha( LOADBUTT,128 )
+		SetVirtualButtonActive( LOADBUTT.ID,Off )
+		SetVirtualButtonAlpha( LOADBUTT.ID,128 )
 	endif
 	do
 		Sync()
-		if GetVirtualButtonReleased( QuitFlipButton )
+		if GetVirtualButtonReleased( cancelButt.ID )
 			exit
-		elseif GetVirtualButtonReleased( LOADBUTT )
+		elseif GetVirtualButtonReleased( LOADBUTT.ID )
 			LoadMap( map$ ) : exit
-		elseif GetVirtualButtonReleased( SAVEBUTT )
+		elseif GetVirtualButtonReleased( SAVEBUTT.ID )
 			if SaveMap( map$ ) then exit
 		endif
 	loop
 	MapLoadSaveButtons( Off )
-	AlertDialog( MapText,Off,YesNoX1,YesNoY1,AlertW,AlertH )
+	AlertDialog( MapText,Off,alertDialog.x,alertDialog.y,alertDialog.w,alertDialog.h )
+	ButtonState( cancelButt.ID,Off )
 endfunction
 
 function LoadMap( map$ )
@@ -532,18 +525,18 @@ endfunction
 
 function SaveMap( map$ )
 	if GetFileExists( map$ )
-		SetVirtualButtonVisible( LOADBUTT,Off )
-		SetVirtualButtonVisible( SAVEBUTT,Off )
+		SetVirtualButtonVisible( LOADBUTT.ID,Off )
+		SetVirtualButtonVisible( SAVEBUTT.ID,Off )
 		SetTextColorAlpha( MapText,0 )	`turns the text off; SetTextVisible() doesn't work
 		if Confirm("Overwrite?",ConfirmText)
-			SetVirtualButtonActive( LOADBUTT,On )
-			SetVirtualButtonAlpha( LOADBUTT,255 )
+			SetVirtualButtonActive( LOADBUTT.ID,On )
+			SetVirtualButtonAlpha( LOADBUTT.ID,255 )
 		else
-			SetVirtualButtonSize( QuitFlipButton,dev.buttSize )
-			SetVirtualButtonPosition( QuitFlipButton,YesNoX2a,YesNoY2 )
+			SetVirtualButtonSize( alertDialog.cancel.ID,alertDialog.cancel.w )
+			SetVirtualButtonPosition( alertDialog.cancel.ID,alertDialog.cancel.x,alertDialog.cancel.y )
 			SetTextColorAlpha( MapText,FullAlpha )
-			AlertDialog( MapText,On,YesNoX1,YesNoY1,AlertW,AlertH )
-			WaitForButtonRelease( QuitFlipButton )
+			AlertDialog( MapText,On,alertDialog.x,alertDialog.y,alertDialog.w,alertDialog.h )
+			WaitForButtonRelease( alertDialog.cancel.ID )
 			MapLoadSaveButtons( On )
 			exitfunction False
 		endif
@@ -561,24 +554,25 @@ endfunction True
 
 function Confirm( message$,textID )
 	TSize = 36*dev.scale
-	Text( textID,message$,YesNoX1+(TSize*.85),YesNoY1+(TSize*.6),50,50,50,TSize,255,0 )
-	ButtonState( AcceptFlipButton,On )
-	ButtonState( QuitFlipButton,On )
-	AlertButtons( YesNoX2a, YesNoY2, YesNoX2b, YesNoY2, dev.buttSize, AcceptFlipButton, QuitFlipButton )
-	AlertDialog( textID,On,YesNoX1,YesNoY1,AlertW,AlertH )
+	Text( textID,message$,alertDialog.x+(TSize*.85),alertDialog.y+(TSize*.6),50,50,50,TSize,255,0 )
+	AlertDialog( textID,On,alertDialog.x,alertDialog.y,alertDialog.w,alertDialog.h )
+	AlertButtons( alertDialog.accept.x,alertDialog.accept.y,alertDialog.cancel.x,alertDialog.cancel.y,alertDialog.accept.w,acceptButt.ID,cancelButt.ID )
 	do
 		Sync()
-		if GetVirtualButtonPressed( AcceptFlipButton ) or GetRawKeyState( Enter ) or GetRawKeyPressed( 0x59 ) `Y
-			confirmation = True : exit
+		if GetVirtualButtonPressed( acceptButt.ID ) or GetRawKeyState( Enter ) or GetRawKeyPressed( 0x59 ) `Y
+			confirmation = True
+			WaitForButtonRelease( acceptButt.ID )
+			exit
 		endif
-		if GetVirtualButtonPressed( QuitFlipButton ) or GetRawKeyReleased( 0x4E ) `N
-			confirmation = False : exit
+		if GetVirtualButtonPressed( cancelButt.ID ) or GetRawKeyReleased( 0x4E ) `N
+			confirmation = False
+			WaitForButtonRelease( cancelButt.ID )
+			exit
 		endif
 	loop
 	PlaySound( ClickSound,vol )
-	ButtonState( AcceptFlipButton,Off )
-	ButtonState( QuitFlipButton,Off )
-	AlertDialog( textID,Off,YesNoX1,YesNoY1,AlertW,AlertH )
+	AlertDialog( textID,Off,alertDialog.x,alertDialog.y,alertDialog.w,alertDialog.h )
+	AlertButtons( acceptButt.x,acceptButt.y,cancelButt.x,cancelButt.y,cancelButt.w,acceptButt.ID,cancelButt.ID )
 endfunction confirmation
 
 function LoadForce( file )	`placed at end, after map data
@@ -627,17 +621,17 @@ endfunction
 
 
 function MapSLOTButtons( state )
-	ButtonState( SLOT1,state )
-	ButtonState( SLOT2,state )
-	ButtonState( SLOT3,state )
-	ButtonState( SLOT4,state )
-	ButtonState( QuitFlipButton,state )
+	ButtonState( SLOT1.ID,state )
+	ButtonState( SLOT2.ID,state )
+	ButtonState( SLOT3.ID,state )
+	ButtonState( SLOT4.ID,state )
+	ButtonState( cancelButt.ID,state )
 endfunction
 
 function MapLoadSaveButtons( state )
-	ButtonState( LOADBUTT,state )
-	ButtonState( SAVEBUTT,state )
-	ButtonState( QuitFlipButton,state )
+	ButtonState( LOADBUTT.ID,state )
+	ButtonState( SAVEBUTT.ID,state )
+	ButtonState( cancelButt.ID,state )
 endfunction
 
 function ButtonState( button,state )
@@ -646,14 +640,14 @@ function ButtonState( button,state )
 endfunction
 
 function ButtonActivation( state )
-	SetVirtualButtonActive(AcceptFlipButton,state)
-	SetVirtualButtonActive(QuitFlipButton,state)
-	SetVirtualButtonActive(LOADBUTT,state)
-	SetVirtualButtonActive(SAVEBUTT,state)
-	SetVirtualButtonActive(SLOT1,state)
-	SetVirtualButtonActive(SLOT2,state)
-	SetVirtualButtonActive(SLOT3,state)
-	SetVirtualButtonActive(SLOT4,state)
+	//~ SetVirtualButtonActive(acceptButt.ID,state)
+	//~ SetVirtualButtonActive(cancelButt.ID,state)
+	SetVirtualButtonActive(LOADBUTT.ID,state)
+	SetVirtualButtonActive(SAVEBUTT.ID,state)
+	SetVirtualButtonActive(SLOT1.ID,state)
+	SetVirtualButtonActive(SLOT2.ID,state)
+	SetVirtualButtonActive(SLOT3.ID,state)
+	SetVirtualButtonActive(SLOT4.ID,state)
 endfunction
 
 function ForcesReady()
@@ -734,8 +728,8 @@ function GameSetup()
 		if GetSpriteExists(AIGrid[i].ID) then DeleteSprite(AIGrid[i].ID)
 		if GetSpriteExists(PlayerGrid[i].ID) then DeleteSprite(PlayerGrid[i].ID)
 	next i
-	SetVirtualButtonVisible( SettingsButton,Off )
-	SetVirtualButtonActive( SettingsButton,Off )
+	SetVirtualButtonVisible( settingsButt.ID,Off )
+	SetVirtualButtonActive( settingsButt.ID,Off )
 	StopMusicOGG( MusicSound )
 
 	LoadImage( EMP1,"EMP.png" )
@@ -754,18 +748,16 @@ function GameSetup()
 	AITank.length = AICount
 	PlayerTank.length = PlayerCount
 
-	ButtonState( AcceptFlipButton,Off )
-	ButtonState( QuitFlipButton,Off )
-	AlertButtons( YesNoX4a, YesNoY4, YesNoX4b, YesNoY4, dev.buttSize, AcceptButton, QuitButton )
-	LoadButton(CannonButton,cannonImage,cannonImageDown,"Cannon.png","CannonDown.png",dev.buttX1,buttY,dev.buttSize,Off)
-	LoadButton(HeavyCannonButton,heavyCannonImage,heavyCannonImageDown,"HeavyCannon.png","HeavyCannonDown.png",dev.buttX1,buttY,dev.buttSize,Off)
-	LoadButton(MissileButton,missileImage,missileImageDown,"Rocket.png","RocketDown.png",dev.buttX1,buttY,dev.buttSize,Off)
-	LoadButton(LaserButton,laserImage,laserImageDown,"Laser.png","LaserDown.png",dev.buttX2,buttY,dev.buttSize,Off)
-	LoadButton(HeavyLaserButton,heavyLaserImage,heavyLaserImageDown,"HeavyLaser.png","HeavyLaserDown.png",dev.buttX2,buttY,dev.buttSize,Off)
-	LoadButton(EMPButton,EMPImage,EMPImageDown,"EMPButton.png","EMPButtonDown.png",dev.buttX2,buttY,dev.buttSize,Off)
-	LoadButton(MineButton,MineImage,MineImageDown,"MineButton.png","MineButtonDown.png",dev.buttX1,buttY,dev.buttSize,Off)
-	LoadButton(DisruptButton,disruptorImage,disruptorImageDown,"DisruptorButtonUp.png","DisruptorButtonDown.png",dev.buttX2,buttY,dev.buttSize,Off)
-	LoadButton(BulletButton,BulletImage,BulletImage,"BulletButton.png","BulletButton.png",dev.buttX2,buttY,dev.buttSize,Off)
+	AlertButtons( alertDialog.accept.x,alertDialog.accept.y,alertDialog.cancel.x,alertDialog.cancel.y,alertDialog.accept.w,alertDialog.accept.ID,alertDialog.cancel.ID )
+	LoadButton(CannonButt.ID,CannonButt.UP,CannonButt.DN,"Cannon.png","CannonDown.png",CannonButt.x,CannonButt.y,CannonButt.w,Off)
+	LoadButton(HeavyCannonButt.ID,HeavyCannonButt.UP,HeavyCannonButt.DN,"HeavyCannon.png","HeavyCannonDown.png",HeavyCannonButt.x,HeavyCannonButt.y,HeavyCannonButt.w,Off)
+	LoadButton(MissileButt.ID,MissileButt.UP,MissileButt.DN,"Rocket.png","RocketDown.png",MissileButt.x,MissileButt.y,MissileButt.w,Off)
+	LoadButton(LaserButt.ID,LaserButt.UP,LaserButt.DN,"Laser.png","LaserDown.png",LaserButt.x,LaserButt.y,LaserButt.w,Off)
+	LoadButton(HeavyLaserButt.ID,HeavyLaserButt.UP,HeavyLaserButt.DN,"HeavyLaser.png","HeavyLaserDown.png",HeavyLaserButt.x,HeavyLaserButt.y,HeavyLaserButt.w,Off)
+	LoadButton(EMPButt.ID,EMPButt.UP,EMPButt.DN,"EMPButton.png","EMPButtonDown.png",EMPButt.x,EMPButt.y,EMPButt.w,Off)
+	LoadButton(MineButt.ID,MineButt.UP,MineButt.DN,"MineButton.png","MineButtonDown.png",MineButt.x,MineButt.y,MineButt.w,Off)
+	LoadButton(DisruptButt.ID,DisruptButt.UP,DisruptButt.DN,"DisruptorButtonUp.png","DisruptorButtonDown.png",DisruptButt.x,DisruptButt.y,DisruptButt.w,Off)
+	LoadButton(BulletButt.ID,BulletButt.DN,BulletButt.DN,"BulletButton.png","BulletButton.png",BulletButt.x,BulletButt.y,BulletButt.w,Off)
 
 	turns = 1
 	ShowInfo( On )

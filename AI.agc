@@ -21,6 +21,7 @@ function AISpawn( vehicle,node )
 	AITank[ID].turretImageID = AITank[ID].turretID
 	AITank[ID].healthID = AIHealthSeries + AICount
 	AITank[ID].healthBarImageID = AITank[ID].healthID
+		SetSpriteCategoryBits(AITank[ID].healthID,NoBlock)
 
 	TankSetup(ID,AITank,pickAI)
 	SetSpriteVisible(AITank[ID].bodyID,Off)

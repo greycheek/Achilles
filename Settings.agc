@@ -30,8 +30,8 @@ function BaseSetup( ID, spriteID, node, base, baseRef ref as baseType[], group )
 	SetSpritePositionByOffset( baseRef[ID].spriteID,x,y )
 	SetSpriteCategoryBits( baseRef[ID].spriteID,NoBlock )
 	SetSpritePhysicsOn( baseRef[ID].spriteID,1 )
-	AddSpriteShapeBox( baseRef[ID].spriteID,x,y,x+NodeSize-1,y+NodeSize-1,0 )
-endfunction ID
+	AddSpriteShapeBox( baseRef[ID].spriteID, x-NodeOffset, y-NodeOffset, x+NodeSize-1, y+NodeSize-1,0 )
+endfunction
 
 function DepotSetup( ID, spriteID, node, depot, depotNode ref as depotType[], group )
 	depotNode[ID].node = node
@@ -54,7 +54,7 @@ function DepotSetup( ID, spriteID, node, depot, depotNode ref as depotType[], gr
 	SetSpritePositionByOffset( depotNode[ID].spriteID,x,y )
 	SetSpriteCategoryBits( depotNode[ID].spriteID,NoBlock )
 	SetSpritePhysicsOn( depotNode[ID].spriteID,1 )
-	AddSpriteShapeBox( depotNode[ID].spriteID,x,y,x+NodeSize-1,y+NodeSize-1,0 )
+	AddSpriteShapeBox( depotNode[ID].spriteID, x-NodeOffset, y-NodeOffset, x+NodeSize-1, y+NodeSize-1,0 )
 endfunction
 
 function Placement( baseSector ref as integer[], Nodes as integer[][] )
@@ -221,6 +221,16 @@ function GenerateTerrain()
 			GenerateMapFeature( i,Rough,RoughSprite,roughDummy,roughQty,roughClumpMod# )
 		endif
 	next i
+
+	SetSpritePhysicsOn( impassDummy,1 )
+	SetSpritePhysicsOn( treeDummy,1 )
+	SetSpritePhysicsOn( roughDummy,1 )
+	SetSpritePhysicsOn( waterDummy,1 )
+	SetSpriteCategoryBits( impassDummy,Block )
+	SetSpriteCategoryBits( treeDummy,Block )
+	SetSpriteCategoryBits( roughDummy,NoBlock )
+	SetSpriteCategoryBits( waterDummy,NoBlock )
+
 	SetSpriteVisible( TreeSprite,Off )
 	SetSpriteVisible( RoughSprite,Off )
 
@@ -255,20 +265,10 @@ function GenerateMap()
 	SetSpriteAnimation(Iris,40,46,IrisFrames)
 	SetSpriteOffset(Iris,NodeOffset,NodeOffset)
 
-
 	impassDummy = CreateDummySprite()
 	treeDummy = CreateDummySprite()
 	roughDummy = CreateDummySprite()
 	waterDummy = CreateDummySprite()
-	SetSpritePhysicsOn( impassDummy,1 )
-	SetSpritePhysicsOn( treeDummy,1 )
-	SetSpritePhysicsOn( roughDummy,1 )
-	SetSpritePhysicsOn( waterDummy,1 )
-	SetSpriteCategoryBits( impassDummy,Block )
-	SetSpriteCategoryBits( treeDummy,Block )
-	SetSpriteCategoryBits( roughDummy,NoBlock )
-	SetSpriteCategoryBits( waterDummy,NoBlock )
-
 
 	LoadImage(TreeSprite,"TreeTop290.png")
 	CreateSprite(TreeSprite,TreeSprite )
@@ -486,70 +486,42 @@ function Setup()
 
    `SPLASHSCREEN
 
-	buttStep# = ( dev.buttX2 - dev.ButtX1 ) * .8
-	buttOffset# = dev.buttSize * .2
-	bx# = dev.buttX1 + buttOffset#
-	by# = buttY - ( buttOffset# / dev.scale )
-	gap# = 1 + ( .75 / dev.scale )
-
 	SetupSprite( Splash,Splash,"Achilles3D.png",0,0,MaxWidth,MaxHeight,2,On,0 )
 	SetupSprite( Dialog,Dialog,"Dialog2.png",0,0,MaxWidth,MaxHeight,1,Off,0 )
 	SetupSprite( BaseDialog,BaseDialog,"BaseDialog.png",0,0,MaxWidth,MaxHeight,1,Off,2 )
 
-	LoadButton(AcceptButton,AcceptImage,AcceptImageDown,"CheckUp.png","CheckDown.png",YesNoX3a,by#,dev.buttSize,On)
-	LoadButton(QuitButton,CancelImage,CancelImageDown,"CancelUp.png","CancelDown2.png",YesNoX3b,by#,dev.buttSize,On)
-	LoadButton(SettingsButton,SettingsImage,SettingsImageDown,"SettingsButton.png","SettingsButtonDown.png",YesNoX3c,by#,dev.buttSize,On)
-	LoadButton(AcceptFlipButton,AcceptFlipImage,AcceptFlipImageDown,"CheckUp.png","CheckDown.png",YesNoX3a,by#,dev.buttSize,On)
-	LoadButton(QuitFlipButton,CancelFlipImage,CancelFlipImageDown,"CancelFlip.png","CancelFlipDown.png",YesNoX3b,by#,dev.buttSize,On)
-
+	LoadButton(acceptButt.ID,acceptButt.UP,acceptButt.DN,"CheckUp.png","CheckDown.png",acceptButt.x,acceptButt.y,acceptButt.w,On)
+	LoadButton(cancelButt.ID,cancelButt.UP,cancelButt.DN,"CancelUp.png","CancelDown2.png",cancelButt.x,cancelButt.y,cancelButt.w,On)
+	LoadButton(settingsButt.ID,settingsButt.UP,settingsButt.DN,"SettingsButton.png","SettingsButtonDown.png",settingsButt.x,settingsButt.y,settingsButt.w,On)
 
    `MAP GENERATOR SCREEN
 
-	bs# = 80*dev.scale
-	margin = bs#*1.33
-	tx1# = YesNoX1+(bs#)
-	tx2# = tx1#+margin
-	ty1# = MiddleY*1.03
+	LoadButton(LOADBUTT.ID,LOADBUTT.UP,LOADBUTT.DN,"LOADUP.png","LOADDOWN.png",LOADBUTT.x,LOADBUTT.y,LOADBUTT.w,On)
+	LoadButton(SAVEBUTT.ID,SAVEBUTT.UP,SAVEBUTT.DN,"SAVEUP.png","SAVEDOWN.png",SAVEBUTT.x,SAVEBUTT.y,SAVEBUTT.w,On)
 
-	LoadButton(LOADBUTT,LOADBUTTimage,LOADBUTTDOWNimage,"LOADUP.png","LOADDOWN.png",tx1#,ty1#,bs#,On)
-	LoadButton(SAVEBUTT,SAVEBUTTimage,SAVEBUTTDOWNimage,"SAVEUP.png","SAVEDOWN.png",tx2#,ty1#,bs#,On)
+	LoadButton(mapButt.ID,mapButt.UP,mapButt.DN,"Globe.png","GlobeDown.png",mapButt.x,mapButt.y,mapButt.w,Off)
+	LoadButton(diskButt.ID,diskButt.UP,diskButt.DN,"DiskUp.png","DiskDown.png",diskButt.x,diskButt.y,diskButt.w,Off)
+	LoadButton(diceButt.ID,diceButt.UP,diceButt.DN,"RandomizeUp.png","RandomizeDown.png",diceButt.x,diceButt.y,diceButt.w,Off)
 
-	LoadButton(MapSaveFlipButton,MapSaveFlipButtonImage,MapSaveFlipButtonImageDown,"DiskUp.png","DiskDown.png",YesNoX3b,by#,dev.buttSize,On)
-	LoadButton(RandomizeFlipButton,RandomizeFlipButtonImage,RandomizeFlipButtonImageDown,"RandomizeUp.png","RandomizeDown.png",YesNoX3c,by#,dev.buttSize,On)
-	LoadButton(MapButton,MapButtonImage,MapButtonImageDown,"Globe.png","GlobeDown.png",YesNoX3b,by#,dev.buttSize,On)
-	//~ LoadButton(MapFlipButton,MapFlipButtonImage,MapFlipButtonImageDown,"GlobeFlip.png","GlobeFlipDown.png",YesNoX3b,by#,dev.buttSize,On)
+	LoadButton(ImpassButt.ID,ImpassButt.UP,ImpassButt.DN,"ImpassUp.png","ImpassDown.png",ImpassButt.x,ImpassButt.y,ImpassButt.w,On)
+	LoadButton(WaterButt.ID,WaterButt.UP,WaterButt.DN,"WaterUp.png","WaterDown.png",WaterButt.x,WaterButt.y,WaterButt.w,On)
 
-	LoadButton(ImpassButton,ImpassButtonImage,ImpassButtonImageDown,"ImpassUp.png","ImpassDown.png",dev.buttX1,by#,dev.buttSize,On)
-	LoadButton(WaterButton,WaterButtonImage,WaterButtonImageDown,"WaterUp.png","WaterDown.png",dev.buttX2*.9,by#,dev.buttSize,On)
+	LoadButton(SLOT1.ID,SLOT1.UP,SLOT1.DN,"SLOT1small.png","SLOT1DOWNsmall.png",SLOT1.x,SLOT1.y,SLOT1.w,On)
+	LoadButton(SLOT2.ID,SLOT2.UP,SLOT2.DN,"SLOT2small.png","SLOT2DOWNsmall.png",SLOT2.x,SLOT2.y,SLOT2.w,On)
+	LoadButton(SLOT3.ID,SLOT3.UP,SLOT3.DN,"SLOT3small.png","SLOT3DOWNsmall.png",SLOT3.x,SLOT3.y,SLOT3.w,On)
+	LoadButton(SLOT4.ID,SLOT4.UP,SLOT4.DN,"SLOT4small.png","SLOT4DOWNsmall.png",SLOT4.x,SLOT4.y,SLOT4.w,On)
 
-	bs# = dev.buttSize
-	margin = bs#*1.3
-	tx1# = MiddleX-(bs#*2.12)
-	tx2# = tx1#+margin
-	tx3# = tx2#+margin
-	tx4# = tx3#+margin
-
-	LoadButton(SLOT1,SLOT1image,SLOTDOWN1image,"SLOT1small.png","SLOT1DOWNsmall.png",tx1#,ty1#,bs#,On)
-	LoadButton(SLOT2,SLOT2image,SLOTDOWN2image,"SLOT2small.png","SLOT2DOWNsmall.png",tx2#,ty1#,bs#,On)
-	LoadButton(SLOT3,SLOT3image,SLOTDOWN3image,"SLOT3small.png","SLOT3DOWNsmall.png",tx3#,ty1#,bs#,On)
-	LoadButton(SLOT4,SLOT4image,SLOTDOWN4image,"SLOT4small.png","SLOT4DOWNsmall.png",tx4#,ty1#,bs#,On)
 
 	`is this necessary??
-	SetVirtualButtonVisible( LOADBUTT,Off )
-	SetVirtualButtonVisible( SAVEBUTT,Off )
-	SetVirtualButtonVisible( SLOT1,Off )
-	SetVirtualButtonVisible( SLOT2,Off )
-	SetVirtualButtonVisible( SLOT3,Off )
-	SetVirtualButtonVisible( SLOT4,Off )
-	SetVirtualButtonVisible( MapSaveFlipButton,Off )
-	SetVirtualButtonVisible( RandomizeFlipButton,Off )
-	SetVirtualButtonVisible( MapButton,Off )
-	SetVirtualButtonVisible( MapFlipButton,Off )
-	SetVirtualButtonVisible( ImpassButton,Off )
-	SetVirtualButtonVisible( WaterButton,Off )
-
-	ButtonState( AcceptFlipButton,Off )
-	ButtonState( QuitFlipButton,Off )
+	SetVirtualButtonVisible( LOADBUTT.ID,Off )
+	SetVirtualButtonVisible( SAVEBUTT.ID,Off )
+	SetVirtualButtonVisible( SLOT1.ID,Off )
+	SetVirtualButtonVisible( SLOT2.ID,Off )
+	SetVirtualButtonVisible( SLOT3.ID,Off )
+	SetVirtualButtonVisible( SLOT4.ID,Off )
+	SetVirtualButtonVisible( mapButt.ID,Off )
+	SetVirtualButtonVisible( ImpassButt.ID,Off )
+	SetVirtualButtonVisible( WaterButt.ID,Off )
 
    `FORCE SELECTION
 
@@ -730,34 +702,30 @@ function Setup()
 endfunction
 
 function DeleteAllButtons()
-	DeleteVirtualButton(AcceptFlipButton)
-	DeleteVirtualButton(QuitFlipButton)
-	DeleteVirtualButton(LOADBUTT)
-	DeleteVirtualButton(SAVEBUTT)
-	DeleteVirtualButton(SLOT1)
-	DeleteVirtualButton(SLOT2)
-	DeleteVirtualButton(SLOT3)
-	DeleteVirtualButton(SLOT4)
-	DeleteVirtualButton(AcceptButton)
-	DeleteVirtualButton(QuitButton)
-	DeleteVirtualButton(SettingsButton)
-	DeleteVirtualButton(MapSaveFlipButton)
-	DeleteVirtualButton(RandomizeFlipButton)
-	DeleteVirtualButton(MapButton)
-	DeleteVirtualButton(MapFlipButton)
-	DeleteVirtualButton(CannonButton)
-	DeleteVirtualButton(HeavyCannonButton)
-	DeleteVirtualButton(MissileButton)
-	DeleteVirtualButton(LaserButton)
-	DeleteVirtualButton(HeavyLaserButton)
-	DeleteVirtualButton(EMPButton)
-	DeleteVirtualButton(MineButton)
-	DeleteVirtualButton(DisruptButton)
-	DeleteVirtualButton(BulletButton)
-	DeleteVirtualButton(ImpassButton)
-	DeleteVirtualButton(WaterButton)
+	DeleteVirtualButton(LOADBUTT.ID)
+	DeleteVirtualButton(SAVEBUTT.ID)
+	DeleteVirtualButton(SLOT1.ID)
+	DeleteVirtualButton(SLOT2.ID)
+	DeleteVirtualButton(SLOT3.ID)
+	DeleteVirtualButton(SLOT4.ID)
+	DeleteVirtualButton(acceptButt.ID)
+	DeleteVirtualButton(cancelButt.ID)
+	DeleteVirtualButton(settingsButt.ID)
+	DeleteVirtualButton(mapButt.ID)
+	DeleteVirtualButton(diceButt.ID)
+	DeleteVirtualButton(diskButt.ID)
+	DeleteVirtualButton(CannonButt.ID)
+	DeleteVirtualButton(HeavyCannonButt.ID)
+	DeleteVirtualButton(MissileButt.ID)
+	DeleteVirtualButton(LaserButt.ID)
+	DeleteVirtualButton(HeavyLaserButt.ID)
+	DeleteVirtualButton(EMPButt.ID)
+	DeleteVirtualButton(MineButt.ID)
+	DeleteVirtualButton(DisruptButt.ID)
+	DeleteVirtualButton(BulletButt.ID)
+	DeleteVirtualButton(ImpassButt.ID)
+	DeleteVirtualButton(WaterButt.ID)
 endfunction
-
 
 remstart
 
@@ -784,19 +752,6 @@ endfunction
 	SetSpriteShape( roughDummy,2 )
 	SetSpriteShape( waterDummy,2 )
 
-from Setup()
-	DeleteVirtualButton(AcceptButton)
-	DeleteVirtualButton(QuitButton)
-	DeleteVirtualButton(AcceptFlipButton)
-	DeleteVirtualButton(QuitFlipButton)
-	DeleteVirtualButton(SettingsButton)
-	DeleteVirtualButton(CannonButton)
-	DeleteVirtualButton(MissileButton)
-	DeleteVirtualButton(LaserButton)
-	DeleteVirtualButton(HeavyLaserButton)
-	DeleteVirtualButton(HeavyCannonButton)
-	DeleteVirtualButton(MineButton)
-	DeleteVirtualButton(EMPButton)
 
 	baseRef[ID].zoneID = CreateDummySprite()
 	SetSpriteDepth( baseRef[ID].zoneID,4 )

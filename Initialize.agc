@@ -98,6 +98,8 @@ function Initialize()
 		SetSpriteTransparency( PlayerTank[i].FOW,1 )
 		SetSpriteColor( PlayerTank[i].FOW,255,255,255,35)
 		SetSpriteScissor( PlayerTank[i].FOW,NodeSize,NodeSize,MaxWidth-NodeSize,MaxHeight-(NodeSize*3) )
+				SetSpriteCategoryBits(PlayerTank[i].FOW,NoBlock)
+
 
 		SetSpriteSize( PlayerTank[i].FOW, PlayerTank[i].FOWSize, PlayerTank[i].FOWSize )
 
@@ -275,6 +277,7 @@ function TankSetup(ID,Tank ref as tankType[],pick as ColorSpec)
 	SetSpriteCategoryBits( Tank[ID].turretID,NoBlock )
 	CreateSprite(Tank[ID].turretID, Tank[ID].turretImageID)
 	CreateSprite(Tank[ID].healthID, Tank[ID].healthBarImageID)
+		SetSpriteCategoryBits(Tank[ID].healthID,NoBlock)
 	SetSpriteVisible(Tank[ID].healthID,Off)
 
 	SetSpriteSize(Tank[ID].bodyID, Tank[ID].bodyW*Tank[ID].scale, Tank[ID].bodyH*Tank[ID].scale)

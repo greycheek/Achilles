@@ -11,6 +11,12 @@ remstart
 			PLACEMENT RELATIVE TO ENEMY
 			ENGINEER PROTECTION
 			--VERY REPETITIVE MOVEMENT PATTERNS??
+			---AI NOT CAPTURING BASES????!!!!
+
+	--- HEALTH BARS NOT RESETTING AFTER DEPOT VISIT????
+
+	--- +/- BUTTONS FOR SLIDERS
+	--- FIX CANCEL & ACCEPT BUTTON POSITION
 
 	---RESET MOVEMENT WHEN BLOCKED
 	---CROOKED HOVERCRAFT TURRET ANGLES
@@ -18,7 +24,10 @@ remstart
 	---WHY DO SETTINGS BUTTONS GET TURNED ON, THEN IMMEDIATELY OFF?
 
 	FIXED?
-
+	--- LOS STILL BLOCKED!! - BLOCK/NOBLOCK WORKS, BUT MAYBE SHAPE BOXES OUT OF WHACK
+	---BASECOUNTS ARE CAUSING BASE CAPTURE/END GAME PROBLEMS!!!!!! - review PlayerBaseCount and AIBaseCount routines
+		ARRAY INDEX OUT OF BOUNDS!!!!
+		TRY INSERTING NEWLY CAPTURED BASES INTO ATTACKER ARRAY, AND DELETE FROM DEFENDER
 	FUTURE
 		getspriteincircle vs getspriteinbox??
 		Vary water, impass, tree and rough tiles
@@ -215,10 +224,10 @@ function Fire( Attacker ref as tankType[], Defender ref as tankType[], attID, de
 			RotateTurret(attID,Attacker,Defender[defID].x,Defender[defID].y)
 			LaserFire(Attacker[attID].x,Attacker[attID].y,Defender[defID].x,Defender[defID].y,Attacker[attID].weapon,1.25,2,0)
 		endcase
-				case machineGun
-					RotateTurret(attID,Attacker,Defender[defID].x,Defender[defID].y)
-					Ballistics(Attacker[attID].x,Attacker[attID].y,Defender[defID].x,Defender[defID].y)
-				endcase
+		case machineGun
+			RotateTurret(attID,Attacker,Defender[defID].x,Defender[defID].y)
+			Ballistics(Attacker[attID].x,Attacker[attID].y,Defender[defID].x,Defender[defID].y)
+		endcase
 		case disruptor
 			RotateTurret(attID,Attacker,Defender[defID].x,Defender[defID].y)
 			Disrupt( attID,defID,Attacker,Defender )
@@ -367,9 +376,10 @@ function HealthBar(ID,Tank ref as tankType[])
 	Sync()
 endfunction
 
-function CaptureBase( capturedIndex, pick ref as ColorSpec, attBase ref as baseType[], defBase ref as baseType[], base, group )
+function CaptureBase( capturedIndex, newBaseIndex, pick ref as ColorSpec, attBase ref as baseType[], defBase ref as baseType[], base, group )
 	DeleteSprite( defBase[capturedIndex].spriteID )
-	newBaseIndex = BaseSetup( capturedIndex,defBase[capturedIndex].spriteID,defBase[capturedIndex].node,base,attBase,group )
+
+	BaseSetup( newBaseIndex,defBase[capturedIndex].spriteID,defBase[capturedIndex].node,base,attBase,group )
 	PlaySound( BuildBaseSound )
 
 	SetSpritePositionByOffset( BaseHalo,mapTable[defBase[capturedIndex].node].x,mapTable[defBase[capturedIndex].node].y )
@@ -417,10 +427,9 @@ function PlayerBaseCapture()
 				SetSpriteVisible(AITank[i].turretID,On)
 				dec PlayerBaseCount
 				inc AIBaseCount
-				CaptureBase( j,pickAI,AIBases,PlayerBases,AIBase,AIBaseGroup )
+					AIBases.length = AIBases.length + 1
+					CaptureBase( j,AIBases.length,pickAI,AIBases,PlayerBases,AIBase,AIBaseGroup )
 				if PlayerBaseCount = -1 then GameOver( DefeatText,255,255,255,"DEFEAT",DefeatSound )
-				AIBaseCount = AIBases.length
-				PlayerBaseCount = PlayerBases.length
 				exit
 			endif
 		next j
@@ -434,10 +443,9 @@ function AIBaseCapture()
 			if PlayerTank[i].parentNode[PlayerTank[i].index] = AIBases[j].node
 				dec AIBaseCount
 				inc PlayerBaseCount
-				CaptureBase( j,pickPL,PlayerBases,AIBases,PlayerBase,BaseGroup )
+					PlayerBases.length = PlayerBases.length + 1
+					CaptureBase( j,PlayerBases.length,pickPL,PlayerBases,AIBases,PlayerBase,BaseGroup )
 				if AIBaseCount = -1 then GameOver( VictoryText,0,0,0,"VICTORY",VictorySound )
-				AIBaseCount = AIBases.length
-				PlayerBaseCount = PlayerBases.length
 				exit
 			endif
 		next j
@@ -452,8 +460,8 @@ function GameOver( textID,r,g,b,message$,sound )
 	fountain as integer
 
 	PlaySound( sound )
-	DeleteVirtualButton(AcceptButton)
-	DeleteVirtualButton(QuitButton)
+	DeleteVirtualButton(acceptButt.ID)
+	DeleteVirtualButton(cancelButt.ID)
 	DeleteAllText()
 	ft# = GetFrameTime()
 	y2 = MapHeight/2
@@ -710,7 +718,7 @@ function LaserFire( x1,y1,x2,y2,weapon,t1#,t2#,interrupt )
 	count = 60
 	repeat
 		if interrupt
-			if GetVirtualButtonState(QuitButton) or GetVirtualButtonState(AcceptButton) or GetVirtualButtonState(SettingsButton) then exit
+			if GetVirtualButtonState(cancelButt.ID) or GetVirtualButtonState(acceptButt.ID) or GetVirtualButtonState(settingsButt.ID) then exit
 		endif
 		if Timer() <= t1#  `1.25
 			DrawLine(x1,y1,x2,y2,laserFull,laserOut) : Sync()

@@ -67,38 +67,6 @@ zoneRadius = FlyRadius * NodeSize
 #constant Row1 96
 #constant Row2 253
 
-`BUTTONS
-#constant SettingsButton 1
-#constant CannonButton 2
-#constant MissileButton 3
-#constant LaserButton 4
-#constant QuitButton 5
-#constant AcceptButton 6
-#constant HeavyLaserButton 7
-#constant HeavyCannonButton 8
-#constant EMPButton 9
-#constant MineButton 10
-#constant DisruptButton 11
-#constant BulletButton 12
-
-#constant AcceptFlipButton 13
-#constant QuitFlipButton 14
-#constant MapButton 15
-#constant MapFlipButton 16
-#constant MapSaveFlipButton 17
-#constant RandomizeFlipButton 18
-
-#constant LOADBUTT 19
-#constant SAVEBUTT 20
-
-#constant SLOT1 21
-#constant SLOT2 22
-#constant SLOT3 23
-#constant SLOT4 24
-
-#constant ImpassButton 25
-#constant WaterButton 26
-
 `GENERAL
 #constant Unset 100000
 #constant Empty -1
@@ -451,7 +419,6 @@ cannonRange = nodeSize * 4
 #constant laser 1
 #constant laserDamage .1
 global laserRange as integer
-//~ laserRange = nodeSize * 8
 laserRange = Unset
 global smokeImage as integer
 global whiteSmokeImage as integer
@@ -469,7 +436,6 @@ heavyCannonRange = cannonRange
 #constant heavyLaser 4
 #constant heavyLaserDamage .25
 global heavyLaserRange as integer
-//~ heavyLaserRange = nodeSize * 8
 heavyLaserRange = Unset
 
 #constant mine 5
@@ -607,15 +573,12 @@ global BaseHalo as integer
 #constant Clear 1
 #constant Rough 2
 #constant Trees 3
-
 #constant AIBase 4
 #constant AIDepot 5
 #constant PlayerDepot 6
 #constant PlayerBase 7
-
 #constant Impassable 8
 #constant Water 9
-
 
 #constant DepotSize 22
 #constant DepotDepth 3
@@ -753,19 +716,18 @@ global AIBases as baseType[]
 
 `--INTERFACE--
 
-global NumY as integer
-global NumX as integer
-global NumX1 as integer
-global UnitX as integer
+global NumY
+global NumX
+global NumX1
+global UnitX
 global UnitY as integer = 105
+global AlertW
+global AlertH
 
 type deviceType
 	scale
 	buttSize
 	textSize
-	buttX1
-	buttX2
-	YesNoX4a
 	slidescaleW
 	slidescaleH
 	slidescaleX
@@ -774,30 +736,54 @@ type deviceType
 endtype
 global dev as deviceType
 
-global buttY as integer
+type buttonType
+	ID
+	UP
+	DN
+	x as float
+	y as float
+	w as float
+	h as float
+endtype
 
-global AlertW
-global AlertH
+global acceptButt as buttonType
+global cancelButt as buttonType
+global settingsButt as buttonType
+global mapButt as buttonType
+global diceButt as buttonType
+global diskButt as buttonType
+global LOADBUTT as buttonType
+global SAVEBUTT as buttonType
+global SLOT1 as buttonType
+global SLOT2 as buttonType
+global SLOT3 as buttonType
+global SLOT4 as buttonType
+global CannonButt as buttonType
+global MissileButt as buttonType
+global LaserButt as buttonType
+global HeavyLaserButt as buttonType
+global HeavyCannonButt as buttonType
+global EMPButt as buttonType
+global MineButt as buttonType
+global DisruptButt as buttonType
+global BulletButt as buttonType
+global ImpassButt as buttonType
+global WaterButt as buttonType
 
-global YesNoX1
-global YesNoY1
+type alertType
+	ID
+	x
+	y
+	w
+	h
+	accept as buttonType
+	cancel  as buttonType
+endtype
 
-global YesNoX2a
-global YesNoX2b
-global YesNoY2
-
-global YesNoX3a
-global YesNoX3b
-global YesNoX3c
-global YesNoY3
-global YesNoY3a
-
-global YesNoX4a
-global YesNoX4b
-global YesNoY4
-
-global bx# as float	`for bottom row buttons
-global by# as float
+global alertDialog as alertType
+global mapSaveDialog as alertType
+global mapSlotDialog as alertType
+global AlertBackGround
 
 dev.device = GetDeviceBaseName()
 select dev.device
@@ -805,229 +791,304 @@ select dev.device
 		dev.buttSize = 64
 		dev.textSize = 28
 		dev.scale = 1
-		dev.buttX1 = NodeSize * 1.5
-		dev.buttX2 = dev.buttX1 + (dev.buttSize * 1.4)
-		dev.YesNoX4a = MaxWidth-dev.buttSize - 6
-		YesNoX3a = MaxWidth-(dev.buttSize)			`splash screen
-		buttY = MaxHeight - 65
-		NumY = buttY - (dev.ButtSize/1.5)
-		dev.slidescaleW = 222
+		dev.slidescaleW = 240
 		dev.slidescaleH = dev.buttSize
-		dev.slidescaleX = MapWidth - (dev.buttSize * 2.75) - dev.slidescaleW
-		dev.slidescaleY = MapHeight + NodeSize + 15
+		dev.slidescaleX = MapWidth - (dev.buttSize * 2.6) - dev.slidescaleW
+		dev.slidescaleY = MapHeight + NodeSize + 30
+		acceptButt.x = MaxWidth-dev.buttSize
+		acceptButt.y = MaxHeight - 65
 		UnitX = 450
 		NumX = dev.buttSize*1.7
 		NumX1 = NumX*1.93
+		NumY = acceptButt.y - (dev.ButtSize/1.5)
+		SLOT1.w = dev.buttSize
 	endcase
 	case "ios","android"
 		if FindString( GetDeviceType(),"ipad" )
 			dev.buttSize = 64
 			dev.textSize = 28
 			dev.scale = 1
-			dev.buttX1 = NodeSize * 1.5
-			dev.buttX2 = dev.buttX1 + (dev.buttSize * 1.4)
-			dev.YesNoX4a = MaxWidth-dev.buttSize - 6
-			YesNoX3a = MaxWidth-(dev.buttSize)			`splash screen
-			buttY = MaxHeight - 65
-			NumY = buttY - (dev.ButtSize/1.5)
-			dev.slidescaleW = 222
+			dev.slidescaleW = 240
 			dev.slidescaleH = dev.buttSize
-			dev.slidescaleX = MapWidth - (dev.buttSize * 2.75) - dev.slidescaleW
-			dev.slidescaleY = MapHeight + NodeSize + 15
+			dev.slidescaleX = MapWidth - (dev.buttSize * 2.6) - dev.slidescaleW
+			dev.slidescaleY = MapHeight + NodeSize + 30
+			acceptButt.x = MaxWidth-dev.buttSize
+			acceptButt.y = MaxHeight - 65
 			UnitX = 450
 			NumX = dev.buttSize*1.7
 			NumX1 = NumX*1.93
+			NumY = acceptButt.y - (dev.ButtSize/1.5)
+			SLOT1.w = dev.buttSize
 		else
 			dev.buttSize = 80
 			dev.textSize = 32
 			dev.scale = 2
-			dev.buttX1 = NodeSize * 1.5
-			dev.buttX2 = dev.buttX1 + (dev.buttSize * 1.4)
-			dev.YesNoX4a = MaxWidth-dev.buttSize + 3
-			YesNoX3a = MaxWidth-(dev.buttSize*.9)			`splash screen
-			buttY = MaxHeight - 55
-			NumY = buttY - (dev.ButtSize/1.5)
 			dev.slidescaleW = 222
 			dev.slidescaleH = dev.buttSize
 			dev.slidescaleX = MapWidth - (dev.buttSize * 2.75) - dev.slidescaleW
-			dev.slidescaleY = MapHeight + NodeSize + 15 + 5
+			dev.slidescaleY = MapHeight + NodeSize + 30
+			acceptButt.x = MaxWidth-(dev.buttSize*.9)
+			acceptButt.y = MaxHeight - 55
 			UnitX = 415
 			NumX = dev.buttSize*1.5
 			NumX1 = NumX*2.1
+			NumY = acceptButt.y - (dev.ButtSize/1.5)
+			SLOT1.w = dev.buttSize * 1.5
 		endif
 	endcase
 endselect
 
-AlertW = 300*dev.scale
-AlertH = 250*dev.scale
+`DIALOGS
 
-YesNoX1  = MiddleX-(AlertW/2)								`alert dialog
-YesNoY1  = MiddleY-(AlertH/3)
+alertDialog.ID = InterfaceSeries
+alertDialog.w = 275*dev.scale
+alertDialog.h = 275*dev.scale
+alertDialog.x = MiddleX-(alertDialog.w/2)
+alertDialog.y = MiddleY-(alertDialog.h/3)
 
-YesNoX2a = (YesNoX1+AlertW)-dev.buttSize-10					`base production
-YesNoX2b = (YesNoX1+AlertW)-(dev.buttSize*2)-20
-YesNoY2  = (YesNoY1+AlertH)-dev.buttSize-(dev.scale*10)
+alertDialog.accept.x = (alertDialog.x+alertDialog.w)-dev.buttSize-10
+alertDialog.accept.y = (alertDialog.y+alertDialog.h)-dev.buttSize-(dev.scale*10)
+alertDialog.accept.w = dev.buttSize
+alertDialog.accept.h = dev.buttSize
+alertDialog.cancel.x = alertDialog.x + alertDialog.w - (alertDialog.accept.w*2) - 20
+alertDialog.cancel.y = alertDialog.accept.y
+alertDialog.cancel.w = dev.buttSize
+alertDialog.cancel.h = dev.buttSize
 
-YesNoX3b = YesNoX3a-(dev.buttSize*1.15)							`splash screen
-YesNoX3c = YesNoX3b-(dev.buttSize*1.15)
-YesNoY3  = buttY-50
-YesNoY3a = buttY-dev.buttSize+50
+mapSlotDialog.ID = InterfaceSeries+1
+mapSlotDialog.w = alertDialog.w * 1.5
+mapSlotDialog.h = alertDialog.h
+mapSlotDialog.x = MiddleX-(mapSlotDialog.w/2)
+mapSlotDialog.y = MiddleY-(mapSlotDialog.h/3)
+mapSlotDialog.cancel.w = dev.buttSize
+mapSlotDialog.cancel.h = dev.buttSize
+mapSlotDialog.cancel.x = mapSlotDialog.x + mapSlotDialog.w - mapSlotDialog.cancel.w
+mapSlotDialog.cancel.y = alertDialog.cancel.y
 
-YesNoX4a = dev.YesNoX4a										`main game screen
-YesNoX4b = MaxWidth-dev.buttX2+20
-YesNoY4  = buttY
+mapSaveDialog.ID = InterfaceSeries+2
+mapSaveDialog.w = alertDialog.w
+mapSaveDialog.h = alertDialog.h
+mapSaveDialog.x = alertDialog.x
+mapSaveDialog.y = alertDialog.y
+mapSaveDialog.cancel.w = dev.buttSize
+mapSaveDialog.cancel.h = dev.buttSize
+mapSaveDialog.cancel.x = alertDialog.x + alertDialog.w - mapSaveDialog.cancel.w
+mapSaveDialog.cancel.y = alertDialog.cancel.y
 
-global turnImage
-global turnImageDown
-global cannonImage
-global cannonImageDown
-global laserImage
-global laserImageDown
-global missileImage
-global missileImageDown
-global heavyCannonImage
-global heavyCannonImageDown
-global heavyLaserImage
-global heavyLaserImageDown
-global EMPImage
-global EMPImageDown
-global MineImage
-global MineImageDown
-global disruptorImage
-global disruptorImageDown
-global BulletImage
-
-global quitImage
-global quitImageDown
-global CancelImage
-global CancelImageDown
-global AcceptImage
-global AcceptImageDown
-global SettingsImage
-global SettingsImageDown
-global ProductionUnits
-global TurnCount
-global CancelFlipImage
-global CancelFlipImageDown
-global AcceptFlipImage
-global AcceptFlipImageDown
-global MapButtonImage
-global MapButtonImageDown
-global MapFlipButtonImage
-global MapFlipButtonImageDown
-global MapSaveFlipButtonImage
-global MapSaveFlipButtonImageDown
-global RandomizeFlipButtonImage
-global RandomizeFlipButtonImageDown
-global ImpassButtonImage
-global ImpassButtonImageDown
-global WaterButtonImage
-global WaterButtonImageDown
-
-global LOADBUTTimage
-global LOADBUTTDOWNimage
-global SAVEBUTTimage
-global SAVEBUTTDOWNimage
-
-global SLOT1image
-global SLOT2image
-global SLOT3image
-global SLOT4image
-global SLOTDOWN1image
-global SLOTDOWN2image
-global SLOTDOWN3image
-global SLOTDOWN4image
-
-global VictoryImage
-global DefeatImage
-
-turnImage = InterfaceSeries+1
-turnImageDown = InterfaceSeries+2
-cannonImage = InterfaceSeries+3
-cannonImageDown = InterfaceSeries+4
-laserImage = InterfaceSeries+5
-laserImageDown = InterfaceSeries+6
-missileImage = InterfaceSeries+7
-missileImageDown = InterfaceSeries+8
-heavyCannonImage = InterfaceSeries+9
-heavyCannonImageDown = InterfaceSeries+10
-heavyLaserImage = InterfaceSeries+11
-heavyLaserImageDown = InterfaceSeries+12
+AlertBackGround = InterfaceSeries+3
 
 
-global laserFull as integer
-global laserOut  as integer
-global laserFade as integer
+`BUTTONS
+
+`full screen buttons
+acceptButt.ID = 1
+acceptButt.w = dev.buttSize
+acceptButt.h = dev.buttSize
+
+cancelButt.ID = 2
+cancelButt.x = acceptButt.x-(dev.buttSize*1.15)
+cancelButt.y = acceptButt.y
+cancelButt.w = dev.buttSize
+cancelButt.h = dev.buttSize
+
+settingsButt.ID = 3
+settingsButt.x = cancelButt.x-(dev.buttSize*1.15)
+settingsButt.y = acceptButt.y
+settingsButt.w = dev.buttSize
+settingsButt.h = dev.buttSize
+
+mapButt.ID = 4
+mapButt.x = cancelButt.x
+mapButt.y = acceptButt.y
+mapButt.w = dev.buttSize
+mapButt.h = dev.buttSize
+
+diskButt.ID = 5
+diskButt.x = cancelButt.x
+diskButt.y = acceptButt.y
+diskButt.w = dev.buttSize
+diskButt.h = dev.buttSize
+
+diceButt.ID = 6
+diceButt.x = settingsButt.x
+diceButt.y = acceptButt.y
+diceButt.w = dev.buttSize
+diceButt.h = dev.buttSize
+
+`Dialog Buttons
+LOADBUTT.ID = 7
+LOADBUTT.w = 80*dev.scale
+LOADBUTT.h = LOADBUTT.w
+LOADBUTT.x = alertDialog.x + LOADBUTT.w
+LOADBUTT.y = MiddleY*1.03
+
+SAVEBUTT.ID = 8
+SAVEBUTT.w = LOADBUTT.w
+SAVEBUTT.h = SAVEBUTT.w
+SAVEBUTT.x = LOADBUTT.x + (LOADBUTT.w * 1.33)
+SAVEBUTT.y = LOADBUTT.y
+
+margin = SLOT1.w*1.3
+SLOT1.ID = 9
+SLOT1.h = SLOT1.w
+SLOT1.x = MiddleX-(SLOT1.w*2.12)
+SLOT1.y = LOADBUTT.y
+
+SLOT2.ID = 10
+SLOT2.w = SLOT1.w
+SLOT2.h = SLOT1.h
+SLOT2.x = SLOT1.x + margin
+SLOT2.y = SLOT1.y
+
+SLOT3.ID = 11
+SLOT3.w = SLOT1.w
+SLOT3.h = SLOT1.h
+SLOT3.x = SLOT2.x + margin
+SLOT3.y = SLOT1.y
+
+SLOT4.ID = 12
+SLOT4.w = SLOT1.w
+SLOT4.h = SLOT1.h
+SLOT4.x = SLOT3.x + margin
+SLOT4.y = SLOT1.y
+
+`Weapon and Map buttons
+CannonButt.ID = 13
+CannonButt.x = NodeSize * 1.5
+CannonButt.y = MaxHeight - 65
+CannonButt.w = dev.buttSize
+
+MissileButt.ID = 14
+MissileButt.x = CannonButt.x
+MissileButt.y = CannonButt.y
+MissileButt.w = dev.buttSize
+
+LaserButt.ID = 15
+LaserButt.x = CannonButt.x + (CannonButt.w*1.4)
+LaserButt.y = CannonButt.y
+LaserButt.w = dev.buttSize
+
+HeavyLaserButt.ID = 16
+HeavyLaserButt.x = CannonButt.x + (CannonButt.w*1.4)
+HeavyLaserButt.y = CannonButt.y
+HeavyLaserButt.w = dev.buttSize
+
+HeavyCannonButt.ID = 17
+HeavyCannonButt.x = CannonButt.x
+HeavyCannonButt.y = CannonButt.y
+HeavyCannonButt.w = dev.buttSize
+
+EMPButt.ID = 18
+EMPButt.x = CannonButt.x + (CannonButt.w*1.65)
+EMPButt.y = CannonButt.y
+EMPButt.w = dev.buttSize
+
+MineButt.ID = 19
+MineButt.x = CannonButt.x
+MineButt.y = CannonButt.y
+MineButt.w = dev.buttSize
+
+DisruptButt.ID = 20
+DisruptButt.x = CannonButt.x + (CannonButt.w*1.65)
+DisruptButt.y = CannonButt.y
+DisruptButt.w = dev.buttSize
+
+BulletButt.ID = 21
+BulletButt.x = CannonButt.x
+BulletButt.y = CannonButt.y
+BulletButt.w = dev.buttSize
+
+ImpassButt.ID = 22
+ImpassButt.x = NodeSize * 1.5
+ImpassButt.y = acceptButt.y
+ImpassButt.w = dev.buttSize
+ImpassButt.h = dev.buttSize
+
+WaterButt.ID = 23
+WaterButt.x = ImpassButt.x + (dev.buttSize * 1.15)
+WaterButt.y = acceptButt.y
+WaterButt.w = dev.buttSize
+WaterButt.h = dev.buttSize
+
+
+`button images
+cancelButt.UP = InterfaceSeries+4
+cancelButt.DN = InterfaceSeries+5
+acceptButt.UP = InterfaceSeries+6
+acceptButt.DN = InterfaceSeries+7
+
+settingsButt.UP = InterfaceSeries+8
+settingsButt.DN = InterfaceSeries+9
+mapButt.UP = InterfaceSeries+10
+mapButt.DN = InterfaceSeries+11
+diceButt.UP = InterfaceSeries+12
+diceButt.DN = InterfaceSeries+13
+diskButt.UP = InterfaceSeries+14
+diskButt.DN = InterfaceSeries+15
+
+MineButt.UP = InterfaceSeries+16
+MineButt.DN = InterfaceSeries+17
+EMPButt.UP = InterfaceSeries+18
+EMPButt.DN = InterfaceSeries+19
+
+CannonButt.UP = InterfaceSeries+20
+CannonButt.DN = InterfaceSeries+21
+MissileButt.UP = InterfaceSeries+22
+MissileButt.DN = InterfaceSeries+23
+LaserButt.UP = InterfaceSeries+24
+LaserButt.DN = InterfaceSeries+25
+HeavyLaserButt.UP = InterfaceSeries+26
+HeavyLaserButt.DN = InterfaceSeries+27
+HeavyCannonButt.UP = InterfaceSeries+28
+HeavyCannonButt.DN = InterfaceSeries+29
+DisruptButt.UP = InterfaceSeries+30
+DisruptButt.DN = InterfaceSeries+31
+
+BulletButt.DN = InterfaceSeries+32
+
+LOADBUTT.UP = InterfaceSeries+33
+LOADBUTT.DN = InterfaceSeries+34
+SAVEBUTT.UP = InterfaceSeries+35
+SAVEBUTT.DN = InterfaceSeries+36
+
+SLOT1.UP = InterfaceSeries+37
+SLOT1.DN = InterfaceSeries+38
+SLOT2.UP = InterfaceSeries+39
+SLOT2.DN = InterfaceSeries+40
+SLOT3.UP = InterfaceSeries+41
+SLOT3.DN = InterfaceSeries+42
+SLOT4.UP = InterfaceSeries+43
+SLOT4.DN = InterfaceSeries+44
+
+ImpassButt.UP = InterfaceSeries+45
+ImpassButt.DN = InterfaceSeries+46
+WaterButt.UP = InterfaceSeries+47
+WaterButt.DN = InterfaceSeries+48
+
+VictoryImage = InterfaceSeries+49
+DefeatImage = InterfaceSeries+50
+
+
+`Other
+global laserFull
+global laserOut
+global laserFade
 laserFull = MakeColor( 255, 255, 255 )
 laserOut  = Makecolor( 0, 0, 0 )
 laserFade = Makecolor( 128, 128, 128 )
 
+global ProductionUnits
+global TurnCount
+global turnImage
+global turnImageDown
+global square
 
-global square as integer
-square = InterfaceSeries+13
+ProductionUnits = InterfaceSeries+51
+TurnCount = InterfaceSeries+52
+square = InterfaceSeries+53
 
-quitImage = InterfaceSeries+14
-quitImageDown = InterfaceSeries+15
-
-global AlertBackGround as integer
-AlertBackGround = InterfaceSeries+16
-
-CancelImage = InterfaceSeries+17
-CancelImageDown = InterfaceSeries+18
-AcceptImage = InterfaceSeries+19
-AcceptImageDown = InterfaceSeries+20
-SettingsImage = InterfaceSeries+21
-SettingsImageDown = InterfaceSeries+22
-ProductionUnits = InterfaceSeries+23
-TurnCount = InterfaceSeries+24
-
-CancelFlipImage = InterfaceSeries+25
-CancelFlipImageDown = InterfaceSeries+26
-AcceptFlipImage = InterfaceSeries+27
-AcceptFlipImageDown = InterfaceSeries+28
-
-MineImage = InterfaceSeries+29
-MineImageDown = InterfaceSeries+30
-EMPImage = InterfaceSeries+31
-EMPImageDown = InterfaceSeries+32
-
-MapButtonImage = InterfaceSeries+33
-MapButtonImageDown = InterfaceSeries+34
-MapFlipButtonImage = InterfaceSeries+35
-MapFlipButtonImageDown = InterfaceSeries+36
-
-MapSaveFlipButtonImage = InterfaceSeries+37
-MapSaveFlipButtonImageDown = InterfaceSeries+38
-RandomizeFlipButtonImage = InterfaceSeries+39
-RandomizeFlipButtonImageDown = InterfaceSeries+40
-
-LOADBUTTimage = InterfaceSeries+41
-LOADBUTTDOWNimage = InterfaceSeries+42
-SAVEBUTTimage = InterfaceSeries+43
-SAVEBUTTDOWNimage = InterfaceSeries+44
-
-SLOT1image = InterfaceSeries+45
-SLOT2image = InterfaceSeries+46
-SLOT3image = InterfaceSeries+47
-SLOT4image = InterfaceSeries+48
-
-SLOTDOWN1image = InterfaceSeries+49
-SLOTDOWN2image = InterfaceSeries+50
-SLOTDOWN3image = InterfaceSeries+51
-SLOTDOWN4image = InterfaceSeries+52
-
-VictoryImage = InterfaceSeries+53
-DefeatImage = InterfaceSeries+54
-
-disruptorImage = InterfaceSeries+55
-disruptorImageDown = InterfaceSeries+56
-
-BulletImage = InterfaceSeries+57
-
-ImpassButtonImage = InterfaceSeries+58
-ImpassButtonImageDown = InterfaceSeries+59
-WaterButtonImage = InterfaceSeries+60
-WaterButtonImageDown = InterfaceSeries+61
+global VictoryImage
+global DefeatImage
 
 type sliderType
 	ID
@@ -1054,20 +1115,20 @@ global TreeScale as sliderType
 global BaseScale as sliderType
 global DepotScale as sliderType
 
-MusicSlide.ID = InterfaceSeries+62
-SoundSlide.ID = InterfaceSeries+63
-MusicScale.ID = InterfaceSeries+64
-SoundScale.ID = InterfaceSeries+65
+MusicSlide.ID = InterfaceSeries+54
+SoundSlide.ID = InterfaceSeries+55
+MusicScale.ID = InterfaceSeries+56
+SoundScale.ID = InterfaceSeries+57
 
-RoughSlide.ID = InterfaceSeries+66
-TreeSlide.ID = InterfaceSeries+67
-BaseSlide.ID = InterfaceSeries+68
-DepotSlide.ID = InterfaceSeries+69
+RoughSlide.ID = InterfaceSeries+58
+TreeSlide.ID = InterfaceSeries+59
+BaseSlide.ID = InterfaceSeries+60
+DepotSlide.ID = InterfaceSeries+61
 
-RoughScale.ID = InterfaceSeries+70
-TreeScale.ID = InterfaceSeries+71
-BaseScale.ID = InterfaceSeries+72
-DepotScale.ID = InterfaceSeries+73
+RoughScale.ID = InterfaceSeries+62
+TreeScale.ID = InterfaceSeries+63
+BaseScale.ID = InterfaceSeries+64
+DepotScale.ID = InterfaceSeries+65
 
 MusicScale.x = MiddleX+95
 MusicScale.y = MiddleY+260
@@ -1115,8 +1176,8 @@ DepotScale.y = RoughScale.y
 DepotScale.w = RoughScale.w
 DepotScale.h = RoughScale.h
 
-RoughSlide.w = 40 + (dev.scale * 10)
-RoughSlide.h = 40 + (dev.scale * 10)
+RoughSlide.w = 35 + (dev.scale * 15)
+RoughSlide.h = 35 + (dev.scale * 15)
 RoughSlide.x = RoughScale.x + (RoughScale.w/3)-(RoughSlide.w/3)
 RoughSlide.y = RoughScale.y + ((RoughScale.h - RoughSlide.h)/2)
 
