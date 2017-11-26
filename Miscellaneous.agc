@@ -12,7 +12,7 @@
 #constant Undefined -1
 #constant FullAlpha 255
 #constant HalfAlpha 128
-#constant NoBlock %0000000000000000
+#constant NoBlock %1000000000000000
 #constant Block	  %0000000000000100
 
 global zoomFactor as float = 1.0

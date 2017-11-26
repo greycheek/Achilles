@@ -71,7 +71,7 @@ endfunction NearestPlayer
 
 function AITarget()
 	for i = 0 to AIPlayerLast
-				AIFOW(i)
+		AIFOW(i)
 		if not AITank[i].alive then continue
 		if not AITank[i].stunned
 			StopSprite(AITank[i].stunMarker )

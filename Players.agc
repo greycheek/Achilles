@@ -352,6 +352,11 @@ function WeaponInput(ID)
 			WeaponSelect(ID,PlayerTank,disruptor,disruptorRange,disruptorDamage)
 			WaitForButtonRelease(DisruptButt.ID)
 		endif
+	elseif GetVirtualButtonState(MissileButt.ID)
+		if (PlayerTank[ID].vehicle = Mech) and PlayerTank[ID].missiles
+			WeaponSelect(ID,PlayerTank,missile,missileRange,missileDamage)
+			WaitForButtonRelease(MissileButt.ID)
+		endif
 	elseif GetVirtualButtonState(MineButt.ID) //or GetRawKeyPressed(0x4D) `M
 		if PlayerTank[ID].weapon = mine   `toggle
 			WeaponSelect(ID,PlayerTank,Undefined,mineRange,mineDamage)
@@ -431,15 +436,15 @@ function GetInput()
 			tankID = GetSpriteHitGroup( PlayerTankGroup,x,y )
 			if tankID
 				for i = 0 to PlayerLast
-					if PlayerTank[i].stunned
-						continue
-					elseif (tankID = PlayerTank[i].bodyID) or (tankID = PlayerTank[i].turretID)
+					if (tankID = PlayerTank[i].bodyID) or (tankID = PlayerTank[i].turretID)
 						if selection = i
 							PlaySound( ClickSound,vol )
 							CancelMove( ID,PlayerTank )
 							selection = Undefined
 							WeaponButtons(Null,Undefined)
 							SetSpriteVisible(PlayerTank[i].FOW,Off)
+						elseif PlayerTank[i].stunned
+							selection = Undefined
 						else
 							MaxAlpha(ID)
 							if selection <> Undefined then SetSpriteVisible(PlayerTank[ID].FOW,Off)
@@ -476,7 +481,7 @@ function GetInput()
 					node = MoveInput(ID,WorldToScreenX(PlayerTank[ID].x),WorldToScreenY(PlayerTank[ID].y))
 
 					if mapTable[node].team <> Unoccupied
-						if (PlayerTank[ID].target = Undefined) and (mapTable[node].team = AITeam) and (PlayerTank[ID].vehicle <> Engineer)
+						if (PlayerTank[ID].target=Undefined) and (mapTable[node].team=AITeam) and (PlayerTank[ID].vehicle<>Engineer) //and (not PlayerTank[ID].stunned)
 							PlayerAim(ID,PlayerTank[ID].x,PlayerTank[ID].y)
 						else
 							CancelFire(ID)
@@ -711,15 +716,12 @@ endfunction
 
 function PlayerOps()
 	GetInput()
+	for i = 0 to PlayerLast : if PlayerTank[i].stunned then dec PlayerTank[i].stunned : next i
 	FirePhase()
 	SetRawMouseVisible(Off)
 
 	for i = 0 to PlayerLast
 		if not PlayerTank[i].alive then continue
-		if PlayerTank[i].stunned
-			dec PlayerTank[i].stunned
-			continue
-		endif
 
 		WeaponButtons( Null,Undefined )
 		do

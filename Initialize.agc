@@ -243,6 +243,7 @@ function TankSetup(ID,Tank ref as tankType[],pick as ColorSpec)
 	Tank[ID].x = mapTable[Tank[ID].node].x
 	Tank[ID].y = mapTable[Tank[ID].node].y
 	Tank[ID].target = Undefined
+	Tank[ID].stunned = Null
 
 	Tank[ID].OpenList.insert(Tank[ID].node)
 	Tank[ID].NearestPlayer = Unset

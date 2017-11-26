@@ -79,12 +79,12 @@ function GenerateBases()
 	SetDisplayAspect(AspectRatio)  `map aspect ratio
 	for i = 1 to Sectors
 		if baseQTY <= scaleLength[i]
-			AIBases.length = i : exit
+			AIBases.length = i-1 : exit
 		endif
 	next i
 	for i = 1 to Sectors
 		if depotQTY <= scaleLength[i]
-			AIDepotNode.length = i : exit
+			AIDepotNode.length = i-1 : exit
 		endif
 	next i
 	PlayerBases.length = AIBases.length
@@ -403,13 +403,6 @@ function Setup()
 	ShowInfo( Off )
 
    `SPRITES Misc
-
-	LoadImage( EMP1,"EMP.png" )
-	CreateSprite( EMP1,EMP1 )
-	SetSpriteTransparency( EMP1, 1 )
-	SetSpriteVisible( EMP1, 0 )
-	SetSpriteDepth ( EMP1, 0 )
-	SetSpriteScissor( EMP1,NodeSize,NodeSize,MaxWidth-NodeSize,MaxHeight-(NodeSize*3) )
 
 	LoadImage(Fire1,"Energy.png")
 	CreateSprite( Fire1,Fire1 )

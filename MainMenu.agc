@@ -718,10 +718,16 @@ function GameSetup()
 		if GetSpriteExists(AIGrid[i].ID) then DeleteSprite(AIGrid[i].ID)
 		if GetSpriteExists(PlayerGrid[i].ID) then DeleteSprite(PlayerGrid[i].ID)
 	next i
-			for i = 1 to SpriteConUnits : DeleteSprite( SpriteCon[i].ID ) : next i
 	SetVirtualButtonVisible( settingsButt.ID,Off )
 	SetVirtualButtonActive( settingsButt.ID,Off )
 	StopMusicOGG( MusicSound )
+
+	LoadImage( EMP1,"EMP.png" )
+	CreateSprite( EMP1,EMP1 )
+	SetSpriteTransparency( EMP1, 1 )
+	SetSpriteVisible( EMP1, 0 )
+	SetSpriteDepth ( EMP1, 0 )
+	SetSpriteScissor( EMP1,NodeSize,NodeSize,MaxWidth-NodeSize,MaxHeight-(NodeSize*3) )
 
 	AISurviving = AICount
 	PlayerSurviving = PlayerCount
