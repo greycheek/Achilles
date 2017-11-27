@@ -1205,10 +1205,10 @@ DepotSlide.x = DepotScale.x + HalfScale#
 DepotSlide.y = RoughSlide.y
 
 global scaleLength as Float[]
-scaleLength.length = Sectors+1
+scaleLength.length = Sectors
 
 segment# = (RoughScale.w-SliderOffset) / Sectors
-for i = 1 to Sectors : scaleLength[i] = segment#*i : next i
+for i = 0 to Sectors-1 : scaleLength[i] = segment#*(i+1) : next i
 
 global baseQTY as float
 global depotQTY as float

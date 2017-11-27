@@ -77,23 +77,23 @@ function GenerateBases()
 	AIDepotSector as integer[]
 
 	SetDisplayAspect(AspectRatio)  `map aspect ratio
-	for i = 1 to Sectors
+	for i = 0 to Sectors-1
 		if baseQTY <= scaleLength[i]
-			AIBases.length = i-1 : exit
+			AIBases.length = i+1 : exit
 		endif
 	next i
-	for i = 1 to Sectors
+	for i = 1 to Sectors-1
 		if depotQTY <= scaleLength[i]
-			AIDepotNode.length = i-1 : exit
+			AIDepotNode.length = i+1 : exit
 		endif
 	next i
 	PlayerBases.length = AIBases.length
 	PlayerDepotNode.length = AIDepotNode.length
 
-	AIBaseCount = AIBases.length
-	PlayerBaseCount = PlayerBases.length
-	AIDepotCount = AIDepotNode.length
-	PlayerDepotCount = PlayerDepotNode.length
+	AIBaseCount = AIBases.length-1
+	PlayerBaseCount = PlayerBases.length-1
+	AIDepotCount = AIDepotNode.length-1
+	PlayerDepotCount = PlayerDepotNode.length-1
 	AIProdUnits = (AIBaseCount+1) * BaseProdValue
 	PlayerProdUnits = (PlayerBaseCount+1) * BaseProdValue
 
@@ -490,6 +490,10 @@ function Setup()
 	SetupSprite( Splash,Splash,"achillesRich.png",0,0,MaxWidth,MaxHeight,2,On,0 )
 	SetupSprite( Dialog,Dialog,"Dialog2.png",0,0,MaxWidth,MaxHeight,1,Off,0 )
 	SetupSprite( BaseDialog,BaseDialog,"BaseDialog.png",0,0,MaxWidth,MaxHeight,1,Off,2 )
+			SetSpriteCategoryBits( Splash,NoBlock )
+			SetSpriteCategoryBits( Dialog,NoBlock )
+			SetSpriteCategoryBits( BaseDialog,NoBlock )
+
 
 	LoadButton(acceptButt.ID,acceptButt.UP,acceptButt.DN,"CheckUp.png","CheckDown.png",acceptButt.x,acceptButt.y,acceptButt.w,On)
 	LoadButton(cancelButt.ID,cancelButt.UP,cancelButt.DN,"CancelUp.png","CancelDown2.png",cancelButt.x,cancelButt.y,cancelButt.w,On)
@@ -524,9 +528,11 @@ function Setup()
 	SetSpriteVisible( MusicScale.ID,0 )
 	SetSpritePosition( MusicScale.ID,MusicScale.x,MusicScale.y )
 	SetSpriteDepth( MusicScale.ID,1 )
+			SetSpriteCategoryBits( MusicScale.ID,NoBlock )
 
 	CloneSprite( SoundScale.ID,MusicScale.ID )
 	SetSpritePosition( SoundScale.ID,SoundScale.x,SoundScale.y )
+			SetSpriteCategoryBits( SoundScale.ID,NoBlock )
 
 	LoadImage( MusicSlide.ID,"Slider2.png" )
 	CreateSprite( MusicSlide.ID,MusicSlide.ID )
@@ -535,9 +541,12 @@ function Setup()
 	SetSpriteVisible( MusicSlide.ID,0 )
 	SetSpritePosition( MusicSlide.ID,MusicSlide.x,MusicSlide.y )
 	SetSpriteDepth( MusicSlide.ID,0 )
+	SetSpriteDepth( MusicScale.ID,1 )
+			SetSpriteCategoryBits( MusicSlide.ID,NoBlock )
 
 	CloneSprite( SoundSlide.ID,MusicSlide.ID )
 	SetSpritePosition( SoundSlide.ID,SoundSlide.x,SoundSlide.y )
+			SetSpriteCategoryBits( SoundSlide.ID,NoBlock )
 
 	LoadImage( RoughScale.ID,"RoughScale2.png" )
 	CreateSprite( RoughScale.ID,RoughScale.ID )
@@ -628,7 +637,10 @@ function Setup()
 	SetSpritePhysicsOn(AIValueSprite,1)
 	SetSpritePhysicsOn(PlayerSpectrumSprite,1)
 	SetSpritePhysicsOn(PlayerValueSprite,1)
-
+			SetSpriteCategoryBits( AISpectrumSprite,NoBlock )
+			SetSpriteCategoryBits( AIValueSprite,NoBlock )
+			SetSpriteCategoryBits( PlayerSpectrumSprite,NoBlock )
+			SetSpriteCategoryBits( PlayerValueSprite,NoBlock )
 
 	SpriteCon[HoverCraft].image$ = "GENHOVER.png"
 	SpriteCon[MediumTank].image$ = "GENMEDIUM.png"
@@ -647,6 +659,7 @@ function Setup()
 		SetSpritePhysicsOn( SpriteCon[i].ID, 1 )
 		SetSpriteDepth( SpriteCon[i].ID, 0 )
 		SetSpriteGroup( SpriteCon[i].ID, SpriteConGroup )
+				SetSpriteCategoryBits( SpriteCon[i].ID,NoBlock )
 	next i
 	SpriteConSize = SpriteConSize*1.3
 	for i = 0 to 1
