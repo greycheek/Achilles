@@ -90,10 +90,10 @@ function GenerateBases()
 	PlayerBases.length = AIBases.length
 	PlayerDepotNode.length = AIDepotNode.length
 
-	AIBaseCount = AIBases.length-1
-	PlayerBaseCount = PlayerBases.length-1
-	AIDepotCount = AIDepotNode.length-1
-	PlayerDepotCount = PlayerDepotNode.length-1
+	AIBaseCount = AIBases.length
+	PlayerBaseCount = PlayerBases.length
+	AIDepotCount = AIDepotNode.length
+	PlayerDepotCount = PlayerDepotNode.length
 	AIProdUnits = (AIBaseCount+1) * BaseProdValue
 	PlayerProdUnits = (PlayerBaseCount+1) * BaseProdValue
 

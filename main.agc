@@ -17,10 +17,11 @@ remstart
 			---AI NOT CAPTURING BASES????!!!!
 
 	---RESET MOVEMENT WHEN BLOCKED
-	---CROOKED HOVERCRAFT TURRET ANGLES
 	---INSTRUCTIONS
 
 	FIXED?
+	--- CROOKED HOVERCRAFT TURRET ANGLES
+	--- CAN SET TO 0 BASES/DEPOTS!!!\
 	--- LOS STILL BLOCKED!! -MAKE SURE TO NOBLOCK ALL SPRITES
 	--- TANKS PRODUCED IN THE UPPER LEFT OF THE BOARD!!!!!!!!!!!!!!?????????????
 	--- UNITS CAN STILL FIRE AND MOVE WHEN STUNNED!!!!! -- HAS TO DO WITH THE ORDER OF STUN COUNTDOWN FOR PLAYER ?
@@ -425,7 +426,7 @@ function PlayerBaseCapture()
 				inc AIBaseCount
 					AIBases.length = AIBases.length + 1
 					CaptureBase( j,AIBases.length,pickAI,AIBases,PlayerBases,AIBase,AIBaseGroup )
-				if PlayerBaseCount = -1 then GameOver( DefeatText,255,255,255,"DEFEAT",DefeatSound )
+				if PlayerBaseCount = 0 then GameOver( DefeatText,255,255,255,"DEFEAT",DefeatSound )
 				exit
 			endif
 		next j
@@ -441,7 +442,7 @@ function AIBaseCapture()
 				inc PlayerBaseCount
 					PlayerBases.length = PlayerBases.length + 1
 					CaptureBase( j,PlayerBases.length,pickPL,PlayerBases,AIBases,PlayerBase,BaseGroup )
-				if AIBaseCount = -1 then GameOver( VictoryText,0,0,0,"VICTORY",VictorySound )
+				if AIBaseCount = 0 then GameOver( VictoryText,0,0,0,"VICTORY",VictorySound )
 				exit
 			endif
 		next j
