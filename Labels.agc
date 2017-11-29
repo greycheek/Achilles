@@ -1146,10 +1146,10 @@ SoundScale.h = MusicScale.h
 SoundScale.tx = MusicScale.x
 SoundScale.ty = SoundScale.y+SoundScale.h
 
-MusicSlide.w = 80
-MusicSlide.h = 80
+MusicSlide.w = 70
+MusicSlide.h = 70
 MusicSlide.x = MusicScale.x+(MusicScale.w/2)-(MusicSlide.w/2)
-MusicSlide.y = MusicScale.y-(MusicSlide.h/4)
+MusicSlide.y = MusicScale.y-(MusicSlide.h/3)
 
 SoundSlide.w = MusicSlide.w
 SoundSlide.h = MusicSlide.h

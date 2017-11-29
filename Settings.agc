@@ -488,7 +488,7 @@ function Setup()
    `SPLASHSCREEN
 
 	SetupSprite( Splash,Splash,"achillesRich.png",0,0,MaxWidth,MaxHeight,2,On,0 )
-	SetupSprite( Dialog,Dialog,"Dialog2.png",0,0,MaxWidth,MaxHeight,1,Off,0 )
+	SetupSprite( Dialog,Dialog,"SettingsDialog.png",0,0,MaxWidth,MaxHeight,1,Off,0 )
 	SetupSprite( BaseDialog,BaseDialog,"BaseDialog.png",0,0,MaxWidth,MaxHeight,1,Off,2 )
 			SetSpriteCategoryBits( Splash,NoBlock )
 			SetSpriteCategoryBits( Dialog,NoBlock )
@@ -534,7 +534,7 @@ function Setup()
 	SetSpritePosition( SoundScale.ID,SoundScale.x,SoundScale.y )
 			SetSpriteCategoryBits( SoundScale.ID,NoBlock )
 
-	LoadImage( MusicSlide.ID,"Slider2.png" )
+	LoadImage( MusicSlide.ID,"SLIDERBUTTON.png" )
 	CreateSprite( MusicSlide.ID,MusicSlide.ID )
 	SetSpriteSize( MusicSlide.ID,MusicSlide.w,MusicSlide.h  )
 	SetSpriteTransparency( MusicSlide.ID,1 )
@@ -655,7 +655,7 @@ function Setup()
 		SpriteCon[i].ID = i + SpriteConSeries
 		SpriteCon[i].imageID = SpriteCon[i].ID
 		SetupSprite( SpriteCon[i].ID, SpriteCon[i].imageID, SpriteCon[i].image$,0,0,SpriteConSize,SpriteConSize,0,Off,CellOffset )
-		SetSpritePosition( SpriteCon[i].ID, MiddleX-56,(i*(SpriteConSize+20))-60 )
+		SetSpritePosition( SpriteCon[i].ID, MiddleX-(SpriteConSize/2),(i*(SpriteConSize+15))-15 )
 		SetSpritePhysicsOn( SpriteCon[i].ID, 1 )
 		SetSpriteDepth( SpriteCon[i].ID, 0 )
 		SetSpriteGroup( SpriteCon[i].ID, SpriteConGroup )

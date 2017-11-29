@@ -1,0 +1,34 @@
+Unit	Armor	Weapon	Moves	Unit Cost
+HOVERCRAFT	50%
+BATTERY	33%
+MEDIUM TANK	75%
+HEAVY TANK	100%
+MECH	75%
+ENGINEER	10%
+
+BALLISTIC WEAPON  range 4, damage 10%, rounds --
+MISSILES  range --, damage 40%, rounds 10
+MEDIUM LASER  range --, damage 10%, rounds --
+MEDIUM CANNON  range 4, damage 25%, rounds --
+HEAVY LASER  range --, damage 25%, rounds --
+HEAVY CANNON  range 4, damage 35%, rounds --
+MISSILES  range --, damage 40%, rounds 5
+DISRUPTOR  range 4, damage 40%**, rounds --
+** affects all enemy & friendly units in range
+MINES  range 0, damage 40%, rounds 4
+EMP  range 3, damage **, rounds 4
+** disables enemy & friendly units for 1 turn
+
+MOVES  8, NO TERRAIN MOVEMENT PENALTY
+MOVES  7, PENALTY: Rough -1, Trees -2
+MOVES  5, PENALTY: Rough -1, Trees -2
+MOVES  3, PENALTY: Rough -1, Trees -2
+MOVES  4, PENALTY: Rough -1, Trees -2
+MOVES  3, NO TERRAIN MOVEMENT PENALTY
+
+UNIT COST  50
+UNIT COST  250
+UNIT COST  100
+UNIT COST  200
+UNIT COST  300
+UNIT COST  150
