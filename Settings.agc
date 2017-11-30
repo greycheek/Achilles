@@ -521,7 +521,7 @@ function Setup()
 
    `volume and sound sliders
 
-	LoadImage( MusicScale.ID,"Scale2.png" )
+	LoadImage( MusicScale.ID,"Scale3.png" )
 	CreateSprite( MusicScale.ID,MusicScale.ID )
 	SetSpriteSize( MusicScale.ID,MusicScale.w,MusicScale.h )
 	SetSpriteTransparency( MusicScale.ID,1 )
