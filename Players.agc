@@ -11,6 +11,7 @@ function ShowInfo( shown )
 endfunction
 
 function BaseProduction( node )
+	ButtonState(InfoButt.ID,Off)
 	ShowInfo( Off )
 	zoomFactor = 1
 	SetViewZoom( zoomFactor )
@@ -98,6 +99,7 @@ function BaseProduction( node )
 
 	Zoom(1,0,0,On,1)
 	ShowInfo(On)
+	ButtonState(InfoButt.ID,On)
 endfunction ID
 
 function Markers( state )
@@ -418,7 +420,14 @@ function GetInput()
 
 	do
 		if selection <> Undefined then WeaponInput(ID)
-		if GetVirtualButtonState(acceptButt.ID) or GetRawKeyState(Enter)
+		if GetVirtualButtonReleased( InfoButt.ID ) or GetRawKeyState( 0x49 ) `I
+			PlaySound( ClickSound,vol )
+			ShowInfo( Off )
+			ButtonState(acceptButt.ID,Off)
+			ShowInstructions()
+			ButtonState(acceptButt.ID,On)
+			ShowInfo( On )
+		elseif GetVirtualButtonState(acceptButt.ID) or GetRawKeyState(Enter)
 			PlaySound( ClickSound,vol )
 			MaxAlpha(ID)
 			exit

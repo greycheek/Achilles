@@ -79,12 +79,12 @@ function GenerateBases()
 	SetDisplayAspect(AspectRatio)  `map aspect ratio
 	for i = 0 to Sectors-1
 		if baseQTY <= scaleLength[i]
-			AIBases.length = i+1 : exit
+			AIBases.length = i : exit
 		endif
 	next i
 	for i = 1 to Sectors-1
 		if depotQTY <= scaleLength[i]
-			AIDepotNode.length = i+1 : exit
+			AIDepotNode.length = i : exit
 		endif
 	next i
 	PlayerBases.length = AIBases.length
@@ -321,10 +321,10 @@ function Setup()
 	DeleteAllSprites()
 	DeleteAllText()
 	DeleteAllImages()
+	DeleteAllButtons()
+
 	smokeImage=loadimage("Smoke4a.png")
 	whiteSmokeImage=loadimage("Smoke5.png")
-
-	DeleteAllButtons()
 
 	dim AIgrid[Cells] as gridType
 	dim PlayerGrid[Cells] as gridType
@@ -403,6 +403,9 @@ function Setup()
 	ShowInfo( Off )
 
    `SPRITES Misc
+
+	global InstructionImage
+	InstructionImage = LoadImage("INSTRUCTIONS.png")
 
 	LoadImage(Fire1,"Energy.png")
 	CreateSprite( Fire1,Fire1 )
@@ -494,6 +497,7 @@ function Setup()
 			SetSpriteCategoryBits( Dialog,NoBlock )
 			SetSpriteCategoryBits( BaseDialog,NoBlock )
 
+	LoadButton(InfoButt.ID,InfoButt.UP,InfoButt.DN,"InfoUp.png","InfoDown.png",InfoButt.x,InfoButt.y,InfoButt.w,On)
 
 	LoadButton(acceptButt.ID,acceptButt.UP,acceptButt.DN,"CheckUp.png","CheckDown.png",acceptButt.x,acceptButt.y,acceptButt.w,On)
 	LoadButton(cancelButt.ID,cancelButt.UP,cancelButt.DN,"CancelUp.png","CancelDown2.png",cancelButt.x,cancelButt.y,cancelButt.w,On)
@@ -534,6 +538,8 @@ function Setup()
 	SetSpritePosition( SoundScale.ID,SoundScale.x,SoundScale.y )
 			SetSpriteCategoryBits( SoundScale.ID,NoBlock )
 
+	MusicSlide.x = MusicScale.x+(MusicScale.w/2)-(MusicSlide.w/2)
+
 	LoadImage( MusicSlide.ID,"SLIDERBUTTON.png" )
 	CreateSprite( MusicSlide.ID,MusicSlide.ID )
 	SetSpriteSize( MusicSlide.ID,MusicSlide.w,MusicSlide.h  )
@@ -543,6 +549,8 @@ function Setup()
 	SetSpriteDepth( MusicSlide.ID,0 )
 	SetSpriteDepth( MusicScale.ID,1 )
 			SetSpriteCategoryBits( MusicSlide.ID,NoBlock )
+
+	SoundSlide.x = MusicSlide.x
 
 	CloneSprite( SoundSlide.ID,MusicSlide.ID )
 	SetSpritePosition( SoundSlide.ID,SoundSlide.x,SoundSlide.y )
@@ -655,7 +663,7 @@ function Setup()
 		SpriteCon[i].ID = i + SpriteConSeries
 		SpriteCon[i].imageID = SpriteCon[i].ID
 		SetupSprite( SpriteCon[i].ID, SpriteCon[i].imageID, SpriteCon[i].image$,0,0,SpriteConSize,SpriteConSize,0,Off,CellOffset )
-		SetSpritePosition( SpriteCon[i].ID, MiddleX-(SpriteConSize/2),(i*(SpriteConSize+15))-15 )
+		//~ SetSpritePosition( SpriteCon[i].ID, MiddleX-(SpriteConSize/2),(i*(SpriteConSize+15))-15 )
 		SetSpritePhysicsOn( SpriteCon[i].ID, 1 )
 		SetSpriteDepth( SpriteCon[i].ID, 0 )
 		SetSpriteGroup( SpriteCon[i].ID, SpriteConGroup )
@@ -704,7 +712,7 @@ function Setup()
 		SetSpriteSize( clone2,SpriteConSize,SpriteConSize )
 		SetSpriteColor(  clone2,pickPL.r,pickPL.g,pickPL.b,pickPL.a )
 	next i
-	Text(VersionText,"v0.9",MaxWidth-90,70,255,255,255,32,255,2)
+	//~ Text(VersionText,"v0.9",MaxWidth-90,70,255,255,255,32,255,2)
 	PlayMusicOGG( MusicSound, 1 )
 
 	GenerateMap()
@@ -734,6 +742,7 @@ function DeleteAllButtons()
 	DeleteVirtualButton(BulletButt.ID)
 	DeleteVirtualButton(ImpassButt.ID)
 	DeleteVirtualButton(WaterButt.ID)
+	DeleteVirtualButton(InfoButt.ID)
 endfunction
 
 remstart

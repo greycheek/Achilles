@@ -1,10 +1,34 @@
-Unit	Armor	Weapon	Moves	Unit Cost
-HOVERCRAFT	50%
-BATTERY	33%
-MEDIUM TANK	75%
-HEAVY TANK	100%
-MECH	75%
-ENGINEER	10%
+
+VICTORY CONDITIONS
+Capture all enemy bases (move any unit onto enemy base to capture)
+or
+Destroy all enemy units
+
+UNITS	Armor	Unit Cost	Moves	Special
+Hovercraft	50%	50	8	No terrain movement penalty
+Battery	33%	250	7
+Tank, Medium	75%	100	5
+Tank, Heavy	100%	200	3
+Mech	75%	300	4
+Engineer	10%	150	3	No terrain movement penalty
+
+ARMAMENT	Weapon(s)	Damage	Rounds	Range	Special
+Hovercraft	Ballistic	10%	Unlimited	4	
+Battery	Missile	40%	10	Unlimited
+Tank, Medium	Medium Laser/Cannon	10%/25%	Unlimited/Unlimited	Unlimited/4
+Tank, Heavy	Heavy Laser/Cannon	25%/35%	Unlimited/Unlimited	Unlimited/4
+Mech	Missile/Disruptor	40%/40%*	5/Unlimited	Unlimited/4	* Disruptor: affects all enemy & friendly units in range
+Engineer	Mine/EMP	40%/*	4/4	0/3	* EMP: disables enemy & friendly units in range for 1 turn	
+
+TERRAIN	Move Penalty	Defense Modifier	Block LOS	Special
+Clear	0	0	No
+Rough	-1*	-2	No	* Hovercraft/Engineer: no penalty
+Trees	-2*	+1	Yes	* Hovercraft/Engineer: no penalty
+Water	Impassable*	N/A	No	* Hovercraft can fly over but not land on water
+Wall	Impassable*	N/A	Yes	* Hovercraft can fly over but not land on wall
+Base	0	0	No	Can produce new units; can be captured by enemy
+Depot	0	0	No	Can restore friendly units to full health and maximum rounds
+	
 
 BALLISTIC WEAPON  range 4, damage 10%, rounds --
 MISSILES  range --, damage 40%, rounds 10

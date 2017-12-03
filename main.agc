@@ -14,12 +14,11 @@ remstart
 			PLACEMENT RELATIVE TO ENEMY
 			ENGINEER PROTECTION
 			--VERY REPETITIVE MOVEMENT PATTERNS??
-			---AI NOT CAPTURING BASES????!!!!
-
 	---RESET MOVEMENT WHEN BLOCKED
-	---INSTRUCTIONS
 
 	FIXED?
+	--- BASE PRODUCTION IS STILL FUCKED UP !!!!!!
+	--- AI NOT CAPTURING BASES????!!!!
 	--- CROOKED HOVERCRAFT TURRET ANGLES
 	--- CAN SET TO 0 BASES/DEPOTS!!!\
 	--- LOS STILL BLOCKED!! -MAKE SURE TO NOBLOCK ALL SPRITES
@@ -64,6 +63,7 @@ UseNewDefaultFonts( On )
 //~ SwarmTest()
 //~ ParticleTest()
 //~ DisruptorTest()
+
 Main()
 
 function Main()
@@ -256,6 +256,24 @@ function EndAttack( attID, defID, Attacker ref as tankType[], Defender ref as ta
 	Sync()
 endfunction
 
+function ShowInstructions()
+	SetVirtualButtonPosition(cancelButt.ID,MaxWidth-dev.buttSize,dev.buttSize*1.25)
+	ButtonState(InfoButt.ID,Off)
+	i = CreateSprite(InstructionImage)
+	SetSpriteDepth(i,0)
+	SetSpriteSize(i,MaxWidth,MaxHeight)
+	SetSpritePosition(i,0,0)
+	SetSpriteVisible(i,On)
+	repeat
+		PinchToZoom()
+		Sync()
+	until GetVirtualButtonReleased(cancelButt.ID)
+	Zoom(1,0,0,On,1)
+	DeleteSprite(i)
+	ButtonState(InfoButt.ID,On)
+	SetVirtualButtonPosition(cancelButt.ID,cancelButt.x,cancelButt.y)
+endfunction
+
 function LayMine(ID,Tank ref as tankType[],node)
 	if Tank[ID].team = PlayerTeam
 		ShowMine( ID,Tank,node )
@@ -426,7 +444,7 @@ function PlayerBaseCapture()
 				inc AIBaseCount
 					AIBases.length = AIBases.length + 1
 					CaptureBase( j,AIBases.length,pickAI,AIBases,PlayerBases,AIBase,AIBaseGroup )
-				if PlayerBaseCount = 0 then GameOver( DefeatText,255,255,255,"DEFEAT",DefeatSound )
+				if PlayerBaseCount = -1 then GameOver( DefeatText,255,255,255,"DEFEAT",DefeatSound )
 				exit
 			endif
 		next j
@@ -442,7 +460,7 @@ function AIBaseCapture()
 				inc PlayerBaseCount
 					PlayerBases.length = PlayerBases.length + 1
 					CaptureBase( j,PlayerBases.length,pickPL,PlayerBases,AIBases,PlayerBase,BaseGroup )
-				if AIBaseCount = 0 then GameOver( VictoryText,0,0,0,"VICTORY",VictorySound )
+				if AIBaseCount = -1 then GameOver( VictoryText,0,0,0,"VICTORY",VictorySound )
 				exit
 			endif
 		next j

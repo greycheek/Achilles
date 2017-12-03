@@ -172,36 +172,13 @@ endfunction False
 
 function GoalSet(ID,vehicle)
 	select vehicle
-		case HoverCraft
+		case HoverCraft,MediumTank,HeavyTank,Mech
 			if VisitDepot(ID)  then exitfunction
 			if AttackBase(ID)  then exitfunction
 			if ProtectBase(ID) then exitfunction
 			DefaultGoal(ID,1)
 		endcase
-		case Battery
-			if VisitDepot(ID) then exitfunction
-			if AttackBase(ID) then exitfunction
-			DefaultGoal(ID,3)
-		endcase
-		case MediumTank
-			if VisitDepot(ID)  then exitfunction
-			if AttackBase(ID)  then exitfunction
-			if ProtectBase(ID) then exitfunction
-			DefaultGoal(ID,1)
-		endcase
-		case HeavyTank
-			if VisitDepot(ID)  then exitfunction
-			if AttackBase(ID)  then exitfunction
-			if ProtectBase(ID) then exitfunction
-			DefaultGoal(ID,1)
-		endcase
-		case Mech
-			if VisitDepot(ID)  then exitfunction
-			if AttackBase(ID)  then exitfunction
-			if ProtectBase(ID) then exitfunction
-			DefaultGoal(ID,1)
-		endcase
-		case Engineer
+		case Battery,Engineer
 			if VisitDepot(ID) then exitfunction
 			if AttackBase(ID) then exitfunction
 			DefaultGoal(ID,3)

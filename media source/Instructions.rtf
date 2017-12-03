@@ -1,0 +1,81 @@
+{\rtf1 \mac \ansicpg10000 \cocoartf \nisusversion40107 \nisusorigversion40107 {\*\nisussysvers 10.13.1}{\*\nisusorigsysvers 10.13.1}\deff0 {\fonttbl {\f0 \fmodern \fcharset77 Courier;}}{\colortbl ;}{\*\revtbl {Unknown;}{BobTedescoJr;}}\nisusrevtypes0 \donotshowinsdel1 {\*\nisustoctable {\nisustoc \tcf68 {\nisustocname Default TOC}{\*\nisustoctabrep  }{\*\nisustocretrep  }{\nisustoclevelstyle TOC 1}{\nisustoclevelstyle TOC 2}{\nisustoclevelstyle TOC 3}{\nisustoclevelstyle TOC 4}{\nisustoclevelstyle TOC 5}{\nisustoclevelstyle TOC 6}{\nisustoclevelstyle TOC 7}{\nisustoclevelstyle TOC 8}{\nisustoclevelstyle TOC 9}}\nisusactivetoc68
+}{\*\nisusxetable {\nisusxe \xef68 {\nisusxename Default Index}{\nisusxeheaderstyle Index Heading}{\nisusxelevelstyle Index 1}{\nisusxelevelstyle Index 2}{\nisusxelevelstyle Index 3}{\nisusxelevelstyle Index 4}{\nisusxelevelstyle Index 5}{\nisusxelevelstyle Index 6}{\nisusxelevelstyle Index 7}{\nisusxelevelstyle Index 8}{\nisusxelevelstyle Index 9}{\*\fldinst INDEX \\k ". " \\g \endash  \\e "\tab " \\l ", " \\f D}}\nisusactivexe68
+}{\stylesheet {\s428 \snext428 \f0 \ql\widctlpar\keep0\keepn0\sb0\sa0\sl240\slmult1\ltrpar\pardirnatural\hyphpar1\li0\lin0\fi0\ri0\rin0 Normal;}}\defformat {\info {\*\nisusgmtoffset -5:00}{\author BobTedescoJr}{\creatim \yr2017 \mo12 \dy2 \hr9 \min27 }{\revtim \yr2017 \mo12 \dy2 \hr13 \min4 }}{\*\userprops }\viewkind4 \viewscale105 \nisusviewruler1
+\nisusviewrulerh1 \nisusviewrulerv0 \nisusviewtoolbar1 \nisusviewtooldrawer1 \nisusviewpagenumtype1 \nisusviewrulericons0 {\*\nisusviewsettings \viewkind4 \viewscale105 {\nisusnavsettings {\*\visible 0}{\*\closedtochandles }{\*\mode toc}}}{\*\nisusviewsettings \viewkind1 \viewzk1 {\nisusnavsettings {\*\mode toc}{\*\visible 0}{\*\closedtochandles }}}{\*\nisuswindow \x0 \y0 \w1440 \h878 }\nisusrulerunits0
+\nshwinv0 \nshwpg1 \nisusinlinespell1 \nisushyphnone \nisusselectstart1 \nisusselectlength1243 \fet2 \ftnbj \paperw12240 \paperh15840 \margl1440 \margr1440 \margt1800 \margb1800 \gutter0 \pgnstart1 \nocolbal \widowctrl \f0 \sectd \endnhere \cols1 \ltrsect \colbalsxn0 \pgwsxn12240 \pghsxn15840 \marglsxn1440 \margrsxn1440 \margtsxn1800 \margbsxn1800 \guttersxn0 \headery720 \footery720 \pgnstarts1 \pgnrestart \pgndec \sxnstarts1 \sxnrestart \sxndec {\header \plain \pard \nisusnos \f0\fs24 }{\footer \plain \pard \nisusnos \f0\fs24 }\deftab720
+{\pard \s428 \tx2447\tx5760\tx8640\tx11986\tx14400\tx17175 {\par
+{\nisusselected1 VICTORY OPTIONS\par
+-Capture all enemy bases (move any unit onto enemy base to capture)\par
+-Destroy all enemy units\par
+\par
+UNITS\tab Armor\tab Unit Cost\tab Moves\tab Special\par
+Hovercraft\tab 50%\tab 50\tab 8\tab No terrain movement penalty\par
+Battery\tab 33%\tab 250\tab 7\par
+Tank, Medium\tab 75%\tab 100\tab 5\par
+Tank, Heavy\tab 100%\tab 200\tab 3\par
+Mech\tab 75%\tab 300\tab 4\par
+Engineer\tab 10%\tab 150\tab 3\tab No terrain movement penalty\par
+\par
+\par
+ARMAMENT\tab Weapon(s)\tab Damage\tab Rounds\tab Range\tab Special\par
+Hovercraft\tab Ballistic\tab 10%\tab Unlimited\tab 4\tab \par
+Battery\tab Missile\tab 40%\tab 10\tab Unlimited\par
+Tank, Medium\tab Medium Laser/Cannon\tab 10%/25%\tab Unlimited/Unlimited\tab Unlimited/4\par
+Tank, Heavy\tab Heavy Laser/Cannon\tab 25%/35%\tab Unlimited/Unlimited\tab Unlimited/4\par
+Mech\tab Missile/Disruptor\tab 40%/40%*\tab 5/Unlimited\tab Unlimited/4\tab * Disruptor: affects all enemy & friendly units in range\par
+Engineer\tab Mine/EMP\tab 40%/*\tab 4/4\tab 0/3\tab * EMP: disables enemy & friendly units in range for 1 turn\tab \par
+\par
+\par
+TERRAIN\tab Move Penalty\tab Defense Modifier\tab Block LOS\tab Special\par
+Clear\tab 1\tab 0\tab No\par
+Rough\tab -3*\tab -50%\tab No\tab * Hovercraft/Engineer: no penalty\par
+Trees\tab -3*\tab +50%\tab Yes\tab * Hovercraft/Engineer: no penalty\par
+Water\tab Impassable*\tab N/A\tab No\tab * Hovercraft can fly over but not land on water\par
+Wall\tab Impassable*\tab N/A\tab Yes\tab * Hovercraft can fly over but not land on wall\par
+Base\tab 0\tab 0\tab No\tab Can produce new units; can be captured by enemy\par
+Depot\tab 0\tab 0\tab No\tab Can restore friendly units to full health and maximum rounds}\par
+\par
+\par
+`TERRAIN MOVEMENT MODIFIER\par
+global cost as integer[10]\par
+`map terrain to cost\par
+for i = 0 to 9 : cost[i]=Clear : next i\tab
+`1\par
+\par
+cost[Rough] = Rough + 1\tab `3\par
+cost[Trees] = Trees\tab `3\par
+cost[Impassable] = Impassable\par
+cost[Water] = Water\par
+\par
+`TERRAIN DAMAGE MODIFIER\par
+#constant TreeMod .5\par
+#constant ClearMod 1\par
+#constant RoughMod 1.5\par
+\par
+\par
+BALLISTIC WEAPON  range 4, damage 10%, rounds --\par
+MISSILES  range --, damage 40%, rounds 10\par
+MEDIUM LASER  range --, damage 10%, rounds --\par
+MEDIUM CANNON  range 4, damage 25%, rounds --\par
+HEAVY LASER  range --, damage 25%, rounds --\par
+HEAVY CANNON  range 4, damage 35%, rounds --\par
+MISSILES  range --, damage 40%, rounds 5\par
+DISRUPTOR  range 4, damage 40%**, rounds --\par
+** affects all enemy & friendly units in range\par
+MINES  range 0, damage 40%, rounds 4\par
+EMP  range 3, damage **, rounds 4\par
+** disables enemy & friendly units for 1 turn\par
+\par
+MOVES  8, NO TERRAIN MOVEMENT PENALTY\par
+MOVES  7, PENALTY: Rough -1, Trees -2\par
+MOVES  5, PENALTY: Rough -1, Trees -2\par
+MOVES  3, PENALTY: Rough -1, Trees -2\par
+MOVES  4, PENALTY: Rough -1, Trees -2\par
+MOVES  3, NO TERRAIN MOVEMENT PENALTY\par
+\par
+UNIT COST  50\par
+UNIT COST  250\par
+UNIT COST  100\par
+UNIT COST  200\par
+UNIT COST  300\par
+UNIT COST  150\par }}}

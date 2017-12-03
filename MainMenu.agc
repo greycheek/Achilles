@@ -6,22 +6,33 @@ function MainMenu()
 		if not GetTweenSpritePlaying(t1,MechGuy[0].bodyID) then t1 = PatrolMech()
 		UpdateAllTweens(getframetime())
 		Sync()
+		info = GetVirtualButtonReleased( InfoButt.ID )
 		cancel = GetVirtualButtonReleased( cancelButt.ID )
 		accept = GetVirtualButtonReleased( acceptButt.ID )
 		settings = GetVirtualButtonReleased( settingsButt.ID )
+		IKey = GetRawKeyPressed( 0x49 ) `I
 		Qkey = GetRawKeyPressed( 0x51 ) `Q
-		EKey = GetRawKeyPressed( Enter )
 		SKey = GetRawKeyPressed( 0x53 ) `S
+		EKey = GetRawKeyPressed( Enter )
 		if cancel or Qkey
 			if Confirm( "Quit?",QuitText ) then end
 		elseif settings or SKey
 			PlaySound( ClickSound,vol )
+			ButtonState(InfoButt.ID,Off)
 			AlertButtons( acceptButt.x,acceptButt.y,cancelButt.x,cancelButt.y,dev.buttSize,acceptButt.ID,cancelButt.ID )
 			SettingsDialog()
+			ButtonState(InfoButt.ID,On)
 		elseif accept or EKey
 			PlaySound( ClickSound,vol )
 			GameSetup()
 			exitfunction
+		elseif info or IKey
+			PlaySound( ClickSound,vol )
+			ButtonState(acceptButt.ID,Off)
+			ButtonState(settingsButt.ID,Off)
+			ShowInstructions()
+			ButtonState(acceptButt.ID,On)
+			ButtonState(settingsButt.ID,On)
 		endif
 	loop
 endfunction
@@ -60,8 +71,12 @@ function PatrolMech()
 		case 14,15  `fire
 			Halt(t1,t2)
 			if Random(0,1)
-				RotateTurret(0,MechGuy,x2,y2)
-				LaserFire( MechGuy[0].x,MechGuy[0].y,x2,y2,heavyLaser,1.25,2,1 )
+				if  VectorDistance( MechGuy[0].x,MechGuy[0].y,x2,y2 ) > ( NodeSize*3 )
+					RotateTurret(0,MechGuy,x2,y2)
+					LaserFire( MechGuy[0].x,MechGuy[0].y,x2,y2,heavyLaser,1.25,2,1 )
+				//~ else
+					//~ print("too close")
+				endif
 			endif
 			exitfunction t1
 		endcase
@@ -124,10 +139,10 @@ function CreateGrid(state)
 		SetSpriteActive( PlayerGrid[i].ID,state )
 		SetSpriteVisible( PlayerGrid[i].ID,state )
 	next i
-	for i = 1 to SpriteConUnits
-		SetSpriteActive( SpriteCon[i].ID,state )
-		SetSpriteVisible( SpriteCon[i].ID,state )
-	next i
+	//~ for i = 1 to SpriteConUnits
+		//~ SetSpriteActive( SpriteCon[i].ID,state )
+		//~ SetSpriteVisible( SpriteCon[i].ID,state )
+	//~ next i
 	if state
 		Text(MusicText,"MUSIC",MusicScale.tx,MusicScale.ty,0,0,0,30,255,0)
 		SetTextDepth(MusicText,1)
@@ -224,12 +239,34 @@ function ReDisplaySettings(state)
 endfunction
 
 function SettingsDialog()
-	DisplaySettings(On)
+	t as integer[SpriteConUnits]
+	x = MiddleX-((SpriteConSize-25)/2)
+	DisplaySettings( On )
+	StopMusicOGG( MusicSound )
+	for i = 1 to SpriteConUnits	`enter one at a time
+		PlaySound( EnterSound,vol )
+		t[i] = CreateTweenSprite( .135 )
+		SetTweenSpriteY( t[i], MaxHeight, (i*(SpriteConSize-10))-30, TweenEaseOut2() )
+		PlayTweenSprite( t[i], SpriteCon[i].ID, .05 )
+		SetSpriteActive( SpriteCon[i].ID, On )
+		SetSpriteVisible( SpriteCon[i].ID, On )
+		SetSpritePosition( SpriteCon[i].ID, x, MaxHeight )
+		PlayTweens( t[i], SpriteCon[i].ID )
+	next i
 	repeat
 		Compose()
 	until ForcesReady()
 	PlaySound( ClickSound,vol )
-	DisplaySettings(Off)
+	PlayMusicOGG( MusicSound, 1 )
+	SpriteConState( Off )
+	DisplaySettings( Off )
+endfunction
+
+function SpriteConState( state )
+	for i = 1 to SpriteConUnits
+		SetSpriteActive( SpriteCon[i].ID,state )
+		SetSpriteVisible( SpriteCon[i].ID,state )
+	next i
 endfunction
 
 function ChangeColor( grid as gridType[], c as ColorSpec )
@@ -318,6 +355,7 @@ function Compose()
 		if GetVirtualButtonReleased( mapButt.ID ) or GetRawKeyPressed( 0x4D ) `M
 
 			ReDisplaySettings( Off )
+			SpriteConState( Off )
 			StopMusicOGG( MusicSound )
 			PlaySound( ClickSound )
 			if mapImpass then SetVirtualButtonImageUp(ImpassButt.ID,ImpassButt.DN) else SetVirtualButtonImageUp(ImpassButt.ID,ImpassButt.UP)
@@ -369,6 +407,7 @@ function Compose()
 			loop
 
 			ReDisplaySettings( On )
+			SpriteConState( On )
 		endif
 
 	until GetVirtualButtonPressed( acceptButt.ID )
@@ -754,6 +793,8 @@ function GameSetup()
 endfunction
 
 remstart
+		SetTweenSpriteX( t[i], x, x, TweenEaseOut2() )
+
 		function SliderInput( Slide as sliderType, Scale as sliderType )
 			SetRawMouseVisible( Off )
 			while GetPointerState()

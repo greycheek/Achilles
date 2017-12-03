@@ -163,6 +163,7 @@ global angle  as integer[8]=[0,45,90,135,180,225,270,315]
 #constant Dialog 100
 #constant Splash 102
 #constant InterfaceSeries 103
+
 #constant WeaponSeries 200
 #constant MissileSeries 201
 #constant ExplodeSeries 202
@@ -244,6 +245,7 @@ global Silence
 global DisruptorSound
 global EngineSound
 global MachineGunSound
+global EnterSound
 
 BangSound = LoadSound("bang2.wav")
 BuildBaseSound = LoadSound( "HoverbikeEnd.wav" )
@@ -257,6 +259,7 @@ MechSound = LoadSound("MotorClose_01.wav")
 HealSound = LoadSound("HealGlassy.wav")
 VictorySound = LoadSound("MagicReveal.wav")
 DefeatSound = LoadSound("ExitOpenAztec.wav")
+EnterSound = LoadSound("PickUpHeavy.wav")
 
 DisruptorSound = LoadSoundOGG("DISRUPTOR.ogg")
 EMPSound = LoadSoundOGG("EMP.ogg")
@@ -311,6 +314,7 @@ function SoundVolume()
 	SetSoundInstanceVolume( DisruptorSound, vol )
 	SetSoundInstanceVolume( EngineSound, vol )
 	SetSoundInstanceVolume( MachineGunSound, vol )
+	SetSoundInstanceVolume( EnterSound,vol )
 	for i = 0 to OrderSounds
 		SetSoundInstanceRate( orders[i],.5 )
 		SetSoundInstanceVolume( orders[i],vol )
@@ -650,13 +654,14 @@ for s = 0 to Sectors-1
 	next r
 next s
 
+
 `TERRAIN MOVEMENT MODIFIER
 global cost as integer[10]
 `map terrain to cost
-for i = 0 to 9 : cost[i]=Clear : next i
+for i = 0 to 9 : cost[i]=Clear : next i	`1
 
-cost[Rough] = Rough + 1
-cost[Trees] = Trees
+cost[Rough] = Rough + 1	`3
+cost[Trees] = Trees		`3
 cost[Impassable] = Impassable
 cost[Water] = Water
 
@@ -769,6 +774,7 @@ global DisruptButt as buttonType
 global BulletButt as buttonType
 global ImpassButt as buttonType
 global WaterButt as buttonType
+global InfoButt as buttonType
 
 type alertType
 	ID
@@ -804,7 +810,7 @@ select dev.device
 		SLOT1.w = dev.buttSize
 	endcase
 	case "ios","android"
-		if FindString( GetDeviceType(),"ipad" )
+		if FindString( GetDeviceType(),"ipad" )	`add Android tablets
 			dev.buttSize = 64
 			dev.textSize = 28
 			dev.scale = 1
@@ -1010,6 +1016,12 @@ WaterButt.y = acceptButt.y
 WaterButt.w = dev.buttSize
 WaterButt.h = dev.buttSize
 
+InfoButt.ID = 24
+InfoButt.x = MiddleX	`-(dev.buttSize/2)
+InfoButt.h = 52
+InfoButt.y = acceptButt.y + ((dev.buttSize-InfoButt.h)/2)
+InfoButt.w = dev.buttSize
+
 
 `button images
 cancelButt.UP = InterfaceSeries+4
@@ -1131,6 +1143,11 @@ RoughScale.ID = InterfaceSeries+62
 TreeScale.ID = InterfaceSeries+63
 BaseScale.ID = InterfaceSeries+64
 DepotScale.ID = InterfaceSeries+65
+
+
+InfoButt.UP = InterfaceSeries+66
+InfoButt.DN = InterfaceSeries+67
+
 
 MusicScale.x = MiddleX+95
 MusicScale.y = MiddleY+260
