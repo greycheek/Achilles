@@ -736,7 +736,15 @@ function LaserFire( x1,y1,x2,y2,weapon,t1#,t2#,interrupt )
 	count = 60
 	repeat
 		if interrupt
-			if GetVirtualButtonState(cancelButt.ID) or GetVirtualButtonState(acceptButt.ID) or GetVirtualButtonState(settingsButt.ID) then exit
+			if GetVirtualButtonState(InfoButt.ID)
+				exit
+			elseif GetVirtualButtonState(cancelButt.ID)
+				exit
+			elseif GetVirtualButtonState(acceptButt.ID)
+				exit
+			elseif GetVirtualButtonState(settingsButt.ID)
+				exit
+			endif
 		endif
 		if Timer() <= t1#  `1.25
 			DrawLine(x1,y1,x2,y2,laserFull,laserOut) : Sync()
