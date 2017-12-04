@@ -347,8 +347,8 @@ armor$[6,0] = "ARMOR  10%"
 
 weapon$[1,0] = "BALLISTIC WEAPON  range 4, damage 10%, rounds --"
 weapon$[2,0] = "MISSILES  range --, damage 40%, rounds 10"
-weapon$[3,0] = "MEDIUM LASER  range --, damage 10%, rounds --"
-weapon$[3,1] = "MEDIUM CANNON  range 4, damage 25%, rounds --"
+weapon$[3,0] = "LASER  range --, damage 10%, rounds --"
+weapon$[3,1] = "CANNON  range 4, damage 25%, rounds --"
 weapon$[4,0] = "HEAVY LASER  range --, damage 25%, rounds --"
 weapon$[4,1] = "HEAVY CANNON  range 4, damage 35%, rounds --"
 weapon$[5,0] = "MISSILES  range --, damage 40%, rounds 5"
@@ -365,7 +365,7 @@ movement$[4,0] = "MOVES  3, PENALTY: Rough -1, Trees -2"
 movement$[5,0] = "MOVES  4, PENALTY: Rough -1, Trees -2"
 movement$[6,0] = "MOVES  3, NO TERRAIN MOVEMENT PENALTY"
 
-cost$[1,0] = "UNIT COST  50"
+cost$[1,0] = "UNIT COST  100"
 cost$[2,0] = "UNIT COST  250"
 cost$[3,0] = "UNIT COST  100"
 cost$[4,0] = "UNIT COST  200"
@@ -530,7 +530,7 @@ endtype
 
 
 global unitCost as integer[unitTypes]
-unitCost[HoverCraft] = 50
+unitCost[HoverCraft] = 100
 unitCost[Battery] = 250
 unitCost[MediumTank] = 100
 unitCost[HeavyTank] = 200
@@ -667,6 +667,7 @@ cost[Water] = Water
 
 `TERRAIN DAMAGE MODIFIER
 #constant TreeMod .5
+		#constant BaseMod .5
 #constant ClearMod 1
 #constant RoughMod 1.5
 
@@ -675,6 +676,8 @@ global TRM as Float[10]
 for i = 0 to 9 : TRM[i]=ClearMod : next i
 TRM[Rough]=RoughMod
 TRM[Trees]=TreeMod
+		TRM[AIBase]=BaseMod
+		TRM[PlayerBase]=BaseMod
 
 global Iris = BaseIris
 global IrisFrames = 62
@@ -1226,6 +1229,7 @@ scaleLength.length = Sectors
 
 segment# = (RoughScale.w-SliderOffset) / Sectors
 for i = 0 to Sectors-1 : scaleLength[i] = segment#*(i+1) : next i
+
 
 global baseQTY as float
 global depotQTY as float

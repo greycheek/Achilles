@@ -8,13 +8,13 @@ remstart
 	--- SOME SPRITECONS DONT CHANGE COLOR?!
 	--- HEALTH BARS NOT RESETTING AFTER DEPOT VISIT????!
 
-	---BETTER AI DECISIONS?
+	--- BETTER AI DECISIONS?
 			BASE PROTECT - DONT LEAVE A BASE WHEN THREATENED
 			BASE CAPTURE
 			PLACEMENT RELATIVE TO ENEMY
 			ENGINEER PROTECTION
 			--VERY REPETITIVE MOVEMENT PATTERNS??
-	---RESET MOVEMENT WHEN BLOCKED
+	--- RESET MOVEMENT WHEN BLOCKED
 
 	FIXED?
 	--- BASE PRODUCTION IS STILL FUCKED UP !!!!!!
@@ -258,6 +258,7 @@ endfunction
 
 function ShowInstructions()
 	SetVirtualButtonPosition(cancelButt.ID,MaxWidth-dev.buttSize,dev.buttSize*1.25)
+	SetVirtualButtonAlpha(cancelButt.ID,HalfAlpha)
 	ButtonState(InfoButt.ID,Off)
 	i = CreateSprite(InstructionImage)
 	SetSpriteDepth(i,0)
@@ -272,6 +273,7 @@ function ShowInstructions()
 	DeleteSprite(i)
 	ButtonState(InfoButt.ID,On)
 	SetVirtualButtonPosition(cancelButt.ID,cancelButt.x,cancelButt.y)
+	SetVirtualButtonAlpha(cancelButt.ID,FullAlpha)
 endfunction
 
 function LayMine(ID,Tank ref as tankType[],node)
@@ -477,6 +479,7 @@ function GameOver( textID,r,g,b,message$,sound )
 	PlaySound( sound )
 	DeleteVirtualButton(acceptButt.ID)
 	DeleteVirtualButton(cancelButt.ID)
+			DeleteVirtualButton(InfoButt.ID)
 	DeleteAllText()
 	ft# = GetFrameTime()
 	y2 = MapHeight/2

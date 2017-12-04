@@ -18,6 +18,7 @@ function BaseSetup( ID, spriteID, node, base, baseRef ref as baseType[], group )
 
 	maptable[node].base = base
 	mapTable[node].terrain = base
+			maptable[node].modifier = BaseMod
 
 	LoadImage( baseRef[ID].spriteID,"HEXBASE.png" )
 	CreateSprite( baseRef[ID].spriteID,baseRef[ID].spriteID )
@@ -97,19 +98,19 @@ function GenerateBases()
 	AIProdUnits = (AIBaseCount+1) * BaseProdValue
 	PlayerProdUnits = (PlayerBaseCount+1) * BaseProdValue
 
-	for i = 0 to PlayerBaseCount-1
+	for i = 0 to PlayerBaseCount
 		node = Placement( PlayerBaseSector,PlayerSectorNodes )
 		BaseSetup( i,PlayerBaseSeries+i,node,PlayerBase,PlayerBases,BaseGroup )
 	next i
-	for i = 0 to PlayerDepotCount-1
+	for i = 0 to PlayerDepotCount
 		node = Placement( PlayerDepotSector,PlayerSectorNodes )
 		DepotSetup( i,PlayerDepotSeries+i,node,PlayerDepot,PlayerDepotNode,depotGroup )
 	next i
-	for i = 0 to AIBaseCount-1
+	for i = 0 to AIBaseCount
 		node = Placement( AIBaseSector,AISectorNodes )
 		BaseSetup( i,AIBaseSeries+i,node,AIBase,AIBases,AIBaseGroup )
 	next i
-	for i = 0 to AIDepotCount-1
+	for i = 0 to AIDepotCount
 		node = Placement( AIDepotSector,AISectorNodes )
 		DepotSetup( i,AIDepotSeries+i,node,AIDepot,AIDepotNode,AIdepotGroup )
 	next i
