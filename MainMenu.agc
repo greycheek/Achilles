@@ -29,9 +29,11 @@ function MainMenu()
 		elseif info or IKey
 			PlaySound( ClickSound,vol )
 			ButtonState(acceptButt.ID,Off)
+			ButtonState(cancelButt.ID,Off)
 			ButtonState(settingsButt.ID,Off)
-			ShowInstructions()
+			ShowInfoTables()
 			ButtonState(acceptButt.ID,On)
+			ButtonState(cancelButt.ID,On)
 			ButtonState(settingsButt.ID,On)
 		endif
 	loop
@@ -245,7 +247,7 @@ function SettingsDialog()
 	StopMusicOGG( MusicSound )
 	for i = 1 to SpriteConUnits	`enter one at a time
 		PlaySound( EnterSound,vol )
-		t[i] = CreateTweenSprite( .135 )
+		t[i] = CreateTweenSprite( .1 )
 		SetTweenSpriteY( t[i], MaxHeight, (i*(SpriteConSize-10))-30, TweenEaseOut2() )
 		PlayTweenSprite( t[i], SpriteCon[i].ID, .05 )
 		SetSpriteActive( SpriteCon[i].ID, On )

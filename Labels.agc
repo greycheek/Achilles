@@ -778,6 +778,8 @@ global BulletButt as buttonType
 global ImpassButt as buttonType
 global WaterButt as buttonType
 global InfoButt as buttonType
+global XButt as buttonType
+global ArrowRightButt as buttonType
 
 type alertType
 	ID
@@ -1025,6 +1027,16 @@ InfoButt.h = 52
 InfoButt.y = acceptButt.y + ((dev.buttSize-InfoButt.h)/2)
 InfoButt.w = dev.buttSize
 
+XButt.ID = 25
+XButt.x = MaxWidth-dev.buttSize
+XButt.y = dev.buttSize*1.25
+XButt.w = dev.buttSize*.85
+
+ArrowRightButt.ID = 26
+ArrowRightButt.x = XButt.x - dev.buttSize
+ArrowRightButt.y = XButt.y
+ArrowRightButt.w = XButt.w
+
 
 `button images
 cancelButt.UP = InterfaceSeries+4
@@ -1151,6 +1163,11 @@ DepotScale.ID = InterfaceSeries+65
 InfoButt.UP = InterfaceSeries+66
 InfoButt.DN = InterfaceSeries+67
 
+XButt.UP = InterfaceSeries+68
+XButt.DN = InterfaceSeries+69
+
+ArrowRightButt.UP = InterfaceSeries+70
+ArrowRightButt.DN = InterfaceSeries+71
 
 MusicScale.x = MiddleX+95
 MusicScale.y = MiddleY+260

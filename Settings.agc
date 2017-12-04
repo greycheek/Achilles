@@ -405,8 +405,10 @@ function Setup()
 
    `SPRITES Misc
 
-	global InstructionImage
-	InstructionImage = LoadImage("INSTRUCTIONS.png")
+	global InstructionImage1
+	InstructionImage1 = LoadImage("INSTRUCTIONS-I.png")
+	global InstructionImage2
+	InstructionImage2 = LoadImage("INSTRUCTIONS-II.png")
 
 	LoadImage(Fire1,"Energy.png")
 	CreateSprite( Fire1,Fire1 )
@@ -499,6 +501,10 @@ function Setup()
 			SetSpriteCategoryBits( BaseDialog,NoBlock )
 
 	LoadButton(InfoButt.ID,InfoButt.UP,InfoButt.DN,"InfoUp.png","InfoDown.png",InfoButt.x,InfoButt.y,InfoButt.w,On)
+	LoadButton(XButt.ID,XButt.UP,XButt.DN,"Xup.png","Xdown.png",XButt.x,XButt.y,XButt.w,Off)
+	LoadButton(ArrowRightButt.ID,ArrowRightButt.UP,ArrowRightButt.DN,"ArrowRightUp.png","ArrowRightDown.png",ArrowRightButt.x,ArrowRightButt.y,ArrowRightButt.w,Off)
+	SetVirtualButtonAlpha(XButt.ID,FullAlpha*.66)
+	SetVirtualButtonAlpha(ArrowRightButt.ID,FullAlpha*.66)
 
 	LoadButton(acceptButt.ID,acceptButt.UP,acceptButt.DN,"CheckUp.png","CheckDown.png",acceptButt.x,acceptButt.y,acceptButt.w,On)
 	LoadButton(cancelButt.ID,cancelButt.UP,cancelButt.DN,"CancelUp.png","CancelDown2.png",cancelButt.x,cancelButt.y,cancelButt.w,On)

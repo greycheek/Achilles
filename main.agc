@@ -15,6 +15,7 @@ remstart
 			ENGINEER PROTECTION
 			--VERY REPETITIVE MOVEMENT PATTERNS??
 	--- RESET MOVEMENT WHEN BLOCKED
+	--- IMPLEMENT CREDITS PER BASE SLIDER IN SETTINGS DIALOG
 
 	FIXED?
 	--- BASE PRODUCTION IS STILL FUCKED UP !!!!!!
@@ -256,24 +257,41 @@ function EndAttack( attID, defID, Attacker ref as tankType[], Defender ref as ta
 	Sync()
 endfunction
 
-function ShowInstructions()
-	SetVirtualButtonPosition(cancelButt.ID,MaxWidth-dev.buttSize,dev.buttSize*1.25)
-	SetVirtualButtonAlpha(cancelButt.ID,HalfAlpha)
+function ShowInfoTables()
+	ButtonState(XButt.ID,On)
+	ButtonState(ArrowRightButt.ID,On)
 	ButtonState(InfoButt.ID,Off)
-	i = CreateSprite(InstructionImage)
-	SetSpriteDepth(i,0)
-	SetSpriteSize(i,MaxWidth,MaxHeight)
-	SetSpritePosition(i,0,0)
-	SetSpriteVisible(i,On)
+	i1 = CreateSprite(InstructionImage1)
+	SetSpriteDepth(i1,0)
+	SetSpriteSize(i1,MaxWidth,MaxHeight)
+	SetSpritePosition(i1,0,0)
+	i2 = CreateSprite(InstructionImage2)
+	SetSpriteDepth(i2,0)
+	SetSpriteSize(i2,MaxWidth,MaxHeight)
+	SetSpritePosition(i2,0,0)
+	SetSpriteVisible(i2,Off)
+	SetSpriteVisible(i1,On)
 	repeat
 		PinchToZoom()
 		Sync()
-	until GetVirtualButtonReleased(cancelButt.ID)
+		if GetVirtualButtonReleased(ArrowRightButt.ID)
+			PlaySound( ClickSound,vol )
+			if GetSpriteVisible(i1)
+				SetSpriteVisible(i1,Off)
+				SetSpriteVisible(i2,On)
+			else
+				SetSpriteVisible(i2,Off)
+				SetSpriteVisible(i1,On)
+			endif
+		endif
+	until GetVirtualButtonReleased(XButt.ID)
+	PlaySound( ClickSound,vol )
 	Zoom(1,0,0,On,1)
-	DeleteSprite(i)
+	DeleteSprite(i1)
+	DeleteSprite(i2)
 	ButtonState(InfoButt.ID,On)
-	SetVirtualButtonPosition(cancelButt.ID,cancelButt.x,cancelButt.y)
-	SetVirtualButtonAlpha(cancelButt.ID,FullAlpha)
+	ButtonState(XButt.ID,Off)
+	ButtonState(ArrowRightButt.ID,Off)
 endfunction
 
 function LayMine(ID,Tank ref as tankType[],node)
