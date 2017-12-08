@@ -1,5 +1,4 @@
 
-
 `SCREEN/MAP
 #constant Columns 32	 `nodes
 #constant FirstCell = 33
@@ -122,6 +121,7 @@ global angle  as integer[8]=[0,45,90,135,180,225,270,315]
 #constant LimitText 22
 #constant ConfirmText 23
 #constant MapText 24
+		#constant ProdUnitText 25
 
 #constant Gill 50
 #constant Avenir 60
@@ -567,7 +567,9 @@ MechGuy[0].speed = .5
 MechGuy[0].scale = 2
 buffer = MechGuy[0].scale * NodeSize
 
-#constant BaseProdValue 5
+#constant BaseProdMin 5
+global BaseProdValue as integer = BaseProdMin
+
 global PlayerProdUnits as integer
 global AIProdUnits as integer
 global BaseHalo as integer
@@ -780,6 +782,11 @@ global WaterButt as buttonType
 global InfoButt as buttonType
 global XButt as buttonType
 global ArrowRightButt as buttonType
+global Button5 as buttonType
+global Button10 as buttonType
+global Button15 as buttonType
+global Button20 as buttonType
+global Button25 as buttonType
 
 type alertType
 	ID
@@ -1037,6 +1044,12 @@ ArrowRightButt.x = XButt.x - dev.buttSize
 ArrowRightButt.y = XButt.y
 ArrowRightButt.w = XButt.w
 
+Button5.ID = 27
+Button10.ID = 28
+Button15.ID = 29
+Button20.ID = 30
+Button25.ID = 31
+
 
 `button images
 cancelButt.UP = InterfaceSeries+4
@@ -1123,6 +1136,10 @@ type sliderType
 	y as Float
 	tx as Float
 	ty as Float
+	s1 as Float
+	s2 as Float
+	s3 as Float
+	s4 as Float
 	w
 	h
 endtype
@@ -1144,6 +1161,7 @@ global TreeScale as sliderType
 global BaseScale as sliderType
 global DepotScale as sliderType
 
+
 MusicSlide.ID = InterfaceSeries+54
 SoundSlide.ID = InterfaceSeries+55
 MusicScale.ID = InterfaceSeries+56
@@ -1159,7 +1177,6 @@ TreeScale.ID = InterfaceSeries+63
 BaseScale.ID = InterfaceSeries+64
 DepotScale.ID = InterfaceSeries+65
 
-
 InfoButt.UP = InterfaceSeries+66
 InfoButt.DN = InterfaceSeries+67
 
@@ -1169,19 +1186,34 @@ XButt.DN = InterfaceSeries+69
 ArrowRightButt.UP = InterfaceSeries+70
 ArrowRightButt.DN = InterfaceSeries+71
 
+ArrowRightButt.UP = InterfaceSeries+72
+ArrowRightButt.DN = InterfaceSeries+73
+
+Button5.UP = InterfaceSeries+74
+Button5.DN = InterfaceSeries+75
+Button10.UP = InterfaceSeries+76
+Button10.DN = InterfaceSeries+77
+Button15.UP = InterfaceSeries+78
+Button15.DN = InterfaceSeries+79
+Button20.UP = InterfaceSeries+80
+Button20.DN = InterfaceSeries+81
+Button25.UP = InterfaceSeries+82
+Button25.DN = InterfaceSeries+83
+
+
 MusicScale.x = MiddleX+95
 MusicScale.y = MiddleY+260
 MusicScale.w = 556
 MusicScale.h = 24
 MusicScale.tx = MusicScale.x
-MusicScale.ty = MusicScale.y+MusicScale.h
+MusicScale.ty = MusicScale.y-(MusicScale.h*1.25)
 
 SoundScale.x = MusicScale.x
 SoundScale.y = MusicScale.y+90
 SoundScale.w = MusicScale.w
 SoundScale.h = MusicScale.h
 SoundScale.tx = MusicScale.x
-SoundScale.ty = SoundScale.y+SoundScale.h
+SoundScale.ty = SoundScale.y-(SoundScale.h*1.25)
 
 MusicSlide.w = 70
 MusicSlide.h = 70
@@ -1243,9 +1275,34 @@ DepotSlide.y = RoughSlide.y
 
 global scaleLength as Float[]
 scaleLength.length = Sectors
-
 segment# = (RoughScale.w-SliderOffset) / Sectors
 for i = 0 to Sectors-1 : scaleLength[i] = segment#*(i+1) : next i
+
+
+Button5.x = MusicScale.x + (dev.buttSize/2.5)
+Button5.y = SoundScale.y+120
+Button5.w = dev.buttSize
+Button5.h = dev.buttSize
+
+Button10.x = Button5.x + (dev.buttSize*1.3)
+Button10.y = Button5.y
+Button10.w = dev.buttSize
+Button10.h = dev.buttSize
+
+Button15.x = Button10.x + (dev.buttSize*1.3)
+Button15.y = Button5.y
+Button15.w = dev.buttSize
+Button15.h = dev.buttSize
+
+Button20.x = Button15.x + (dev.buttSize*1.3)
+Button20.y = Button5.y
+Button20.w = dev.buttSize
+Button20.h = dev.buttSize
+
+Button25.x = Button20.x + (dev.buttSize*1.3)
+Button25.y = Button5.y
+Button25.w = dev.buttSize
+Button25.h = dev.buttSize
 
 
 global baseQTY as float

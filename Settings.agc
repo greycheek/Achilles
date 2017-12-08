@@ -335,6 +335,7 @@ function Setup()
 	AICount = DefaultAI
 	PlayerCount = DefaultPlayer
 	vol = 50
+	BaseProdValue = BaseProdMin
 	SoundVolume()
 	SetMusicVolumeOGG( MusicSound,vol )
 
@@ -506,6 +507,14 @@ function Setup()
 	SetVirtualButtonAlpha(XButt.ID,FullAlpha*.66)
 	SetVirtualButtonAlpha(ArrowRightButt.ID,FullAlpha*.66)
 
+
+	LoadButton(Button5.ID,Button5.UP,Button5.DN,"5UP.png","5DOWN.png",Button5.x,Button5.y,Button5.w,Off)
+	LoadButton(Button10.ID,Button10.UP,Button10.DN,"10UP.png","10DOWN.png",Button10.x,Button10.y,Button10.w,Off)
+	LoadButton(Button15.ID,Button15.UP,Button15.DN,"15UP.png","15DOWN.png",Button15.x,Button15.y,Button15.w,Off)
+	LoadButton(Button20.ID,Button20.UP,Button20.DN,"20UP.png","20DOWN.png",Button20.x,Button20.y,Button20.w,Off)
+	LoadButton(Button25.ID,Button25.UP,Button25.DN,"25UP.png","25DOWN.png",Button25.x,Button25.y,Button25.w,Off)
+
+
 	LoadButton(acceptButt.ID,acceptButt.UP,acceptButt.DN,"CheckUp.png","CheckDown.png",acceptButt.x,acceptButt.y,acceptButt.w,On)
 	LoadButton(cancelButt.ID,cancelButt.UP,cancelButt.DN,"CancelUp.png","CancelDown2.png",cancelButt.x,cancelButt.y,cancelButt.w,On)
 	LoadButton(settingsButt.ID,settingsButt.UP,settingsButt.DN,"SettingsButton.png","SettingsButtonDown.png",settingsButt.x,settingsButt.y,settingsButt.w,On)
@@ -530,7 +539,7 @@ function Setup()
 
    `FORCE SELECTION
 
-   `volume and sound sliders
+   `Sliders
 
 	LoadImage( MusicScale.ID,"Scale3.png" )
 	CreateSprite( MusicScale.ID,MusicScale.ID )
@@ -541,11 +550,11 @@ function Setup()
 	SetSpriteDepth( MusicScale.ID,1 )
 			SetSpriteCategoryBits( MusicScale.ID,NoBlock )
 
+	MusicSlide.x = MusicScale.x+(MusicScale.w/2)-(MusicSlide.w/2)
+
 	CloneSprite( SoundScale.ID,MusicScale.ID )
 	SetSpritePosition( SoundScale.ID,SoundScale.x,SoundScale.y )
 			SetSpriteCategoryBits( SoundScale.ID,NoBlock )
-
-	MusicSlide.x = MusicScale.x+(MusicScale.w/2)-(MusicSlide.w/2)
 
 	LoadImage( MusicSlide.ID,"SLIDERBUTTON.png" )
 	CreateSprite( MusicSlide.ID,MusicSlide.ID )
@@ -562,6 +571,7 @@ function Setup()
 	CloneSprite( SoundSlide.ID,MusicSlide.ID )
 	SetSpritePosition( SoundSlide.ID,SoundSlide.x,SoundSlide.y )
 			SetSpriteCategoryBits( SoundSlide.ID,NoBlock )
+
 
 	LoadImage( RoughScale.ID,"RoughScale2.png" )
 	CreateSprite( RoughScale.ID,RoughScale.ID )
@@ -750,6 +760,11 @@ function DeleteAllButtons()
 	DeleteVirtualButton(ImpassButt.ID)
 	DeleteVirtualButton(WaterButt.ID)
 	DeleteVirtualButton(InfoButt.ID)
+	DeleteVirtualButton(Button5.ID)
+	DeleteVirtualButton(Button10.ID)
+	DeleteVirtualButton(Button15.ID)
+	DeleteVirtualButton(Button20.ID)
+	DeleteVirtualButton(Button25.ID)
 endfunction
 
 remstart

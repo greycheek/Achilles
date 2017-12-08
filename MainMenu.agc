@@ -146,19 +146,22 @@ function CreateGrid(state)
 		//~ SetSpriteVisible( SpriteCon[i].ID,state )
 	//~ next i
 	if state
-		Text(MusicText,"MUSIC",MusicScale.tx,MusicScale.ty,0,0,0,30,255,0)
+		Text(MusicText,"Music",MusicScale.tx,MusicScale.ty,0,0,0,30,255,0)
 		SetTextDepth(MusicText,1)
-		Text(SoundText,"SOUND",SoundScale.tx,SoundScale.ty,0,0,0,30,255,0)
+		Text(SoundText,"Sound",SoundScale.tx,SoundScale.ty,0,0,0,30,255,0)
 		SetTextDepth(SoundText,1)
+		Text(ProdUnitText,"Production Units/Base",MusicScale.x,Button5.y-(dev.buttSize*1.1),0,0,0,30,255,0)
+		SetTextDepth(ProdUnitText,1)
 	else
 		DeleteText(MusicText)
 		DeleteText(SoundText)
+		DeleteText(ProdUnitText)
 	endif
 endfunction
 
 function DisplaySettings(state)
 	FlipState = not state
-	SetTextColorAlpha( VersionText,FlipState*255 )
+	//~ SetTextColorAlpha( VersionText,FlipState*255 )
 	SetSpriteActive( Dialog,state )
 	SetSpriteVisible( Dialog,state )
 
@@ -166,10 +169,12 @@ function DisplaySettings(state)
 	SetSpriteVisible( SoundSlide.ID,state )
 	SetSpriteVisible( MusicScale.ID,state )
 	SetSpriteVisible( SoundScale.ID,state )
+
 	SetSpriteActive( MusicSlide.ID,state )
 	SetSpriteActive( SoundSlide.ID,state )
 	SetSpriteActive( MusicScale.ID,state )
 	SetSpriteActive( SoundScale.ID,state )
+
 	SetSpriteActive( AISpectrumSprite,state )
 	SetSpriteActive( AIValueSprite,state )
 	SetSpriteActive( PlayerSpectrumSprite,state )
@@ -185,6 +190,19 @@ function DisplaySettings(state)
 	SetVirtualButtonActive( cancelButt.ID,FlipState )
 	SetVirtualButtonActive( mapButt.ID,state )
 
+	SetVirtualButtonVisible( Button5.ID,state )
+	SetVirtualButtonVisible( Button10.ID,state )
+	SetVirtualButtonVisible( Button15.ID,state )
+	SetVirtualButtonVisible( Button20.ID,state )
+	SetVirtualButtonVisible( Button25.ID,state )
+
+	SetVirtualButtonActive( Button5.ID,state )
+	SetVirtualButtonActive( Button10.ID,state )
+	SetVirtualButtonActive( Button15.ID,state )
+	SetVirtualButtonActive( Button20.ID,state )
+	SetVirtualButtonActive( Button25.ID,state )
+
+	SetProductionButtons(BaseProdValue)
 	CreateGrid(state)
 endfunction
 
@@ -237,6 +255,20 @@ function ReDisplaySettings(state)
 	SetVirtualButtonActive( diskButt.ID, not state )
 	SetVirtualButtonActive( ImpassButt.ID, not state )
 	SetVirtualButtonActive( WaterButt.ID, not state )
+
+	SetVirtualButtonVisible( Button5.ID,state )
+	SetVirtualButtonVisible( Button10.ID,state )
+	SetVirtualButtonVisible( Button15.ID,state )
+	SetVirtualButtonVisible( Button20.ID,state )
+	SetVirtualButtonVisible( Button25.ID,state )
+
+	SetVirtualButtonActive( Button5.ID,state )
+	SetVirtualButtonActive( Button10.ID,state )
+	SetVirtualButtonActive( Button15.ID,state )
+	SetVirtualButtonActive( Button20.ID,state )
+	SetVirtualButtonActive( Button25.ID,state )
+
+	SetProductionButtons(BaseProdValue)
 	CreateGrid(state)
 endfunction
 
@@ -286,11 +318,11 @@ function SliderInput( Slide ref as sliderType, Scale as sliderType )
 		Sync()
 	endwhile
 	SetRawMouseVisible( On )
-	dec Slide.x,Scale.x
+	x# = Slide.X - Scale.x
 	select Slide.ID
-		case SoundSlide.ID,MusicSlide.ID : Slide.x=(Slide.x/SpectrumW)*100 : endcase
+		case SoundSlide.ID,MusicSlide.ID : x# = (x#/SpectrumW)*100 : endcase
 	endselect
-endfunction Slide.x
+endfunction x#
 
 function Compose()
 	repeat
@@ -299,7 +331,7 @@ function Compose()
 			y = GetPointery()
 			hit = GetSpriteHit(x,y)
 			select hit
-				case SpriteCon[1].ID, SpriteCon[2].ID, SpriteCon[3].ID, SpriteCon[4].ID, SpriteCon[5].ID, SpriteCon[6].ID, SpriteCon[7].ID
+				case SpriteCon[1].ID,SpriteCon[2].ID,SpriteCon[3].ID,SpriteCon[4].ID,SpriteCon[5].ID,SpriteCon[6].ID,SpriteCon[7].ID
 					Stats(hit-SpriteConSeries,True,MiddleY+250,30,dev.textSize)
 					SetRawMouseVisible( Off )
 					clone = CloneSprite( hit )
@@ -339,17 +371,34 @@ function Compose()
 					BaseColor()
 				endcase
 				case SoundSlide.ID
-					vol = SliderInput( SoundSlide,SoundScale )
+					vol = SliderInput(SoundSlide,SoundScale)
 					SoundVolume()
 				endcase
 				case MusicSlide.ID
 					m = SliderInput(MusicSlide,MusicScale)
-					SetMusicVolumeOGG( MusicSound,m )
+					SetMusicVolumeOGG(MusicSound,m)
 				endcase
-				case Dialog,Splash,MusicScale.ID,SoundScale.ID : endcase
-				case default : RemoveSpriteCon( hit,x,y ) : endcase
+				case AIGrid[0].ID,AIGrid[1].ID,AIGrid[2].ID,AIGrid[3].ID,AIGrid[4].ID,AIGrid[5].ID,AIGrid[6].ID,AIGrid[7].ID `removes existing SpriteCons
+					RemoveSpriteCon( hit,x,y )
+				endcase
+				case PlayerGrid[0].ID,PlayerGrid[1].ID,PlayerGrid[2].ID,PlayerGrid[3].ID,PlayerGrid[4].ID,PlayerGrid[5].ID,PlayerGrid[6].ID,PlayerGrid[7].ID
+					RemoveSpriteCon( hit,x,y )
+				endcase
 			endselect
 		endif
+
+		if GetVirtualButtonReleased(Button5.ID)
+			SetProductionButtons(5)
+		elseif GetVirtualButtonReleased(Button10.ID)
+			SetProductionButtons(10)
+		elseif GetVirtualButtonReleased(Button15.ID)
+			SetProductionButtons(15)
+		elseif GetVirtualButtonReleased(Button20.ID)
+			SetProductionButtons(20)
+		elseif GetVirtualButtonReleased(Button25.ID)
+			SetProductionButtons(25)
+		endif
+
 		Sync()
 		if GetRawKeyPressed( Enter ) then exitfunction
 
@@ -416,6 +465,22 @@ function Compose()
 	WaitForButtonRelease( acceptButt.ID )
 endfunction
 
+function SetProductionButtons( Units )
+	PlaySound( ClickSound )
+	SetVirtualButtonImageUp( Button5.ID,Button5.UP )
+	SetVirtualButtonImageUp( Button10.ID,Button10.UP )
+	SetVirtualButtonImageUp( Button15.ID,Button15.UP )
+	SetVirtualButtonImageUp( Button20.ID,Button20.UP )
+	SetVirtualButtonImageUp( Button25.ID,Button25.UP )
+	BaseProdValue = Units
+	select BaseProdValue
+		case 5  : SetVirtualButtonImageUp( Button5.ID,Button5.DN ) : endcase
+		case 10 : SetVirtualButtonImageUp( Button10.ID,Button10.DN ) : endcase
+		case 15 : SetVirtualButtonImageUp( Button15.ID,Button15.DN ) : endcase
+		case 20 : SetVirtualButtonImageUp( Button20.ID,Button20.DN ) : endcase
+		case 25 : SetVirtualButtonImageUp( Button25.ID,Button25.DN ) : endcase
+	endselect
+endfunction
 
 function MapSlotDialog()
 	PlaySound( ClickSound,vol )
@@ -533,14 +598,18 @@ function LoadMap( map$ )
 					AIDepotNode.length = AIDepotNode.length+1
 					DepotSetup( AIDepotNode.length,AIDepotSeries+AIDepotNode.length,node,AIDepot,AIDepotNode,AIdepotGroup )
 				endcase
-				case Trees       : DrawTerrain( node,TreeSprite,treeDummy ) : endcase
-				case Rough		 : DrawTerrain( node,RoughSprite,RoughDummy ) : endcase
-				case Impassable  : DrawTerrain( node,Impass,impassDummy ) : endcase
-				case Water		 : DrawTerrain( node,AcquaSprite,waterDummy ) : endcase
+				case Trees      : DrawTerrain( node,TreeSprite,treeDummy ) : endcase
+				case Rough		: DrawTerrain( node,RoughSprite,RoughDummy ) : endcase
+				case Impassable : DrawTerrain( node,Impass,impassDummy ) : endcase
+				case Water		: DrawTerrain( node,AcquaSprite,waterDummy ) : endcase
 			endselect
 		endif
 	next i
+	`SETTINGS
 	LoadForce( MapFile )
+			BaseProdValue = ReadInteger( MapFile )
+			SetProductionButtons(BaseProdValue)
+
 	CloseFile( MapFile )
 			//~ SetDisplayAspect(AspectRatio)  `back to map aspect ratio
 	SetRenderToScreen()
@@ -575,11 +644,12 @@ function SaveMap( map$ )
 	file = OpenToWrite( map$ )
 	`save map
 	for i = 0 to MapSize-1 : WriteInteger( file, mapTable[i].terrain ) : next i
-	`save force
+	`save settings
 	WriteInteger( file,pickAI.r ) : WriteInteger( file,pickAI.g ) : WriteInteger( file,pickAI.b ) : WriteInteger( file,pickAI.a )
 	WriteInteger( file,pickPL.r ) : WriteInteger( file,pickPL.g ) : WriteInteger( file,pickPL.b ) : WriteInteger( file,pickPL.a )
 	for i = 0 to Cells-1 : WriteInteger( file,AIGrid[i].vehicle ) : next i
 	for i = 0 to Cells-1 : WriteInteger( file,PlayerGrid[i].vehicle ) : next i
+			WriteInteger( file,BaseProdValue )
 	CloseFile( file )
 endfunction True
 
@@ -745,6 +815,9 @@ function GameSetup()
 	SetViewZoomMode( 1.0 )
 	SetViewOffset( 0,0 )
 	zoomFactor = 1
+
+	PlayerProdUnits = (PlayerBaseCount+1)*BaseProdValue
+	AIProdUnits = (AIBaseCount+1)*BaseProdValue
 
 	SetSpriteVisible( TurnCount,On )
 	DeleteText( VersionText )
