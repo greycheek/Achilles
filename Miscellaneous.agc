@@ -8,6 +8,7 @@
 #constant Space 32
 #constant Tab 9
 #constant Enter 13
+#constant RightArrow 39
 #constant Null 0
 #constant Undefined -1
 #constant FullAlpha 255
@@ -23,6 +24,15 @@ global newY as float = 0
 global xoffset as float = 0
 global yoffset as float = 0
 global dragMode as integer
+
+
+function ASCII()
+	repeat
+		k = GetRawLastKey()
+		print(k)
+		sync()
+	until k = Space
+endfunction
 
 function PinchToZoom()
 	select GetRawTouchCount(1)

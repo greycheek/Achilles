@@ -15,21 +15,10 @@ remstart
 			ENGINEER PROTECTION
 			--VERY REPETITIVE MOVEMENT PATTERNS??
 	--- RESET MOVEMENT WHEN BLOCKED
-	--- IMPLEMENT INTRO SCREENS?
+
+	--- UNIT MAXIMUM INTERFACE WITH NO ACCEPT BUTTON
 
 	FIXED?
-	--- SET STARTING BASEPRODVALUE
-	--- UPDATE SETTINGS SCREEN TO REFLECT BASEPRODVALUE
-	--- SET LOAD/SAVE TO STORE BASE PRODUCTION VALUE
-	--- BASE PRODUCTION IS STILL FUCKED UP !!!!!!
-	--- AI NOT CAPTURING BASES????!!!!
-	--- CROOKED HOVERCRAFT TURRET ANGLES
-	--- CAN SET TO 0 BASES/DEPOTS!!!\
-	--- LOS STILL BLOCKED!! -MAKE SURE TO NOBLOCK ALL SPRITES
-	--- TANKS PRODUCED IN THE UPPER LEFT OF THE BOARD!!!!!!!!!!!!!!?????????????
-	--- UNITS CAN STILL FIRE AND MOVE WHEN STUNNED!!!!! -- HAS TO DO WITH THE ORDER OF STUN COUNTDOWN FOR PLAYER ?
-	--- FIX CANCEL & ACCEPT BUTTON POSITION
-	--- MAX BASES/DEPOTS SHOULD BE 6 NOT 5
 
 	FUTURE
 		getspriteincircle vs getspriteinbox??
@@ -43,15 +32,26 @@ remstart
 		---LOS -- Mod at end of PlayerOps
 remend
 
+`ASCII()
+
 SetVirtualResolution( MaxWidth,MaxHeight )
 SetWindowSize( MaxWidth,MaxHeight,1,1 )
+SetOrientationAllowed( 0, 0, 1, 1 )
 MaximizeWindow()
 SetWindowPosition( 0,0 )
-SetOrientationAllowed( 0, 0, 1, 1 )
 //~ LoadFont( Gill,"GillSans.ttf" )
 LoadFont( Avenir,"Avenir Next.ttc" )
 UseNewDefaultFonts( On )
+if dev.device = "windows" then video$ = "Greycheek.wmv" else video$ = "Greycheek.mp4"
 
+if  LoadVideo( video$ )
+	PlayVideo()
+	while GetVideoPlaying()
+		if GetPointerState() or GetRawKeyPressed( Enter ) then exit
+		Sync()
+	endwhile
+	DeleteVideo()
+endif
 
 #insert "Labels.agc"
 #include "Settings.agc"
@@ -62,11 +62,11 @@ UseNewDefaultFonts( On )
 #include "Path.agc"
 #include "Miscellaneous.agc"
 
-
 //~ WaterTest()
 //~ SwarmTest()
 //~ ParticleTest()
 //~ DisruptorTest()
+
 
 Main()
 
@@ -79,7 +79,6 @@ function Main()
 		Turn()
 	loop
 endfunction
-
 
 
 `COMMON FUNCTIONS
@@ -261,23 +260,23 @@ function EndAttack( attID, defID, Attacker ref as tankType[], Defender ref as ta
 endfunction
 
 function ShowInfoTables()
-	ButtonState(XButt.ID,On)
-	ButtonState(ArrowRightButt.ID,On)
-	ButtonState(InfoButt.ID,Off)
-	i1 = CreateSprite(InstructionImage1)
+	ButtonState( XButt.ID,On )
+	ButtonState( ArrowRightButt.ID,On )
+	ButtonState( InfoButt.ID,Off )
+	i1 = CreateSprite( InstructionImage1 )
 	SetSpriteDepth(i1,0)
-	SetSpriteSize(i1,MaxWidth,MaxHeight)
+	SetSpriteSize( i1,MaxWidth,MaxHeight )
 	SetSpritePosition(i1,0,0)
-	i2 = CreateSprite(InstructionImage2)
+	i2 = CreateSprite( InstructionImage2 )
 	SetSpriteDepth(i2,0)
-	SetSpriteSize(i2,MaxWidth,MaxHeight)
+	SetSpriteSize( i2,MaxWidth,MaxHeight )
 	SetSpritePosition(i2,0,0)
 	SetSpriteVisible(i2,Off)
 	SetSpriteVisible(i1,On)
 	repeat
 		PinchToZoom()
 		Sync()
-		if GetVirtualButtonReleased(ArrowRightButt.ID)
+		if GetVirtualButtonReleased( ArrowRightButt.ID ) or GetRawKeyPressed( RightArrow )
 			PlaySound( ClickSound,vol )
 			if GetSpriteVisible(i1)
 				SetSpriteVisible(i1,Off)
@@ -287,14 +286,14 @@ function ShowInfoTables()
 				SetSpriteVisible(i1,On)
 			endif
 		endif
-	until GetVirtualButtonReleased(XButt.ID)
+	until GetVirtualButtonReleased( XButt.ID ) or GetRawKeyPressed( Enter )
 	PlaySound( ClickSound,vol )
 	Zoom(1,0,0,On,1)
 	DeleteSprite(i1)
 	DeleteSprite(i2)
-	ButtonState(InfoButt.ID,On)
-	ButtonState(XButt.ID,Off)
-	ButtonState(ArrowRightButt.ID,Off)
+	ButtonState( InfoButt.ID,On )
+	ButtonState( XButt.ID,Off )
+	ButtonState( ArrowRightButt.ID,Off )
 endfunction
 
 function LayMine(ID,Tank ref as tankType[],node)
@@ -965,6 +964,19 @@ VICTORY CONDITIONS:
 
 
 FIXED?
+		--- SET STARTING BASEPRODVALUE
+		--- UPDATE SETTINGS SCREEN TO REFLECT BASEPRODVALUE
+		--- SET LOAD/SAVE TO STORE BASE PRODUCTION VALUE
+		--- BASE PRODUCTION IS STILL FUCKED UP !!!!!!
+		--- AI NOT CAPTURING BASES????!!!!
+		--- CROOKED HOVERCRAFT TURRET ANGLES
+		--- CAN SET TO 0 BASES/DEPOTS!!!\
+		--- LOS STILL BLOCKED!! -MAKE SURE TO NOBLOCK ALL SPRITES
+		--- TANKS PRODUCED IN THE UPPER LEFT OF THE BOARD!!!!!!!!!!!!!!?????????????
+		--- UNITS CAN STILL FIRE AND MOVE WHEN STUNNED!!!!! -- HAS TO DO WITH THE ORDER OF STUN COUNTDOWN FOR PLAYER ?
+		--- FIX CANCEL & ACCEPT BUTTON POSITION
+		--- MAX BASES/DEPOTS SHOULD BE 6 NOT 5
+
 		---BASECOUNTS ARE CAUSING BASE CAPTURE/END GAME PROBLEMS!!!!!! - review PlayerBaseCount and AIBaseCount routines
 			ARRAY INDEX OUT OF BOUNDS!!!!
 			TRY INSERTING NEWLY CAPTURED BASES INTO ATTACKER ARRAY, AND DELETE FROM DEFENDER

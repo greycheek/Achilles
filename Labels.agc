@@ -375,7 +375,7 @@ cost$[6,0] = "UNIT COST  150"
 
 `TANKS
 
-#constant UnitLimit 9
+#constant UnitLimit 10
 
 global BarHeight as integer
 BarHeight = NodeSize * .75
