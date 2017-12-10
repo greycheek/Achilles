@@ -577,18 +577,14 @@ function BlockProduction()
 	PlaySound( ClickSound,vol )
 	TSize = 36*dev.scale
 	Text( LimitText,"Unit Maximum",alertDialog.x+TSize,alertDialog.y+TSize,50,50,50,TSize,255,0 )
-	SetVirtualButtonVisible( acceptButt.ID,On )
-		SetVirtualButtonActive( acceptButt.ID,On )
-	SetVirtualButtonSize( acceptButt.ID,dev.buttSize )
-	SetVirtualButtonPosition( acceptButt.ID,acceptButt.x,acceptButt.y )
 	AlertDialog( LimitText,On,alertDialog.x,alertDialog.y,alertDialog.w,alertDialog.h )
+	SetVirtualButtonPosition( cancelButt.ID,alertDialog.accept.x,alertDialog.accept.y )
 	repeat
 		Sync()
-	until GetVirtualButtonPressed( acceptButt.ID ) or GetRawKeyState( Enter )
+	until GetVirtualButtonPressed( cancelButt.ID ) or GetRawKeyState( Enter )
+	WaitForButtonRelease( cancelButt.ID )
 	PlaySound( ClickSound,vol )
-	SetVirtualButtonVisible( acceptButt.ID,Off )
-		SetVirtualButtonActive( acceptButt.ID,Off )
-
+	SetVirtualButtonPosition( cancelButt.ID,cancelButt.X,cancelButt.Y )
 	AlertDialog( LimitText,Off,alertDialog.x,alertDialog.y,alertDialog.w,alertDialog.h )
 endfunction
 

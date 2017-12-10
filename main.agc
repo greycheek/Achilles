@@ -16,8 +16,6 @@ remstart
 			--VERY REPETITIVE MOVEMENT PATTERNS??
 	--- RESET MOVEMENT WHEN BLOCKED
 
-	--- UNIT MAXIMUM INTERFACE WITH NO ACCEPT BUTTON
-
 	FIXED?
 
 	FUTURE
@@ -33,6 +31,7 @@ remstart
 remend
 
 `ASCII()
+
 
 SetVirtualResolution( MaxWidth,MaxHeight )
 SetWindowSize( MaxWidth,MaxHeight,1,1 )
@@ -66,7 +65,7 @@ endif
 //~ SwarmTest()
 //~ ParticleTest()
 //~ DisruptorTest()
-
+//~ BlockProduction() : end
 
 Main()
 
