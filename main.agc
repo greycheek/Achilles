@@ -5,18 +5,26 @@ remstart
 	Two ways to win - base capture, or eliminate all enemy units
 
 	ISSUES/REVISIONS
-	--- SOME SPRITECONS DONT CHANGE COLOR?!
-	--- HEALTH BARS NOT RESETTING AFTER DEPOT VISIT????!
-
 	--- BETTER AI DECISIONS?
 			BASE PROTECT - DONT LEAVE A BASE WHEN THREATENED
 			BASE CAPTURE
 			PLACEMENT RELATIVE TO ENEMY
 			ENGINEER PROTECTION
 			--VERY REPETITIVE MOVEMENT PATTERNS??
-	--- RESET MOVEMENT WHEN BLOCKED
+
+	--- PLAYER and AI TANKS ARE SOMETIMES STUCK - BLOCKAGE BY OTHER TANKS? -- RESET MOVEMENT WHEN BLOCKED?
+	--- SELECTING A MOVEMENT SQUARE GENERATES "OUT OF REACH" MESSAGE
+
+	--- SPRITECONS  BEHAVING STRANGELY - STICK TO SCREEN - UNITS NOT SELECTED SHOW UP IN GAME (MEDIUM TANK?)
 
 	FIXED?
+	--- SHOOTING OUT OF TREES IS SOMETIMES BLOCKED!!
+	--- UNITS CAN SELECT TARGETS IN TREES!!  - RELATED TO DLS??
+	--- LASERS (MISSILES?) FIRE OUT OF RANGE!!!
+	--- "SetTextVisible( MapText,state )" IN MAIN MENU > ALERT DIALOG??
+	--- MAJOR HOVERCRAFT MOVEMENT BUG!!!! - CAN MOVE ON TOP OF ONE ANOTHER - MOVEMENT DOESN'T CANCEL??????
+	--- SOME SPRITECONS DONT CHANGE COLOR?!
+	--- HEALTH BARS NOT RESETTING AFTER DEPOT VISIT????!
 
 	FUTURE
 		getspriteincircle vs getspriteinbox??
@@ -32,17 +40,21 @@ remend
 
 `ASCII()
 
-
 SetVirtualResolution( MaxWidth,MaxHeight )
 SetWindowSize( MaxWidth,MaxHeight,1,1 )
-SetOrientationAllowed( 0, 0, 1, 1 )
 MaximizeWindow()
 SetWindowPosition( 0,0 )
+SetOrientationAllowed( 0, 0, 1, 1 )
 //~ LoadFont( Gill,"GillSans.ttf" )
 LoadFont( Avenir,"Avenir Next.ttc" )
 UseNewDefaultFonts( On )
 if dev.device = "windows" then video$ = "Greycheek.wmv" else video$ = "Greycheek.mp4"
+SetPhysicsWallTop(Off)
+SetPhysicsWallBottom(Off)
+SetPhysicsWallLeft(Off)
+SetPhysicsWallRight(Off)
 
+remstart	TURN THIS BACK ON
 if  LoadVideo( video$ )
 	PlayVideo()
 	while GetVideoPlaying()
@@ -51,6 +63,7 @@ if  LoadVideo( video$ )
 	endwhile
 	DeleteVideo()
 endif
+remend
 
 #insert "Labels.agc"
 #include "Settings.agc"
@@ -83,18 +96,87 @@ endfunction
 `COMMON FUNCTIONS
 
 function Turn()
+	if Events then EventCheck()
 	inc turns
-	inc PlayerProdUnits,(PlayerBaseCount+1)*BaseProdValue
-	inc AIProdUnits,(AIBaseCount+1)*BaseProdValue
 	ShowInfo(On)
 	Sync()
 endfunction
 
+function EventCheck()
+	reinforce = 1
+	weather = 1
+	casualties = Null
+	Event$ = RandomEvent[ Random2(0,EventNum-1) ]
+	select Event$
+		case Weather$
+			PlaySound(LightningSound)
+			weather = .5
+			EventDialog( Weather$,"Movement halved" )
+		endcase
+		case Casualty$
+			casualties = 1
+			EventDialog( Casualty$,"Production halted" )
+		endcase
+		case Reinforcement$
+			reinforce = 2
+			EventDialog( Reinforcement$,"Production doubled" )
+		endcase
+		case Supply$
+			EventDialog( Supply$,"All units repaired" )
+			for i = 0 to PlayerLast
+				if PlayerTank[i].alive then Repair(i,PlayerTank,PlayerDepotNode,PlayerTank[i].maximumHealth)
+			next i
+			for i = 0 to AIPlayerLast
+				if AITank[i].alive then Repair(i,AITank,AIDepotNode,AITank[i].maximumHealth)
+			next i
+		endcase
+		case Sabotage$
+			if (PlayerCount > 1) and Random2(0,1)
+				ID = RandomUnit(PlayerTank,PlayerLast)
+				EventDialog( Sabotage$,"One unit destroyed" )
+				KillTank(ID,PlayerTank)
+			elseif AICount > 1
+				ID = RandomUnit(AITank,AIPlayerLast)
+				EventDialog( Sabotage$,"One unit destroyed" )
+				KillTank(ID,AITank)
+			endif
+		endcase
+	endselect
+	inc PlayerProdUnits,(PlayerBaseCount+1)*BaseProdValue * reinforce
+	inc AIProdUnits,(AIBaseCount+1)*BaseProdValue * reinforce
+endfunction
+
+function RandomUnit(Tank as tanktype[],last)
+	unit as integer[]
+	for i = 0 to last
+		if Tank[i].alive then unit.insert(i)
+	next i
+	ID = unit[Random2(0,unit.length)]
+endfunction ID
+
+function EventDialog(t1$,t2$)
+	TSize = 32*dev.scale
+	t1 = CreateText(t1$)
+	t2 = CreateText(t2$)
+	SetText( t1,alertDialog.x,alertDialog.y+TSize,255,25,25,TSize,255,0 )
+	SetText( t2,alertDialog.x,alertDialog.y+(TSize*3),50,50,50,TSize,255,0 )
+	AlertDialog( t1,On,alertDialog.x-TSize,alertDialog.y,alertDialog.w+(TSize*2),alertDialog.h )
+	SetVirtualButtonPosition( cancelButt.ID,alertDialog.accept.x+TSize,alertDialog.accept.y )
+	repeat
+		Sync()
+	until GetVirtualButtonPressed( cancelButt.ID ) or GetRawKeyState( Enter )
+	WaitForButtonRelease( cancelButt.ID )
+	PlaySound( ClickSound,vol )
+	SetVirtualButtonPosition( cancelButt.ID,cancelButt.X,cancelButt.Y )
+	AlertDialog( t1,Off,alertDialog.x,alertDialog.y,alertDialog.w,alertDialog.h )
+	DeleteText(t2)
+endfunction
+
 function SetFOWbox( ID, Tank as tankType[] )
-	box.x1 = Min(NodeSize,Tank[ID].x - Tank[ID].FOWOffset)
-	box.y1 = Min(NodeSize,Tank[ID].y - Tank[ID].FOWOffset)
-	box.x2 = Max(MapWidth,Tank[ID].x + Tank[ID].FOWOffset)
-	box.y2 = Max(MapHeight,Tank[ID].y + Tank[ID].FOWOffset)
+	box.x1 = Min(NodeSize,Tank[ID].x - (floor(Tank[ID].FOWOffset*weather)))
+	box.y1 = Min(NodeSize,Tank[ID].y - (floor(Tank[ID].FOWOffset*weather)))
+	box.x2 = Max(MapWidth,Tank[ID].x + (floor(Tank[ID].FOWOffset*weather)))
+	box.y2 = Max(MapHeight,Tank[ID].y + (floor(Tank[ID].FOWOffset*weather)))
 endfunction
 
 function LegalMove(node,team)
@@ -193,11 +275,26 @@ function RevealAIUnit(ID)
 	HealthBar(ID,AITank)
 endfunction
 
+remstart
 function LOSblocked(x1,y1,x2,y2)
 	if PhysicsRayCastCategory(Block,x1,y1,x2,y2)
 		if VectorDistance(x1,y1,x2,y2) > DLS then exitfunction True else exitfunction False  `adjacent nodes are always in LOS
 	endif
 endfunction False
+remend
+
+//~ remstart
+function LOSblocked(x1,y1,x2,y2)
+	if PhysicsRayCastCategory(Block,x1,y1,x2,y2)
+		node1 = CalcNodeFromScreen(x1,y1)
+		node2 = CalcNodeFromScreen(x2,y2)
+		select node1-node2 `adjacent nodes are always in LOS
+			case south,southeast,west,northeast,north,northwest,east,southwest : exitfunction False : endcase
+		endselect
+		exitfunction True
+	endif
+endfunction False
+//~ remend
 
 function RotateTurret(ID,Tank ref as tankType[],x2,y2)
 	x1 = Tank[ID].x
@@ -349,48 +446,44 @@ function MineField(ID, Tank ref as tankType[])
 	endif
 endfunction False
 
-function RepairDepot(ID,Tank ref as tankType[],depotNode as depotType[],depot,healthMax as float )
+function Repair(ID,Tank ref as tankType[],depotNode as depotType[],healthMax as float )
 	brightness as integer
 	offset as integer
-	if maptable[Tank[ID].parentNode[Tank[ID].index]].terrain = depot
-		if GetSpriteVisible(Tank[ID].bodyID)
-			if (Tank[ID].health < healthMax) or (Tank[ID].missiles < Tank[ID].rounds) or (Tank[ID].mines < Tank[ID].rounds) or (Tank[ID].charges < Tank[ID].rounds)
-				PlaySound( HealSound,vol )
-				depotID = depotNode[ maptable[Tank[ID].parentNode[Tank[ID].index]].depotID ].spriteID
-				fullScale = ceil(DepotSize*2.5)
-				halfway = fullScale/2
-				alpha = FullAlpha
-				brightness = (FullAlpha/fullScale)*2
-				SetSpriteDepth(depotID,0)
-				r = GetSpriteColorRed(depotID) : g = GetSpriteColorGreen(depotID) : b = GetSpriteColorBlue(depotID)
-				SetSpriteColor(depotID,255,255,255,FullAlpha)
-				SetSpriteColorAlpha(Tank[ID].bodyID,128)
-				SetSpriteColorAlpha(Tank[ID].turretID,128)
-				for i = 1 to fullScale
-					if i > halfway then dec alpha,brightness
-					offset = ceil(i/2)
-					SetSpriteSize(depotID,i,i)
-					SetSpriteColorAlpha(depotID,alpha)
-					SetSpritePosition(depotID,Tank[ID].x-offset,Tank[ID].y-offset)
-					Sync()
-				next i
-				SetSpritePosition(depotID,Tank[ID].x-depotOffset,Tank[ID].y-depotOffset)
-				SetSpriteSize(depotID,DepotSize,DepotSize)
-				SetSpriteDepth(depotID,DepotDepth)
-				SetSpriteColor(depotID,r,g,b,FullAlpha)
-				SetSpriteColorAlpha(Tank[ID].bodyID,FullAlpha)
-				SetSpriteColorAlpha(Tank[ID].turretID,FullAlpha)
-			endif
-		endif
-		Tank[ID].health = healthMax
-		Tank[ID].missiles = Tank[ID].rounds
-		Tank[ID].mines = Tank[ID].rounds
-		Tank[ID].charges = Tank[ID].rounds
-		if Tank[ID].team = PlayerTeam
-			WeaponButtons(ID,Tank[ID].vehicle)
-			HealthBar(ID,Tank)
+	if GetSpriteVisible(Tank[ID].bodyID)
+		if (Tank[ID].health < healthMax) or (Tank[ID].missiles < Tank[ID].rounds) or (Tank[ID].mines < Tank[ID].rounds) or (Tank[ID].charges < Tank[ID].rounds)
+			PlaySound( HealSound,vol )
+			cross = CreateSprite( depotNode[ID].spriteID )
+			fullScale = ceil(DepotSize*2.5)
+			halfway = fullScale/2
+			alpha = FullAlpha
+			brightness = (FullAlpha/fullScale)*2
+			SetSpriteDepth(cross,0)
+			SetSpriteColor(cross,255,255,255,FullAlpha)
+			SetSpriteColorAlpha(Tank[ID].bodyID,128)
+			SetSpriteColorAlpha(Tank[ID].turretID,128)
+			for i = 1 to fullScale
+				if i > halfway then dec alpha,brightness
+				offset = ceil(i/2)
+				SetSpriteSize(cross,i,i)
+				SetSpriteColorAlpha(cross,alpha)
+				SetSpritePosition(cross,Tank[ID].x-offset,Tank[ID].y-offset)
+				Sync()
+			next i
+			DeleteSprite(cross)
+			SetSpriteColorAlpha(Tank[ID].bodyID,FullAlpha)
+			SetSpriteColorAlpha(Tank[ID].turretID,FullAlpha)
 		endif
 	endif
+	Tank[ID].health = healthMax
+	Tank[ID].missiles = Tank[ID].rounds
+	Tank[ID].mines = Tank[ID].rounds
+	Tank[ID].charges = Tank[ID].rounds
+	if Tank[ID].team = PlayerTeam then WeaponButtons(ID,Tank[ID].vehicle)
+	if not GetSpriteVisible(Tank[ID].bodyID) then exitfunction
+	HealthBar(ID,Tank)
+endfunction
+
+function Heal(ID,Tank ref as tankType[],depotNode as depotType[],depot,healthMax as float)
 endfunction
 
 function HealthBar(ID,Tank ref as tankType[])
@@ -1019,6 +1112,21 @@ FIXED?
 disrupt:
 			if Attacker[attID].bodyID = Defender[i].bodyID then continue
 
+
+function BlockProduction()
+	PlaySound( ClickSound,vol )
+	TSize = 36*dev.scale
+	Text( LimitText,"Unit Maximum",alertDialog.x+TSize,alertDialog.y+TSize,50,50,50,TSize,255,0 )
+	AlertDialog( LimitText,On,alertDialog.x,alertDialog.y,alertDialog.w,alertDialog.h )
+	SetVirtualButtonPosition( cancelButt.ID,alertDialog.accept.x,alertDialog.accept.y )
+	repeat
+		Sync()
+	until GetVirtualButtonPressed( cancelButt.ID ) or GetRawKeyState( Enter )
+	WaitForButtonRelease( cancelButt.ID )
+	PlaySound( ClickSound,vol )
+	SetVirtualButtonPosition( cancelButt.ID,cancelButt.X,cancelButt.Y )
+	AlertDialog( LimitText,Off,alertDialog.x,alertDialog.y,alertDialog.w,alertDialog.h )
+endfunction
 
 function GameOver( textID,spinID,r,g,b,spinR,spinG,spinB,message$,sound )
 	#constant startSize 750

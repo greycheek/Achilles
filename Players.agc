@@ -397,9 +397,10 @@ function CancelMove( ID,Tank ref as tankType[] )
 	SetSpriteVisible(Tank[ID].hilite,Off)
 	MaxAlpha(ID)
 	if Tank[ID].moveTarget then mapTable[Tank[ID].moveTarget].moveTarget = False
-	if Tank[ID].vehicle = Hovercraft then exitfunction
 
 	Tank[ID].goalNode = Tank[ID].parentNode[Tank[ID].index]
+		if Tank[ID].vehicle = Hovercraft then exitfunction
+
 	ResetPath(ID,Tank)
 	AStar(ID,Tank)
 endfunction
@@ -472,7 +473,9 @@ function GetInput()
 				next i
 			elseif baseID and ( selection = Undefined ) and ( mapTable[pointerNode].moveTarget = False )
 				if PlayerSurviving = UnitLimit
-					BlockProduction()
+					EventDialog("Unit Maximum",Null$)
+				elseif casualties
+					EventDialog(Casualty$,"Production halted")
 				else
 					Markers(Off)
 					selection = BaseProduction( pointerNode )
@@ -573,21 +576,6 @@ function GetInput()
 	Zoom(1,0,0,On,1) `TURN THIS OFF FOR CONTINUOS ZOOM OPERATION
 endfunction
 
-function BlockProduction()
-	PlaySound( ClickSound,vol )
-	TSize = 36*dev.scale
-	Text( LimitText,"Unit Maximum",alertDialog.x+TSize,alertDialog.y+TSize,50,50,50,TSize,255,0 )
-	AlertDialog( LimitText,On,alertDialog.x,alertDialog.y,alertDialog.w,alertDialog.h )
-	SetVirtualButtonPosition( cancelButt.ID,alertDialog.accept.x,alertDialog.accept.y )
-	repeat
-		Sync()
-	until GetVirtualButtonPressed( cancelButt.ID ) or GetRawKeyState( Enter )
-	WaitForButtonRelease( cancelButt.ID )
-	PlaySound( ClickSound,vol )
-	SetVirtualButtonPosition( cancelButt.ID,cancelButt.X,cancelButt.Y )
-	AlertDialog( LimitText,Off,alertDialog.x,alertDialog.y,alertDialog.w,alertDialog.h )
-endfunction
-
 function Zoom(z,vx#,vy#,state,scale)
 	SetViewZoom(z)
 	SetViewOffset(vx#,vy#)
@@ -631,7 +619,7 @@ function PlayerAim( ID,x1,y1 )
 
 			if GetSpriteVisible( AITank[i].bodyID ) `VISIBILITY CHECK
 				select PlayerTank[ID].weapon
-					case cannon,heavyCannon,disruptor,missile,machineGun
+					case cannon,heavyCannon,disruptor,machineGun
 						if VectorDistance(x1,y1,x2,y2) > PlayerTank[ID].range
 							DisplayError(OutofRangeText,"out of range")
 							exitfunction
@@ -764,7 +752,9 @@ function PlayerOps()
 		if PlayerTank[i].alive
 			HealthBar(i,PlayerTank)
 			PlayerTank[i].moves = 0	  `Reset for next turn
-			RepairDepot(i,PlayerTank,PlayerDepotNode,PlayerDepot,PlayerTank[i].maximumHealth) `at depot?
+			if maptable[ PlayerTank[i].parentNode[PlayerTank[i].index] ].terrain = PlayerDepot
+				Repair(i,PlayerTank,PlayerDepotNode,PlayerTank[i].maximumHealth) `at depot?
+			endif
 		endif
 		if PlayerTank[i].Vehicle = Hovercraft then Hover( i,PlayerTank )
 	next i

@@ -32,6 +32,7 @@ splash_960_path=
 uses_ads=0
 version_number=
 firebase_config_path=
+splash_2436_path=
 
 [html5_settings]
 commands_used=0
@@ -54,15 +55,15 @@ FILE_11=MainMenu.agc;-1
 FILE_12=PinchZoom.agc;-1
 
 [files]
-FILE_NAME_0=0;main.agc;510;4
-FILE_NAME_1=0;Path.agc;4293;7
-FILE_NAME_2=0;AI.agc;2230;6
-FILE_NAME_3=0;Initialize.agc;7936;3
-FILE_NAME_4=0;Miscellaneous.agc;534;8
-FILE_NAME_5=0;Players.agc;15436;5
-FILE_NAME_6=0;Settings.agc;11327;1
-FILE_NAME_7=0;Labels.agc;30672;0
-FILE_NAME_8=1;MainMenu.agc;20839;2
+FILE_NAME_0=1;main.agc;7588;4
+FILE_NAME_1=0;Path.agc;414;7
+FILE_NAME_2=0;AI.agc;3766;6
+FILE_NAME_3=0;Initialize.agc;10201;3
+FILE_NAME_4=0;Miscellaneous.agc;579;8
+FILE_NAME_5=0;Players.agc;17972;5
+FILE_NAME_6=0;Settings.agc;6412;1
+FILE_NAME_7=0;Labels.agc;1026;0
+FILE_NAME_8=0;MainMenu.agc;1;2
 
 [project]
 description=

@@ -15,6 +15,7 @@
 #constant HalfAlpha 128
 #constant NoBlock %1000000000000000
 #constant Block	  %0000000000000100
+#constant Null$ ""
 
 global zoomFactor as float = 1.0
 global lastX as float
@@ -258,6 +259,15 @@ endfunction ID
 
 function Text(ID,text$,x,y,r,g,b,size,alpha,align)
 	CreateText(ID,text$)
+	SetTextAlignment(ID,align)
+	SetTextSize(ID,size)
+	SetTextPosition(ID,x,y)
+	SetTextSpacing(ID,1)
+	SetTextDepth(ID,0)
+	SetTextColor(ID,r,g,b,alpha)
+endfunction
+
+function SetText(ID,x,y,r,g,b,size,alpha,align)
 	SetTextAlignment(ID,align)
 	SetTextSize(ID,size)
 	SetTextPosition(ID,x,y)

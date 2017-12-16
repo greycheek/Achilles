@@ -14,7 +14,7 @@ function AStar( ID, Tank ref as tankType[] )
 			exitfunction NoPath
 		elseif Tank[ID].team = PlayerTeam
 			inc Tank[ID].totalTerrainCost,terrainCost
-			if Tank[ID].totalTerrainCost > Tank[ID].movesAllowed
+			if Tank[ID].totalTerrainCost > (floor(Tank[ID].movesAllowed * weather))
 				Tank[ID].node = currentnode
 				exitfunction OutOfReach
 			endif

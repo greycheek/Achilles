@@ -36,12 +36,14 @@ endfunction ID
 
 function AIBaseProduction()
 	i = Random2(0,AIBaseCount)
-	if AIProdUnits > 0
-		if maptable[AIBases[i].node].team = Unoccupied
-			randomUnitType = Random2( HoverCraft,Engineer )
-			if ( AIProdUnits - unitCost[randomUnitType] ) >= 0
-				ID = AISpawn( randomUnitType,AIBases[i].node )
-				if AIFOW(ID) then Produce( ID,AITank,1,1,AIBases[i].spriteID,pickAI )
+	if not casualties
+		if AIProdUnits > 0
+			if maptable[AIBases[i].node].team = Unoccupied
+				randomUnitType = Random2( HoverCraft,Engineer )
+				if ( AIProdUnits - unitCost[randomUnitType] ) >= 0
+					ID = AISpawn( randomUnitType,AIBases[i].node )
+					if AIFOW(ID) then Produce( ID,AITank,1,1,AIBases[i].spriteID,pickAI )
+				endif
 			endif
 		endif
 	endif
@@ -299,10 +301,10 @@ endfunction
 
 function Patrol(ID)
 	SetFOWbox( ID,AITank )
-	vector = Random2( 0,7 )           					    `Random start vector
-	for radius = AITank[ID].movesAllowed to 1 Step -1 	    `Out to in linear search radius
-		for i = 0 to 7           						    `Circular search
-			x = (patrolScanX[vector+i]*radius)+AITank[ID].x  `Next inward vector
+	vector = Random2( 0,7 )           					    			`Random start vector
+	for radius = (floor(AITank[ID].movesAllowed * weather)) to 1 Step -1 	    `Out to in linear search radius
+		for i = 0 to 7           						    			`Circular search
+			x = (patrolScanX[vector+i]*radius)+AITank[ID].x  			`Next inward vector
 			y = (patrolScanY[vector+i]*radius)+AITank[ID].y
 			if (x > box.x2) or (x < box.x1) then continue
 			if (y > box.y2) or (y < box.y1) then continue
@@ -350,7 +352,7 @@ function AIOps()
 				nextMove = AITank[i].parentNode[AITank[i].index+1]
 
 				if mapTable[nextMove].team = Unoccupied
-					if AITank[i].totalTerrainCost >= AITank[i].movesAllowed
+					if AITank[i].totalTerrainCost >= (floor(AITank[i].movesAllowed * weather))
 						exit
 					elseif AITank[i].parentNode[AITank[i].index] = AITank[i].goalNode `is this necessary?
 						exit
@@ -376,7 +378,10 @@ function AIOps()
 	DeleteText(MovingText)
 	for i = 0 to AIPlayerLast
 		if not AITank[i].alive then continue
-		RepairDepot( i,AITank,AIDepotNode,AIDepot,AITank[i].maximumHealth ) `at depot?
+			if maptable[ AITank[i].parentNode[AITank[i].index] ].terrain = AIDepot
+				Repair(i,AITank,AIDepotNode,AITank[i].maximumHealth) `at depot?
+			endif
+
 		AIFOW(i)
 	next i
 	SetRawMouseVisible(On)

@@ -127,7 +127,7 @@ function AlertDialog( text,state,x,y,w,h )
 		DeleteText( text )
 		DeleteSprite( AlertBackGround )
 	else
-		SetTextVisible( MapText,state )
+				SetTextVisible( text,state )
 		SetupSprite( AlertBackGround,AlertBackGround,"Yes-NoBkgnd.png",x,y,w,h,0,Off,0 )
 	endif
 	SetSpriteActive( AlertBackGround,state )
@@ -152,10 +152,13 @@ function CreateGrid(state)
 		SetTextDepth(SoundText,1)
 		Text(ProdUnitText,"Production Units/Base",MusicScale.x,Button5.y-(dev.buttSize*1.1),0,0,0,30,255,0)
 		SetTextDepth(ProdUnitText,1)
+		Text(ONOFFText,"Random Events",ONOFF.tx,ONOFF.ty,0,0,0,30,255,0)
+		SetTextDepth(ONOFFText,1)
 	else
 		DeleteText(MusicText)
 		DeleteText(SoundText)
 		DeleteText(ProdUnitText)
+		DeleteText(ONOFFText)
 	endif
 endfunction
 
@@ -201,6 +204,9 @@ function DisplaySettings(state)
 	SetVirtualButtonActive( Button15.ID,state )
 	SetVirtualButtonActive( Button20.ID,state )
 	SetVirtualButtonActive( Button25.ID,state )
+
+	SetVirtualButtonVisible( ONOFF.ID,state )
+	SetVirtualButtonActive( ONOFF.ID,state )
 
 	SetProductionButtons(BaseProdValue)
 	CreateGrid(state)
@@ -268,6 +274,9 @@ function ReDisplaySettings(state)
 	SetVirtualButtonActive( Button20.ID,state )
 	SetVirtualButtonActive( Button25.ID,state )
 
+	SetVirtualButtonVisible( ONOFF.ID,state )
+	SetVirtualButtonActive( ONOFF.ID,state )
+
 	SetProductionButtons(BaseProdValue)
 	CreateGrid(state)
 endfunction
@@ -320,7 +329,7 @@ function SliderInput( Slide ref as sliderType, Scale as sliderType )
 	SetRawMouseVisible( On )
 	x# = Slide.X - Scale.x
 	select Slide.ID
-		case SoundSlide.ID,MusicSlide.ID : x# = (x#/SpectrumW)*100 : endcase
+		case SoundSlide.ID,MusicSlide.ID : x# = (x#/Scale.w)*100 : endcase
 	endselect
 endfunction x#
 
@@ -341,12 +350,13 @@ function Compose()
 					endwhile
 					Stats( Null,Null,Null,Null,Null )
 					SetSpriteSize( clone,SpriteConSize,SpriteConSize )
-					SetRawMouseVisible( On )
+
 					for i = 1 to 7
 						if hit = SpriteCon[i].ID  `identify vehicle type
 							GridCheck( clone,i ) : exit
 						endif
 					next i
+								SetRawMouseVisible( On )
 				endcase
 				case AISpectrumSprite
 					pickAI.satur = abs(cy1-y)/100
@@ -397,6 +407,15 @@ function Compose()
 			SetProductionButtons(20)
 		elseif GetVirtualButtonReleased(Button25.ID)
 			SetProductionButtons(25)
+		elseif GetVirtualButtonReleased(ONOFF.ID)
+			PlaySound(ClickSound)
+			if Events
+				Events = Off
+				SetVirtualButtonImageUp(ONOFF.ID,ONOFF.UP)
+			else
+				Events = On
+				SetVirtualButtonImageUp(ONOFF.ID,ONOFF.DN)
+			endif
 		endif
 
 		Sync()
@@ -428,6 +447,7 @@ function Compose()
 				endif
 
 				Sync()
+
 				if GetVirtualButtonReleased( ImpassButt.ID )
 					PlaySound( ClickSound )
 					if mapImpass
@@ -607,8 +627,10 @@ function LoadMap( map$ )
 	next i
 	`SETTINGS
 	LoadForce( MapFile )
-			BaseProdValue = ReadInteger( MapFile )
-			SetProductionButtons(BaseProdValue)
+	BaseProdValue = ReadInteger( MapFile )
+	SetProductionButtons(BaseProdValue)
+			Events = ReadInteger( MapFile )
+			if Events then SetVirtualButtonImageUp( ONOFF.ID,ONOFF.DN ) else SetVirtualButtonImageUp( ONOFF.ID,ONOFF.UP )
 
 	CloseFile( MapFile )
 			//~ SetDisplayAspect(AspectRatio)  `back to map aspect ratio
@@ -649,7 +671,8 @@ function SaveMap( map$ )
 	WriteInteger( file,pickPL.r ) : WriteInteger( file,pickPL.g ) : WriteInteger( file,pickPL.b ) : WriteInteger( file,pickPL.a )
 	for i = 0 to Cells-1 : WriteInteger( file,AIGrid[i].vehicle ) : next i
 	for i = 0 to Cells-1 : WriteInteger( file,PlayerGrid[i].vehicle ) : next i
-			WriteInteger( file,BaseProdValue )
+	WriteInteger( file,BaseProdValue )
+			WriteInteger( file,Events )
 	CloseFile( file )
 endfunction True
 
@@ -823,6 +846,7 @@ function GameSetup()
 	DeleteText( VersionText )
 	DeleteSprite( MechGuy[0].bodyID )
 	DeleteSprite( MechGuy[0].turretID )
+	DeleteSprite( Logo )
 	SetSpriteActive( Dialog,Off )
 	SetSpriteActive( Splash,Off )
 	SetSpriteVisible( Dialog,Off )

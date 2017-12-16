@@ -142,12 +142,16 @@ function GenerateImpassables()
 						SetSpritePositionByOffset( Impass,mapTable[columnNode].x,mapTable[columnNode].y )
 						DrawSprite( Impass )
 						AddSpriteShapeBox( impassDummy,x,y,x+NodeSize-1,y+NodeSize-1,0 )
+						SetSpritePhysicsOn( impassDummy,1 )
+						SetSpriteCategoryBits( impassDummy,Block )
 					endcase
 					case Water
 						mapTable[columnNode].terrain = Water
 						SetSpritePositionByOffset( AcquaSprite,mapTable[columnNode].x,mapTable[columnNode].y )
 						DrawSprite( AcquaSprite )
 						AddSpriteShapeBox( waterDummy,x,y,x+NodeSize-1,y+NodeSize-1,0 )
+						SetSpritePhysicsOn( waterDummy,1 )
+						SetSpriteCategoryBits( waterDummy,NoBlock )
 					endcase
 				endselect
 			next c
@@ -157,7 +161,7 @@ function GenerateImpassables()
 	SetSpriteVisible(AcquaSprite,Off)
 endfunction
 
-function GenerateMapFeature( i,feature,featureSprite,dummy,sliderQTY#,clumpModifier# )
+function GenerateMapFeature( i,feature,featureSprite,dummy,sliderQTY#,clumpModifier#,category )
 	if ( mapTable[i].terrain = Clear ) and ( mapTable[i].team = Unoccupied ) and ( mapTable[i].base = Empty )
 		for j = 0 to Cells-1
 			k = Max( MapSize-1,i+offset[j] )
@@ -173,6 +177,8 @@ function GenerateMapFeature( i,feature,featureSprite,dummy,sliderQTY#,clumpModif
 			x = mapTable[i].x-NodeOffset
 			y = mapTable[i].y-NodeOffset
 			AddSpriteShapeBox(dummy,x,y,x+NodeSize-1,y+NodeSize-1,0)
+			SetSpritePhysicsOn( dummy,1 )
+			SetSpriteCategoryBits( dummy,category )
 		endif
 	endif
 endfunction
@@ -218,20 +224,11 @@ function GenerateTerrain()
 	SetSpriteVisible( RoughSprite,On )
 	for i = FirstCell to MapSize-1
 		if Random2(1,100) > 50
-			GenerateMapFeature( i,Trees,TreeSprite,treeDummy,treeQty,treeClumpMod# )
+			GenerateMapFeature( i,Trees,TreeSprite,treeDummy,treeQty,treeClumpMod#,Block)
 		else
-			GenerateMapFeature( i,Rough,RoughSprite,roughDummy,roughQty,roughClumpMod# )
+			GenerateMapFeature( i,Rough,RoughSprite,roughDummy,roughQty,roughClumpMod#,NoBlock )
 		endif
 	next i
-
-	SetSpritePhysicsOn( impassDummy,1 )
-	SetSpritePhysicsOn( treeDummy,1 )
-	SetSpritePhysicsOn( roughDummy,1 )
-	SetSpritePhysicsOn( waterDummy,1 )
-	SetSpriteCategoryBits( impassDummy,Block )
-	SetSpriteCategoryBits( treeDummy,Block )
-	SetSpriteCategoryBits( roughDummy,NoBlock )
-	SetSpriteCategoryBits( waterDummy,NoBlock )
 
 	SetSpriteVisible( TreeSprite,Off )
 	SetSpriteVisible( RoughSprite,Off )
@@ -492,14 +489,21 @@ function Setup()
 	SetSpriteAnimation( Explode3,64,48,11 )
 	SetSpriteSize( Explode3,96,72 )
 
+	LogoImage = LoadImage("AchillesLogo.png")
+	Logo = CreateSprite( LogoImage )
+	SetSpriteVisible( Logo, On )
+	SetSpriteSize( Logo,1050,375 )
+	SetSpritePosition( Logo,(MaxWidth-GetSpriteWidth(Logo))/2,(MaxHeight-GetSpriteHeight(Logo))/2 )
+	SetSpriteDepth( Logo,0 )
+
    `SPLASHSCREEN
 
-	SetupSprite( Splash,Splash,"achillesRich.png",0,0,MaxWidth,MaxHeight,2,On,0 )
+	SetupSprite( Splash,Splash,"SplashScreen.png",0,0,MaxWidth,MaxHeight,2,On,0 )
 	SetupSprite( Dialog,Dialog,"SettingsDialog.png",0,0,MaxWidth,MaxHeight,1,Off,0 )
 	SetupSprite( BaseDialog,BaseDialog,"BaseDialog.png",0,0,MaxWidth,MaxHeight,1,Off,2 )
-			SetSpriteCategoryBits( Splash,NoBlock )
-			SetSpriteCategoryBits( Dialog,NoBlock )
-			SetSpriteCategoryBits( BaseDialog,NoBlock )
+	SetSpriteCategoryBits( Splash,NoBlock )
+	SetSpriteCategoryBits( Dialog,NoBlock )
+	SetSpriteCategoryBits( BaseDialog,NoBlock )
 
 	LoadButton(InfoButt.ID,InfoButt.UP,InfoButt.DN,"InfoUp.png","InfoDown.png",InfoButt.x,InfoButt.y,InfoButt.w,On)
 	LoadButton(XButt.ID,XButt.UP,XButt.DN,"Xup.png","Xdown.png",XButt.x,XButt.y,XButt.w,Off)
@@ -514,6 +518,8 @@ function Setup()
 	LoadButton(Button20.ID,Button20.UP,Button20.DN,"20UP.png","20DOWN.png",Button20.x,Button20.y,Button20.w,Off)
 	LoadButton(Button25.ID,Button25.UP,Button25.DN,"25UP.png","25DOWN.png",Button25.x,Button25.y,Button25.w,Off)
 
+	LoadButton(ONOFF.ID,ONOFF.UP,ONOFF.DN,"ONOFFUP.png","ONOFFDOWN.png",ONOFF.x,ONOFF.y,ONOFF.w,Off)
+	SetVirtualButtonImageUp(ONOFF.ID,ONOFF.DN)
 
 	LoadButton(acceptButt.ID,acceptButt.UP,acceptButt.DN,"CheckUp.png","CheckDown.png",acceptButt.x,acceptButt.y,acceptButt.w,On)
 	LoadButton(cancelButt.ID,cancelButt.UP,cancelButt.DN,"CancelUp.png","CancelDown2.png",cancelButt.x,cancelButt.y,cancelButt.w,On)
@@ -541,7 +547,7 @@ function Setup()
 
    `Sliders
 
-	LoadImage( MusicScale.ID,"Scale3.png" )
+	LoadImage( MusicScale.ID,"Scale5.png" )
 	CreateSprite( MusicScale.ID,MusicScale.ID )
 	SetSpriteSize( MusicScale.ID,MusicScale.w,MusicScale.h )
 	SetSpriteTransparency( MusicScale.ID,1 )
@@ -549,8 +555,6 @@ function Setup()
 	SetSpritePosition( MusicScale.ID,MusicScale.x,MusicScale.y )
 	SetSpriteDepth( MusicScale.ID,1 )
 			SetSpriteCategoryBits( MusicScale.ID,NoBlock )
-
-	MusicSlide.x = MusicScale.x+(MusicScale.w/2)-(MusicSlide.w/2)
 
 	CloneSprite( SoundScale.ID,MusicScale.ID )
 	SetSpritePosition( SoundScale.ID,SoundScale.x,SoundScale.y )
@@ -565,8 +569,6 @@ function Setup()
 	SetSpriteDepth( MusicSlide.ID,0 )
 	SetSpriteDepth( MusicScale.ID,1 )
 			SetSpriteCategoryBits( MusicSlide.ID,NoBlock )
-
-	SoundSlide.x = MusicSlide.x
 
 	CloneSprite( SoundSlide.ID,MusicSlide.ID )
 	SetSpritePosition( SoundSlide.ID,SoundSlide.x,SoundSlide.y )

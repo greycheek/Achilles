@@ -77,6 +77,27 @@ zoneRadius = FlyRadius * NodeSize
 #constant Complete 1
 #constant BarWidth 3	 `Health Bar
 
+#constant Supply$ = "Supply Boost!"		     `all units repaired and re-armed
+#constant Reinforcement$ = "Reinforcements!" `production units doubled
+#constant Weather$ = "Bad Weather!"		 	 `movement halved
+#constant Casualty$ = "High Casualties!"	 `production halted
+#constant Sabotage$ = "Sabotage!"			 `eliminate one random unit
+#constant EventNum 21
+
+global casualties as integer = Null
+global reinforce as integer = 1
+global weather as float = 1
+
+global Events as integer = On
+global Event$ as string = ""
+global RandomEvent as string[EventNum]
+RandomEvent[0] = Supply$
+RandomEvent[1] = Reinforcement$
+RandomEvent[2] = Weather$
+RandomEvent[3] = Casualty$
+RandomEvent[4] = Sabotage$
+
+
 global DLS as integer
 DLS = NodeSize*sqrt(2) `Diagonal Length of Square
 #constant DLSneg -64
@@ -121,7 +142,8 @@ global angle  as integer[8]=[0,45,90,135,180,225,270,315]
 #constant LimitText 22
 #constant ConfirmText 23
 #constant MapText 24
-		#constant ProdUnitText 25
+#constant ProdUnitText 25
+#constant ONOFFText 26
 
 #constant Gill 50
 #constant Avenir 60
@@ -246,6 +268,7 @@ global DisruptorSound
 global EngineSound
 global MachineGunSound
 global EnterSound
+global LightningSound
 
 BangSound = LoadSound("bang2.wav")
 BuildBaseSound = LoadSound( "HoverbikeEnd.wav" )
@@ -280,6 +303,7 @@ LockOnSound = LoadSoundOGG( "Locked On_01.ogg" )
 Silence = LoadSoundOGG( "Silent.ogg" )
 EngineSound = LoadSoundOGG( "Jet2_01.ogg" )
 MachineGunSound = LoadSoundOGG( "MachineGun.ogg" )
+LightningSound = LoadSoundOGG("LightningBolt.ogg")
 
 global vol as integer = 100
 global orders as integer[7] `OrderSounds + 1
@@ -315,6 +339,7 @@ function SoundVolume()
 	SetSoundInstanceVolume( EngineSound, vol )
 	SetSoundInstanceVolume( MachineGunSound, vol )
 	SetSoundInstanceVolume( EnterSound,vol )
+	SetSoundInstanceVolume( LightningSound,vol )
 	for i = 0 to OrderSounds
 		SetSoundInstanceRate( orders[i],.5 )
 		SetSoundInstanceVolume( orders[i],vol )
@@ -754,6 +779,8 @@ type buttonType
 	y as float
 	w as float
 	h as float
+	tx as float
+	ty as float
 endtype
 
 global acceptButt as buttonType
@@ -787,6 +814,7 @@ global Button10 as buttonType
 global Button15 as buttonType
 global Button20 as buttonType
 global Button25 as buttonType
+global ONOFF as buttonType
 
 type alertType
 	ID
@@ -1029,7 +1057,7 @@ WaterButt.w = dev.buttSize
 WaterButt.h = dev.buttSize
 
 InfoButt.ID = 24
-InfoButt.x = MiddleX	`-(dev.buttSize/2)
+InfoButt.x = MiddleX
 InfoButt.h = 52
 InfoButt.y = acceptButt.y + ((dev.buttSize-InfoButt.h)/2)
 InfoButt.w = dev.buttSize
@@ -1049,6 +1077,8 @@ Button10.ID = 28
 Button15.ID = 29
 Button20.ID = 30
 Button25.ID = 31
+
+ONOFF.ID = 32
 
 
 `button images
@@ -1200,20 +1230,24 @@ Button20.DN = InterfaceSeries+81
 Button25.UP = InterfaceSeries+82
 Button25.DN = InterfaceSeries+83
 
+ONOFF.UP = InterfaceSeries+84
+ONOFF.DN = InterfaceSeries+85
+
+
 
 MusicScale.x = MiddleX+95
 MusicScale.y = MiddleY+260
-MusicScale.w = 556
-MusicScale.h = 24
+MusicScale.w = 260
+MusicScale.h = 25
 MusicScale.tx = MusicScale.x
 MusicScale.ty = MusicScale.y-(MusicScale.h*1.25)
 
-SoundScale.x = MusicScale.x
-SoundScale.y = MusicScale.y+90
+SoundScale.x = MusicScale.x + MusicScale.w + 35
+SoundScale.y = MusicScale.y
 SoundScale.w = MusicScale.w
 SoundScale.h = MusicScale.h
-SoundScale.tx = MusicScale.x
-SoundScale.ty = SoundScale.y-(SoundScale.h*1.25)
+SoundScale.tx = SoundScale.x
+SoundScale.ty = MusicScale.ty
 
 MusicSlide.w = 70
 MusicSlide.h = 70
@@ -1222,9 +1256,8 @@ MusicSlide.y = MusicScale.y-(MusicSlide.h/3)
 
 SoundSlide.w = MusicSlide.w
 SoundSlide.h = MusicSlide.h
-SoundSlide.x = MusicSlide.x
-SoundSlide.y = MusicSlide.y+90
-
+SoundSlide.x = SoundScale.x+(SoundScale.w/2)-(SoundSlide.w/2)
+SoundSlide.y = MusicSlide.y
 
 `Terrain Sliders
 RoughScale.w = dev.slidescaleW
@@ -1279,8 +1312,8 @@ segment# = (RoughScale.w-SliderOffset) / Sectors
 for i = 0 to Sectors-1 : scaleLength[i] = segment#*(i+1) : next i
 
 
-Button5.x = MusicScale.x + (dev.buttSize/2.5)
-Button5.y = SoundScale.y+120
+Button5.x = MiddleX+125
+Button5.y = SoundScale.y+(SoundSlide.h*1.9)
 Button5.w = dev.buttSize
 Button5.h = dev.buttSize
 
@@ -1303,6 +1336,13 @@ Button25.x = Button20.x + (dev.buttSize*1.3)
 Button25.y = Button5.y
 Button25.w = dev.buttSize
 Button25.h = dev.buttSize
+
+ONOFF.w = dev.buttSize
+ONOFF.h = dev.buttSize
+ONOFF.x = Button5.x
+ONOFF.y = Button25.y + (Button25.h*1.3)
+ONOFF.tx = ONOFF.x + (ONOFF.w/1.5)
+ONOFF.ty = ONOFF.y - (ONOFF.h/2.5)
 
 
 global baseQTY as float
@@ -1328,6 +1368,7 @@ global Mine1
 Mine1 = MineSeries + 1
 
 global DisruptSprite `= DisruptorSeries
+global Logo
 
 global field as integer  `board
 global Explode1 as integer
