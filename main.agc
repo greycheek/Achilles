@@ -122,6 +122,7 @@ function EventCheck()
 			EventDialog( Reinforcement$,"Production doubled" )
 		endcase
 		case Supply$
+			PlaySound(LoganSound)
 			EventDialog( Supply$,"All units repaired" )
 			for i = 0 to PlayerLast
 				if PlayerTank[i].alive then Repair(i,PlayerTank,PlayerDepotNode,PlayerTank[i].maximumHealth)

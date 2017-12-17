@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<spriter_data scml_version="1.0" generator="BrashMonkey Spriter" generator_version="r11">
+    <folder id="0">
+        <file id="0" name="HOVERWINGRIGHT.png" width="150" height="312" pivot_x="0" pivot_y="1"/>
+        <file id="1" name="HOVERBODY.png" width="133" height="266" pivot_x="0" pivot_y="1"/>
+        <file id="2" name="HOVERWINGLEFT.png" width="150" height="311" pivot_x="0" pivot_y="1"/>
+    </folder>
+    <entity id="0" name="entity_000">
+        <animation id="0" name="NewAnimation" length="1000" interval="100">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" timeline="1" key="0" z_index="0"/>
+                    <object_ref id="1" timeline="0" key="0" z_index="1"/>
+                    <object_ref id="2" timeline="2" key="1" z_index="2"/>
+                </key>
+                <key id="1" time="99">
+                    <object_ref id="0" timeline="1" key="0" z_index="0"/>
+                    <object_ref id="1" timeline="0" key="1" z_index="1"/>
+                    <object_ref id="2" timeline="2" key="3" z_index="2"/>
+                </key>
+                <key id="2" time="200">
+                    <object_ref id="0" timeline="1" key="0" z_index="0"/>
+                    <object_ref id="1" timeline="0" key="2" z_index="1"/>
+                    <object_ref id="2" timeline="2" key="4" z_index="2"/>
+                </key>
+                <key id="3" time="299">
+                    <object_ref id="0" timeline="1" key="1" z_index="0"/>
+                    <object_ref id="1" timeline="0" key="3" z_index="1"/>
+                    <object_ref id="2" timeline="2" key="5" z_index="2"/>
+                </key>
+                <key id="4" time="400">
+                    <object_ref id="0" timeline="1" key="2" z_index="0"/>
+                    <object_ref id="1" timeline="0" key="4" z_index="1"/>
+                    <object_ref id="2" timeline="2" key="6" z_index="2"/>
+                </key>
+                <key id="5" time="499">
+                    <object_ref id="0" timeline="1" key="3" z_index="0"/>
+                    <object_ref id="1" timeline="0" key="5" z_index="1"/>
+                    <object_ref id="2" timeline="2" key="7" z_index="2"/>
+                </key>
+                <key id="6" time="600">
+                    <object_ref id="0" timeline="1" key="4" z_index="0"/>
+                    <object_ref id="1" timeline="0" key="6" z_index="1"/>
+                    <object_ref id="2" timeline="2" key="8" z_index="2"/>
+                </key>
+                <key id="7" time="701">
+                    <object_ref id="0" timeline="1" key="5" z_index="0"/>
+                    <object_ref id="1" timeline="0" key="7" z_index="1"/>
+                    <object_ref id="2" timeline="2" key="9" z_index="2"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="HOVERWINGRIGHT">
+                <key id="0" spin="-1">
+                    <object folder="0" file="0" x="19.987159" y="-108.172836" pivot_x="0.249683" pivot_y="0.120205"/>
+                </key>
+                <key id="1" time="99" spin="-1">
+                    <object folder="0" file="0" x="19.987159" y="-108.172836" pivot_x="0.249683" pivot_y="0.120205" angle="358"/>
+                </key>
+                <key id="2" time="200" spin="-1">
+                    <object folder="0" file="0" x="19.987159" y="-107.577598" pivot_x="0.249683" pivot_y="0.120205" angle="356"/>
+                </key>
+                <key id="3" time="299" spin="-1">
+                    <object folder="0" file="0" x="19.987159" y="-107.651259" pivot_x="0.249683" pivot_y="0.120205" angle="352"/>
+                </key>
+                <key id="4" time="400">
+                    <object folder="0" file="0" x="19.987159" y="-107.726408" pivot_x="0.249683" pivot_y="0.120205" angle="350"/>
+                </key>
+                <key id="5" time="499">
+                    <object folder="0" file="0" x="19.987159" y="-107.651259" pivot_x="0.249683" pivot_y="0.120205" angle="352"/>
+                </key>
+                <key id="6" time="600">
+                    <object folder="0" file="0" x="19.987159" y="-107.577598" pivot_x="0.249683" pivot_y="0.120205" angle="356"/>
+                </key>
+                <key id="7" time="701">
+                    <object folder="0" file="0" x="19.987159" y="-108.172836" pivot_x="0.249683" pivot_y="0.120205" angle="358"/>
+                </key>
+            </timeline>
+            <timeline id="1" name="HOVERBODY">
+                <key id="0" spin="0">
+                    <object folder="0" file="1" x="-109.173287" y="136.333168" scale_x="1.65"/>
+                </key>
+                <key id="1" time="299" spin="0">
+                    <object folder="0" file="1" x="-109.173287" y="136.778108" scale_x="1.648049"/>
+                </key>
+                <key id="2" time="400" spin="0">
+                    <object folder="0" file="1" x="-109.768525" y="136.928406" scale_x="1.65"/>
+                </key>
+                <key id="3" time="499" spin="0">
+                    <object folder="0" file="1" x="-109.173287" y="136.778108" scale_x="1.648049"/>
+                </key>
+                <key id="4" time="600" spin="0">
+                    <object folder="0" file="1" x="-109.173287" y="136.630787" scale_x="1.648695"/>
+                </key>
+                <key id="5" time="701" spin="0">
+                    <object folder="0" file="1" x="-109.173287" y="136.480489" scale_x="1.649354"/>
+                </key>
+            </timeline>
+            <timeline id="2" name="HOVERWINGLEFT">
+                <key id="0">
+                    <object folder="0" file="2" x="-19.107038" y="-108.18756"/>
+                </key>
+                <key id="1">
+                    <object folder="0" file="2" x="-131.59136" y="166.695631"/>
+                </key>
+                <key id="2" time="99">
+                    <object folder="0" file="2" x="-141.116123" y="162.602533" pivot_x="0" pivot_y="1" angle="2"/>
+                </key>
+                <key id="3" time="99">
+                    <object folder="0" file="2" x="-19.107038" y="-108.18756" pivot_x="0.749895" pivot_y="0.116131" angle="2"/>
+                </key>
+                <key id="4" time="200">
+                    <object folder="0" file="2" x="-19.107038" y="-108.18756" pivot_x="0.749895" pivot_y="0.116131" angle="4"/>
+                </key>
+                <key id="5" time="299">
+                    <object folder="0" file="2" x="-19.107038" y="-108.18756" pivot_x="0.749895" pivot_y="0.116131" angle="6"/>
+                </key>
+                <key id="6" time="400" spin="-1">
+                    <object folder="0" file="2" x="-19.107038" y="-108.18756" pivot_x="0.749895" pivot_y="0.116131" angle="8"/>
+                </key>
+                <key id="7" time="499" spin="-1">
+                    <object folder="0" file="2" x="-19.107038" y="-108.18756" pivot_x="0.749895" pivot_y="0.116131" angle="6"/>
+                </key>
+                <key id="8" time="600" spin="-1">
+                    <object folder="0" file="2" x="-19.107038" y="-108.18756" pivot_x="0.749895" pivot_y="0.116131" angle="4"/>
+                </key>
+                <key id="9" time="701" spin="-1">
+                    <object folder="0" file="2" x="-19.107038" y="-108.18756" pivot_x="0.749895" pivot_y="0.116131" angle="2"/>
+                </key>
+            </timeline>
+        </animation>
+    </entity>
+</spriter_data>

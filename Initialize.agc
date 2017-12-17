@@ -29,7 +29,7 @@ function VehicleImage( ID, Tank ref as tankType[] )
 			Tank[ID].turret$ = "MISSILETURRET.png"
 		endcase
 		case Mech
-			Tank[ID].body$ = "MechAtlas.png"
+			Tank[ID].body$ = "MechAtlas3.png"
 			Tank[ID].turret$ = "MechTurret.png"
 		endcase
 		case Engineer
@@ -295,12 +295,12 @@ function TankSetup(ID,Tank ref as tankType[],pick as ColorSpec)
 
 	select Tank[ID].Vehicle
 		case HoverCraft
-			SetSpriteAnimation( Tank[ID].bodyID,280,294,40 )
+			SetSpriteAnimation( Tank[ID].bodyID,246,273,40 )
 			PlaySprite( Tank[ID].bodyID,14,0,1,1 )
 			SetSpriteDepth( Tank[ID].turretID,2 )
 			SetSpriteDepth( Tank[ID].bodyID,2 )
 		endcase
-		case Mech 	    : SetSpriteAnimation( Tank[ID].bodyID,314,322,15 ) : endcase
+		case Mech 	    : SetSpriteAnimation( Tank[ID].bodyID,135,135,15 ) : endcase
 		case Engineer   : SetSpriteAnimation( Tank[ID].bodyID,200,200,16 ) : endcase
 	endselect
 endfunction

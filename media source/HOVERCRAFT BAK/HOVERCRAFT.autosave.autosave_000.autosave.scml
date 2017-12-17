@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<spriter_data scml_version="1.0" generator="BrashMonkey Spriter" generator_version="r11">
+    <folder id="0">
+        <file id="0" name="HOVERWINGRIGHT.png" width="136" height="300" pivot_x="0" pivot_y="1"/>
+        <file id="1" name="HOVERBODY.png" width="136" height="300" pivot_x="0" pivot_y="1"/>
+        <file id="2" name="HOVERWINGLEFT.png" width="136" height="300" pivot_x="0" pivot_y="1"/>
+    </folder>
+    <entity id="0" name="entity_000">
+        <animation id="0" name="NewAnimation" length="1400" interval="100">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" timeline="1" key="0" z_index="0"/>
+                    <object_ref id="1" timeline="0" key="0" z_index="1"/>
+                    <object_ref id="2" timeline="2" key="0" z_index="2"/>
+                </key>
+                <key id="1" time="700" curve_type="bezier" c1="0.3333" c2="0.3333" c3="0.458054" c4="0.8626">
+                    <object_ref id="0" timeline="1" key="1" z_index="0"/>
+                    <object_ref id="1" timeline="0" key="1" z_index="1"/>
+                    <object_ref id="2" timeline="2" key="1" z_index="2"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="HOVERWINGRIGHT">
+                <key id="0" spin="0">
+                    <object folder="0" file="0" x="11.88571" y="-97.172836" pivot_x="0.249683" pivot_y="0.120205" angle="0"/>
+                </key>
+                <key id="1" time="700" spin="0">
+                    <object folder="0" file="0" x="44.88571" y="-98.172836" pivot_x="0.249683" pivot_y="0.120205" angle="0"/>
+                </key>
+            </timeline>
+            <timeline id="1" name="HOVERBODY">
+                <key id="0" spin="0">
+                    <object folder="0" file="1" x="-70.198958" y="171.333168" angle="0" scale_x="1.079764"/>
+                </key>
+                <key id="1" time="700" spin="0">
+                    <object folder="0" file="1" x="-70.198958" y="171.333168" angle="0" scale_x="1.079764"/>
+                </key>
+            </timeline>
+            <timeline id="2" name="HOVERWINGLEFT">
+                <key id="0" spin="0">
+                    <object folder="0" file="2" x="-107.59136" y="166.695631" angle="0"/>
+                </key>
+                <key id="1" time="700" spin="0">
+                    <object folder="0" file="2" x="-143.59136" y="164.695631" angle="0"/>
+                </key>
+            </timeline>
+        </animation>
+    </entity>
+</spriter_data>

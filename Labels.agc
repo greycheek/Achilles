@@ -269,6 +269,7 @@ global EngineSound
 global MachineGunSound
 global EnterSound
 global LightningSound
+global LoganSound
 
 BangSound = LoadSound("bang2.wav")
 BuildBaseSound = LoadSound( "HoverbikeEnd.wav" )
@@ -304,6 +305,7 @@ Silence = LoadSoundOGG( "Silent.ogg" )
 EngineSound = LoadSoundOGG( "Jet2_01.ogg" )
 MachineGunSound = LoadSoundOGG( "MachineGun.ogg" )
 LightningSound = LoadSoundOGG("LightningBolt.ogg")
+LoganSOund = LoadSoundOGG("Logan.ogg" )
 
 global vol as integer = 100
 global orders as integer[7] `OrderSounds + 1
@@ -340,6 +342,7 @@ function SoundVolume()
 	SetSoundInstanceVolume( MachineGunSound, vol )
 	SetSoundInstanceVolume( EnterSound,vol )
 	SetSoundInstanceVolume( LightningSound,vol )
+	SetSoundInstanceVolume( LoganSound,vol )
 	for i = 0 to OrderSounds
 		SetSoundInstanceRate( orders[i],.5 )
 		SetSoundInstanceVolume( orders[i],vol )
