@@ -364,7 +364,7 @@ function Setup()
 	SetSpriteSize(MechGuy[0].bodyID,buffer,buffer )
 	SetSpriteOffset(MechGuy[0].bodyID,NodeSize,NodeSize)
 	SetSpritePositionByOffset(MechGuy[0].bodyID,MechGuy[0].x,MechGuy[0].y)
-	SetSpriteAnimation(MechGuy[0].bodyID,135,135,15 )
+	SetSpriteAnimation(MechGuy[0].bodyID,197,169,15 )
 	SetSpriteAngle(MechGuy[0].bodyID,90)
 
 	LoadImage(MechGuy[0].turretID,"MechTurret.png")
