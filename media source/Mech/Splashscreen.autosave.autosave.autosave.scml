@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <spriter_data scml_version="1.0" generator="BrashMonkey Spriter" generator_version="r11">
     <folder id="0">
-        <file id="0" name="Chassis.png" width="450" height="450" pivot_x="0" pivot_y="1"/>
+        <file id="0" name="Chassis.png" width="300" height="300" pivot_x="0" pivot_y="1"/>
         <file id="1" name="Foot1.png" width="348" height="348" pivot_x="0.5" pivot_y="0.5"/>
         <file id="2" name="Foot2.png" width="348" height="348" pivot_x="0.5" pivot_y="0.5"/>
         <file id="3" name="Leg1.png" width="40" height="124" pivot_x="0.5" pivot_y="0.5"/>
         <file id="4" name="Leg2.png" width="40" height="124" pivot_x="0.5" pivot_y="0.5"/>
+        <file id="5" name="Leg2 copy.png" width="40" height="125" pivot_x="0" pivot_y="1"/>
+        <file id="6" name="Chassis.tif" width="348" height="348" pivot_x="0" pivot_y="1"/>
     </folder>
     <entity id="0" name="entity_000">
         <animation id="0" name="NewAnimation" length="1600" interval="33" looping="false">
@@ -83,31 +85,31 @@
             </mainline>
             <timeline id="0" name="Chassis">
                 <key id="0" spin="0">
-                    <object folder="0" file="0" x="-196" y="187" angle="0" scale_x="0.877007" scale_y="0.877007"/>
+                    <object folder="0" file="0" x="-179" y="192" angle="0" scale_x="1.193119" scale_y="1.193119"/>
                 </key>
                 <key id="1" time="200" spin="0">
-                    <object folder="0" file="0" x="-196" y="187" angle="0" scale_x="0.877007" scale_y="0.877007"/>
+                    <object folder="0" file="0" x="-179" y="192" angle="0" scale_x="1.193119" scale_y="1.193119"/>
                 </key>
                 <key id="2" time="401" spin="0">
-                    <object folder="0" file="0" x="-196" y="187" angle="0" scale_x="0.877007" scale_y="0.877007"/>
+                    <object folder="0" file="0" x="-179" y="192" angle="0" scale_x="1.193119" scale_y="1.193119"/>
                 </key>
                 <key id="3" time="600" spin="0">
-                    <object folder="0" file="0" x="-196" y="187" angle="0" scale_x="0.877007" scale_y="0.877007"/>
+                    <object folder="0" file="0" x="-179" y="192" angle="0" scale_x="1.193119" scale_y="1.193119"/>
                 </key>
                 <key id="4" time="800" spin="0">
-                    <object folder="0" file="0" x="-196" y="187" angle="0" scale_x="0.877007" scale_y="0.877007"/>
+                    <object folder="0" file="0" x="-179" y="192" angle="0" scale_x="1.193119" scale_y="1.193119"/>
                 </key>
                 <key id="5" time="999" spin="0">
-                    <object folder="0" file="0" x="-196" y="187" angle="0" scale_x="0.877007" scale_y="0.877007"/>
+                    <object folder="0" file="0" x="-179" y="192" angle="0" scale_x="1.193119" scale_y="1.193119"/>
                 </key>
                 <key id="6" time="1201" spin="0">
-                    <object folder="0" file="0" x="-196" y="187" angle="0" scale_x="0.877007" scale_y="0.877007"/>
+                    <object folder="0" file="0" x="-179" y="192" angle="0" scale_x="1.193119" scale_y="1.193119"/>
                 </key>
                 <key id="7" time="1399" spin="0">
-                    <object folder="0" file="0" x="-196" y="187" angle="0" scale_x="0.877007" scale_y="0.877007"/>
+                    <object folder="0" file="0" x="-179" y="192" angle="0" scale_x="1.193119" scale_y="1.193119"/>
                 </key>
                 <key id="8" time="1599" spin="0">
-                    <object folder="0" file="0" x="-196" y="187" angle="0" scale_x="0.877007" scale_y="0.877007"/>
+                    <object folder="0" file="0" x="-179" y="192" angle="0" scale_x="1.193119" scale_y="1.193119"/>
                 </key>
             </timeline>
             <timeline id="1" name="Leg1">

@@ -438,6 +438,7 @@ function GetInput()
 			Zoom(1,0,0,On,1)
 			ButtonActivation(On)
 			if Confirm("Back to Menu?",QuitText) then Main()
+			zoomFactor = 1
 			ButtonActivation(Off)
 		elseif GetPointerState()
 			x = MinMax(0,MaxWidth-1,ScreenToWorldX(GetPointerX()))	`MinMax, temporary fix for out of bounds erros
@@ -553,7 +554,7 @@ function GetInput()
 			endcase
 			case "ios","android" : PinchToZoom() : endcase
 		endselect
-		if zoomFactor > 1 then ShowInfo(Off) else ShowInfo(On)
+		//~ if zoomFactor > 1 then ShowInfo(Off) else ShowInfo(On)
 		if selection <> Undefined
 			inc alpha,glow
 			if alpha > GlowMax

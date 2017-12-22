@@ -20,7 +20,7 @@ function BaseSetup( ID, spriteID, node, base, baseRef ref as baseType[], group )
 	mapTable[node].terrain = base
 			maptable[node].modifier = BaseMod
 
-	LoadImage( baseRef[ID].spriteID,"HEXBASE.png" )
+	LoadImage( baseRef[ID].spriteID,"BaseII.png" )
 	CreateSprite( baseRef[ID].spriteID,baseRef[ID].spriteID )
 	SetSpriteTransparency( baseRef[ID].spriteID, On )
 	SetSpriteVisible( baseRef[ID].spriteID, On )
@@ -269,7 +269,7 @@ function GenerateMap()
 	roughDummy = CreateDummySprite()
 	waterDummy = CreateDummySprite()
 
-	LoadImage(TreeSprite,"TreeTop290.png")
+	LoadImage(TreeSprite,"TreeTop64.png")
 	CreateSprite(TreeSprite,TreeSprite )
 	SetSpriteTransparency(TreeSprite,1)
 	SetSpriteDepth(TreeSprite,1)
@@ -292,7 +292,7 @@ function GenerateMap()
 	SetSpriteSize(AcquaSprite,NodeSize,NodeSize)
 	SetSpriteVisible(AcquaSprite,Off)
 
-	LoadImage(RoughSprite,"Rough4.png")
+	LoadImage(RoughSprite,"Rough5.png")
 	CreateSprite(RoughSprite,RoughSprite)
 	SetSpriteTransparency(RoughSprite,On)
 	SetSpriteDepth(RoughSprite,1)
@@ -493,7 +493,7 @@ function Setup()
 	Logo = CreateSprite( LogoImage )
 	SetSpriteVisible( Logo, On )
 	SetSpriteSize( Logo,1050,375 )
-	SetSpritePosition( Logo,(MaxWidth-GetSpriteWidth(Logo))/2,(MaxHeight-GetSpriteHeight(Logo))/2 )
+	SetSpritePosition( Logo,(MaxWidth-GetSpriteWidth(Logo))/2,(MaxHeight-GetSpriteHeight(Logo))/1.66 )
 	SetSpriteDepth( Logo,0 )
 
    `SPLASHSCREEN
@@ -677,7 +677,7 @@ function Setup()
 	SpriteCon[Engineer].image$ = "Engineer.png"
 	SpriteCon[Question].image$ = "Random.png"
 
-	SpriteConSize = SpriteConSize*.85
+	SpriteConSize = SpriteConSize*.81
 	for i = 1 to SpriteConUnits
 		SpriteCon[i].ID = i + SpriteConSeries
 		SpriteCon[i].imageID = SpriteCon[i].ID
