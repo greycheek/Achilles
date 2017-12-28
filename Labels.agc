@@ -272,6 +272,7 @@ global LightningSound
 global LoganSound
 global RenforcementsSound
 global InterdictSound
+global EngineerSound
 
 BangSound = LoadSound("bang2.wav")
 BuildBaseSound = LoadSound( "HoverbikeEnd.wav" )
@@ -281,7 +282,7 @@ SpawnSound = LoadSound("LevelOnSinister.wav")
 MineSound = LoadSound("TripodDestroyed.wav")
 MineBangSound = LoadSound("ExplosionPlain.wav")
 HeavyLaserSound = LoadSound( "BeamElectro_01.wav" )
-//~ MechSound = LoadSound("MotorClose_01.wav")
+EngineerSound = LoadSound("MotorClose_01.wav")
 HealSound = LoadSound("HealGlassy.wav")
 VictorySound = LoadSound("MagicReveal.wav")
 DefeatSound = LoadSound("ExitOpenAztec.wav")
@@ -345,11 +346,12 @@ function SoundVolume()
 	SetSoundInstanceVolume( DisruptorSound, vol )
 	SetSoundInstanceVolume( EngineSound, vol )
 	SetSoundInstanceVolume( MachineGunSound, vol )
-	SetSoundInstanceVolume( EnterSound,vol )
-	SetSoundInstanceVolume( LightningSound,vol )
-	SetSoundInstanceVolume( LoganSound,vol )
-	SetSoundInstanceVolume( RenforcementsSound,vol )
-	SetSoundInstanceVolume( InterdictSound,vol )
+	SetSoundInstanceVolume( EnterSound, vol )
+	SetSoundInstanceVolume( LightningSound, vol )
+	SetSoundInstanceVolume( LoganSound, vol )
+	SetSoundInstanceVolume( RenforcementsSound, vol )
+	SetSoundInstanceVolume( InterdictSound, vol )
+	SetSoundInstanceVolume( EngineerSound, vol )
 	for i = 0 to OrderSounds
 		SetSoundInstanceRate( orders[i],.5 )
 		SetSoundInstanceVolume( orders[i],vol )

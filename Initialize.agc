@@ -221,7 +221,7 @@ function TankSetup(ID,Tank ref as tankType[],pick as ColorSpec)
 		endcase
 		case Engineer
 			Tank[ID].speed = .2
-			Tank[ID].sound = MechSound
+			Tank[ID].sound = EngineerSound
 			Tank[ID].volume = vol
 			Tank[ID].weapon = Undefined
 			Tank[ID].range = empRange
