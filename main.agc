@@ -18,6 +18,7 @@ remstart
 	--- SPRITECONS  BEHAVING STRANGELY - STICK TO SCREEN - UNITS NOT SELECTED SHOW UP IN GAME (MEDIUM TANK?)
 
 	FIXED?
+	--- SABOTAGE EVENT NOT WORKING??!!
 	--- DIALOG BOX AFTER ZOOMING OUT - ZOOM BEHAVE STRANGELY; TURN/PRODUCTION INFO GOES AWAY!!!
 	--- SHOOTING OUT OF TREES IS SOMETIMES BLOCKED!!
 	--- UNITS CAN SELECT TARGETS IN TREES!!  - RELATED TO DLS??
@@ -98,6 +99,8 @@ endfunction
 
 function Turn()
 	if Events then EventCheck()
+	inc PlayerProdUnits,(PlayerBaseCount+1) * BaseProdValue * reinforce
+	inc AIProdUnits,(AIBaseCount+1) * BaseProdValue * reinforce
 	inc turns
 	ShowInfo(On)
 	Sync()
@@ -107,54 +110,53 @@ function EventCheck()
 	reinforce = 1
 	weather = 1
 	casualties = Null
-	Event$ = RandomEvent[ Random2(0,EventNum-1) ]
-	select Event$
+	//~ Event$ = RandomEvent[ Random2(0,EventNum-1) ]
+	select Interdiction$ `Event$
 		case Weather$
-			PlaySound(LightningSound)
+			PlaySound( LightningSound )
 			weather = .5
 			EventDialog( Weather$,"Movement halved" )
 		endcase
-		case Casualty$
+		case Interdiction$
+			PlaySound( InterdictSound )
 			casualties = 1
-			EventDialog( Casualty$,"Production halted" )
+			EventDialog( Interdiction$,"Production halted" )
 		endcase
 		case Reinforcement$
+			PlaySound( RenforcementsSound )
 			reinforce = 2
 			EventDialog( Reinforcement$,"Production doubled" )
 		endcase
 		case Supply$
-			PlaySound(LoganSound)
+			PlaySound( LoganSound )
 			EventDialog( Supply$,"All units repaired" )
 			for i = 0 to PlayerLast
-				if PlayerTank[i].alive then Repair(i,PlayerTank,PlayerDepotNode,PlayerTank[i].maximumHealth)
+				if PlayerTank[i].alive then Repair( i,PlayerTank,PlayerDepotNode,PlayerTank[i].maximumHealth )
 			next i
 			for i = 0 to AIPlayerLast
-				if AITank[i].alive then Repair(i,AITank,AIDepotNode,AITank[i].maximumHealth)
+				if AITank[i].alive then Repair( i,AITank,AIDepotNode,AITank[i].maximumHealth )
 			next i
 		endcase
 		case Sabotage$
-			if (PlayerCount > 1) and Random2(0,1)
-				ID = RandomUnit(PlayerTank,PlayerLast)
-				EventDialog( Sabotage$,"One unit destroyed" )
-				KillTank(ID,PlayerTank)
-			elseif AICount > 1
-				ID = RandomUnit(AITank,AIPlayerLast)
-				EventDialog( Sabotage$,"One unit destroyed" )
-				KillTank(ID,AITank)
+			if (PlayerSurviving > 1) and Random2(0,1)
+				RandomKill( PlayerTank,PlayerLast )
+			elseif AISurviving > 1
+				RandomKill( AITank,AIPlayerLast )
 			endif
 		endcase
 	endselect
-	inc PlayerProdUnits,(PlayerBaseCount+1)*BaseProdValue * reinforce
-	inc AIProdUnits,(AIBaseCount+1)*BaseProdValue * reinforce
 endfunction
 
-function RandomUnit(Tank as tanktype[],last)
+function RandomKill( Tank as tanktype[],last )
 	unit as integer[]
+	PlaySound( DefeatSound )
+	EventDialog( Sabotage$,"One unit destroyed" )
 	for i = 0 to last
 		if Tank[i].alive then unit.insert(i)
 	next i
 	ID = unit[Random2(0,unit.length)]
-endfunction ID
+	KillTank( ID,Tank )
+endfunction
 
 function EventDialog(t1$,t2$)
 	TSize = 32*dev.scale
@@ -454,7 +456,9 @@ function Repair(ID,Tank ref as tankType[],depotNode as depotType[],healthMax as 
 	if GetSpriteVisible(Tank[ID].bodyID)
 		if (Tank[ID].health < healthMax) or (Tank[ID].missiles < Tank[ID].rounds) or (Tank[ID].mines < Tank[ID].rounds) or (Tank[ID].charges < Tank[ID].rounds)
 			PlaySound( HealSound,vol )
-			cross = CreateSprite( depotNode[ID].spriteID )
+
+			cross = CreateSprite( PlayerDepotNode[0].spriteID )
+
 			fullScale = ceil(DepotSize*2.5)
 			halfway = fullScale/2
 			alpha = FullAlpha
@@ -665,6 +669,9 @@ endfunction part
 
 function KillTank( defID,Tank ref as tankType[] )
 	PlaySound( ExplodeSound,vol )
+			SetSpriteVisible( Tank[defID].bodyID,Off )
+			SetSpriteVisible( Tank[defID].turretID,Off )
+			SetSpriteVisible( Tank[defID].healthID,Off )
 	smoke1 = CreateParticles( Tank[defID].x,Tank[defID].y )
 	AddParticlesScaleKeyFrame( smoke1, .5, .5 )
 	AddParticlesColorKeyFrame( smoke1, 0, 255, 255, 255, 96 )
@@ -679,11 +686,11 @@ function KillTank( defID,Tank ref as tankType[] )
 	SetParticlesDepth( smoke1, 0 )
 	SetParticlesVelocityRange( smoke1, .5, .75 )
 
-	DeleteSprite( Tank[defID].healthID )
-	DeleteSprite( Tank[defID].bodyID )
-	DeleteSprite( Tank[defID].turretID )
-	DeleteSprite( Tank[defID].stunMarker )
 	Explosion( Tank[defID].x,Tank[defID].y,Explode2,ExplodingSound,48 )
+		DeleteSprite( Tank[defID].healthID )
+		DeleteSprite( Tank[defID].bodyID )
+		DeleteSprite( Tank[defID].turretID )
+		DeleteSprite( Tank[defID].stunMarker )
 	SetParticlesVisible( smoke1,0 )
 
 	if Tank[defID].team = PlayerTeam
@@ -983,6 +990,15 @@ function DisruptorTest()
 endfunction
 
 remstart
+
+function RandomUnit(Tank as tanktype[],last)
+	unit as integer[]
+	for i = 0 to last
+		if Tank[i].alive then unit.insert(i)
+	next i
+	ID = unit[Random2(0,unit.length)]
+endfunction ID
+
 SetPhysicsWallTop(Off)
 SetPhysicsWallBottom(Off)
 SetPhysicsWallLeft(Off)

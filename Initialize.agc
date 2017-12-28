@@ -34,7 +34,7 @@ function VehicleImage( ID, Tank ref as tankType[] )
 		endcase
 		case Engineer
 			Tank[ID].body$ = "EngineerIV.png"
-			Tank[ID].turret$ = "ETurret.png"
+			Tank[ID].turret$ = "EngineerTurret.png"
 		endcase
 	endselect
 endfunction

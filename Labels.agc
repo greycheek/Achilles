@@ -80,7 +80,7 @@ zoneRadius = FlyRadius * NodeSize
 #constant Supply$ = "Supply Boost!"		     `all units repaired and re-armed
 #constant Reinforcement$ = "Reinforcements!" `production units doubled
 #constant Weather$ = "Bad Weather!"		 	 `movement halved
-#constant Casualty$ = "High Casualties!"	 `production halted
+#constant Interdiction$ = "Interdiction!"	 `production halted
 #constant Sabotage$ = "Sabotage!"			 `eliminate one random unit
 #constant EventNum 21
 
@@ -94,7 +94,7 @@ global RandomEvent as string[EventNum]
 RandomEvent[0] = Supply$
 RandomEvent[1] = Reinforcement$
 RandomEvent[2] = Weather$
-RandomEvent[3] = Casualty$
+RandomEvent[3] = Interdiction$
 RandomEvent[4] = Sabotage$
 
 
@@ -270,6 +270,8 @@ global MachineGunSound
 global EnterSound
 global LightningSound
 global LoganSound
+global RenforcementsSound
+global InterdictSound
 
 BangSound = LoadSound("bang2.wav")
 BuildBaseSound = LoadSound( "HoverbikeEnd.wav" )
@@ -279,7 +281,7 @@ SpawnSound = LoadSound("LevelOnSinister.wav")
 MineSound = LoadSound("TripodDestroyed.wav")
 MineBangSound = LoadSound("ExplosionPlain.wav")
 HeavyLaserSound = LoadSound( "BeamElectro_01.wav" )
-MechSound = LoadSound("MotorClose_01.wav")
+//~ MechSound = LoadSound("MotorClose_01.wav")
 HealSound = LoadSound("HealGlassy.wav")
 VictorySound = LoadSound("MagicReveal.wav")
 DefeatSound = LoadSound("ExitOpenAztec.wav")
@@ -305,7 +307,10 @@ Silence = LoadSoundOGG( "Silent.ogg" )
 EngineSound = LoadSoundOGG( "Jet2_01.ogg" )
 MachineGunSound = LoadSoundOGG( "MachineGun.ogg" )
 LightningSound = LoadSoundOGG("LightningBolt.ogg")
-LoganSOund = LoadSoundOGG("Logan.ogg" )
+LoganSound = LoadSoundOGG("Logan.ogg" )
+RenforcementsSound = LoadSoundOGG("reinforcements.ogg")
+InterdictSound = LoadSoundOGG("Interdict.ogg")
+MechSound = LoadSoundOGG("WalkerStomp.ogg")
 
 global vol as integer = 100
 global orders as integer[7] `OrderSounds + 1
@@ -343,6 +348,8 @@ function SoundVolume()
 	SetSoundInstanceVolume( EnterSound,vol )
 	SetSoundInstanceVolume( LightningSound,vol )
 	SetSoundInstanceVolume( LoganSound,vol )
+	SetSoundInstanceVolume( RenforcementsSound,vol )
+	SetSoundInstanceVolume( InterdictSound,vol )
 	for i = 0 to OrderSounds
 		SetSoundInstanceRate( orders[i],.5 )
 		SetSoundInstanceVolume( orders[i],vol )
@@ -614,7 +621,7 @@ global BaseHalo as integer
 #constant Impassable 8
 #constant Water 9
 
-#constant DepotSize 22
+#constant DepotSize 33
 #constant DepotDepth 3
 
 global depotOffset as integer
@@ -735,6 +742,7 @@ global treeDummy as integer
 global impassDummy as integer
 global roughDummy as integer
 global waterDummy as integer
+global cross as integer
 
 
 type baseType

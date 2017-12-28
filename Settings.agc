@@ -44,7 +44,7 @@ function DepotSetup( ID, spriteID, node, depot, depotNode ref as depotType[], gr
 	y = mapTable[node].y
 	//~ mapTable[node].team = team
 
-	LoadImage( depotNode[ID].spriteID,"REDCROSS.png" )
+	LoadImage( depotNode[ID].spriteID,"cross.png" )
 	CreateSprite( depotNode[ID].spriteID,depotNode[ID].spriteID )
 	SetSpriteTransparency( depotNode[ID].spriteID, On )
 	SetSpriteVisible( depotNode[ID].spriteID, On )
@@ -269,7 +269,7 @@ function GenerateMap()
 	roughDummy = CreateDummySprite()
 	waterDummy = CreateDummySprite()
 
-	LoadImage(TreeSprite,"TreeTop64.png")
+	LoadImage(TreeSprite,"TreeTop90.png")
 	CreateSprite(TreeSprite,TreeSprite )
 	SetSpriteTransparency(TreeSprite,1)
 	SetSpriteDepth(TreeSprite,1)
@@ -292,7 +292,7 @@ function GenerateMap()
 	SetSpriteSize(AcquaSprite,NodeSize,NodeSize)
 	SetSpriteVisible(AcquaSprite,Off)
 
-	LoadImage(RoughSprite,"Rough5.png")
+	LoadImage(RoughSprite,"Rough90.png")
 	CreateSprite(RoughSprite,RoughSprite)
 	SetSpriteTransparency(RoughSprite,On)
 	SetSpriteDepth(RoughSprite,1)
@@ -489,16 +489,16 @@ function Setup()
 	SetSpriteAnimation( Explode3,64,48,11 )
 	SetSpriteSize( Explode3,96,72 )
 
-	LogoImage = LoadImage("AchillesLogo.png")
+	LogoImage = LoadImage("AchillesLogo2.png")
 	Logo = CreateSprite( LogoImage )
 	SetSpriteVisible( Logo, On )
-	SetSpriteSize( Logo,1050,375 )
-	SetSpritePosition( Logo,(MaxWidth-GetSpriteWidth(Logo))/2,(MaxHeight-GetSpriteHeight(Logo))/1.66 )
+	SetSpriteSize( Logo,1050,340 )
+	SetSpritePosition( Logo,(MaxWidth-GetSpriteWidth(Logo))/2,(MaxHeight-GetSpriteHeight(Logo))/2.1 )
 	SetSpriteDepth( Logo,0 )
 
    `SPLASHSCREEN
 
-	SetupSprite( Splash,Splash,"SplashScreen.png",0,0,MaxWidth,MaxHeight,2,On,0 )
+	SetupSprite( Splash,Splash,"SplashScreenII.png",0,0,MaxWidth,MaxHeight,2,On,0 )
 	SetupSprite( Dialog,Dialog,"SettingsDialog.png",0,0,MaxWidth,MaxHeight,1,Off,0 )
 	SetupSprite( BaseDialog,BaseDialog,"BaseDialog.png",0,0,MaxWidth,MaxHeight,1,Off,2 )
 	SetSpriteCategoryBits( Splash,NoBlock )

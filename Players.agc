@@ -71,7 +71,8 @@ function BaseProduction( node )
 			endif
 		endif
 		Sync()
-		accept = GetVirtualButtonPressed( acceptButt.ID ) // or GetRawKeyPressed(Enter)
+		//~ if GetRawKeyState( Enter ) then exit
+		accept = GetVirtualButtonPressed( acceptButt.ID )
 		quit = GetVirtualButtonPressed( cancelButt.ID )
 	until accept or quit
 	DeleteText(IllegalText)
@@ -86,6 +87,7 @@ function BaseProduction( node )
 	else
 		WaitForButtonRelease( cancelButt.ID )
 	endif
+	PlaySound( ClickSound )
 
 	//~ AlertButtons( YesNoX4a, YesNoY4, YesNoX4b, YesNoY4, dev.buttSize, AcceptButton, QuitButton )
 	SetSpriteActive( BaseDialog,Off )
@@ -476,8 +478,9 @@ function GetInput()
 				if PlayerSurviving = UnitLimit
 					EventDialog("Unit Maximum",Null$)
 				elseif casualties
-					EventDialog(Casualty$,"Production halted")
+					EventDialog(Interdiction$,"Production halted")
 				else
+					PlaySound( ClickSound )
 					Markers(Off)
 					selection = BaseProduction( pointerNode )
 					if selection <> Undefined
@@ -554,6 +557,8 @@ function GetInput()
 			endcase
 			case "ios","android" : PinchToZoom() : endcase
 		endselect
+		if zoomFactor > 1 then ButtonState( InfoButt.ID,Off ) else ButtonState( InfoButt.ID,On )
+
 		//~ if zoomFactor > 1 then ShowInfo(Off) else ShowInfo(On)
 		if selection <> Undefined
 			inc alpha,glow
@@ -572,6 +577,7 @@ function GetInput()
 	loop
 	SetSpriteVisible(PlayerTank[ID].FOW,Off)
 	ButtonActivation(On)
+	ButtonState( InfoButt.ID,On )
 
 	//~ SetViewOffset(vx#,vy#)
 	Zoom(1,0,0,On,1) `TURN THIS OFF FOR CONTINUOS ZOOM OPERATION
