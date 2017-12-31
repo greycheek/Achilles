@@ -235,83 +235,84 @@ global Box as boxType	`for FOW Offset
 
 
 `SOUNDS
-global ClickSound
-global OKSound
-global GameOverSound
-global VictorySound
-global DefeatSound
-global TankSound
+global AcknowledgedSound
 global BangSound
 global BuildBaseSound
-global ExplodeSound
-global RocketSound
-global LaserSound
-global HeavyLaserSound
-global SpawnSound
-global MechSound
-global HealSound
-global ErrorSound
-global ExplodingSound
-global MusicSound
-global EMPSound
-global MineSound
-global MineBangSound
-global YesSirSound
+global ClickSound
 global CopySound
-Global AcknowledgedSound
-global OnMyWaySound
-global RogerThatSound
-global TargetSound
-global LockOnSound
-global Silence
+global DefeatSound
 global DisruptorSound
-global EngineSound
-global MachineGunSound
-global EnterSound
-global LightningSound
-global LoganSound
-global RenforcementsSound
-global InterdictSound
+global EMPSound
 global EngineerSound
+global EngineSound
+global EnterSound
+global ErrorSound
+global ExplodeSound
+global ExplodingSound
+global HealSound
+global HeavyLaserSound
+global InterdictSound
+global LaserSound
+global LightningSound
+global LockOnSound
+global LoganSound
+global MachineGunSound
+global MechSound
+global MineBangSound
+global MineSound
+global MusicSound
+global OKSound
+global OnMyWaySound
+global RenforcementsSound
+global RocketSound
+global RogerThatSound
+global SaboSound
+global Silence
+global SpawnSound
+global TankSound
+global TargetSound
+global VictorySound
+global YesSirSound
 
 BangSound = LoadSound("bang2.wav")
 BuildBaseSound = LoadSound( "HoverbikeEnd.wav" )
-ExplodeSound = LoadSound("explode.wav")
 ClickSound = LoadSound("PlasticClick.wav")
-SpawnSound = LoadSound("LevelOnSinister.wav")
-MineSound = LoadSound("TripodDestroyed.wav")
-MineBangSound = LoadSound("ExplosionPlain.wav")
-HeavyLaserSound = LoadSound( "BeamElectro_01.wav" )
-EngineerSound = LoadSound("MotorClose_01.wav")
-HealSound = LoadSound("HealGlassy.wav")
-VictorySound = LoadSound("MagicReveal.wav")
-DefeatSound = LoadSound("ExitOpenAztec.wav")
-EnterSound = LoadSound("PickUpHeavy.wav")
-
+DefeatSound = LoadSound("Defeat.wav")
 DisruptorSound = LoadSoundOGG("DISRUPTOR.ogg")
 EMPSound = LoadSoundOGG("EMP.ogg")
-TankSound = LoadSoundOGG("Rumble2.ogg")
+EngineerSound = LoadSound("MotorClose_01.wav")
+EngineSound = LoadSoundOGG( "Jet2_01.ogg" )
+EnterSound = LoadSound("PickUpHeavy.wav")
 ErrorSound = LoadSoundOGG("EdgeHit2.ogg")
-RocketSound = LoadSoundOGG("rocket.ogg" )
+ExplodeSound = LoadSound("explode.wav")
 ExplodingSound = LoadSoundOGG("Exploding.ogg")
+HealSound = LoadSound("HealGlassy.wav")
+HeavyLaserSound = LoadSound( "BeamElectro_01.wav" )
+InterdictSound = LoadSoundOGG("Interdict.ogg")
 LaserSound = LoadSoundOGG( "laser3.ogg" )
+LightningSound = LoadSoundOGG("LightningBolt.ogg")
+LockOnSound = LoadSoundOGG( "Locked On_01.ogg" )
+LoganSound = LoadSoundOGG("Logan.ogg" )
+MachineGunSound = LoadSoundOGG( "MachineGun.ogg" )
+MechSound = LoadSoundOGG("WalkerStomp.ogg")
+MineBangSound = LoadSound("ExplosionPlain.wav")
+MineSound = LoadSound("TripodDestroyed.wav")
 MusicSound = LoadMusicOGG( "Evil Incoming_01.ogg" )
-RogerThatSound = LoadSoundOGG( "rogerthatProcess.ogg" )
+RenforcementsSound = LoadSoundOGG("reinforcements.ogg")
+RocketSound = LoadSoundOGG("rocket.ogg" )
+SaboSound = LoadSound("ExitOpenAztec.wav")
+SpawnSound = LoadSound("LevelOnSinister.wav")
+TankSound = LoadSoundOGG("Rumble2.ogg")
+TargetSound = LoadSoundOGG("Target Acquired_01.ogg" )
+VictorySound = LoadSound("MagicReveal.wav")
+
 YesSirSound = LoadSoundOGG( "YesSirProcessed_01.ogg" )
 CopySound = LoadSoundOGG( "CopyProcessed_01.ogg" )
 AcknowledgedSound = LoadSoundOGG( "AcknowlegedProcessed_01.ogg" )
 OnMyWaySound = LoadSoundOGG( "OnMyWayProcessed_01.ogg" )
+RogerThatSound = LoadSoundOGG( "rogerthatProcess.ogg" )
 OKSound = LoadSoundOGG( "Ok_01.ogg" )
-TargetSound = LoadSoundOGG("Target Acquired_01.ogg" )
-LockOnSound = LoadSoundOGG( "Locked On_01.ogg" )
 Silence = LoadSoundOGG( "Silent.ogg" )
-EngineSound = LoadSoundOGG( "Jet2_01.ogg" )
-MachineGunSound = LoadSoundOGG( "MachineGun.ogg" )
-LightningSound = LoadSoundOGG("LightningBolt.ogg")
-LoganSound = LoadSoundOGG("Logan.ogg" )
-RenforcementsSound = LoadSoundOGG("reinforcements.ogg")
-InterdictSound = LoadSoundOGG("Interdict.ogg")
-MechSound = LoadSoundOGG("WalkerStomp.ogg")
 
 global vol as integer = 100
 global orders as integer[7] `OrderSounds + 1
@@ -327,31 +328,35 @@ orders[6] = Silence
 function SoundVolume()
 	SetSoundInstanceVolume( BangSound, vol )
 	SetSoundInstanceVolume( BuildBaseSound, vol )
-	SetSoundInstanceVolume( ExplodeSound, vol )
 	SetSoundInstanceVolume( ClickSound, vol )
-	SetSoundInstanceVolume( SpawnSound, vol )
-	SetSoundInstanceVolume( EMPSound, vol )
-	SetSoundInstanceVolume( MineSound, vol )
-	SetSoundInstanceVolume( MineBangSound, vol )
-	SetSoundInstanceVolume( HeavyLaserSound, vol )
-	SetSoundInstanceVolume( MechSound, vol )
-	SetSoundInstanceVolume( HealSound, vol )
-	SetSoundInstanceVolume( TankSound, vol )
-	SetSoundInstanceVolume( ErrorSound, vol )
-	SetSoundInstanceVolume( RocketSound, vol )
-	SetSoundInstanceVolume( ExplodingSound, vol )
-	SetSoundInstanceVolume( LaserSound, vol )
-	SetSoundInstanceVolume( TargetSound, vol )
-	SetSoundInstanceVolume( LockOnSound, vol )
+	SetSoundInstanceVolume( DefeatSound, vol )
 	SetSoundInstanceVolume( DisruptorSound, vol )
-	SetSoundInstanceVolume( EngineSound, vol )
-	SetSoundInstanceVolume( MachineGunSound, vol )
-	SetSoundInstanceVolume( EnterSound, vol )
-	SetSoundInstanceVolume( LightningSound, vol )
-	SetSoundInstanceVolume( LoganSound, vol )
-	SetSoundInstanceVolume( RenforcementsSound, vol )
-	SetSoundInstanceVolume( InterdictSound, vol )
+	SetSoundInstanceVolume( EMPSound, vol )
 	SetSoundInstanceVolume( EngineerSound, vol )
+	SetSoundInstanceVolume( EngineSound, vol )
+	SetSoundInstanceVolume( EnterSound, vol )
+	SetSoundInstanceVolume( ErrorSound, vol )
+	SetSoundInstanceVolume( ExplodeSound, vol )
+	SetSoundInstanceVolume( ExplodingSound, vol )
+	SetSoundInstanceVolume( HealSound, vol )
+	SetSoundInstanceVolume( HeavyLaserSound, vol )
+	SetSoundInstanceVolume( InterdictSound, vol )
+	SetSoundInstanceVolume( LaserSound, vol )
+	SetSoundInstanceVolume( LightningSound, vol )
+	SetSoundInstanceVolume( LockOnSound, vol )
+	SetSoundInstanceVolume( LoganSound, vol )
+	SetSoundInstanceVolume( MachineGunSound, vol )
+	SetSoundInstanceVolume( MechSound, vol )
+	SetSoundInstanceVolume( MineBangSound, vol )
+	SetSoundInstanceVolume( MineSound, vol )
+	SetSoundInstanceVolume( MusicSound, vol )
+	SetSoundInstanceVolume( RenforcementsSound, vol )
+	SetSoundInstanceVolume( RocketSound, vol )
+	SetSoundInstanceVolume( SaboSound, vol )
+	SetSoundInstanceVolume( SpawnSound, vol )
+	SetSoundInstanceVolume( TankSound, vol )
+	SetSoundInstanceVolume( TargetSound, vol )
+	SetSoundInstanceVolume( VictorySound, vol )
 	for i = 0 to OrderSounds
 		SetSoundInstanceRate( orders[i],.5 )
 		SetSoundInstanceVolume( orders[i],vol )
@@ -374,12 +379,12 @@ type$[4,0] = "HEAVY TANK"
 type$[5,0] = "MECH"
 type$[6,0] = "ENGINEER"
 
-armor$[1,0] = "ARMOR  50%"
-armor$[2,0] = "ARMOR  33%"
-armor$[3,0] = "ARMOR  75%"
-armor$[4,0] = "ARMOR  100%"
-armor$[5,0] = "ARMOR  75%"
-armor$[6,0] = "ARMOR  10%"
+armor$[1,0] = "ARMOR  66%"	`50%, now Light = 33%
+armor$[2,0] = "ARMOR  100%"	`33%, now Battery = 50%
+armor$[3,0] = "ARMOR  150%"	`75%
+armor$[4,0] = "ARMOR  200%"	`100%
+armor$[5,0] = "ARMOR  150%"	`75%
+armor$[6,0] = "ARMOR  20%"	`10%
 
 
 weapon$[1,0] = "BALLISTIC WEAPON  range 4, damage 10%, rounds --"
@@ -583,9 +588,10 @@ unitCost[Engineer] = 200
 
 #constant HeavyHealthMax 1
 #constant MediumHealthMax .75
-#constant LightHealthMax .5
-#constant BatteryHealthMax .33
+#constant LightHealthMax .33	`.5
+#constant BatteryHealthMax .5	`.33
 #constant EngineerHealthMax .1
+
 
 global AISurviving as integer
 global PlayerSurviving as integer
@@ -1422,6 +1428,46 @@ endtype
 global SpriteConSize as integer = 112
 
 remstart
+BangSound = LoadSound("bang2.wav")
+BuildBaseSound = LoadSound( "HoverbikeEnd.wav" )
+ExplodeSound = LoadSound("explode.wav")
+ClickSound = LoadSound("PlasticClick.wav")
+SpawnSound = LoadSound("LevelOnSinister.wav")
+MineSound = LoadSound("TripodDestroyed.wav")
+MineBangSound = LoadSound("ExplosionPlain.wav")
+HeavyLaserSound = LoadSound( "BeamElectro_01.wav" )
+EngineerSound = LoadSound("MotorClose_01.wav")
+HealSound = LoadSound("HealGlassy.wav")
+VictorySound = LoadSound("MagicReveal.wav")
+SaboSound = LoadSound("ExitOpenAztec.wav")
+DefeatSound = LoadSound("Defeat.wav")
+EnterSound = LoadSound("PickUpHeavy.wav")
+
+DisruptorSound = LoadSoundOGG("DISRUPTOR.ogg")
+EMPSound = LoadSoundOGG("EMP.ogg")
+TankSound = LoadSoundOGG("Rumble2.ogg")
+ErrorSound = LoadSoundOGG("EdgeHit2.ogg")
+RocketSound = LoadSoundOGG("rocket.ogg" )
+ExplodingSound = LoadSoundOGG("Exploding.ogg")
+LaserSound = LoadSoundOGG( "laser3.ogg" )
+MusicSound = LoadMusicOGG( "Evil Incoming_01.ogg" )
+RogerThatSound = LoadSoundOGG( "rogerthatProcess.ogg" )
+YesSirSound = LoadSoundOGG( "YesSirProcessed_01.ogg" )
+CopySound = LoadSoundOGG( "CopyProcessed_01.ogg" )
+AcknowledgedSound = LoadSoundOGG( "AcknowlegedProcessed_01.ogg" )
+OnMyWaySound = LoadSoundOGG( "OnMyWayProcessed_01.ogg" )
+OKSound = LoadSoundOGG( "Ok_01.ogg" )
+TargetSound = LoadSoundOGG("Target Acquired_01.ogg" )
+LockOnSound = LoadSoundOGG( "Locked On_01.ogg" )
+Silence = LoadSoundOGG( "Silent.ogg" )
+EngineSound = LoadSoundOGG( "Jet2_01.ogg" )
+MachineGunSound = LoadSoundOGG( "MachineGun.ogg" )
+LightningSound = LoadSoundOGG("LightningBolt.ogg")
+LoganSound = LoadSoundOGG("Logan.ogg" )
+RenforcementsSound = LoadSoundOGG("reinforcements.ogg")
+InterdictSound = LoadSoundOGG("Interdict.ogg")
+MechSound = LoadSoundOGG("WalkerStomp.ogg")
+
 `DON'T NEED FOR OLD PATROL
 global patrolScan as integer[16]=[-32,-31,1,33,32,31,-1,-33,-32,-31,1,33,32,31,-1,-33]	 `starting at 12:00 and going clockwise(twice)
 		`OLD PATROLSCAN

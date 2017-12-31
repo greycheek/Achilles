@@ -128,8 +128,8 @@ function Move(ID,Tank ref as tankType[],node1,node2)
 	t2 = SetTween(x1,y1,x2,y2,t#,turretArc#,Tank[ID].turretID,TweenLinear(),speed#)
 
 	select Tank[ID].Vehicle
-		case Mech	  : PlaySprite( Tank[ID].bodyID,20,0 ) : endcase
-		case Engineer : if not GetSpritePlaying( Tank[ID].bodyID ) then PlaySprite( Tank[ID].bodyID,80,0 ) : endcase
+		case Mech	  :  PlaySprite( Tank[ID].bodyID,20,0 ) : endcase
+		case Engineer :  if not GetSpritePlaying( Tank[ID].bodyID ) then PlaySprite( Tank[ID].bodyID,80,0 ) : endcase
 	endselect
 
 	PlayTweens( t1, Tank[ID].bodyID )

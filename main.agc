@@ -50,13 +50,13 @@ SetOrientationAllowed( 0, 0, 1, 1 )
 //~ LoadFont( Gill,"GillSans.ttf" )
 LoadFont( Avenir,"Avenir Next.ttc" )
 UseNewDefaultFonts( On )
-if dev.device = "windows" then video$ = "Greycheek.wmv" else video$ = "Greycheek.mp4"
+if dev.device = "windows" then video$ = "Greycheek.wmv" else video$ = "Greycheek_1.mp4"
 SetPhysicsWallTop(Off)
 SetPhysicsWallBottom(Off)
 SetPhysicsWallLeft(Off)
 SetPhysicsWallRight(Off)
 
-remstart	TURN THIS BACK ON
+//~ remstart
 if  LoadVideo( video$ )
 	PlayVideo()
 	while GetVideoPlaying()
@@ -65,7 +65,7 @@ if  LoadVideo( video$ )
 	endwhile
 	DeleteVideo()
 endif
-remend
+//~ remend
 
 #insert "Labels.agc"
 #include "Settings.agc"
@@ -76,6 +76,7 @@ remend
 #include "Path.agc"
 #include "Miscellaneous.agc"
 
+//~ SheetTest()
 //~ WaterTest()
 //~ SwarmTest()
 //~ ParticleTest()
@@ -110,8 +111,8 @@ function EventCheck()
 	reinforce = 1
 	weather = 1
 	casualties = Null
-	//~ Event$ = RandomEvent[ Random2(0,EventNum-1) ]
-	select Interdiction$ `Event$
+	Event$ = RandomEvent[ Random2(0,EventNum-1) ]
+	select Event$
 		case Weather$
 			PlaySound( LightningSound )
 			weather = .5
@@ -149,7 +150,7 @@ endfunction
 
 function RandomKill( Tank as tanktype[],last )
 	unit as integer[]
-	PlaySound( DefeatSound )
+	PlaySound( SaboSound )
 	EventDialog( Sabotage$,"One unit destroyed" )
 	for i = 0 to last
 		if Tank[i].alive then unit.insert(i)
@@ -969,6 +970,23 @@ function SwarmTest()
 	end
 endfunction
 
+function SheetTest()
+	SetClearColor( 0,0,0 )
+	ClearScreen()
+	S = LoadImage("shiftcan.png")
+	CreateSprite(S,S)
+	SetSpriteDepth(S,1)
+	//~ SetSpriteSize(S,124,140)
+	SetSpritePosition(S,MiddleX,MiddleY)
+	SetSpriteVisible(S,On)
+	SetSpriteAnimation(S,128,144,71)
+	PlaySprite(S)
+	repeat
+		Sync()
+	until GetPointerPressed()
+	end
+endfunction
+
 function DisruptorTest()
 	PlaySound( DisruptorSound )
 	SetClearColor( 0,64,8 )
@@ -990,88 +1008,6 @@ function DisruptorTest()
 endfunction
 
 remstart
-
-function RandomUnit(Tank as tanktype[],last)
-	unit as integer[]
-	for i = 0 to last
-		if Tank[i].alive then unit.insert(i)
-	next i
-	ID = unit[Random2(0,unit.length)]
-endfunction ID
-
-SetPhysicsWallTop(Off)
-SetPhysicsWallBottom(Off)
-SetPhysicsWallLeft(Off)
-SetPhysicsWallRight(Off)
-
-FROM LASERFIRE
-	if GetRawKeyState( 0x51 ) or GetRawKeyState( Enter ) or GetRawKeyState( 0x53 ) then exit	 `Q,Enter,S
-
-function DisruptorFire( x1,y1,x2,y2,weapon,t1#,t2#,interrupt )
-	PlaySound( DisruptorSound,vol )
-	SetSoundInstanceRate( ls, 1 )
-	ResetTimer()
-	count = 60
-	repeat
-		if interrupt
-			cancel = GetVirtualButtonState( QuitButton )
-			accept = GetVirtualButtonState( AcceptButton )
-			settings = GetVirtualButtonState( SettingsButton )
-			if cancel or settings or accept then exit
-		endif
-		if Timer() <= t1#  `1.25
-			DrawLine(x1,y1,x2,y2,laserFull,laserOut) : Sync()
-			DrawLine(x1,y1,x2,y2,laserFull,laserOut) : Sync()
-			DrawLine(x1,y1,x2,y2,laserFull,laserFull) : Sync()
-			DrawLine(x1,y1,x2,y2,laserFull,laserFade) : Sync()
-		endif
-		SetParticlesFrequency( disruptor, count )
-		SetParticlesVisible( disruptor,1 )
-		Sync()
-		dec count,5
-	until Timer() >= t2#  `2
-	SetParticlesVisible( disruptor,0 )
-endfunction
-
-function ShowRayCast()
-	//~ ObjectRayCast(0, 0,100,5 , 0,-1,5)
-	//~ n = GetObjectRayCastNumHits()
-	//~ print("GetObjectRayCastNumHits "+str(n))
-	//~ for i = 0 to n - 1
-	 obj = GetRayCastSpriteID()
-	 print("Object ID: "+str(obj))
-	 //~ print(GetObjectRayCastY(i))
-	//~ next
-endfunction
-
-VICTORY CONDITIONS:
-
-		if Tank[ID].team = PlayerTeam
-			for i = 0 to AIBaseCount
-				if Tank[ID].parentNode[Tank[ID].index] = AIBases[i].node
-					dec AIBaseCount
-					inc PlayerBaseCount
-					CaptureBase( i,pickPL,PlayerBases,AIBases,PlayerBase,BaseGroup )
-					if AIBaseCount = -1 then GameOver( VictoryText,0,0,0,"VICTORY",VictorySound )
-								AIBaseCount = AIBases.length
-								PlayerBaseCount = PlayerBases.length
-				endif
-			next i
-		else
-			for i = 0 to PlayerBaseCount
-				if Tank[ID].parentNode[Tank[ID].index] = PlayerBases[i].node
-					SetSpriteVisible(Tank[ID].bodyID,On)
-					SetSpriteVisible(Tank[ID].turretID,On)
-					dec PlayerBaseCount
-					inc AIBaseCount
-					CaptureBase( i,pickAI,AIBases,PlayerBases,AIBase,AIBaseGroup )
-					if PlayerBaseCount = -1 then GameOver( DefeatText,150,0,0,"DEFEAT",DefeatSound )
-								AIBaseCount = AIBases.length
-								PlayerBaseCount = PlayerBases.length
-				endif
-			next i
-		endif
-
 
 FIXED?
 		--- SET STARTING BASEPRODVALUE
@@ -1127,123 +1063,7 @@ FIXED?
 		---LOS IMPROPERLY BLOCKED!!!!!
 		---HEAVILY DAMAGED AI TANKS DON'T VISIT DEPOTS
 		---AI RELUCTANT TO FIRE; MAKING POOR MOVE DECISIONS (dont remove "nearestplayer" from goalset?)
-disrupt:
-			if Attacker[attID].bodyID = Defender[i].bodyID then continue
 
-
-function BlockProduction()
-	PlaySound( ClickSound,vol )
-	TSize = 36*dev.scale
-	Text( LimitText,"Unit Maximum",alertDialog.x+TSize,alertDialog.y+TSize,50,50,50,TSize,255,0 )
-	AlertDialog( LimitText,On,alertDialog.x,alertDialog.y,alertDialog.w,alertDialog.h )
-	SetVirtualButtonPosition( cancelButt.ID,alertDialog.accept.x,alertDialog.accept.y )
-	repeat
-		Sync()
-	until GetVirtualButtonPressed( cancelButt.ID ) or GetRawKeyState( Enter )
-	WaitForButtonRelease( cancelButt.ID )
-	PlaySound( ClickSound,vol )
-	SetVirtualButtonPosition( cancelButt.ID,cancelButt.X,cancelButt.Y )
-	AlertDialog( LimitText,Off,alertDialog.x,alertDialog.y,alertDialog.w,alertDialog.h )
-endfunction
-
-function GameOver( textID,spinID,r,g,b,spinR,spinG,spinB,message$,sound )
-	#constant startSize 750
-	#constant endSize 100
-	#constant beginSpacing 300
-	#constant endSpacing 0
-	#constant spinDiameter 341.33
-	#constant spinW 576
-	#constant spinH 256
-
-	PlaySound( sound )
-	DeleteVirtualButton(AcceptButton)
-	DeleteVirtualButton(QuitButton)
-	DeleteAllText()
-	ft# = GetFrameTime()
-	y2 = MapHeight/2
-	y1 = y2-(startSize/2)
-
-	Text( textID,message$,MiddleX,y2,r,g,b,startSize,255,1 )
-	SetTextFont( textID,Avenir )
-	tt = TweenText( textID,Null,Null,y1,y2,Null,Null,startSize,endSize,beginSpacing,endSpacing,3,Null,TweenEaseIn1() )
-
-	if GetMouseExists() then SetRawMouseVisible( On )
-	repeat
-		if GetTweenExists( tt )
-			if GetTweenTextPlaying( tt,textID )
-				UpdateAllTweens( ft# )
-			else
-				DeleteTween( tt )
-				DeleteAllSprites()
-				SetupSprite(field,field,"AchillesBoardClear.png",0,0,MaxWidth,MaxHeight,12,On,0)
-				SetupSprite(spinID,spinID,"SpinnerSS.png",MiddleX-(spinW/2),y2-(spinH/2)+(endSize/2),spinW,spinH,0,On,0)
-				SetSpriteColor( spinID,spinR,spinG,spinB,255 )
-				SetSpriteAnimation( spinID,spinDiameter,spinDiameter,32 )
-				PlaySprite( spinID,16 )
-			endif
-		elseif not GetSpriteVisible( VictorySpinner )
-			SetSpriteVisible( VictorySpinner,On )
-		endif
-		Sync()
-	until GetPointerPressed()
-	Main() `restart Achilles
-endfunction
-
-function WaterTest()
-	f = LoadImage("AchillesBoardClear.png")
-	CreateSprite(f,f)
-	SetSpriteDepth(f,1)
-	SetSpriteSize(f,MaxWidth,MaxHeight)
-	SetSpriteVisible(f,On)
-
-	bw = LoadImage("BlueWaterSS.png")
-	CreateSprite(bw,bw)
-	SetSpriteDepth(bw,0 )
-	SetSpritePosition(bw,270,270)
-	SetSpriteAnimation(bw,90,90,60)
-	SetSpriteSize(bw,45,45)
-	PlaySprite(bw,30)
-	bw2 = CloneSprite(bw)
-	SetSpritePosition(bw2,315,270)
-	bw3 = CloneSprite(bw)
-	SetSpritePosition(bw3,270,315)
-	bw4 = CloneSprite(bw)
-	SetSpritePosition(bw4,315,315)
-	repeat
-		Sync()
-	until GetPointerPressed()
-	end
-endfunction
-
-
-function GameOver( textID,message$,r,g,b,sound )
-	#constant startSize 750
-	#constant endSize 100
-	#constant beginSpacing 300
-	#constant endSpacing 0
-
-	y2 = MapHeight/2
-	y1 = y2-(startSize/2)
-	PlaySound( sound )
-	Text( textID,message$,MiddleX,y2,r,g,b,startSize,255,1 )
-	SetTextFont( textID,Impact )
-	TweenText( textID,Null,Null,y1,y2,Null,Null,startSize,endSize,beginSpacing,endSpacing,3,Null,TweenEaseIn1() )
-	ft# = GetFrameTime()
-	if GetMouseExists() then SetRawMouseVisible( On )
-	repeat
-		UpdateAllTweens( ft# )
-		Sync()
-	until GetPointerPressed()
-	Main() `restart Achilles
-endfunction
-
-	function SetTweenText( a1,a2,text,intMode,speed# )
-		tt = CreateTweenText( speed# )
-		SetTweenTextAlpha( tt,a1,a2,intMode )
-		PlayTweenText( tt,text,0 )
-	endfunction tt
-
-	FIXED?
 		----IMPLEMENT AI BASE DEFENSE - SEE GOAL CHANGE
 		----AI MUST BE MORE AGGRESSIVE IN CAPTURING BASES!!!!!!!!!!
 
