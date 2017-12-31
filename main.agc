@@ -56,16 +56,15 @@ SetPhysicsWallBottom(Off)
 SetPhysicsWallLeft(Off)
 SetPhysicsWallRight(Off)
 
-//~ remstart
 if  LoadVideo( video$ )
+	ResetTimer()
 	PlayVideo()
 	while GetVideoPlaying()
 		if GetPointerState() or GetRawKeyPressed( Enter ) then exit
+		if Timer() >= 4.75 then DeleteVideo()
 		Sync()
 	endwhile
-	DeleteVideo()
 endif
-//~ remend
 
 #insert "Labels.agc"
 #include "Settings.agc"

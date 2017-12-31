@@ -79,7 +79,7 @@ zoneRadius = FlyRadius * NodeSize
 
 #constant Supply$ = "Supply Boost!"		     `all units repaired and re-armed
 #constant Reinforcement$ = "Reinforcements!" `production units doubled
-#constant Weather$ = "Bad Weather!"		 	 `movement halved
+#constant Weather$ = "Severe Weather!"		 `movement halved
 #constant Interdiction$ = "Interdiction!"	 `production halted
 #constant Sabotage$ = "Sabotage!"			 `eliminate one random unit
 #constant EventNum 21
