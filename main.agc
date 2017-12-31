@@ -60,10 +60,10 @@ if  LoadVideo( video$ )
 	ResetTimer()
 	PlayVideo()
 	while GetVideoPlaying()
-		if GetPointerState() or GetRawKeyPressed( Enter ) then exit
-		if Timer() >= 4.75 then DeleteVideo()
+		if Timer() >= 4.5 then StopVideo()
 		Sync()
 	endwhile
+	DeleteVideo()
 endif
 
 #insert "Labels.agc"
