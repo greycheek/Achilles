@@ -746,6 +746,7 @@ type mapType
 endtype
 global mapTable as mapType[MapSize]
 global holdTable as mapType[MapSize]
+
 global treeDummy as integer
 global impassDummy as integer
 global roughDummy as integer
@@ -1178,6 +1179,8 @@ square = InterfaceSeries+53
 
 global VictoryImage
 global DefeatImage
+global starImage
+global laserStarImage
 
 type sliderType
 	ID

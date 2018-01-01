@@ -57,10 +57,10 @@ SetPhysicsWallLeft(Off)
 SetPhysicsWallRight(Off)
 
 if  LoadVideo( video$ )
-	ResetTimer()
 	PlayVideo()
+	ResetTimer()
 	while GetVideoPlaying()
-		if Timer() >= 4.5 then StopVideo()
+		if (Timer()>=4.5) or GetPointerState() or GetRawKeyPressed(Enter) then StopVideo()
 		Sync()
 	endwhile
 	DeleteVideo()
@@ -322,7 +322,7 @@ function Fire( Attacker ref as tankType[], Defender ref as tankType[], attID, de
 		endcase
 		case laser,heavyLaser
 			RotateTurret(attID,Attacker,Defender[defID].x,Defender[defID].y)
-			LaserFire(Attacker[attID].x,Attacker[attID].y,Defender[defID].x,Defender[defID].y,Attacker[attID].weapon,1.25,2,0)
+			LaserFire(Attacker[attID].x,Attacker[attID].y,Defender[defID].x,Defender[defID].y,Attacker[attID].weapon,1.25,2,0 )
 		endcase
 		case machineGun
 			RotateTurret(attID,Attacker,Defender[defID].x,Defender[defID].y)
@@ -635,8 +635,7 @@ endfunction
 
 function VictoryParticles()
 	part = CreateParticles( MiddleX,(MapHeight/2)+50 )
-	VictoryImage = LoadImage("VictoryImage.png")
-	SetParticlesImage( part, VictoryImage )
+	SetParticlesImage( part, starImage )
 	SetParticlesRotationRange( part, 0, 270 )
 	SetParticlesVelocityRange( part,3,1 )
 	SetParticlesFrequency( part,10 )
@@ -841,6 +840,12 @@ function MissileFire( x1,y1,x2,y2 )
 endfunction
 
 function LaserFire( x1,y1,x2,y2,weapon,t1#,t2#,interrupt )
+	star = CreateSprite(laserStarImage)
+	SetSpritePositionByOffset(star,x1,y1)
+	SetSpriteSize(star,NodeSize/1.5,NodeSize/1.5)
+	SetSpriteDepth(star,0)
+	SetSpriteVisible(star,On)
+
 	if weapon = laser then ls = PlaySound( LaserSound,vol ) else ls = PlaySound( HeavyLaserSound,vol )
 	SetSoundInstanceRate( ls, 1 )
 	laser1=CreateParticles( x2, y2 )
@@ -855,6 +860,8 @@ function LaserFire( x1,y1,x2,y2,weapon,t1#,t2#,interrupt )
 	SetParticlesDepth( laser1, 0 )
 	ResetTimer()
 	count = 60
+	beam = True
+	spin = 0
 	repeat
 		if interrupt
 			if GetVirtualButtonState(InfoButt.ID)
@@ -868,16 +875,22 @@ function LaserFire( x1,y1,x2,y2,weapon,t1#,t2#,interrupt )
 			endif
 		endif
 		if Timer() <= t1#  `1.25
+			SetSpriteAngle(star,spin)
 			DrawLine(x1,y1,x2,y2,laserFull,laserOut) : Sync()
 			DrawLine(x1,y1,x2,y2,laserFull,laserOut) : Sync()
 			DrawLine(x1,y1,x2,y2,laserFull,laserFull) : Sync()
 			DrawLine(x1,y1,x2,y2,laserFull,laserFade) : Sync()
+		elseif beam = True
+			beam = False
+			SetSpriteVisible( star,Off )
 		endif
+		inc spin,10 : if spin > 360 then spin = 0
 		SetParticlesFrequency( laser1, count )
 		SetParticlesVisible( laser1,1 )
 		Sync()
 		dec count,5
 	until Timer() >= t2#  `2
+	DeleteSprite( star )
 	DeleteParticles( laser1 )
 endfunction
 

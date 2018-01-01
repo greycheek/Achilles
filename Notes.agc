@@ -5,6 +5,7 @@
 	global tx4# as float
 	global ty1# as float
 
+
 `Defunct:
 function ButtonStatus( state,accept,quit )
 	SetVirtualButtonVisible( accept,state )

@@ -192,8 +192,13 @@ function ResetMap()
 	SetSpriteVisible(TreeSprite,Off)
 	SetSpriteVisible(Impass,Off)
 	SetSpriteVisible(AcquaSprite,Off)
+	DeleteSprite(impassDummy)
+	DeleteSprite(treeDummy)
+	DeleteSprite(roughDummy)
+	DeleteSprite(waterDummy)
 	DeleteImage(field)
 	DeleteSprite(field)
+
 	mapTable = holdTable  `reset mapTable
 	PlayerBases.length = Empty
 	AIBases.length = Empty
@@ -298,6 +303,9 @@ function GenerateMap()
 	SetSpriteDepth(RoughSprite,1)
 	SetSpriteSize(RoughSprite,NodeSize,NodeSize)
 	SetSpriteVisible(RoughSprite,Off)
+
+	starImage = LoadImage("VictoryImage.png")
+	laserStarImage = LoadImage("stars.png")
 
 	BaseHalo = BaseHaloSeries
 	LoadImage(BaseHalo,"BaseHalo.png")
