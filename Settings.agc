@@ -192,10 +192,16 @@ function ResetMap()
 	SetSpriteVisible(TreeSprite,Off)
 	SetSpriteVisible(Impass,Off)
 	SetSpriteVisible(AcquaSprite,Off)
+
 	DeleteSprite(impassDummy)
 	DeleteSprite(treeDummy)
 	DeleteSprite(roughDummy)
 	DeleteSprite(waterDummy)
+	impassDummy = CreateDummySprite()
+	treeDummy = CreateDummySprite()
+	roughDummy = CreateDummySprite()
+	waterDummy = CreateDummySprite()
+
 	DeleteImage(field)
 	DeleteSprite(field)
 
@@ -305,7 +311,7 @@ function GenerateMap()
 	SetSpriteVisible(RoughSprite,Off)
 
 	starImage = LoadImage("VictoryImage.png")
-	laserStarImage = LoadImage("stars.png")
+	laserStarImage = LoadImage("LaserStar.png")
 
 	BaseHalo = BaseHaloSeries
 	LoadImage(BaseHalo,"BaseHalo.png")
@@ -775,6 +781,7 @@ function DeleteAllButtons()
 	DeleteVirtualButton(Button15.ID)
 	DeleteVirtualButton(Button20.ID)
 	DeleteVirtualButton(Button25.ID)
+	DeleteVirtualButton(ONOFF.ID)
 endfunction
 
 remstart

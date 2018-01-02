@@ -322,7 +322,7 @@ function Fire( Attacker ref as tankType[], Defender ref as tankType[], attID, de
 		endcase
 		case laser,heavyLaser
 			RotateTurret(attID,Attacker,Defender[defID].x,Defender[defID].y)
-			LaserFire(Attacker[attID].x,Attacker[attID].y,Defender[defID].x,Defender[defID].y,Attacker[attID].weapon,1.25,2,0 )
+			LaserFire(Attacker[attID].x,Attacker[attID].y,Defender[defID].x,Defender[defID].y,Attacker[attID].weapon,1.25,2,0,Attacker[attID].scale )
 		endcase
 		case machineGun
 			RotateTurret(attID,Attacker,Defender[defID].x,Defender[defID].y)
@@ -839,10 +839,11 @@ function MissileFire( x1,y1,x2,y2 )
 	Explosion( x2,y2,Explode1,ExplodeSound,24 )
 endfunction
 
-function LaserFire( x1,y1,x2,y2,weapon,t1#,t2#,interrupt )
+function LaserFire( x1,y1,x2,y2,weapon,t1#,t2#,interrupt,scale )
+	scale = (NodeSize*scale) / 3
 	star = CreateSprite(laserStarImage)
 	SetSpritePositionByOffset(star,x1,y1)
-	SetSpriteSize(star,NodeSize/1.5,NodeSize/1.5)
+	SetSpriteSize(star,scale,scale)
 	SetSpriteDepth(star,0)
 	SetSpriteVisible(star,On)
 
@@ -884,7 +885,7 @@ function LaserFire( x1,y1,x2,y2,weapon,t1#,t2#,interrupt )
 			beam = False
 			SetSpriteVisible( star,Off )
 		endif
-		inc spin,10 : if spin > 360 then spin = 0
+		inc spin,5 : if spin > 360 then spin = 0
 		SetParticlesFrequency( laser1, count )
 		SetParticlesVisible( laser1,1 )
 		Sync()

@@ -81,7 +81,7 @@ function PatrolMech()
 			if Random(0,1)
 				if  VectorDistance( MechGuy[0].x,MechGuy[0].y,x2,y2 ) > ( NodeSize*3 )
 					RotateTurret(0,MechGuy,x2,y2)
-					LaserFire( MechGuy[0].x,MechGuy[0].y,x2,y2,heavyLaser,1.25,2,1 )
+					LaserFire( MechGuy[0].x,MechGuy[0].y,x2,y2,heavyLaser,1.25,2,1,MechGuy[0].scale )
 				//~ else
 					//~ print("too close")
 				endif
