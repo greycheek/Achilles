@@ -361,7 +361,8 @@ function AIOps()
 						if MineField( i,AITank ) then exit
 					endif
 				else
-					AITank[i].route = PlanMove(i)
+						if GetSpriteVisible(AITank[i].bodyID) then Blockage(i,AITank,AITank[i].x,AITank[i].y,mapTable[nextMove].x,mapTable[nextMove].y)
+									//~ AITank[i].route = PlanMove(i)
 					exit
 				endif
 			else

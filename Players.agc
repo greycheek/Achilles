@@ -742,8 +742,9 @@ function PlayerOps()
 
 				nextMove = PlayerTank[i].parentNode[PlayerTank[i].index+1]
 				if mapTable[nextMove].team
-					ResetPath(i,PlayerTank)
-					PlayerTank[i].route = AStar(i,PlayerTank)
+					Blockage(i,PlayerTank,PlayerTank[i].x,PlayerTank[i].y,mapTable[nextMove].x,mapTable[nextMove].y)
+									//~ ResetPath(i,PlayerTank)
+									//~ PlayerTank[i].route = AStar(i,PlayerTank)
 					exit
 				endif
 				SetSpriteVisible(PlayerTank[i].healthID,Off)

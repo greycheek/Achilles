@@ -240,6 +240,7 @@ global BangSound
 global BuildBaseSound
 global ClickSound
 global CopySound
+global DeActivateSound
 global DefeatSound
 global DisruptorSound
 global EMPSound
@@ -277,10 +278,11 @@ global YesSirSound
 BangSound = LoadSound("bang2.wav")
 BuildBaseSound = LoadSound( "HoverbikeEnd.wav" )
 ClickSound = LoadSound("PlasticClick.wav")
+DeActivateSound = LoadSoundOGG( "DeactivateBeep.ogg" )
 DefeatSound = LoadSound("Defeat.wav")
 DisruptorSound = LoadSoundOGG("DISRUPTOR.ogg")
 EMPSound = LoadSoundOGG("EMP.ogg")
-EngineerSound = LoadSound("MotorClose_01.wav")
+EngineerSound = LoadSoundOGG("MotorClose_01_01.ogg")
 EngineSound = LoadSoundOGG( "Jet2_01.ogg" )
 EnterSound = LoadSound("PickUpHeavy.wav")
 ErrorSound = LoadSoundOGG("EdgeHit2.ogg")
@@ -329,6 +331,7 @@ function SoundVolume()
 	SetSoundInstanceVolume( BangSound, vol )
 	SetSoundInstanceVolume( BuildBaseSound, vol )
 	SetSoundInstanceVolume( ClickSound, vol )
+	SetSoundInstanceVolume( DeActivateSound, vol )
 	SetSoundInstanceVolume( DefeatSound, vol )
 	SetSoundInstanceVolume( DisruptorSound, vol )
 	SetSoundInstanceVolume( EMPSound, vol )
@@ -379,12 +382,12 @@ type$[4,0] = "HEAVY TANK"
 type$[5,0] = "MECH"
 type$[6,0] = "ENGINEER"
 
-armor$[1,0] = "ARMOR  66%"	`50%, now Light = 33%
-armor$[2,0] = "ARMOR  100%"	`33%, now Battery = 50%
-armor$[3,0] = "ARMOR  150%"	`75%
-armor$[4,0] = "ARMOR  200%"	`100%
-armor$[5,0] = "ARMOR  150%"	`75%
-armor$[6,0] = "ARMOR  20%"	`10%
+armor$[1,0] = "ARMOR  66%"	`50%, now Light = 33%, doubled
+armor$[2,0] = "ARMOR  100%"	`33%, now Battery = 50%, doubled
+armor$[3,0] = "ARMOR  150%"	`75%, doubled
+armor$[4,0] = "ARMOR  200%"	`100%, doubled
+armor$[5,0] = "ARMOR  150%"	`75%, doubled
+armor$[6,0] = "ARMOR  20%"	`10%, doubled
 
 
 weapon$[1,0] = "BALLISTIC WEAPON  range 4, damage 10%, rounds --"
@@ -1172,6 +1175,10 @@ global TurnCount
 global turnImage
 global turnImageDown
 global square
+global prohibit
+global prohibitImage
+global redSquare
+global redSquareImage
 
 ProductionUnits = InterfaceSeries+51
 TurnCount = InterfaceSeries+52

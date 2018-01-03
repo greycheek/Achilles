@@ -6,28 +6,17 @@ remstart
 
 	ISSUES/REVISIONS
 	--- BETTER AI DECISIONS?
-			BASE PROTECT - DONT LEAVE A BASE WHEN THREATENED
-			BASE CAPTURE
 			PLACEMENT RELATIVE TO ENEMY
 			ENGINEER PROTECTION
 			--VERY REPETITIVE MOVEMENT PATTERNS??
-
-	--- PLAYER and AI TANKS ARE SOMETIMES STUCK - BLOCKAGE BY OTHER TANKS? -- RESET MOVEMENT WHEN BLOCKED?
-	--- SELECTING A MOVEMENT SQUARE GENERATES "OUT OF REACH" MESSAGE
-
 	--- SPRITECONS  BEHAVING STRANGELY - STICK TO SCREEN - UNITS NOT SELECTED SHOW UP IN GAME (MEDIUM TANK?)
 
 	FIXED?
-	--- SABOTAGE EVENT NOT WORKING??!!
-	--- DIALOG BOX AFTER ZOOMING OUT - ZOOM BEHAVE STRANGELY; TURN/PRODUCTION INFO GOES AWAY!!!
-	--- SHOOTING OUT OF TREES IS SOMETIMES BLOCKED!!
-	--- UNITS CAN SELECT TARGETS IN TREES!!  - RELATED TO DLS??
-	--- LASERS (MISSILES?) FIRE OUT OF RANGE!!!
-	--- "SetTextVisible( MapText,state )" IN MAIN MENU > ALERT DIALOG??
-	--- MAJOR HOVERCRAFT MOVEMENT BUG!!!! - CAN MOVE ON TOP OF ONE ANOTHER - MOVEMENT DOESN'T CANCEL??????
-	--- SOME SPRITECONS DONT CHANGE COLOR?!
-	--- HEALTH BARS NOT RESETTING AFTER DEPOT VISIT????!
-
+	--- SELECTING A MOVEMENT SQUARE GENERATES "OUT OF REACH" MESSAGE
+	--- BASE CAPTURE
+	--- PLAYER and AI TANKS ARE SOMETIMES STUCK - BLOCKAGE BY OTHER TANKS? -- RESET MOVEMENT WHEN BLOCKED?
+			--See PlayerOps and AIOps
+			--Implement visual blockage indicator
 	FUTURE
 		getspriteincircle vs getspriteinbox??
 		Vary water, impass, tree and rough tiles
@@ -50,7 +39,7 @@ SetOrientationAllowed( 0, 0, 1, 1 )
 //~ LoadFont( Gill,"GillSans.ttf" )
 LoadFont( Avenir,"Avenir Next.ttc" )
 UseNewDefaultFonts( On )
-if dev.device = "windows" then video$ = "Greycheek.wmv" else video$ = "Greycheek_1.mp4"
+if dev.device = "windows" then video$ = "Greycheek.wmv" else video$ = "Greycheek_4.mp4"
 SetPhysicsWallTop(Off)
 SetPhysicsWallBottom(Off)
 SetPhysicsWallLeft(Off)
@@ -105,6 +94,30 @@ function Turn()
 	ShowInfo(On)
 	Sync()
 endfunction
+
+
+function Blockage(ID,Tank as tankType[],x1,y1,x2,y2) `blocked movement
+	PlaySound(DeActivateSound)
+	SetSpritePositionByOffset(prohibit,x2,y2)
+	SetSpriteVisible(prohibit,On)
+	SetSpriteActive(prohibit,On)
+	SetSpritePositionByOffset(redSquare,x1,y1)
+	SetSpriteVisible(redSquare,On)
+	SetSpriteActive(redSquare,On)
+	cover = GetSpriteVisible(Tank[ID].cover)
+	if cover then SetSpriteVisible(Tank[ID].cover,Off)
+	ResetTimer()
+	repeat
+		DrawLine(x1,y1,x2,y2,laserFull,laserFull)
+		Sync()
+	until Timer() > 1.5
+	SetSpriteVisible(prohibit,Off)
+	SetSpriteActive(prohibit,Off)
+	SetSpriteVisible(redSquare,Off)
+	SetSpriteActive(redSquare,Off)
+	if cover then SetSpriteVisible(Tank[ID].cover,On)
+endfunction
+
 
 function EventCheck()
 	reinforce = 1
@@ -862,7 +875,6 @@ function LaserFire( x1,y1,x2,y2,weapon,t1#,t2#,interrupt,scale )
 	ResetTimer()
 	count = 60
 	beam = True
-	spin = 0
 	repeat
 		if interrupt
 			if GetVirtualButtonState(InfoButt.ID)
@@ -876,7 +888,6 @@ function LaserFire( x1,y1,x2,y2,weapon,t1#,t2#,interrupt,scale )
 			endif
 		endif
 		if Timer() <= t1#  `1.25
-			SetSpriteAngle(star,spin)
 			DrawLine(x1,y1,x2,y2,laserFull,laserOut) : Sync()
 			DrawLine(x1,y1,x2,y2,laserFull,laserOut) : Sync()
 			DrawLine(x1,y1,x2,y2,laserFull,laserFull) : Sync()
@@ -885,7 +896,6 @@ function LaserFire( x1,y1,x2,y2,weapon,t1#,t2#,interrupt,scale )
 			beam = False
 			SetSpriteVisible( star,Off )
 		endif
-		inc spin,5 : if spin > 360 then spin = 0
 		SetParticlesFrequency( laser1, count )
 		SetParticlesVisible( laser1,1 )
 		Sync()
@@ -1021,8 +1031,20 @@ function DisruptorTest()
 endfunction
 
 remstart
+ISSUES
+			BASE PROTECT - DONT LEAVE A BASE WHEN THREATENED
 
 FIXED?
+		--- SABOTAGE EVENT NOT WORKING??!!
+		--- DIALOG BOX AFTER ZOOMING OUT - ZOOM BEHAVE STRANGELY; TURN/PRODUCTION INFO GOES AWAY!!!
+		--- SHOOTING OUT OF TREES IS SOMETIMES BLOCKED!!
+		--- UNITS CAN SELECT TARGETS IN TREES!!  - RELATED TO DLS??
+		--- LASERS (MISSILES?) FIRE OUT OF RANGE!!!
+		--- "SetTextVisible( MapText,state )" IN MAIN MENU > ALERT DIALOG??
+		--- MAJOR HOVERCRAFT MOVEMENT BUG!!!! - CAN MOVE ON TOP OF ONE ANOTHER - MOVEMENT DOESN'T CANCEL??????
+		--- SOME SPRITECONS DONT CHANGE COLOR?!
+		--- HEALTH BARS NOT RESETTING AFTER DEPOT VISIT????!
+
 		--- SET STARTING BASEPRODVALUE
 		--- UPDATE SETTINGS SCREEN TO REFLECT BASEPRODVALUE
 		--- SET LOAD/SAVE TO STORE BASE PRODUCTION VALUE

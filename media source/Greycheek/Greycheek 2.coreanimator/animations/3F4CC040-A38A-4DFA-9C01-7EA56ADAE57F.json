@@ -1,0 +1,2440 @@
+{
+  "name" : "Untitled Animation",
+  "keyall_timeline" : {
+    "keyframes" : [
+      {
+        "time_in_ms" : 1250,
+        "easing_mode" : "linear",
+        "recorded" : false,
+        "recorded_start" : false,
+        "value_type" : "float",
+        "float_value" : 0,
+        "recorded_end" : false,
+        "identifier" : "FC1F3C8D-4A77-4442-B07E-B6F01FA69461"
+      },
+      {
+        "time_in_ms" : 2000,
+        "easing_mode" : "linear",
+        "recorded" : false,
+        "recorded_start" : false,
+        "value_type" : "float",
+        "float_value" : 0,
+        "recorded_end" : false,
+        "identifier" : "AD0CB9FA-1C6F-4D3A-B684-2AF96AE8D835"
+      },
+      {
+        "time_in_ms" : 2250,
+        "easing_mode" : "linear",
+        "recorded" : false,
+        "recorded_start" : false,
+        "value_type" : "float",
+        "float_value" : 0,
+        "recorded_end" : false,
+        "identifier" : "C80DF00D-5B55-4E74-A378-6970B4D58B9A"
+      },
+      {
+        "time_in_ms" : 2500,
+        "easing_mode" : "linear",
+        "recorded" : false,
+        "recorded_start" : false,
+        "value_type" : "float",
+        "float_value" : 0,
+        "recorded_end" : false,
+        "identifier" : "B428E55B-FED8-4C02-9F2D-DA05B9E23008"
+      },
+      {
+        "time_in_ms" : 3750,
+        "easing_mode" : "linear",
+        "recorded" : false,
+        "recorded_start" : false,
+        "value_type" : "float",
+        "float_value" : 0,
+        "recorded_end" : false,
+        "identifier" : "61EA78D0-D1D6-4C41-B621-CB09D267B5FE"
+      },
+      {
+        "time_in_ms" : 5000,
+        "easing_mode" : "linear",
+        "recorded" : false,
+        "recorded_start" : false,
+        "value_type" : "float",
+        "float_value" : 0,
+        "recorded_end" : false,
+        "identifier" : "C9C43811-7CBF-4FF5-9AAC-48AD44EDA108"
+      }
+    ],
+    "repeat_behavior" : "never",
+    "property_type" : "keyall"
+  },
+  "element_timelines" : {
+    "5F0F45BD-B244-4EBB-B579-780C9B23B288" : {
+      "z_positions" : {
+        "keyframes" : [
+          {
+            "time_in_ms" : 2000,
+            "easing_mode" : "instant",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "array",
+            "array_value" : [
+
+            ],
+            "recorded_end" : false,
+            "identifier" : "89E65DEE-B8B5-45A2-9AD4-00A52ECFF622"
+          },
+          {
+            "time_in_ms" : 2250,
+            "easing_mode" : "instant",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "array",
+            "array_value" : [
+
+            ],
+            "recorded_end" : false,
+            "identifier" : "410987D9-3F23-4E5C-8F41-C8EACB55B4FF"
+          },
+          {
+            "time_in_ms" : 2500,
+            "easing_mode" : "instant",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "array",
+            "array_value" : [
+
+            ],
+            "recorded_end" : false,
+            "identifier" : "AF74A27E-9D35-4AC1-B9F1-F127746D5C75"
+          },
+          {
+            "time_in_ms" : 5000,
+            "easing_mode" : "instant",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "array",
+            "array_value" : [
+
+            ],
+            "recorded_end" : false,
+            "identifier" : "0239979C-BA98-48B2-818C-CE6D5C66DD9F"
+          }
+        ],
+        "repeat_behavior" : "never",
+        "property_type" : "z_positions"
+      },
+      "image_contents" : {
+        "keyframes" : [
+          {
+            "time_in_ms" : 2000,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "string",
+            "recorded_end" : false,
+            "string_value" : "28FB12D0-2E14-4292-BAC1-3AD67DD8DB6B",
+            "identifier" : "819D0B5A-6F40-4CEE-A031-463E24E78446"
+          },
+          {
+            "time_in_ms" : 2250,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "string",
+            "recorded_end" : false,
+            "string_value" : "28FB12D0-2E14-4292-BAC1-3AD67DD8DB6B",
+            "identifier" : "3A50CB2D-4D97-4B0F-B38E-E3EA5C0BF060"
+          },
+          {
+            "time_in_ms" : 2500,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "string",
+            "recorded_end" : false,
+            "string_value" : "28FB12D0-2E14-4292-BAC1-3AD67DD8DB6B",
+            "identifier" : "A0CA898A-1B43-4855-97AD-18442A6932D1"
+          },
+          {
+            "time_in_ms" : 3750,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "string",
+            "recorded_end" : false,
+            "string_value" : "28FB12D0-2E14-4292-BAC1-3AD67DD8DB6B",
+            "identifier" : "32CFD4A6-AEF7-41D4-8605-EFAF265733EC"
+          },
+          {
+            "time_in_ms" : 4987,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "string",
+            "recorded_end" : false,
+            "string_value" : "28FB12D0-2E14-4292-BAC1-3AD67DD8DB6B",
+            "identifier" : "6F3CCB08-699F-4419-867A-503F3EC67F1F"
+          },
+          {
+            "time_in_ms" : 5000,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "string",
+            "recorded_end" : false,
+            "string_value" : "28FB12D0-2E14-4292-BAC1-3AD67DD8DB6B",
+            "identifier" : "6702FE34-4FD8-4EF6-9970-0BCA51E741C1"
+          },
+          {
+            "time_in_ms" : 5004,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "string",
+            "recorded_end" : false,
+            "string_value" : "28FB12D0-2E14-4292-BAC1-3AD67DD8DB6B",
+            "identifier" : "562FC92F-1CDA-43B0-82C0-007A1B3274FE"
+          }
+        ],
+        "repeat_behavior" : "never",
+        "property_type" : "image_contents"
+      },
+      "x_translation" : {
+        "keyframes" : [
+          {
+            "time_in_ms" : 2000,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : -0.069937393069267273,
+            "recorded_end" : false,
+            "identifier" : "4BFB9B09-3C5B-4D48-A4A5-424C0EED74F8"
+          },
+          {
+            "time_in_ms" : 2250,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : -0.069937393069267273,
+            "recorded_end" : false,
+            "identifier" : "2BD65477-C5C9-48BD-9842-9804B3E50428"
+          },
+          {
+            "time_in_ms" : 2500,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : -0.069937393069267273,
+            "recorded_end" : false,
+            "identifier" : "B6E52992-5850-4E1E-AD8F-C77B3ACCFB1F"
+          },
+          {
+            "time_in_ms" : 3750,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : -0.069937393069267273,
+            "recorded_end" : false,
+            "identifier" : "93BC44AA-0F1B-4320-882E-00F4C374F750"
+          },
+          {
+            "time_in_ms" : 4995,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : -0.069937393069267273,
+            "recorded_end" : false,
+            "identifier" : "EABCD8ED-A1E9-4AC0-AD0D-FAB976DC2A40"
+          },
+          {
+            "time_in_ms" : 4997,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : -0.069937393069267273,
+            "recorded_end" : false,
+            "identifier" : "516A8528-E1CA-47D3-B0E3-7E3BC83182F3"
+          },
+          {
+            "time_in_ms" : 4999,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : -0.069937393069267273,
+            "recorded_end" : false,
+            "identifier" : "9DB0B54D-A57D-46C0-82BE-479606E63991"
+          },
+          {
+            "time_in_ms" : 5000,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : -0.069937393069267273,
+            "recorded_end" : false,
+            "identifier" : "2BA9903D-1505-458B-B1D6-00790748DF7E"
+          },
+          {
+            "time_in_ms" : 5004,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : -0.069937393069267273,
+            "recorded_end" : false,
+            "identifier" : "60A1045A-CB95-40B7-BCBB-27A4FB12B72D"
+          }
+        ],
+        "repeat_behavior" : "never",
+        "property_type" : "x_translation"
+      },
+      "y_translation" : {
+        "keyframes" : [
+          {
+            "time_in_ms" : 2000,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 0.87991386651992798,
+            "recorded_end" : false,
+            "identifier" : "70C04498-18EF-4207-9BBF-6BAA7380522E"
+          },
+          {
+            "time_in_ms" : 2250,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 0.87991386651992798,
+            "recorded_end" : false,
+            "identifier" : "0636FA57-677D-49E4-9E7D-726856C24E03"
+          },
+          {
+            "time_in_ms" : 2500,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 0.87991386651992798,
+            "recorded_end" : false,
+            "identifier" : "331D7FB3-E615-431B-873E-3DF77B276064"
+          },
+          {
+            "time_in_ms" : 3750,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 0.87991386651992798,
+            "recorded_end" : false,
+            "identifier" : "FEE5DF72-4FAF-4BAC-B7B7-2D67C0F56CC1"
+          },
+          {
+            "time_in_ms" : 4997,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 0.87991386651992798,
+            "recorded_end" : false,
+            "identifier" : "A22583F5-F1EA-4B27-AA11-2B238195FD5B"
+          },
+          {
+            "time_in_ms" : 4999,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 0.87991386651992798,
+            "recorded_end" : false,
+            "identifier" : "F70821B7-DA89-43EA-9285-74D85127BB91"
+          },
+          {
+            "time_in_ms" : 5000,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 0.87991386651992798,
+            "recorded_end" : false,
+            "identifier" : "7F345D48-643A-4B81-BF31-63E2DADDE7EC"
+          },
+          {
+            "time_in_ms" : 5004,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 0.87991386651992798,
+            "recorded_end" : false,
+            "identifier" : "DE721F18-5BF1-402F-8222-C5DCCDB413F8"
+          }
+        ],
+        "repeat_behavior" : "never",
+        "property_type" : "y_translation"
+      },
+      "rotation" : {
+        "keyframes" : [
+          {
+            "time_in_ms" : 2000,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : -0.05000000074505806,
+            "recorded_end" : false,
+            "identifier" : "4E66CA05-4F8E-48F8-A00A-F7D1B47F27EB"
+          },
+          {
+            "time_in_ms" : 2250,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 0.10822923108935356,
+            "recorded_end" : false,
+            "identifier" : "DACC0300-E167-4CA8-8E76-C7FEFB933F84"
+          },
+          {
+            "time_in_ms" : 2500,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : -0.05000000074505806,
+            "recorded_end" : false,
+            "identifier" : "0CB0130D-7F1F-4943-8528-A6CD6EDE9196"
+          },
+          {
+            "time_in_ms" : 3750,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : -0.05000000074505806,
+            "recorded_end" : false,
+            "identifier" : "02C2270A-E866-45C3-BE49-EBFA1F36936B"
+          },
+          {
+            "time_in_ms" : 5000,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : -0.05000000074505806,
+            "recorded_end" : false,
+            "identifier" : "F8476681-B528-4167-A880-EB691EED3302"
+          },
+          {
+            "time_in_ms" : 5004,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : -0.05000000074505806,
+            "recorded_end" : false,
+            "identifier" : "AF1780C5-E5A4-4CAF-A4D6-2F26EB702E88"
+          }
+        ],
+        "repeat_behavior" : "never",
+        "property_type" : "rotation"
+      }
+    },
+    "638E3A44-8492-453E-A6BE-D6217F747181" : {
+      "opacity" : {
+        "keyframes" : [
+          {
+            "time_in_ms" : 0,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 0,
+            "recorded_end" : false,
+            "identifier" : "6BF42A80-C592-478B-A78A-2F65BC300DF9"
+          },
+          {
+            "time_in_ms" : 1250,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 0,
+            "recorded_end" : false,
+            "identifier" : "C1BFB2B7-7AB6-448A-920A-9980C5EACE31"
+          },
+          {
+            "time_in_ms" : 2000,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 1,
+            "recorded_end" : false,
+            "identifier" : "BA20A5EF-CCCB-4F27-A1D8-F116D72C12E6"
+          },
+          {
+            "time_in_ms" : 2250,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 1,
+            "recorded_end" : false,
+            "identifier" : "1EC7949B-21EF-49B6-89F4-7D274D68EF06"
+          },
+          {
+            "time_in_ms" : 2500,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 1,
+            "recorded_end" : false,
+            "identifier" : "BD6BB840-9866-4C38-97BC-13847C256E92"
+          },
+          {
+            "time_in_ms" : 3750,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 1,
+            "recorded_end" : false,
+            "identifier" : "82D99439-33BE-4C0E-A635-988BED19B14E"
+          },
+          {
+            "time_in_ms" : 4996,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 1,
+            "recorded_end" : false,
+            "identifier" : "9996392B-6C53-44C6-876E-1B2207A67BC6"
+          },
+          {
+            "time_in_ms" : 4999,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 1,
+            "recorded_end" : false,
+            "identifier" : "1C79D5CB-133A-4ADA-921B-8EF3E6AA3B0B"
+          },
+          {
+            "time_in_ms" : 5000,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 1,
+            "recorded_end" : false,
+            "identifier" : "CE670582-1CB2-4AAA-82B6-4322A0A9A418"
+          },
+          {
+            "time_in_ms" : 5004,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 1,
+            "recorded_end" : false,
+            "identifier" : "4CA318B5-3562-4A54-82CA-B52516E1034B"
+          }
+        ],
+        "repeat_behavior" : "never",
+        "property_type" : "opacity"
+      }
+    },
+    "33BE4336-9FC5-452A-B3C6-2CA0F90CF409" : {
+      "x_translation" : {
+        "keyframes" : [
+          {
+            "time_in_ms" : 2000,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 71.528897833662995,
+            "recorded_end" : false,
+            "identifier" : "30EB5A6B-B092-444A-9830-B205867325DB"
+          },
+          {
+            "time_in_ms" : 2250,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 71.528897833662995,
+            "recorded_end" : false,
+            "identifier" : "89029E8A-7DFA-4DF9-835E-517BC2077530"
+          },
+          {
+            "time_in_ms" : 2500,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 71.528897833662995,
+            "recorded_end" : false,
+            "identifier" : "176503AC-6AB5-4742-8B5F-154040B98F65"
+          },
+          {
+            "time_in_ms" : 3750,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 71.528900146484375,
+            "recorded_end" : false,
+            "identifier" : "5370014B-4415-42F4-81CD-55191BD14973"
+          },
+          {
+            "time_in_ms" : 4995,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 71.528897833662995,
+            "recorded_end" : false,
+            "identifier" : "A27908DB-4B16-48FA-B908-BF5FB546FD04"
+          },
+          {
+            "time_in_ms" : 4997,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 71.528900146484375,
+            "recorded_end" : false,
+            "identifier" : "1475D14B-84CC-4064-BFC3-1CD40BA29934"
+          },
+          {
+            "time_in_ms" : 4999,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 71.528900146484375,
+            "recorded_end" : false,
+            "identifier" : "CEF1E1C5-1399-4B4E-8647-ED763379761E"
+          },
+          {
+            "time_in_ms" : 5000,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 71.528900146484375,
+            "recorded_end" : false,
+            "identifier" : "DDB6AD7A-A55C-49C8-9F95-08D20734A003"
+          },
+          {
+            "time_in_ms" : 5004,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 71.528900146484375,
+            "recorded_end" : false,
+            "identifier" : "88C4CB33-73AA-4DB6-89B0-A8525B8D58C9"
+          }
+        ],
+        "repeat_behavior" : "never",
+        "property_type" : "x_translation"
+      },
+      "y_translation" : {
+        "keyframes" : [
+          {
+            "time_in_ms" : 2000,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : -13.973362246880242,
+            "recorded_end" : false,
+            "identifier" : "6B111FBC-EFA4-4B3B-BC54-0AFFDFEF5554"
+          },
+          {
+            "time_in_ms" : 2250,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : -13.973362246880242,
+            "recorded_end" : false,
+            "identifier" : "FF165181-DE8B-4229-A178-96F750C2B7ED"
+          },
+          {
+            "time_in_ms" : 2500,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : -13.973362246880242,
+            "recorded_end" : false,
+            "identifier" : "C33F506B-83DF-4804-87E3-E4CA0324B67E"
+          },
+          {
+            "time_in_ms" : 3750,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : -13.973361968994141,
+            "recorded_end" : false,
+            "identifier" : "E7FCBAD2-468F-4685-9EB1-6E41A3F896EB"
+          },
+          {
+            "time_in_ms" : 4995,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : -13.973362246880242,
+            "recorded_end" : false,
+            "identifier" : "30659545-DB72-411E-9181-E57C6D267255"
+          },
+          {
+            "time_in_ms" : 4997,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : -13.973361968994141,
+            "recorded_end" : false,
+            "identifier" : "ECC6943A-D70E-4D45-A3CC-7797F023CC6F"
+          },
+          {
+            "time_in_ms" : 4999,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : -13.973361968994141,
+            "recorded_end" : false,
+            "identifier" : "8295DEC6-1FD4-4B8F-8C56-59EC8AD99B38"
+          },
+          {
+            "time_in_ms" : 5000,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : -13.973361968994141,
+            "recorded_end" : false,
+            "identifier" : "4A811A9C-41CA-4DF5-9DE1-63FAF630FFDE"
+          },
+          {
+            "time_in_ms" : 5004,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : -13.973361968994141,
+            "recorded_end" : false,
+            "identifier" : "84233CE1-E03C-47DD-B9AC-5C368E3A2694"
+          }
+        ],
+        "repeat_behavior" : "never",
+        "property_type" : "y_translation"
+      },
+      "y_scale" : {
+        "keyframes" : [
+          {
+            "time_in_ms" : 2000,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 0.66000000000000003,
+            "recorded_end" : false,
+            "identifier" : "CD207219-5DA9-434F-8706-85759B9DE899"
+          },
+          {
+            "time_in_ms" : 2250,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 0.66000000000000003,
+            "recorded_end" : false,
+            "identifier" : "C0D65316-CE81-4B9F-935A-35512887DE61"
+          },
+          {
+            "time_in_ms" : 2500,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 0.66000000000000003,
+            "recorded_end" : false,
+            "identifier" : "B1C78F50-6F8E-4A06-BAD3-DD2EB40E1EEB"
+          },
+          {
+            "time_in_ms" : 3750,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 0.6600000262260437,
+            "recorded_end" : false,
+            "identifier" : "BCC2FE8F-6094-4AFD-86B4-30582D72B6D8"
+          },
+          {
+            "time_in_ms" : 4995,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 0.66000000000000003,
+            "recorded_end" : false,
+            "identifier" : "0A5AC737-2DD6-4F74-BAD6-24E9369E8C74"
+          },
+          {
+            "time_in_ms" : 4997,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 0.6600000262260437,
+            "recorded_end" : false,
+            "identifier" : "69F289BC-D576-4F2B-BA26-A837503F78C8"
+          },
+          {
+            "time_in_ms" : 4999,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 0.6600000262260437,
+            "recorded_end" : false,
+            "identifier" : "725D7767-DE41-446C-A6D6-2C21F37F045F"
+          },
+          {
+            "time_in_ms" : 5000,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 0.6600000262260437,
+            "recorded_end" : false,
+            "identifier" : "62F42C30-2FE3-41B1-96B7-A6A2E698B74A"
+          },
+          {
+            "time_in_ms" : 5004,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 0.6600000262260437,
+            "recorded_end" : false,
+            "identifier" : "D708E3D1-62A2-416E-97BA-4D0F41D7130C"
+          }
+        ],
+        "repeat_behavior" : "never",
+        "property_type" : "y_scale"
+      },
+      "x_scale" : {
+        "keyframes" : [
+          {
+            "time_in_ms" : 2000,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 0.66000000000000003,
+            "recorded_end" : false,
+            "identifier" : "B3C035CC-BB06-4801-B10D-7B1D726D02DE"
+          },
+          {
+            "time_in_ms" : 2250,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 0.66000000000000003,
+            "recorded_end" : false,
+            "identifier" : "C233876C-4362-4FDD-ADF8-10F52891325E"
+          },
+          {
+            "time_in_ms" : 2500,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 0.66000000000000003,
+            "recorded_end" : false,
+            "identifier" : "7F4ADC2A-7930-4BA4-B705-A46268D37F54"
+          },
+          {
+            "time_in_ms" : 3750,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 0.6600000262260437,
+            "recorded_end" : false,
+            "identifier" : "7E6CE09A-7319-471F-A2F2-194BE2988655"
+          },
+          {
+            "time_in_ms" : 4995,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 0.66000000000000003,
+            "recorded_end" : false,
+            "identifier" : "A87DCF37-AFB8-4D4C-A69B-10DE3D9F59FA"
+          },
+          {
+            "time_in_ms" : 4997,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 0.6600000262260437,
+            "recorded_end" : false,
+            "identifier" : "976BAB31-7705-4BAD-83DC-E1089F6E4371"
+          },
+          {
+            "time_in_ms" : 4999,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 0.6600000262260437,
+            "recorded_end" : false,
+            "identifier" : "4E3C1C78-0D8D-4A9E-8526-AC13C0ECE7DA"
+          },
+          {
+            "time_in_ms" : 5000,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 0.6600000262260437,
+            "recorded_end" : false,
+            "identifier" : "35C4716B-351F-429E-BBB9-C8509DF5F98F"
+          },
+          {
+            "time_in_ms" : 5004,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 0.6600000262260437,
+            "recorded_end" : false,
+            "identifier" : "756F5677-A8A5-4020-A37E-EFF6840ACDAD"
+          }
+        ],
+        "repeat_behavior" : "never",
+        "property_type" : "x_scale"
+      },
+      "rotation" : {
+        "keyframes" : [
+          {
+            "time_in_ms" : 2000,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : -0.05000000074505806,
+            "recorded_end" : false,
+            "identifier" : "481FFA55-D2B0-4679-AD18-E9C745DAD0EF"
+          },
+          {
+            "time_in_ms" : 2250,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : -0.05000000074505806,
+            "recorded_end" : false,
+            "identifier" : "83572F81-C4DC-448D-889F-E4C9008B3F4B"
+          },
+          {
+            "time_in_ms" : 2500,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : -0.05000000074505806,
+            "recorded_end" : false,
+            "identifier" : "3B32CDB7-9CF9-427E-A44C-003710F037A9"
+          },
+          {
+            "time_in_ms" : 3750,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : -0.05000000074505806,
+            "recorded_end" : false,
+            "identifier" : "EB2293FB-BECB-4D25-A122-DDCAA9CCCC61"
+          },
+          {
+            "time_in_ms" : 4995,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : -0.05000000074505806,
+            "recorded_end" : false,
+            "identifier" : "CCC3F065-1217-4A9F-8903-EE41DA3D4D84"
+          },
+          {
+            "time_in_ms" : 4997,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : -0.05000000074505806,
+            "recorded_end" : false,
+            "identifier" : "2AA29DFA-D8B4-4B37-9A65-CA81C51482B7"
+          },
+          {
+            "time_in_ms" : 4999,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : -0.05000000074505806,
+            "recorded_end" : false,
+            "identifier" : "093D510B-AA21-44C6-8D3B-8E66D9EAD4E9"
+          },
+          {
+            "time_in_ms" : 5000,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : -0.05000000074505806,
+            "recorded_end" : false,
+            "identifier" : "53DC4855-39D0-41C9-91DC-E47F903AF873"
+          },
+          {
+            "time_in_ms" : 5004,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : -0.05000000074505806,
+            "recorded_end" : false,
+            "identifier" : "E5E72E4B-710B-4593-BCD3-94CD9ACC727C"
+          }
+        ],
+        "repeat_behavior" : "never",
+        "property_type" : "rotation"
+      }
+    },
+    "DED8D321-2FC3-4E2E-BD3A-2496D6EF23F1" : {
+      "opacity" : {
+        "keyframes" : [
+          {
+            "time_in_ms" : 1250,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 0.63133847713470459,
+            "recorded_end" : false,
+            "identifier" : "E6F5A0E8-74C1-47E4-BB6F-D25D918E0691"
+          },
+          {
+            "time_in_ms" : 2000,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 0,
+            "recorded_end" : false,
+            "identifier" : "FDEEDE79-9273-4F24-AB32-21D1F5BFB281"
+          },
+          {
+            "time_in_ms" : 2250,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 0,
+            "recorded_end" : false,
+            "identifier" : "02FF8B54-F36C-43A8-AC6C-17317325E215"
+          },
+          {
+            "time_in_ms" : 2500,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 0,
+            "recorded_end" : false,
+            "identifier" : "644D7D2A-DAD5-4626-A885-D63644C317BE"
+          },
+          {
+            "time_in_ms" : 3750,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 0,
+            "recorded_end" : false,
+            "identifier" : "A21B8A89-7C61-4200-8D4E-CD1809AD3C9D"
+          },
+          {
+            "time_in_ms" : 5000,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 0,
+            "recorded_end" : false,
+            "identifier" : "C3A6EAF4-31BC-446B-9D49-5801A0FC2F17"
+          },
+          {
+            "time_in_ms" : 5004,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 0,
+            "recorded_end" : false,
+            "identifier" : "6BB6DC22-36FA-4F72-89EC-0E86F2566A44"
+          }
+        ],
+        "repeat_behavior" : "never",
+        "property_type" : "opacity"
+      },
+      "x_translation" : {
+        "keyframes" : [
+          {
+            "time_in_ms" : 0,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : -0.20635639131069183,
+            "recorded_end" : false,
+            "identifier" : "EFEAF93D-F250-4E4D-9972-82D3E4661AA4"
+          },
+          {
+            "time_in_ms" : 1250,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 0,
+            "recorded_end" : false,
+            "identifier" : "38A982FA-7184-4918-B7A0-7AD9ED2CDD5E"
+          },
+          {
+            "time_in_ms" : 2000,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : -1.2561997828986478,
+            "recorded_end" : false,
+            "identifier" : "A515D826-6273-497C-B8A7-17B5AB082322"
+          },
+          {
+            "time_in_ms" : 2250,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : -1.2561997828986478,
+            "recorded_end" : false,
+            "identifier" : "AF45857F-76CF-4A8E-8DBD-9672A507C13C"
+          },
+          {
+            "time_in_ms" : 2500,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : -1.2561997828986478,
+            "recorded_end" : false,
+            "identifier" : "6243DA2A-9CCA-430B-BC30-EEA4BDFE1F5C"
+          },
+          {
+            "time_in_ms" : 3750,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : -1.256199836730957,
+            "recorded_end" : false,
+            "identifier" : "834327BD-5A65-4BDC-8B80-B4DBDE27B129"
+          },
+          {
+            "time_in_ms" : 5000,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : -1.256199836730957,
+            "recorded_end" : false,
+            "identifier" : "91C6F3D5-BABD-406F-BFD9-102045AF6DF7"
+          },
+          {
+            "time_in_ms" : 5001,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : -1.2561997828986478,
+            "recorded_end" : false,
+            "identifier" : "9D88CF40-B9DE-482C-8D19-A5D935DE7815"
+          },
+          {
+            "time_in_ms" : 5004,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : -1.2561997828986478,
+            "recorded_end" : false,
+            "identifier" : "F9917D22-1BC4-4C4B-90D4-215929A27938"
+          }
+        ],
+        "repeat_behavior" : "never",
+        "property_type" : "x_translation"
+      },
+      "y_translation" : {
+        "keyframes" : [
+          {
+            "time_in_ms" : 0,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 1.1693528890609741,
+            "recorded_end" : false,
+            "identifier" : "A98A82FC-D957-4E7F-BB48-6DF27A49C775"
+          },
+          {
+            "time_in_ms" : 1250,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 0,
+            "recorded_end" : false,
+            "identifier" : "1ADB60A2-A56D-4A2C-A13F-804CFF23368F"
+          },
+          {
+            "time_in_ms" : 2000,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 0.68773877578962583,
+            "recorded_end" : false,
+            "identifier" : "A8C3BD25-6A21-427D-9314-115F60A137C7"
+          },
+          {
+            "time_in_ms" : 2250,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 0.68773877578962583,
+            "recorded_end" : false,
+            "identifier" : "9023812E-130A-4BA5-86B5-F7ABB3FCE870"
+          },
+          {
+            "time_in_ms" : 2500,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 0.68773877578962583,
+            "recorded_end" : false,
+            "identifier" : "FB545584-182D-4065-A6C4-74F223416A81"
+          },
+          {
+            "time_in_ms" : 3750,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 0.68773877620697021,
+            "recorded_end" : false,
+            "identifier" : "A421E9A8-4893-41B3-BF00-0479EDA03FF0"
+          },
+          {
+            "time_in_ms" : 5000,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 0.68773877620697021,
+            "recorded_end" : false,
+            "identifier" : "594F04D1-2330-41F1-BF66-EAF1FBBAD0FD"
+          },
+          {
+            "time_in_ms" : 5001,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 0.68773877578962583,
+            "recorded_end" : false,
+            "identifier" : "E039D881-5AC9-45D7-BCA9-3C078574D995"
+          },
+          {
+            "time_in_ms" : 5004,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 0.68773877578962583,
+            "recorded_end" : false,
+            "identifier" : "ACBE860E-2AAE-41A4-8A24-FBE002527A89"
+          }
+        ],
+        "repeat_behavior" : "never",
+        "property_type" : "y_translation"
+      }
+    },
+    "A0FC4E32-6339-4499-9F1D-44701BB91D56" : {
+      "x_translation" : {
+        "keyframes" : [
+          {
+            "time_in_ms" : 1250,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 19.06842041015625,
+            "recorded_end" : false,
+            "identifier" : "DA69F95E-9909-453D-B257-E72634471681"
+          },
+          {
+            "time_in_ms" : 2000,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 30.509472430210053,
+            "recorded_end" : false,
+            "identifier" : "71521AD7-BE85-4966-8967-756467256C1E"
+          },
+          {
+            "time_in_ms" : 2250,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 30.509472430210053,
+            "recorded_end" : false,
+            "identifier" : "B44C6878-943E-486B-B815-C9F93920718F"
+          },
+          {
+            "time_in_ms" : 2500,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 30.509472430210053,
+            "recorded_end" : false,
+            "identifier" : "60FCC4DB-54AE-4741-83E4-EB102CBE426F"
+          },
+          {
+            "time_in_ms" : 5000,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 30.509471893310547,
+            "recorded_end" : false,
+            "identifier" : "6785ADF4-7643-480F-93D3-AE7EF2F8E1DC"
+          },
+          {
+            "time_in_ms" : 5004,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 30.509472430210053,
+            "recorded_end" : false,
+            "identifier" : "9B859D00-EC30-4F8C-B006-0785BA95C393"
+          }
+        ],
+        "repeat_behavior" : "never",
+        "property_type" : "x_translation"
+      },
+      "y_translation" : {
+        "keyframes" : [
+          {
+            "time_in_ms" : 1250,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 20.343955993652344,
+            "recorded_end" : false,
+            "identifier" : "CFF6067F-734A-4C95-B205-6E94A0B886B0"
+          },
+          {
+            "time_in_ms" : 2000,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 32.550330031427393,
+            "recorded_end" : false,
+            "identifier" : "642D76C3-88B8-43DC-A3A1-2DEC219B29D8"
+          },
+          {
+            "time_in_ms" : 2250,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 32.550330031427393,
+            "recorded_end" : false,
+            "identifier" : "34CBD759-25D3-4F86-BEF1-549E088800C7"
+          },
+          {
+            "time_in_ms" : 2500,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 32.550331115722656,
+            "recorded_end" : false,
+            "identifier" : "52BD4E70-842E-4ED0-A011-80131420027E"
+          },
+          {
+            "time_in_ms" : 5000,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 32.550331115722656,
+            "recorded_end" : false,
+            "identifier" : "0773496B-90C9-4403-AC31-5A363233BDE5"
+          },
+          {
+            "time_in_ms" : 5004,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 32.550330031427393,
+            "recorded_end" : false,
+            "identifier" : "2E8996CC-4DA6-434C-B369-2605614BB5D7"
+          }
+        ],
+        "repeat_behavior" : "never",
+        "property_type" : "y_translation"
+      },
+      "y_scale" : {
+        "keyframes" : [
+          {
+            "time_in_ms" : 1250,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 0.78750002384185791,
+            "recorded_end" : false,
+            "identifier" : "F4CEB36C-AFF1-4638-B713-7C5BA6B1EDEA"
+          },
+          {
+            "time_in_ms" : 2000,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 0.66000000000000003,
+            "recorded_end" : false,
+            "identifier" : "1FB7E9ED-5B89-463D-B481-ACC0FA0DB417"
+          },
+          {
+            "time_in_ms" : 2250,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 0.66000000000000003,
+            "recorded_end" : false,
+            "identifier" : "30EF4C73-3895-4362-A3BB-DF4564AB923F"
+          },
+          {
+            "time_in_ms" : 2500,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 0.66000000000000003,
+            "recorded_end" : false,
+            "identifier" : "1065CFD3-8EFE-4633-AA96-5412A51F2D1E"
+          },
+          {
+            "time_in_ms" : 3750,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 0.6600000262260437,
+            "recorded_end" : false,
+            "identifier" : "55EC8ABB-481F-4CC9-9EB0-215150B7284C"
+          },
+          {
+            "time_in_ms" : 5000,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 0.66000000000000003,
+            "recorded_end" : false,
+            "identifier" : "252F22F4-9D8A-47F2-8ADA-DB7D75CDEDD0"
+          },
+          {
+            "time_in_ms" : 5004,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 0.66000000000000003,
+            "recorded_end" : false,
+            "identifier" : "839B739D-57D1-4BCC-BD73-306EA0063705"
+          }
+        ],
+        "repeat_behavior" : "never",
+        "property_type" : "y_scale"
+      },
+      "x_scale" : {
+        "keyframes" : [
+          {
+            "time_in_ms" : 1250,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 0.78750002384185791,
+            "recorded_end" : false,
+            "identifier" : "2292652D-6794-40CE-AD62-CB95EA9E74FB"
+          },
+          {
+            "time_in_ms" : 2000,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 0.66000000000000003,
+            "recorded_end" : false,
+            "identifier" : "0DD5981A-7C5A-45EA-989A-7BAC70AD27DF"
+          },
+          {
+            "time_in_ms" : 2250,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 0.66000000000000003,
+            "recorded_end" : false,
+            "identifier" : "0B6106BB-7783-4A58-8EC3-9D1E325F3C5D"
+          },
+          {
+            "time_in_ms" : 2500,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 0.66000000000000003,
+            "recorded_end" : false,
+            "identifier" : "98886BE5-972D-465D-B43E-9A3C480394F3"
+          },
+          {
+            "time_in_ms" : 5000,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 0.66000000000000003,
+            "recorded_end" : false,
+            "identifier" : "ADF4D2B4-3BAF-42DB-AC78-271AFFFDA70E"
+          },
+          {
+            "time_in_ms" : 5004,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 0.66000000000000003,
+            "recorded_end" : false,
+            "identifier" : "6F2CEDEB-3DD3-4742-A81F-D6D98CBBE2D7"
+          }
+        ],
+        "repeat_behavior" : "never",
+        "property_type" : "x_scale"
+      }
+    },
+    "7B6D35F4-90BB-47D2-9D91-73EA13FD8063" : {
+      "x_translation" : {
+        "keyframes" : [
+          {
+            "time_in_ms" : 2000,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : -0.36388657710631378,
+            "recorded_end" : false,
+            "identifier" : "F9C88066-59A1-4D45-B7EB-2E4149C55EEE"
+          },
+          {
+            "time_in_ms" : 2250,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : -0.36388657710631378,
+            "recorded_end" : false,
+            "identifier" : "99064A8C-FB82-446F-B092-45D3F71315D8"
+          },
+          {
+            "time_in_ms" : 2500,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : -0.36388657710631378,
+            "recorded_end" : false,
+            "identifier" : "926658CB-1E43-4C67-A67F-16FCA77AB18E"
+          },
+          {
+            "time_in_ms" : 3750,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : -0.36388656497001648,
+            "recorded_end" : false,
+            "identifier" : "235BE5AD-F982-4E8E-B1A6-1EECE163E0DD"
+          },
+          {
+            "time_in_ms" : 4996,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : -0.36388656497001648,
+            "recorded_end" : false,
+            "identifier" : "D4CC413B-D639-49B4-95F9-143ED338C244"
+          },
+          {
+            "time_in_ms" : 4999,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : -0.36388656497001648,
+            "recorded_end" : false,
+            "identifier" : "D577806F-508F-4E5E-A959-B77F1A565DB3"
+          },
+          {
+            "time_in_ms" : 5000,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : -0.36388656497001648,
+            "recorded_end" : false,
+            "identifier" : "E53EFFD4-C746-458C-9D7C-50832E81B432"
+          },
+          {
+            "time_in_ms" : 5004,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : -0.36388656497001648,
+            "recorded_end" : false,
+            "identifier" : "05EFCB65-8230-4EE4-B406-12F388353685"
+          }
+        ],
+        "repeat_behavior" : "never",
+        "property_type" : "x_translation"
+      },
+      "y_translation" : {
+        "keyframes" : [
+          {
+            "time_in_ms" : 2000,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 0.24030245845756326,
+            "recorded_end" : false,
+            "identifier" : "06B47F40-E37F-414F-A2C1-E22C8313CD8C"
+          },
+          {
+            "time_in_ms" : 2250,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 0.24030245845756326,
+            "recorded_end" : false,
+            "identifier" : "B68AC1D6-513A-44D6-9FED-7149CA241A25"
+          },
+          {
+            "time_in_ms" : 2500,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 0.24030245845756326,
+            "recorded_end" : false,
+            "identifier" : "C300E79F-0A9A-4F5C-84AC-91322419A188"
+          },
+          {
+            "time_in_ms" : 3750,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 0.24030245840549469,
+            "recorded_end" : false,
+            "identifier" : "6E771521-099A-4A77-89AE-FBF9983A9C35"
+          },
+          {
+            "time_in_ms" : 4996,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 0.24030245840549469,
+            "recorded_end" : false,
+            "identifier" : "F8926993-830B-4CA4-942B-B2E05B626B6A"
+          },
+          {
+            "time_in_ms" : 4999,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 0.24030245840549469,
+            "recorded_end" : false,
+            "identifier" : "F0FD310B-6FE5-4E52-AAB7-4B37BDF35C51"
+          },
+          {
+            "time_in_ms" : 5000,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 0.24030245840549469,
+            "recorded_end" : false,
+            "identifier" : "509EA7E6-0E3B-4A42-A786-2A590EE9D7E5"
+          },
+          {
+            "time_in_ms" : 5004,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 0.24030245840549469,
+            "recorded_end" : false,
+            "identifier" : "7A9C5845-6ECA-4D18-AD41-C28B3FA08B33"
+          }
+        ],
+        "repeat_behavior" : "never",
+        "property_type" : "y_translation"
+      },
+      "y_scale" : {
+        "keyframes" : [
+          {
+            "time_in_ms" : 2000,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 0.66000000000000003,
+            "recorded_end" : false,
+            "identifier" : "9F9F12AA-3947-48F8-BDF7-DE3F37015E10"
+          },
+          {
+            "time_in_ms" : 2250,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 0.66000000000000003,
+            "recorded_end" : false,
+            "identifier" : "FB51BE7D-EA43-470C-96FC-222AE70E7A10"
+          },
+          {
+            "time_in_ms" : 2500,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 0.66000000000000003,
+            "recorded_end" : false,
+            "identifier" : "6E7C8562-2E7D-44D3-92D8-7FA0945A38EB"
+          },
+          {
+            "time_in_ms" : 3750,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 0.6600000262260437,
+            "recorded_end" : false,
+            "identifier" : "2E9E6934-6AD0-46A5-AA6A-77511E6FAE60"
+          },
+          {
+            "time_in_ms" : 5000,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 0.6600000262260437,
+            "recorded_end" : false,
+            "identifier" : "6DFD6549-81B8-45E1-9AD0-ED19EF7A50EE"
+          },
+          {
+            "time_in_ms" : 5001,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 0.6600000262260437,
+            "recorded_end" : false,
+            "identifier" : "09748A68-0E84-4B9E-9727-A6E9D9B1FB7B"
+          },
+          {
+            "time_in_ms" : 5004,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 0.6600000262260437,
+            "recorded_end" : false,
+            "identifier" : "4D355FDA-E10F-47E0-B116-0FF293F6ED84"
+          }
+        ],
+        "repeat_behavior" : "never",
+        "property_type" : "y_scale"
+      },
+      "x_scale" : {
+        "keyframes" : [
+          {
+            "time_in_ms" : 2000,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 0.66000000000000003,
+            "recorded_end" : false,
+            "identifier" : "CB886E5E-EFA2-4509-A4F5-43DA5C4EC5EB"
+          },
+          {
+            "time_in_ms" : 2250,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 0.66000000000000003,
+            "recorded_end" : false,
+            "identifier" : "F4C4DD2F-716E-4E0C-8FD1-7BB35DB8A7C6"
+          },
+          {
+            "time_in_ms" : 2500,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 0.66000000000000003,
+            "recorded_end" : false,
+            "identifier" : "CB97F15B-230C-4A1E-A6B7-3F263F6658DF"
+          },
+          {
+            "time_in_ms" : 3750,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 0.6600000262260437,
+            "recorded_end" : false,
+            "identifier" : "344FEF31-E2F8-4CAA-BF94-7078C429A539"
+          },
+          {
+            "time_in_ms" : 5000,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 0.6600000262260437,
+            "recorded_end" : false,
+            "identifier" : "A44E7644-3649-45F6-AC81-22E62AF74C6A"
+          },
+          {
+            "time_in_ms" : 5001,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 0.6600000262260437,
+            "recorded_end" : false,
+            "identifier" : "DECEEA15-D434-432D-93F4-4AA0E04EBE7D"
+          },
+          {
+            "time_in_ms" : 5002,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 0.66000000000000003,
+            "recorded_end" : false,
+            "identifier" : "69FC6209-2B15-40FB-9606-09836324F9E2"
+          },
+          {
+            "time_in_ms" : 5004,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 0.66000000000000003,
+            "recorded_end" : false,
+            "identifier" : "B14AD59F-DC7B-4867-8C65-123D63DB93D9"
+          }
+        ],
+        "repeat_behavior" : "never",
+        "property_type" : "x_scale"
+      }
+    },
+    "2ADC0BC4-EB05-433D-BFC3-EF4357DC22D5" : {
+      "x_translation" : {
+        "keyframes" : [
+          {
+            "time_in_ms" : 2000,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 18.009343226161036,
+            "recorded_end" : false,
+            "identifier" : "4220C44B-60F4-4B88-B934-038A4E287A96"
+          }
+        ],
+        "repeat_behavior" : "never",
+        "property_type" : "x_translation"
+      },
+      "y_translation" : {
+        "keyframes" : [
+          {
+            "time_in_ms" : 2000,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : -89.926780091093633,
+            "recorded_end" : false,
+            "identifier" : "B9A09E45-6986-469F-A25A-A89927BCB709"
+          }
+        ],
+        "repeat_behavior" : "never",
+        "property_type" : "y_translation"
+      },
+      "y_scale" : {
+        "keyframes" : [
+          {
+            "time_in_ms" : 2000,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 0.75,
+            "recorded_end" : false,
+            "identifier" : "31494966-E454-41DE-AD5A-FBE91C4275E9"
+          }
+        ],
+        "repeat_behavior" : "never",
+        "property_type" : "y_scale"
+      },
+      "x_scale" : {
+        "keyframes" : [
+          {
+            "time_in_ms" : 2000,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 0.75,
+            "recorded_end" : false,
+            "identifier" : "9CAFEC23-88B6-446B-96FD-B4132ED25CE1"
+          }
+        ],
+        "repeat_behavior" : "never",
+        "property_type" : "x_scale"
+      }
+    },
+    "613F0FCD-EF2A-4793-A829-D1FCF097520E" : {
+      "x_translation" : {
+        "keyframes" : [
+          {
+            "time_in_ms" : 2000,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 0,
+            "recorded_end" : false,
+            "identifier" : "FEA81A45-3F2C-4168-BD74-F63984C48217"
+          }
+        ],
+        "repeat_behavior" : "never",
+        "property_type" : "x_translation"
+      },
+      "y_translation" : {
+        "keyframes" : [
+          {
+            "time_in_ms" : 2000,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : -104.26860547133833,
+            "recorded_end" : false,
+            "identifier" : "E5E5AD8E-28A4-4122-BF8C-B0A633756E97"
+          }
+        ],
+        "repeat_behavior" : "never",
+        "property_type" : "y_translation"
+      },
+      "y_scale" : {
+        "keyframes" : [
+          {
+            "time_in_ms" : 2000,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 0.75441245560232129,
+            "recorded_end" : false,
+            "identifier" : "B14DDEF2-C722-4C65-B4EB-F55736A7D329"
+          }
+        ],
+        "repeat_behavior" : "never",
+        "property_type" : "y_scale"
+      },
+      "x_scale" : {
+        "keyframes" : [
+          {
+            "time_in_ms" : 2000,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 0.75441240748091576,
+            "recorded_end" : false,
+            "identifier" : "8CD29EFF-1B49-4869-AC92-8490347FC4AA"
+          }
+        ],
+        "repeat_behavior" : "never",
+        "property_type" : "x_scale"
+      }
+    },
+    "121AE5D7-6924-4FCD-B99A-0D67313591C7" : {
+      "x_translation" : {
+        "keyframes" : [
+          {
+            "time_in_ms" : 2000,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : -19.9609375,
+            "recorded_end" : false,
+            "identifier" : "080874C0-F576-410D-B0AE-E02F7EE2A3EC"
+          },
+          {
+            "time_in_ms" : 2250,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : -19.9609375,
+            "recorded_end" : false,
+            "identifier" : "F994A416-7444-4588-810B-EA1B2A6293D4"
+          },
+          {
+            "time_in_ms" : 2500,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : -19.9609375,
+            "recorded_end" : false,
+            "identifier" : "5BAEFDF8-202A-4472-AE44-BB9C02FC8AF8"
+          },
+          {
+            "time_in_ms" : 3750,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : -19.9609375,
+            "recorded_end" : false,
+            "identifier" : "76ED7D62-DFE1-4C52-9AE6-0D1EB945D3D2"
+          },
+          {
+            "time_in_ms" : 5000,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : -19.9609375,
+            "recorded_end" : false,
+            "identifier" : "FC691BCE-6DD5-4293-85D6-129FDD231E2B"
+          },
+          {
+            "time_in_ms" : 5001,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : -19.9609375,
+            "recorded_end" : false,
+            "identifier" : "A2723BB2-0C73-4CB1-A2C9-14F59ABB4827"
+          },
+          {
+            "time_in_ms" : 5004,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : -19.9609375,
+            "recorded_end" : false,
+            "identifier" : "D1DE5317-6ABF-4749-B2CB-DABB1BBBE351"
+          }
+        ],
+        "repeat_behavior" : "never",
+        "property_type" : "x_translation"
+      },
+      "y_translation" : {
+        "keyframes" : [
+          {
+            "time_in_ms" : 2000,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : -16.796875,
+            "recorded_end" : false,
+            "identifier" : "415CF7EB-D4E3-40FB-B30F-CC72030BA4F2"
+          },
+          {
+            "time_in_ms" : 2250,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : -16.796875,
+            "recorded_end" : false,
+            "identifier" : "56CE6697-295E-4DD2-BB2B-E54972D17707"
+          },
+          {
+            "time_in_ms" : 2500,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : -16.796875,
+            "recorded_end" : false,
+            "identifier" : "6A180A8D-5595-4400-9301-7C66643EDEF7"
+          },
+          {
+            "time_in_ms" : 3750,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : -16.796875,
+            "recorded_end" : false,
+            "identifier" : "CBB77814-12E4-47AA-9789-85622907C861"
+          },
+          {
+            "time_in_ms" : 5000,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : -16.796875,
+            "recorded_end" : false,
+            "identifier" : "90B72D45-6015-4B5F-A100-707ACB1A9956"
+          },
+          {
+            "time_in_ms" : 5004,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : -16.796875,
+            "recorded_end" : false,
+            "identifier" : "5A3DF5B2-AF54-4CB2-B9EC-D90E12D1A4A8"
+          }
+        ],
+        "repeat_behavior" : "never",
+        "property_type" : "y_translation"
+      },
+      "y_scale" : {
+        "keyframes" : [
+          {
+            "time_in_ms" : 2000,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 0.66000000000000003,
+            "recorded_end" : false,
+            "identifier" : "981EA34D-0ED0-48DE-9BFE-BF655F533E35"
+          },
+          {
+            "time_in_ms" : 2250,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 0.66000000000000003,
+            "recorded_end" : false,
+            "identifier" : "FE024006-DA4C-4028-9B0C-6722D085A265"
+          },
+          {
+            "time_in_ms" : 2500,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 0.66000000000000003,
+            "recorded_end" : false,
+            "identifier" : "2CECC8F4-6555-4CC7-87F9-ADBD2D947031"
+          },
+          {
+            "time_in_ms" : 3750,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 0.6600000262260437,
+            "recorded_end" : false,
+            "identifier" : "2CB3DF12-235D-47B4-8F59-1AF4947D253D"
+          },
+          {
+            "time_in_ms" : 5000,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 0.6600000262260437,
+            "recorded_end" : false,
+            "identifier" : "0F2B218A-2C86-4500-9BBF-E2B6D316683F"
+          },
+          {
+            "time_in_ms" : 5004,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 0.6600000262260437,
+            "recorded_end" : false,
+            "identifier" : "8B6DCE8D-F010-450C-B983-B59DBEFE365E"
+          }
+        ],
+        "repeat_behavior" : "never",
+        "property_type" : "y_scale"
+      },
+      "x_scale" : {
+        "keyframes" : [
+          {
+            "time_in_ms" : 2000,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 0.66000000000000003,
+            "recorded_end" : false,
+            "identifier" : "D9A8B8D6-1EE2-4A33-824E-FEB693B1B9CD"
+          },
+          {
+            "time_in_ms" : 2250,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 0.66000000000000003,
+            "recorded_end" : false,
+            "identifier" : "3AFD7C10-0AD9-4829-874B-1C43ABDC061A"
+          },
+          {
+            "time_in_ms" : 2500,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 0.66000000000000003,
+            "recorded_end" : false,
+            "identifier" : "277D37B9-73CB-4151-96DB-3CC6B82E258D"
+          },
+          {
+            "time_in_ms" : 3750,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 0.6600000262260437,
+            "recorded_end" : false,
+            "identifier" : "B198FDC0-49B5-4DB6-A751-80F4867422E0"
+          },
+          {
+            "time_in_ms" : 5000,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 0.6600000262260437,
+            "recorded_end" : false,
+            "identifier" : "EED5A366-A2D3-4A8A-AF7E-5B1C7D661421"
+          },
+          {
+            "time_in_ms" : 5004,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : 0.6600000262260437,
+            "recorded_end" : false,
+            "identifier" : "F5975BC4-A669-4190-83F3-3AEFE5602A05"
+          }
+        ],
+        "repeat_behavior" : "never",
+        "property_type" : "x_scale"
+      }
+    },
+    "77FB018A-FF5E-4215-9E9D-72A741D62400" : {
+      "rotation" : {
+        "keyframes" : [
+          {
+            "time_in_ms" : 1250,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : -0.05000000074505806,
+            "recorded_end" : false,
+            "identifier" : "E620DE14-367E-4177-A13F-AD4410ECFB1B"
+          },
+          {
+            "time_in_ms" : 2000,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : -0.20830357074737549,
+            "recorded_end" : false,
+            "identifier" : "AAA8EA64-5F6B-422C-AE25-83F06F98E931"
+          },
+          {
+            "time_in_ms" : 2244,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : -0.24787946417927742,
+            "recorded_end" : false,
+            "identifier" : "B85CE46B-38D2-4FEF-89F0-F496D45BCB54"
+          },
+          {
+            "time_in_ms" : 2248,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : -0.24787946417927742,
+            "recorded_end" : false,
+            "identifier" : "3C2258D3-E9DC-4EC7-9174-BDF3BC4535E2"
+          },
+          {
+            "time_in_ms" : 2250,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : -0.24787946417927742,
+            "recorded_end" : false,
+            "identifier" : "670A7279-B339-4A9D-865B-992988BE1CEC"
+          },
+          {
+            "time_in_ms" : 2500,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : -0.05000000074505806,
+            "recorded_end" : false,
+            "identifier" : "2AE2206C-76C8-479E-9F22-7CA2350C7300"
+          },
+          {
+            "time_in_ms" : 3750,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : -0.05000000074505806,
+            "recorded_end" : false,
+            "identifier" : "5CC3E3AA-7B35-4158-949C-8A588C21304B"
+          },
+          {
+            "time_in_ms" : 4998,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : -0.05000000074505806,
+            "recorded_end" : false,
+            "identifier" : "B19DFEFB-6C20-402E-8793-DBE054D03DE8"
+          },
+          {
+            "time_in_ms" : 5000,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : -0.05000000074505806,
+            "recorded_end" : false,
+            "identifier" : "58F5C252-6903-40E2-9012-38EC1E045128"
+          },
+          {
+            "time_in_ms" : 5004,
+            "easing_mode" : "linear",
+            "recorded" : false,
+            "recorded_start" : false,
+            "value_type" : "float",
+            "float_value" : -0.05000000074505806,
+            "recorded_end" : false,
+            "identifier" : "BC8DD23C-3C73-4129-9A5C-BE881DF629E4"
+          }
+        ],
+        "repeat_behavior" : "never",
+        "property_type" : "rotation"
+      }
+    }
+  },
+  "identifier" : "3F4CC040-A38A-4DFA-9C01-7EA56ADAE57F"
+}

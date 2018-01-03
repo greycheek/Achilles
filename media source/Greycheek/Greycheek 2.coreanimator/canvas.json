@@ -1,0 +1,355 @@
+{
+  "customClassType" : "",
+  "name" : "Canvas",
+  "mask" : null,
+  "anchorPoint" : {
+    "y" : 0.5,
+    "x" : 0.5
+  },
+  "backgroundColor" : {
+    "green" : 0,
+    "alpha" : 1,
+    "red" : 0,
+    "blue" : 0
+  },
+  "size" : {
+    "height" : 900,
+    "width" : 1440
+  },
+  "elementType" : "canvas",
+  "subelements" : [
+    {
+      "customClassType" : "",
+      "name" : "Greycheek",
+      "mask" : null,
+      "anchorPoint" : {
+        "y" : 0.5,
+        "x" : 0.5
+      },
+      "image_identifier" : "B9C33EB6-BDB8-4184-AC80-9F48DD1C143C",
+      "size" : {
+        "height" : 1351,
+        "width" : 2160
+      },
+      "elementType" : "image",
+      "subelements" : [
+
+      ],
+      "identifier" : "7B6D35F4-90BB-47D2-9D91-73EA13FD8063",
+      "position" : {
+        "y" : 450,
+        "x" : 720
+      },
+      "rotation" : 0,
+      "classType" : "Default",
+      "scale" : {
+        "y" : 1,
+        "x" : 1
+      },
+      "opacity" : 1,
+      "isHidden" : false,
+      "isLocked" : false
+    },
+    {
+      "customClassType" : "",
+      "name" : "GreyCheek Logo",
+      "mask" : null,
+      "anchorPoint" : {
+        "y" : 0.5,
+        "x" : 0.5
+      },
+      "image_identifier" : "4B6A0780-CF67-45C4-ACB6-049F1F8D9677",
+      "size" : {
+        "height" : 375,
+        "width" : 1050
+      },
+      "elementType" : "image",
+      "subelements" : [
+
+      ],
+      "identifier" : "2ADC0BC4-EB05-433D-BFC3-EF4357DC22D5",
+      "position" : {
+        "y" : 839.31238490369992,
+        "x" : 720
+      },
+      "rotation" : 0,
+      "classType" : "Default",
+      "scale" : {
+        "y" : 1,
+        "x" : 1
+      },
+      "opacity" : 1,
+      "isHidden" : true,
+      "isLocked" : false
+    },
+    {
+      "customClassType" : "",
+      "name" : "GREYCHEEK logo copy",
+      "mask" : null,
+      "anchorPoint" : {
+        "y" : 0.5,
+        "x" : 0.5
+      },
+      "image_identifier" : "E95686BD-2FB8-410F-B319-D864A77A906C",
+      "size" : {
+        "height" : 375,
+        "width" : 1050
+      },
+      "elementType" : "image",
+      "subelements" : [
+
+      ],
+      "identifier" : "613F0FCD-EF2A-4793-A829-D1FCF097520E",
+      "position" : {
+        "y" : 841.47309324373168,
+        "x" : 719
+      },
+      "rotation" : 0,
+      "classType" : "Default",
+      "scale" : {
+        "y" : 1.3217764165217449,
+        "x" : 1.3043831015796663
+      },
+      "opacity" : 1,
+      "isHidden" : false,
+      "isLocked" : false
+    },
+    {
+      "customClassType" : "",
+      "name" : "Made-with-AppGameKit-Logo-256px",
+      "mask" : null,
+      "anchorPoint" : {
+        "y" : 0.5,
+        "x" : 0.5
+      },
+      "image_identifier" : "CD40FC9B-4A9D-4ADC-8A16-03C1238D85D8",
+      "size" : {
+        "height" : 256,
+        "width" : 256
+      },
+      "elementType" : "image",
+      "subelements" : [
+
+      ],
+      "identifier" : "638E3A44-8492-453E-A6BE-D6217F747181",
+      "position" : {
+        "y" : 156.82860184441546,
+        "x" : 1291.0396336604497
+      },
+      "rotation" : 0,
+      "classType" : "Default",
+      "scale" : {
+        "y" : 0.70819830834988096,
+        "x" : 0.70173491412189071
+      },
+      "opacity" : 1,
+      "isHidden" : false,
+      "isLocked" : false
+    },
+    {
+      "customClassType" : "",
+      "name" : "Beak",
+      "mask" : null,
+      "anchorPoint" : {
+        "y" : 0.5,
+        "x" : 0.5
+      },
+      "size" : {
+        "height" : 361,
+        "width" : 220
+      },
+      "elementType" : "group",
+      "subelements" : [
+        {
+          "customClassType" : "",
+          "name" : "LowerBeak",
+          "mask" : null,
+          "anchorPoint" : {
+            "y" : 0.031387733290490702,
+            "x" : 0.98818889002366406
+          },
+          "image_identifier" : "DAE4F071-2458-47C0-A8C6-60689DF4154A",
+          "size" : {
+            "height" : 180,
+            "width" : 195
+          },
+          "elementType" : "image",
+          "subelements" : [
+
+          ],
+          "identifier" : "77FB018A-FF5E-4215-9E9D-72A741D62400",
+          "position" : {
+            "y" : 101.14979199228833,
+            "x" : 204.89050200511485
+          },
+          "rotation" : 0,
+          "classType" : "Default",
+          "scale" : {
+            "y" : 1,
+            "x" : 1
+          },
+          "opacity" : 1,
+          "isHidden" : false,
+          "isLocked" : false
+        },
+        {
+          "customClassType" : "",
+          "name" : "UpperBeak",
+          "mask" : null,
+          "anchorPoint" : {
+            "y" : 0.039130652841749838,
+            "x" : 0.94322798913336736
+          },
+          "image_identifier" : "28FB12D0-2E14-4292-BAC1-3AD67DD8DB6B",
+          "size" : {
+            "height" : 361,
+            "width" : 220
+          },
+          "elementType" : "image",
+          "subelements" : [
+
+          ],
+          "identifier" : "5F0F45BD-B244-4EBB-B579-780C9B23B288",
+          "position" : {
+            "y" : 14.126165675871677,
+            "x" : 207.51015760934081
+          },
+          "rotation" : 0,
+          "classType" : "Default",
+          "scale" : {
+            "y" : 1,
+            "x" : 1
+          },
+          "opacity" : 1,
+          "isHidden" : false,
+          "isLocked" : false
+        }
+      ],
+      "identifier" : "33BE4336-9FC5-452A-B3C6-2CA0F90CF409",
+      "position" : {
+        "y" : 445,
+        "x" : 480.34380230056922
+      },
+      "rotation" : 0,
+      "classType" : "Default",
+      "scale" : {
+        "y" : 1,
+        "x" : 1
+      },
+      "opacity" : 1,
+      "isHidden" : false,
+      "isLocked" : false
+    },
+    {
+      "customClassType" : "",
+      "name" : "Eye",
+      "mask" : null,
+      "anchorPoint" : {
+        "y" : 0.5,
+        "x" : 0.5
+      },
+      "image_identifier" : "F8DFA724-05B0-4E59-8C8B-0AB0BDAE02F8",
+      "size" : {
+        "height" : 138,
+        "width" : 138
+      },
+      "elementType" : "image",
+      "subelements" : [
+
+      ],
+      "identifier" : "A0FC4E32-6339-4499-9F1D-44701BB91D56",
+      "position" : {
+        "y" : 304.12373882412896,
+        "x" : 680
+      },
+      "rotation" : 0,
+      "classType" : "Default",
+      "scale" : {
+        "y" : 1,
+        "x" : 1
+      },
+      "opacity" : 1,
+      "isHidden" : false,
+      "isLocked" : false
+    },
+    {
+      "customClassType" : "",
+      "name" : "Black",
+      "mask" : null,
+      "anchorPoint" : {
+        "y" : 0.5,
+        "x" : 0.5
+      },
+      "image_identifier" : "DCE48644-31F3-4D4E-8CF6-AA98CEC099EB",
+      "size" : {
+        "height" : 900,
+        "width" : 1440
+      },
+      "elementType" : "image",
+      "subelements" : [
+
+      ],
+      "identifier" : "DED8D321-2FC3-4E2E-BD3A-2496D6EF23F1",
+      "position" : {
+        "y" : 450,
+        "x" : 720
+      },
+      "rotation" : 0,
+      "classType" : "Default",
+      "scale" : {
+        "y" : 1.5,
+        "x" : 1.5
+      },
+      "opacity" : 1,
+      "isHidden" : false,
+      "isLocked" : false
+    },
+    {
+      "customClassType" : "",
+      "name" : "TheGrey",
+      "mask" : null,
+      "anchorPoint" : {
+        "y" : 0.5,
+        "x" : 0.5
+      },
+      "image_identifier" : "9F0F2385-4D5B-41A6-B2A4-A55F41E3A6DF",
+      "size" : {
+        "height" : 374,
+        "width" : 320
+      },
+      "elementType" : "image",
+      "subelements" : [
+
+      ],
+      "identifier" : "121AE5D7-6924-4FCD-B99A-0D67313591C7",
+      "position" : {
+        "y" : 450,
+        "x" : 827.56517927167113
+      },
+      "rotation" : 0,
+      "classType" : "Default",
+      "scale" : {
+        "y" : 1,
+        "x" : 1
+      },
+      "opacity" : 1,
+      "isHidden" : false,
+      "isLocked" : false
+    }
+  ],
+  "videoIdentifier" : null,
+  "identifier" : "045B07BA-9235-42BA-831A-D19E63A7BF70",
+  "position" : {
+    "y" : 0,
+    "x" : 0
+  },
+  "rotation" : 0,
+  "classType" : "Default",
+  "scale" : {
+    "y" : 1,
+    "x" : 1
+  },
+  "opacity" : 1,
+  "isHidden" : false,
+  "isLocked" : false
+}

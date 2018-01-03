@@ -398,6 +398,20 @@ function Setup()
 	SetSpriteTransparency( square, 1 )
 	SetSpriteVisible( square, 0 )
 
+
+	prohibitImage = LoadImage("Prohibit.png")
+	prohibit = CreateSprite( prohibitImage )
+	SetSpriteSize( prohibit, NodeSize, NodeSize )
+	SetSpriteVisible( prohibit, 0 )
+	SetSpriteDepth( prohibit, 0 )
+
+	redImage = LoadImage("RedSquare.png")
+	redSquare = CreateSprite(redImage)
+	SetSpriteSize( redSquare, NodeSize, NodeSize )
+	SetSpriteVisible( redSquare, 0 )
+	SetSpriteDepth( redSquare, 4 )
+
+
 	LoadImage( ProductionUnits,"Units.png" )
 	CreateSprite( ProductionUnits,ProductionUnits )
 	SetSpriteSize( ProductionUnits,26,26 )

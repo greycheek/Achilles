@@ -55,15 +55,15 @@ FILE_11=MainMenu.agc;-1
 FILE_12=PinchZoom.agc;-1
 
 [files]
-FILE_NAME_0=0;main.agc;2724;4
-FILE_NAME_1=1;Path.agc;3334;7
-FILE_NAME_2=0;AI.agc;12636;6
+FILE_NAME_0=0;main.agc;521;4
+FILE_NAME_1=0;Path.agc;3727;7
+FILE_NAME_2=1;AI.agc;7252;6
 FILE_NAME_3=0;Initialize.agc;6660;3
 FILE_NAME_4=0;Miscellaneous.agc;579;8
 FILE_NAME_5=0;Players.agc;26821;5
-FILE_NAME_6=0;Settings.agc;12097;1
-FILE_NAME_7=0;Labels.agc;5361;0
-FILE_NAME_8=0;MainMenu.agc;1;2
+FILE_NAME_6=0;Settings.agc;6957;1
+FILE_NAME_7=0;Labels.agc;5487;0
+FILE_NAME_8=0;MainMenu.agc;19261;2
 
 [project]
 description=
