@@ -157,7 +157,7 @@ function TankSetup(ID,Tank ref as tankType[],pick as ColorSpec)
 		case HeavyTank
 			Tank[ID].speed = .4
 			Tank[ID].sound = TankSound
-			Tank[ID].volume = vol
+			Tank[ID].volume = TankVolume
 			Tank[ID].weapon = heavyCannon
 			Tank[ID].range = heavyCannonRange
 			Tank[ID].damage = heavyCannonDamage
@@ -170,7 +170,7 @@ function TankSetup(ID,Tank ref as tankType[],pick as ColorSpec)
 		case MediumTank
 			Tank[ID].speed = .3
 			Tank[ID].sound = TankSound
-			Tank[ID].volume = vol
+			Tank[ID].volume = TankVolume
 			Tank[ID].weapon = cannon
 			Tank[ID].range = cannonRange
 			Tank[ID].damage = cannonDamage
@@ -183,7 +183,7 @@ function TankSetup(ID,Tank ref as tankType[],pick as ColorSpec)
 		case HoverCraft
 			Tank[ID].speed = .5
 			Tank[ID].sound = EngineSound
-			Tank[ID].volume = vol
+			Tank[ID].volume = EngineVolume
 			Tank[ID].weapon = machineGun
 			Tank[ID].range = machineGunRange
 			Tank[ID].damage = machineGunDamage
@@ -196,7 +196,7 @@ function TankSetup(ID,Tank ref as tankType[],pick as ColorSpec)
 		case Battery
 			Tank[ID].speed = .3
 			Tank[ID].sound = TankSound
-			Tank[ID].volume = vol
+			Tank[ID].volume = TankVolume
 			Tank[ID].weapon = missile
 			Tank[ID].range = missileRange
 			Tank[ID].damage = missileDamage
@@ -209,7 +209,7 @@ function TankSetup(ID,Tank ref as tankType[],pick as ColorSpec)
 		case Mech
 			Tank[ID].speed = .4
 			Tank[ID].sound = MechSound
-			Tank[ID].volume = vol
+			Tank[ID].volume = MechVolume
 			Tank[ID].weapon = disruptor
 			Tank[ID].range = disruptorRange
 			Tank[ID].damage = disruptorDamage
@@ -222,7 +222,7 @@ function TankSetup(ID,Tank ref as tankType[],pick as ColorSpec)
 		case Engineer
 			Tank[ID].speed = .2
 			Tank[ID].sound = EngineerSound
-			Tank[ID].volume = vol
+			Tank[ID].volume = EngineerVolume
 			Tank[ID].weapon = Undefined
 			Tank[ID].range = empRange
 			Tank[ID].damage = empDamage

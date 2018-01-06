@@ -461,6 +461,7 @@ function GetInput()
 						elseif PlayerTank[i].stunned
 							selection = Undefined
 						else
+							PlaySound( ClickSound )
 							MaxAlpha(ID)
 							if selection <> Undefined then SetSpriteVisible(PlayerTank[ID].FOW,Off)
 
@@ -475,12 +476,12 @@ function GetInput()
 					endif
 				next i
 			elseif baseID and ( selection = Undefined ) and ( mapTable[pointerNode].moveTarget = False )
+				PlaySound( ClickSound )
 				if PlayerSurviving = UnitLimit
 					EventDialog("Unit Maximum",Null$)
 				elseif casualties
 					EventDialog(Interdiction$,"Production halted")
 				else
-					PlaySound( ClickSound )
 					Markers(Off)
 					selection = BaseProduction( pointerNode )
 					if selection <> Undefined
@@ -732,6 +733,7 @@ function PlayerOps()
 					SetSpriteVisible( PlayerTank[i].healthID,Off )
 					Fly( i,PlayerTank,PlayerTank[i].node,PlayerTank[i].goalNode )
 					SetSpriteVisible( PlayerTank[i].hilite,Off )
+					if PlayerTank[i].Vehicle = Hovercraft then Hover( i,PlayerTank )
 					MineField( i,PlayerTank )
 				endif
 				exit
@@ -764,7 +766,6 @@ function PlayerOps()
 				Repair(i,PlayerTank,PlayerDepotNode,PlayerTank[i].maximumHealth) `at depot?
 			endif
 		endif
-		if PlayerTank[i].Vehicle = Hovercraft then Hover( i,PlayerTank )
 	next i
 endfunction
 

@@ -12,6 +12,9 @@ remstart
 	--- SPRITECONS  BEHAVING STRANGELY - STICK TO SCREEN - UNITS NOT SELECTED SHOW UP IN GAME (MEDIUM TANK?)
 
 	FIXED?
+	--- MAP SAVE SLOT DIALOG BUG ON SAVE CANCEL!!!!
+	--- HOVERCRAFT ARE FIRING THROUGH WALLS!!! - was because ResetMap needed to have CategoryBits set.
+	--- GAME IS FREEZING! - CAUSE BY MINE EXPLOSION!
 	--- SELECTING A MOVEMENT SQUARE GENERATES "OUT OF REACH" MESSAGE
 	--- BASE CAPTURE
 	--- PLAYER and AI TANKS ARE SOMETIMES STUCK - BLOCKAGE BY OTHER TANKS? -- RESET MOVEMENT WHEN BLOCKED?
@@ -24,6 +27,7 @@ remstart
 		Accumulated experience
 		Multiplayer
 		Races/Factions?
+	    AI DIFFICULTY LEVEL
 
 		---AITank visibility - Initialize and AIFOW
 		---LOS -- Mod at end of PlayerOps
@@ -444,12 +448,14 @@ function MineField(ID, Tank ref as tankType[])
 		DeleteSprite( maptable[node].mineSprite )
 
 		SetSpriteVisible( MineExplode,On )
+		SetSpriteActive( MineExplode,On )
 		SetSpritePositionByOffset( MineExplode,Tank[ID].x,Tank[ID].y )
 		PlaySprite( MineExplode,12,0 )
 		while GetSpritePlaying( MineExplode )
 			Sync()
 		endwhile
 		SetSpriteVisible( MineExplode,Off )
+		SetSpriteActive( MineExplode,Off )
 
 		maptable[node].mineSprite = Null
 		maptable[node].minetype = Null
@@ -703,19 +709,19 @@ function KillTank( defID,Tank ref as tankType[] )
 		DeleteSprite( Tank[defID].bodyID )
 		DeleteSprite( Tank[defID].turretID )
 		DeleteSprite( Tank[defID].stunMarker )
+		DeleteSprite( Tank[defID].cover )
 	SetParticlesVisible( smoke1,0 )
 
 	if Tank[defID].team = PlayerTeam
-		DeleteSprite(Tank[defID].FOW)
-				//~ DeleteSprite(Tank[defID].FOWDummy)
+		DeleteSprite( Tank[defID].FOW )
 		DeleteSprite( Tank[defID].hilite )
 		dec PlayerSurviving
 	else
 		dec AISurviving
 	endif
-	if Tank[defID].moveTarget then mapTable[Tank[defID].moveTarget].moveTarget = False  `clear target
+	mapTable[Tank[defID].moveTarget].moveTarget = False  `clear target  if Tank[defID].moveTarget then
 
-	if mapTable[Tank[defID].parentNode[Tank[defID].index]].terrain = Trees then SetSpriteVisible(Tank[defID].cover,0)
+	//~ if mapTable[Tank[defID].parentNode[Tank[defID].index]].terrain = Trees then SetSpriteVisible(Tank[defID].cover,0)
 	mapTable[Tank[defID].parentNode[Tank[defID].index]].team = Unoccupied
 	Tank[defID].alive = False
 endfunction
@@ -723,12 +729,14 @@ endfunction
 function Explosion( x,y,ID,sound,fps )
 	PlaySound( sound,vol )
 	SetSpriteVisible( ID,On )
+		SetSpriteActive( ID,On )
 	SetSpritePositionByOffset( ID,x,y )
 	PlaySprite( ID,fps,0 )
 	repeat
 		Sync()
 	until not GetSpritePlaying( ID )
 	SetSpriteVisible( ID,Off )
+		SetSpriteActive( ID,Off )
 endfunction
 
 function ActivateEMP( ID, Tank ref as tankType[] )

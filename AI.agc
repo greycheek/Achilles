@@ -342,6 +342,7 @@ function AIOps()
 					if AITank[i].node <> AITank[i].goalNode
 						SetSpriteVisible(AITank[i].healthID,Off)
 						Fly( i,AITank,AITank[i].node,AITank[i].goalNode )
+						if GetSpriteVisible( AITank[i].bodyID ) then Hover( i,AITank )
 						MineField( i,AITank )
 					endif
 				endif
@@ -361,7 +362,7 @@ function AIOps()
 						if MineField( i,AITank ) then exit
 					endif
 				else
-						if GetSpriteVisible(AITank[i].bodyID) then Blockage(i,AITank,AITank[i].x,AITank[i].y,mapTable[nextMove].x,mapTable[nextMove].y)
+						//~ if GetSpriteVisible(AITank[i].bodyID) then Blockage(i,AITank,AITank[i].x,AITank[i].y,mapTable[nextMove].x,mapTable[nextMove].y)
 									//~ AITank[i].route = PlanMove(i)
 					exit
 				endif
@@ -372,9 +373,6 @@ function AIOps()
 		loop
 		PlayerBaseCapture()
 		AIFOW(i)
-		if GetSpriteVisible( AITank[i].bodyID )
-			if AITank[i].Vehicle = Hovercraft then Hover( i,AITank )
-		endif
 	next i
 	DeleteText(MovingText)
 	for i = 0 to AIPlayerLast

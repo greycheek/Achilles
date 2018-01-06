@@ -191,6 +191,7 @@ function ResetMap()
 
 	SetSpriteVisible(TreeSprite,Off)
 	SetSpriteVisible(Impass,Off)
+	SetSpriteVisible(RoughSprite,Off)
 	SetSpriteVisible(AcquaSprite,Off)
 
 	DeleteSprite(impassDummy)
@@ -201,6 +202,15 @@ function ResetMap()
 	treeDummy = CreateDummySprite()
 	roughDummy = CreateDummySprite()
 	waterDummy = CreateDummySprite()
+
+	SetSpritePhysicsOn( impassDummy,1 )
+	SetSpriteCategoryBits( impassDummy,Block )
+	SetSpritePhysicsOn( treeDummy,1 )
+	SetSpriteCategoryBits( treeDummy,Block )
+	SetSpritePhysicsOn( roughDummy,1 )
+	SetSpriteCategoryBits( roughDummy,NoBlock )
+	SetSpritePhysicsOn( waterDummy,1 )
+	SetSpriteCategoryBits( waterDummy,NoBlock )
 
 	DeleteImage(field)
 	DeleteSprite(field)
@@ -347,7 +357,7 @@ function Setup()
 	PlayerCount = DefaultPlayer
 	vol = 50
 	BaseProdValue = BaseProdMin
-	SoundVolume()
+	//~ SoundVolume()
 	SetMusicVolumeOGG( MusicSound,vol )
 
 	pickAI.r = 255

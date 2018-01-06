@@ -319,6 +319,12 @@ Silence = LoadSoundOGG( "Silent.ogg" )
 global vol as integer = 100
 global orders as integer[7] `OrderSounds + 1
 #constant OrderSounds 6
+
+#constant TankVolume vol
+#constant EngineVolume 25
+#constant EngineerVolume 10
+#constant MechVolume 10
+
 orders[0] = YesSirSound
 orders[1] = CopySound
 orders[2] = AcknowledgedSound
@@ -335,8 +341,8 @@ function SoundVolume()
 	SetSoundInstanceVolume( DefeatSound, vol )
 	SetSoundInstanceVolume( DisruptorSound, vol )
 	SetSoundInstanceVolume( EMPSound, vol )
-	SetSoundInstanceVolume( EngineerSound, vol )
-	SetSoundInstanceVolume( EngineSound, vol )
+	SetSoundInstanceVolume( EngineerSound, EngineerVolume )
+	SetSoundInstanceVolume( EngineSound, EngineVolume )
 	SetSoundInstanceVolume( EnterSound, vol )
 	SetSoundInstanceVolume( ErrorSound, vol )
 	SetSoundInstanceVolume( ExplodeSound, vol )
@@ -349,7 +355,7 @@ function SoundVolume()
 	SetSoundInstanceVolume( LockOnSound, vol )
 	SetSoundInstanceVolume( LoganSound, vol )
 	SetSoundInstanceVolume( MachineGunSound, vol )
-	SetSoundInstanceVolume( MechSound, vol )
+	SetSoundInstanceVolume( MechSound, MechVolume )
 	SetSoundInstanceVolume( MineBangSound, vol )
 	SetSoundInstanceVolume( MineSound, vol )
 	SetSoundInstanceVolume( MusicSound, vol )
@@ -357,7 +363,7 @@ function SoundVolume()
 	SetSoundInstanceVolume( RocketSound, vol )
 	SetSoundInstanceVolume( SaboSound, vol )
 	SetSoundInstanceVolume( SpawnSound, vol )
-	SetSoundInstanceVolume( TankSound, vol )
+	SetSoundInstanceVolume( TankSound, TankVolume )
 	SetSoundInstanceVolume( TargetSound, vol )
 	SetSoundInstanceVolume( VictorySound, vol )
 	for i = 0 to OrderSounds

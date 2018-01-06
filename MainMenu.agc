@@ -550,9 +550,12 @@ function MapSlotDialog()
 			LoadSaveDialog( map$ )
 			exit
 		endif
-		if GetVirtualButtonReleased( cancelButt.ID ) then exit
+		if GetVirtualButtonReleased( cancelButt.ID )
+			PlaySound( ClickSound )
+			exit
+		endif
 	loop
-	PlaySound( ClickSound,vol )
+	//~ PlaySound( ClickSound,vol )
 	AlertDialog( MapText,Off,mapSlotDialog.x,mapSlotDialog.y,mapSlotDialog.w,mapSlotDialog.h )
 	MapSLOTButtons( Off )
 	ButtonState( cancelButt.ID,Off )
@@ -576,9 +579,11 @@ function LoadSaveDialog( map$ )
 	do
 		Sync()
 		if GetVirtualButtonReleased( cancelButt.ID )
+			PlaySound( ClickSound )
 			exit
 		elseif GetVirtualButtonReleased( LOADBUTT.ID )
-			LoadMap( map$ ) : exit
+			LoadMap( map$ )
+			exit
 		elseif GetVirtualButtonReleased( SAVEBUTT.ID )
 			if SaveMap( map$ ) then exit
 		endif
@@ -664,7 +669,8 @@ function SaveMap( map$ )
 			SetVirtualButtonPosition( alertDialog.cancel.ID,alertDialog.cancel.x,alertDialog.cancel.y )
 			SetTextColorAlpha( MapText,FullAlpha )
 			AlertDialog( MapText,On,alertDialog.x,alertDialog.y,alertDialog.w,alertDialog.h )
-			WaitForButtonRelease( alertDialog.cancel.ID )
+			SetVirtualButtonSize( cancelButt.ID,alertDialog.cancel.w )
+			SetVirtualButtonPosition( cancelButt.ID,alertDialog.accept.x,alertDialog.accept.y )
 			MapLoadSaveButtons( On )
 			exitfunction False
 		endif
@@ -678,7 +684,7 @@ function SaveMap( map$ )
 	for i = 0 to Cells-1 : WriteInteger( file,AIGrid[i].vehicle ) : next i
 	for i = 0 to Cells-1 : WriteInteger( file,PlayerGrid[i].vehicle ) : next i
 	WriteInteger( file,BaseProdValue )
-			WriteInteger( file,Events )
+	WriteInteger( file,Events )
 	CloseFile( file )
 endfunction True
 
@@ -700,7 +706,6 @@ function Confirm( message$,textID )
 			exit
 		endif
 	loop
-	PlaySound( ClickSound,vol )
 	AlertDialog( textID,Off,alertDialog.x,alertDialog.y,alertDialog.w,alertDialog.h )
 	AlertButtons( acceptButt.x,acceptButt.y,cancelButt.x,cancelButt.y,cancelButt.w,acceptButt.ID,cancelButt.ID )
 endfunction confirmation
