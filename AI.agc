@@ -165,11 +165,11 @@ function AIFOW(ID)
 			exitfunction True
 		endif
 	next i
-				//~ SetSpriteVisible(AITank[ID].bodyID,Off)
-				//~ SetSpriteVisible(AITank[ID].turretID,Off)
-				//~ SetSpriteVisible(AITank[ID].healthID,Off)
-				//~ SetSpriteVisible(AITank[ID].stunMarker,Off)
-				//~ SetSpriteVisible(AITank[ID].cover,Off)
+				SetSpriteVisible(AITank[ID].bodyID,Off)
+				SetSpriteVisible(AITank[ID].turretID,Off)
+				SetSpriteVisible(AITank[ID].healthID,Off)
+				SetSpriteVisible(AITank[ID].stunMarker,Off)
+				SetSpriteVisible(AITank[ID].cover,Off)
 endfunction False
 
 function GoalSet(ID,vehicle)
@@ -180,10 +180,14 @@ function GoalSet(ID,vehicle)
 			if ProtectBase(ID) then exitfunction
 			DefaultGoal(ID,1)
 		endcase
-		case Battery,Engineer
+		case Battery
 			if VisitDepot(ID) then exitfunction
 			if AttackBase(ID) then exitfunction
-			DefaultGoal(ID,3)
+			DefaultGoal(ID,1)
+		endcase
+		case Engineer
+			if VisitDepot(ID) then exitfunction
+			DefaultGoal(ID,1)
 		endcase
 	endselect
 endfunction
@@ -272,7 +276,7 @@ function DefaultGoal(ID,standOff)
 						elseif mapTable[nextNode].terrain = Trees
 							finalGoal = nextNode `prefer trees
 						elseif mapTable[finalGoal].terrain <> Trees
-							finalGoal = nextNode `clear terain if trees not already selected
+							finalGoal = nextNode `clear terrain if trees not already selected
 						endif
 					endif
 				next i

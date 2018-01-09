@@ -879,6 +879,7 @@ select dev.device
 		SLOT1.w = dev.buttSize
 	endcase
 	case "ios","android"
+		SetSyncRate( 30,0 )
 		if FindString( GetDeviceType(),"ipad" )	`add Android tablets
 			dev.buttSize = 64
 			dev.textSize = 28

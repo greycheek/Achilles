@@ -1,3 +1,33 @@
+remstart
+	ISSUES/REVISIONS
+	--- BETTER AI DECISIONS?
+			PLACEMENT RELATIVE TO ENEMY
+			ENGINEER PROTECTION
+			--VERY REPETITIVE MOVEMENT PATTERNS??
+	--- SPRITECONS  BEHAVING STRANGELY - STICK TO SCREEN - UNITS NOT SELECTED SHOW UP IN GAME (MEDIUM TANK?)
+
+	FIXED?
+	--- MAP SAVE SLOT DIALOG BUG ON SAVE CANCEL!!!!
+	--- HOVERCRAFT ARE FIRING THROUGH WALLS!!! - was because ResetMap needed to have CategoryBits set.
+	--- GAME IS FREEZING! - CAUSE BY MINE EXPLOSION!
+	--- SELECTING A MOVEMENT SQUARE GENERATES "OUT OF REACH" MESSAGE
+	--- BASE CAPTURE
+	--- PLAYER and AI TANKS ARE SOMETIMES STUCK - BLOCKAGE BY OTHER TANKS? -- RESET MOVEMENT WHEN BLOCKED?
+			--See PlayerOps and AIOps
+			--Implement visual blockage indicator
+	FUTURE
+		getspriteincircle vs getspriteinbox??
+		Vary water, impass, tree and rough tiles
+		Implement Swarm
+		Accumulated experience
+		Multiplayer
+		Races/Factions?
+	    AI DIFFICULTY LEVEL
+
+		---AITank visibility - Initialize and AIFOW
+		---LOS -- Mod at end of PlayerOps
+
+remend
 
 	global tx1# as float
 	global tx2# as float

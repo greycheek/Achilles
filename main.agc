@@ -1,53 +1,25 @@
-#constant comment 1
-remstart
 
-	ACHILLES v0.9 ~ Created 3/14/16 by Bob Tedesco Jr
-	Two ways to win - base capture, or eliminate all enemy units
+//ACHILLES v0.9 ~ Created 3/14/16 by Bob Tedesco Jr
+//Two ways to win - base capture, or eliminate all enemy units
 
-	ISSUES/REVISIONS
-	--- BETTER AI DECISIONS?
-			PLACEMENT RELATIVE TO ENEMY
-			ENGINEER PROTECTION
-			--VERY REPETITIVE MOVEMENT PATTERNS??
-	--- SPRITECONS  BEHAVING STRANGELY - STICK TO SCREEN - UNITS NOT SELECTED SHOW UP IN GAME (MEDIUM TANK?)
+//---AITank visibility - Initialize and AIFOW
+//---LOS -- Mod at end of PlayerOps
 
-	FIXED?
-	--- MAP SAVE SLOT DIALOG BUG ON SAVE CANCEL!!!!
-	--- HOVERCRAFT ARE FIRING THROUGH WALLS!!! - was because ResetMap needed to have CategoryBits set.
-	--- GAME IS FREEZING! - CAUSE BY MINE EXPLOSION!
-	--- SELECTING A MOVEMENT SQUARE GENERATES "OUT OF REACH" MESSAGE
-	--- BASE CAPTURE
-	--- PLAYER and AI TANKS ARE SOMETIMES STUCK - BLOCKAGE BY OTHER TANKS? -- RESET MOVEMENT WHEN BLOCKED?
-			--See PlayerOps and AIOps
-			--Implement visual blockage indicator
-	FUTURE
-		getspriteincircle vs getspriteinbox??
-		Vary water, impass, tree and rough tiles
-		Implement Swarm
-		Accumulated experience
-		Multiplayer
-		Races/Factions?
-	    AI DIFFICULTY LEVEL
-
-		---AITank visibility - Initialize and AIFOW
-		---LOS -- Mod at end of PlayerOps
-remend
-
-`ASCII()
+//~ ASCII()
+//~ SoundCheck()
 
 SetVirtualResolution( MaxWidth,MaxHeight )
 SetWindowSize( MaxWidth,MaxHeight,1,1 )
 MaximizeWindow()
 SetWindowPosition( 0,0 )
 SetOrientationAllowed( 0, 0, 1, 1 )
-//~ LoadFont( Gill,"GillSans.ttf" )
 LoadFont( Avenir,"Avenir Next.ttc" )
 UseNewDefaultFonts( On )
-if dev.device = "windows" then video$ = "Greycheek.wmv" else video$ = "Greycheek_4.mp4"
 SetPhysicsWallTop(Off)
 SetPhysicsWallBottom(Off)
 SetPhysicsWallLeft(Off)
 SetPhysicsWallRight(Off)
+if dev.device = "windows" then video$ = "Greycheek.wmv" else video$ = "Greycheek_4.mp4"
 
 if  LoadVideo( video$ )
 	PlayVideo()
@@ -75,6 +47,7 @@ endif
 //~ DisruptorTest()
 //~ BlockProduction() : end
 
+
 Main()
 
 function Main()
@@ -99,7 +72,6 @@ function Turn()
 	Sync()
 endfunction
 
-
 function Blockage(ID,Tank as tankType[],x1,y1,x2,y2) `blocked movement
 	PlaySound(DeActivateSound)
 	SetSpritePositionByOffset(prohibit,x2,y2)
@@ -121,7 +93,6 @@ function Blockage(ID,Tank as tankType[],x1,y1,x2,y2) `blocked movement
 	SetSpriteActive(redSquare,Off)
 	if cover then SetSpriteVisible(Tank[ID].cover,On)
 endfunction
-
 
 function EventCheck()
 	reinforce = 1
@@ -606,6 +577,7 @@ function AIBaseCapture()
 	next i
 endfunction
 
+
 function GameOver( textID,r,g,b,message$,sound )
 	#constant startSize 750
 	#constant endSize 100
@@ -616,7 +588,7 @@ function GameOver( textID,r,g,b,message$,sound )
 	PlaySound( sound )
 	DeleteVirtualButton(acceptButt.ID)
 	DeleteVirtualButton(cancelButt.ID)
-			DeleteVirtualButton(InfoButt.ID)
+	DeleteVirtualButton(InfoButt.ID)
 	DeleteAllText()
 	ft# = GetFrameTime()
 	y2 = MapHeight/2
@@ -1037,6 +1009,58 @@ function DisruptorTest()
 	until GetPointerPressed()
 	end
 endfunction
+
+
+function SoundCheck()
+	c = 0
+	if GetFileExists( "bang2.wav") then inc c
+	if GetFileExists( "HoverbikeEnd.wav" ) then inc c
+	if GetFileExists( "PlasticClick.wav" ) then inc c
+	if GetFileExists( "DeactivateBeep.ogg" ) then inc c
+	if GetFileExists( "Defeat.wav" ) then inc c
+	if GetFileExists( "DISRUPTOR.ogg" ) then inc c
+	if GetFileExists( "EMP.ogg" ) then inc c
+	if GetFileExists( "MotorClose_01_01.ogg" ) then inc c
+	if GetFileExists( "Jet2_01.ogg" ) then inc c
+	if GetFileExists( "PickUpHeavy.wav" ) then inc c
+	if GetFileExists( "EdgeHit2.ogg" ) then inc c
+	if GetFileExists( "explode.wav" ) then inc c
+	if GetFileExists( "Exploding.ogg" ) then inc c
+	if GetFileExists( "HealGlassy.wav" ) then inc c
+	if GetFileExists( "BeamElectro_01.wav" ) then inc c
+	if GetFileExists( "Interdict.ogg" ) then inc c
+	if GetFileExists( "laser3.ogg" ) then inc c
+	if GetFileExists( "LightningBolt.ogg" ) then inc c
+	if GetFileExists( "Locked On_01.ogg" ) then inc c
+	if GetFileExists( "Logan.ogg" ) then inc c
+	if GetFileExists( "MachineGun.ogg" ) then inc c
+	if GetFileExists( "WalkerStompLow.ogg" ) then inc c
+	if GetFileExists( "ExplosionPlain.wav" ) then inc c
+	if GetFileExists( "TripodDestroyed.wav" ) then inc c
+	if GetFileExists( "Evil Incoming_01.ogg" ) then inc c
+	if GetFileExists( "reinforcements.ogg" ) then inc c
+	if GetFileExists( "rocket.ogg" ) then inc c
+	if GetFileExists( "ExitOpenAztec.wav" ) then inc c
+	if GetFileExists( "LevelOnSinister.wav" ) then inc c
+	if GetFileExists( "Rumble2.ogg" ) then inc c
+	if GetFileExists( "Target Acquired_01.ogg" ) then inc c
+	if GetFileExists( "MagicReveal.wav" ) then inc c
+	if GetFileExists( "YesSirProcessed_01.ogg" ) then inc c
+	if GetFileExists( "CopyProcessed_01.ogg" ) then inc c
+	if GetFileExists( "AcknowlegedProcessed_01.ogg" ) then inc c
+	if GetFileExists( "OnMyWayProcessed_01.ogg" ) then inc c
+	if GetFileExists( "rogerthatProcess.ogg" ) then inc c
+	if GetFileExists( "Ok_01.ogg" ) then inc c
+	if GetFileExists( "Silent.ogg" ) then inc c
+	SetPrintColor(255,255,255)
+
+	repeat
+		print(c)
+		sync()
+	until GetPointerState()
+	end
+endfunction
+
 
 remstart
 ISSUES
