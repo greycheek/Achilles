@@ -549,16 +549,8 @@ function GetInput()
 				endif
 			endif
 		endif
-
-		select dev.device
-			case "windows","mac"
-				PressToZoom()
-				MouseScroll()
-				KeyScroll()
-			endcase
-			case "ios","android" : PinchToZoom() : endcase
-		endselect
-		if zoomFactor > 1 then ButtonState( InfoButt.ID,Off ) else ButtonState( InfoButt.ID,On )
+		ZoomScroll()
+				//~ if zoomFactor > 1 then ButtonState( InfoButt.ID,Off ) else ButtonState( InfoButt.ID,On )
 
 		//~ if zoomFactor > 1 then ShowInfo(Off) else ShowInfo(On)
 		if selection <> Undefined
@@ -578,14 +570,26 @@ function GetInput()
 	loop
 	SetSpriteVisible(PlayerTank[ID].FOW,Off)
 	ButtonActivation(On)
-	ButtonState( InfoButt.ID,On )
+			//~ ButtonState( InfoButt.ID,On )
 
 	//~ SetViewOffset(vx#,vy#)
-	Zoom(1,0,0,On,1) `TURN THIS OFF FOR CONTINUOS ZOOM OPERATION
+	//~ Zoom(1,0,0,On,1) `TURN THIS OFF FOR CONTINUOS ZOOM OPERATION
+endfunction
+
+function ZoomScroll()
+	select dev.device
+		case "windows","mac"
+			PressToZoom()
+			MouseScroll()
+			KeyScroll()
+		endcase
+		case "ios","android" : PinchToZoom() : endcase
+	endselect
 endfunction
 
 function Zoom(z,vx#,vy#,state,scale)
-	SetViewZoom(z)
+	zoomFactor = z
+	SetViewZoom(zoomFactor)
 	SetViewOffset(vx#,vy#)
 	SetTextVisible(NumeralText,state)
 endfunction

@@ -581,12 +581,12 @@ endtype
 
 
 global unitCost as integer[unitTypes]
-unitCost[HoverCraft] = 100
+unitCost[HoverCraft] = 100	`make 150
 unitCost[Battery] = 250
 unitCost[MediumTank] = 100
 unitCost[HeavyTank] = 200
 unitCost[Mech] = 300
-unitCost[Engineer] = 200
+unitCost[Engineer] = 200	`make 100
 
 #constant AI %0000000000000010
 #constant Player %0000000000000100

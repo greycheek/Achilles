@@ -2,8 +2,38 @@
 //ACHILLES v0.9 ~ Created 3/14/16 by Bob Tedesco Jr
 //Two ways to win - base capture, or eliminate all enemy units
 
-//---AITank visibility - Initialize and AIFOW
-//---LOS -- Mod at end of PlayerOps
+remstart
+	ISSUES/REVISIONS
+	--- BETTER AI DECISIONS?
+			PLACEMENT RELATIVE TO ENEMY
+			ENGINEER PROTECTION
+			--VERY REPETITIVE MOVEMENT PATTERNS??
+	--- SPRITECONS  BEHAVING STRANGELY - STICK TO SCREEN - UNITS NOT SELECTED SHOW UP IN GAME (MEDIUM TANK?)
+
+	--- ADJUST UNIT COSTS
+
+	FIXED?
+	--- MAP SAVE SLOT DIALOG BUG ON SAVE CANCEL!!!!
+	--- HOVERCRAFT ARE FIRING THROUGH WALLS!!! - was because ResetMap needed to have CategoryBits set.
+	--- GAME IS FREEZING! - CAUSE BY MINE EXPLOSION!
+	--- SELECTING A MOVEMENT SQUARE GENERATES "OUT OF REACH" MESSAGE
+	--- BASE CAPTURE
+	--- PLAYER and AI TANKS ARE SOMETIMES STUCK - BLOCKAGE BY OTHER TANKS? -- RESET MOVEMENT WHEN BLOCKED?
+			--See PlayerOps and AIOps
+			--Implement visual blockage indicator
+	FUTURE
+		getspriteincircle vs getspriteinbox??
+		Vary water, impass, tree and rough tiles
+		Implement Swarm
+		Accumulated experience
+		Multiplayer
+		Races/Factions?
+	    AI DIFFICULTY LEVEL
+	    Load/Save games
+remend
+
+`--AITank visibility - Initialize and AIFOW
+`--LOS -- Mod at end of PlayerOps
 
 //~ ASCII()
 //~ SoundCheck()
@@ -137,6 +167,7 @@ endfunction
 
 function RandomKill( Tank as tanktype[],last )
 	unit as integer[]
+	Zoom(1,0,0,On,1)
 	PlaySound( SaboSound )
 	EventDialog( Sabotage$,"One unit destroyed" )
 	for i = 0 to last
@@ -147,6 +178,7 @@ function RandomKill( Tank as tanktype[],last )
 endfunction
 
 function EventDialog(t1$,t2$)
+	Zoom(1,0,0,On,1)
 	TSize = 32*dev.scale
 	t1 = CreateText(t1$)
 	t2 = CreateText(t2$)
@@ -362,7 +394,7 @@ function ShowInfoTables()
 	SetSpriteVisible(i2,Off)
 	SetSpriteVisible(i1,On)
 	repeat
-		PinchToZoom()
+		ZoomScroll()
 		Sync()
 		if GetVirtualButtonReleased( ArrowRightButt.ID ) or GetRawKeyPressed( RightArrow )
 			PlaySound( ClickSound,vol )
