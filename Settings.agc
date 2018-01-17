@@ -536,7 +536,7 @@ function Setup()
 
    `SPLASHSCREEN
 
-	SetupSprite( Splash,Splash,"SplashScreenII.png",0,0,MaxWidth,MaxHeight,2,On,0 )
+	SetupSprite( Splash,Splash,"SplashScreenIII.png",0,0,MaxWidth,MaxHeight,2,On,0 )
 	SetupSprite( Dialog,Dialog,"SettingsDialog.png",0,0,MaxWidth,MaxHeight,1,Off,0 )
 	SetupSprite( BaseDialog,BaseDialog,"BaseDialog.png",0,0,MaxWidth,MaxHeight,1,Off,2 )
 	SetSpriteCategoryBits( Splash,NoBlock )

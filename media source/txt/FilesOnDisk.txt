@@ -1,0 +1,204 @@
+10DOWN.png
+10UP.png
+15DOWN.png
+15UP.png
+20DOWN.png
+20UP.png
+25DOWN.png
+25UP.png
+5DOWN.png
+5UP.png
+AchillesBoardClear.png
+AchillesBoardClear.txt
+AchillesLogo2.png
+AcknowlegedProcessed_01.ogg
+AICross.png
+All7x14x26.txt
+ArrowRightDown.png
+ArrowRightUp.png
+bang2.wav
+BaseDialog.png
+BaseHalo.png
+BaseII.png
+BaseScale2.png
+BaseSlider.png
+BeamElectro_01.wav
+Bullet 2.png
+Bullet.png
+BulletButton 2.png
+BulletButton.png
+bullsEye.png
+bytecode.byc
+CancelDown2.png
+CancelUp.png
+Cannon 2.png
+Cannon.png
+CannonDown 2.png
+CannonDown.png
+CheckDown.png
+CheckUp.png
+CopyProcessed_01.ogg
+cross.png
+DeactivateBeep.ogg
+Defeat.wav
+DefeatImage.png
+DepotScale2.png
+DepotSlider.png
+DialogBackground.png
+DiskDown.png
+DiskUp.png
+DISRUPTION_SS.png
+DISRUPTOR.ogg
+DisruptorButtonDown 2.png
+DisruptorButtonDown.png
+DisruptorButtonUp 2.png
+DisruptorButtonUp.png
+EdgeHit2.ogg
+EMP.ogg
+EMP.png
+EMPButton 2.png
+EMPButton.png
+EMPButtonDown 2.png
+EMPButtonDown.png
+Energy.png
+Engineer.png
+EngineerIV.png
+EngineerTurret.png
+Evil Incoming_01.ogg
+ExitOpenAztec.wav
+explode.wav
+ExplodeSheet.png
+Exploding.ogg
+ExplosionPlain.wav
+Foliage.png
+FOW.png
+FOWSquare.png
+GENHEAVY.png
+GENHEAVY300.png
+GENHOVER.png
+GENMEDIUM.png
+GENMEDIUM300.png
+GENMISSILE.png
+GENMISSILE300.png
+Globe.png
+GlobeDown.png
+Greycheek_4.mp4
+Greycheek.wmv
+HealGlassy.wav
+health3.png
+HeavyCannon 2.png
+HeavyCannon.png
+HeavyCannonDown 2.png
+HeavyCannonDown.png
+HeavyLaser 2.png
+HeavyLaser.png
+HeavyLaserDown 2.png
+HeavyLaserDown.png
+HEAVYTURRET.png
+hilite45.png
+HoverbikeEnd.wav
+HovercraftSS.png
+HOVERTURRET.png
+Impass7x14x26.txt
+ImpassDown.png
+ImpassUp.png
+InfoDown.png
+InfoUp.png
+INSTRUCTIONS-I.png
+INSTRUCTIONS-II.png
+Interdict.ogg
+IRIS.png
+Jet2_01.ogg
+Laser 2.png
+Laser.png
+laser3.ogg
+LaserDown 2.png
+LaserDown.png
+LaserStar.png
+LevelOnSinister.wav
+LightningBolt.ogg
+LOADDOWN.png
+LOADUP.png
+Locked On_01.ogg
+logan.ogg
+MachineGun.ogg
+MagicReveal.wav
+Mech.png
+MechAtlas3.png
+MechTurret.png
+MEDIUMTURRET.png
+MineButton 2.png
+MineButton.png
+MineButtonDown 2.png
+MineButtonDown.png
+MineSS.png
+MissileSheet.png
+MISSILETURRET.png
+MotorClose_01_01.ogg
+Ok_01.ogg
+OnMyWayProcessed_01.ogg
+ONOFFDOWN.png
+ONOFFUP.png
+PickUpHeavy.wav
+PlasticClick.wav
+PlayerCross.png
+Prohibit.png
+Pylon.png
+Random.png
+RandomizeDown.png
+RandomizeUp.png
+red_strip16.png
+REDCROSS.png
+RedSquare.png
+reinforcements.ogg
+Rocket 2.png
+rocket.ogg
+Rocket.png
+RocketDown 2.png
+RocketDown.png
+rogerthatProcess.ogg
+Rough90.png
+RoughScale2.png
+RoughSlider.png
+Rumble2.ogg
+SAVEDOWN.png
+SAVEUP.png
+Scale5.png
+SettingsButton.png
+SettingsButtonDown.png
+SettingsDialog.png
+shiphit_strip11.png
+Silent.ogg
+SLIDERBUTTON.png
+SLOT1DOWNsmall.png
+SLOT1small.png
+SLOT2DOWNsmall.png
+SLOT2small.png
+SLOT3DOWNsmall.png
+SLOT3small.png
+SLOT4DOWNsmall.png
+SLOT4small.png
+Smoke4a.png
+Smoke5.png
+SplashScreenII.png
+Square.png
+Stunned.png
+SWARMSS.png
+Target Acquired_01.ogg
+TreesScale2.png
+TreesSlider.png
+TreeTop90.png
+TripodDestroyed.wav
+Turn.png
+Units.png
+VictoryImage.png
+WalkerStompLow.ogg
+Water.png
+Water7x14x26.txt
+WaterDown.png
+WaterUp.png
+whitestrip12.png
+Xdown.png
+Xup.png
+Yes-NoBkgnd.png
+YesSirProcessed_01.ogg

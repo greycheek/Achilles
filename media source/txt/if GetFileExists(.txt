@@ -1,0 +1,39 @@
+if GetFileExists( "AcknowlegedProcessed_01.ogg" ) then inc c
+if GetFileExists( "bang2.wav") then inc c
+if GetFileExists( "BeamElectro_01.wav" ) then inc c
+if GetFileExists( "CopyProcessed_01.ogg" ) then inc c
+if GetFileExists( "DeactivateBeep.ogg" ) then inc c
+if GetFileExists( "Defeat.wav" ) then inc c
+if GetFileExists( "DISRUPTOR.ogg" ) then inc c
+if GetFileExists( "EdgeHit2.ogg" ) then inc c
+if GetFileExists( "EMP.ogg" ) then inc c
+if GetFileExists( "Evil Incoming_01.ogg" ) then inc c
+if GetFileExists( "ExitOpenAztec.wav" ) then inc c
+if GetFileExists( "explode.wav" ) then inc c
+if GetFileExists( "Exploding.ogg" ) then inc c
+if GetFileExists( "ExplosionPlain.wav" ) then inc c
+if GetFileExists( "HealGlassy.wav" ) then inc c
+if GetFileExists( "HoverbikeEnd.wav" ) then inc c
+if GetFileExists( "Interdict.ogg" ) then inc c
+if GetFileExists( "Jet2_01.ogg" ) then inc c
+if GetFileExists( "laser3.ogg" ) then inc c
+if GetFileExists( "LevelOnSinister.wav" ) then inc c
+if GetFileExists( "LightningBolt.ogg" ) then inc c
+if GetFileExists( "Locked On_01.ogg" ) then inc c
+if GetFileExists( "Logan.ogg" ) then inc c
+if GetFileExists( "MachineGun.ogg" ) then inc c
+if GetFileExists( "MagicReveal.wav" ) then inc c
+if GetFileExists( "MotorClose_01_01.ogg" ) then inc c
+if GetFileExists( "Ok_01.ogg" ) then inc c
+if GetFileExists( "OnMyWayProcessed_01.ogg" ) then inc c
+if GetFileExists( "PickUpHeavy.wav" ) then inc c
+if GetFileExists( "PlasticClick.wav" ) then inc c
+if GetFileExists( "reinforcements.ogg" ) then inc c
+if GetFileExists( "rocket.ogg" ) then inc c
+if GetFileExists( "rogerthatProcess.ogg" ) then inc c
+if GetFileExists( "Rumble2.ogg" ) then inc c
+if GetFileExists( "Silent.ogg" ) then inc c
+if GetFileExists( "Target Acquired_01.ogg" ) then inc c
+if GetFileExists( "TripodDestroyed.wav" ) then inc c
+if GetFileExists( "WalkerStompLow.ogg" ) then inc c
+if GetFileExists( "YesSirProcessed_01.ogg" ) then inc c

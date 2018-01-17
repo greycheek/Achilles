@@ -416,12 +416,12 @@ movement$[4,0] = "MOVES  3, PENALTY: Rough -1, Trees -2"
 movement$[5,0] = "MOVES  4, PENALTY: Rough -1, Trees -2"
 movement$[6,0] = "MOVES  3, NO TERRAIN MOVEMENT PENALTY"
 
-cost$[1,0] = "UNIT COST  100"
+cost$[1,0] = "UNIT COST  150"
 cost$[2,0] = "UNIT COST  250"
 cost$[3,0] = "UNIT COST  100"
 cost$[4,0] = "UNIT COST  200"
 cost$[5,0] = "UNIT COST  300"
-cost$[6,0] = "UNIT COST  150"
+cost$[6,0] = "UNIT COST  100"
 
 
 `TANKS
@@ -581,12 +581,12 @@ endtype
 
 
 global unitCost as integer[unitTypes]
-unitCost[HoverCraft] = 100	`make 150
+unitCost[HoverCraft] = 150
 unitCost[Battery] = 250
 unitCost[MediumTank] = 100
 unitCost[HeavyTank] = 200
 unitCost[Mech] = 300
-unitCost[Engineer] = 200	`make 100
+unitCost[Engineer] = 100
 
 #constant AI %0000000000000010
 #constant Player %0000000000000100

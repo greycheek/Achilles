@@ -213,7 +213,7 @@ function TankSetup(ID,Tank ref as tankType[],pick as ColorSpec)
 			Tank[ID].weapon = disruptor
 			Tank[ID].range = disruptorRange
 			Tank[ID].damage = disruptorDamage
-			Tank[ID].rounds = 4
+			Tank[ID].rounds = 5
 			Tank[ID].movesAllowed = 4
 			Tank[ID].health = MediumHealthMax
 			Tank[ID].minimumHealth = MediumHealthMax *.33

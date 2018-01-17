@@ -26,14 +26,346 @@ remstart
 
 		---AITank visibility - Initialize and AIFOW
 		---LOS -- Mod at end of PlayerOps
-
 remend
 
-	global tx1# as float
-	global tx2# as float
-	global tx3# as float
-	global tx4# as float
-	global ty1# as float
+
+////////////// START load/save game routines //////////
+
+function LoadSaveGame( name$,dialogTitle$ )
+	PlaySound( ClickSound,vol )
+	TSize = (32*dev.scale)
+	Text( MapText,dialogTitle$,alertDialog.x+(TSize*.85),alertDialog.y+(TSize*.6),50,50,50,TSize,255,0 )
+	SetVirtualButtonPosition( cancelButt.ID,mapSaveDialog.cancel.x,mapSaveDialog.cancel.y )
+	AlertDialog( MapText,On,alertDialog.x,alertDialog.y,alertDialog.w,alertDialog.h )
+	MapLoadSaveButtons( On )
+	if GetFileExists( map$ )
+		SetVirtualButtonActive( LOADBUTT.ID,On )
+		SetVirtualButtonAlpha( LOADBUTT.ID,255 )
+	else
+		SetVirtualButtonActive( LOADBUTT.ID,Off )
+		SetVirtualButtonAlpha( LOADBUTT.ID,128 )
+	endif
+	do
+		Sync()
+		if GetVirtualButtonReleased( cancelButt.ID )
+			PlaySound( ClickSound )
+			exit
+		elseif GetVirtualButtonReleased( LOADBUTT.ID )
+
+			LoadGame( name$ )
+			exit
+		elseif GetVirtualButtonReleased( SAVEBUTT.ID )
+			if SaveGame( name$ ) then exit
+		endif
+	loop
+	MapLoadSaveButtons( Off )
+	AlertDialog( MapText,Off,alertDialog.x,alertDialog.y,alertDialog.w,alertDialog.h )
+	ButtonState( cancelButt.ID,Off )
+endfunction
+
+
+function SlotDialog( name$,dialogTitle$ )
+	PlaySound( ClickSound,vol )
+	TSize = ( 32*dev.scale )
+	Text( MapText,dialogTitle$,mapSlotDialog.x+20,mapSlotDialog.y+20,50,50,50,TSize,255,0 )
+	SetVirtualButtonPosition( cancelButt.ID,mapSlotDialog.cancel.x,mapSlotDialog.cancel.y )
+	ButtonState( cancelButt.ID,On )
+	AlertDialog( MapText,On,mapSlotDialog.x,mapSlotDialog.y,mapSlotDialog.w,mapSlotDialog.h )
+	MapSLOTButtons( On )
+
+	for i = 1 to 4
+		n$ = name$ + str(i)
+		if GetFileExists( n$ )
+			select n$
+				case name$+"1" : SetVirtualButtonAlpha( SLOT1.ID,FullAlpha ) : endcase
+				case name$+"2" : SetVirtualButtonAlpha( SLOT2.ID,FullAlpha ) : endcase
+				case name$+"3" : SetVirtualButtonAlpha( SLOT3.ID,FullAlpha ) : endcase
+				case name$+"4" : SetVirtualButtonAlpha( SLOT4.ID,FullAlpha ) : endcase
+			endselect
+		else
+			select n$
+				case name$+"1" : SetVirtualButtonAlpha( SLOT1.ID,HalfAlpha ) : endcase
+				case name$+"2" : SetVirtualButtonAlpha( SLOT2.ID,HalfAlpha ) : endcase
+				case name$+"3" : SetVirtualButtonAlpha( SLOT3.ID,HalfAlpha ) : endcase
+				case name$+"4" : SetVirtualButtonAlpha( SLOT4.ID,HalfAlpha ) : endcase
+			endselect
+		endif
+	next i
+	name$ = ""
+	do
+		Sync()
+		if GetVirtualButtonReleased( SLOT1.ID ) then name$ = name$+"1"
+		if GetVirtualButtonReleased( SLOT2.ID ) then name$ = name$+"2"
+		if GetVirtualButtonReleased( SLOT3.ID ) then name$ = name$+"3"
+		if GetVirtualButtonReleased( SLOT4.ID ) then name$ = name$+"4"
+		if name$ <> ""
+			SetVirtualButtonVisible( SLOT1.ID,Off )
+			SetVirtualButtonVisible( SLOT2.ID,Off )
+			SetVirtualButtonVisible( SLOT3.ID,Off )
+			SetVirtualButtonVisible( SLOT4.ID,Off )
+			LoadSaveGame( name$ )
+			exit
+		endif
+		if GetVirtualButtonReleased( cancelButt.ID )
+			PlaySound( ClickSound )
+			exit
+		endif
+	loop
+	AlertDialog( MapText,Off,mapSlotDialog.x,mapSlotDialog.y,mapSlotDialog.w,mapSlotDialog.h )
+	MapSLOTButtons( Off )
+	ButtonState( cancelButt.ID,Off )
+	SetVirtualButtonPosition( cancelButt.ID,cancelButt.x,cancelButt.y )
+endfunction
+
+
+function SaveGame( file$ )
+	file = OpenToWrite( file$ )
+	WriteForce( file,AITank,AIPlayerLast )
+	WriteForce( file,PlayerTank,PlayerLast )
+
+	WriteInteger( file,PlayerProdUnits )
+	WriteInteger( file,AIProdUnits )
+	WriteInteger( file,turns )
+
+	WriteMapData( file )
+	CloseFile( file )
+endfunction
+
+function WriteMapData( file )
+	`save map
+	for i = 0 to MapSize-1 : WriteInteger( file, mapTable[i].terrain ) : next i
+	`save settings
+	WriteInteger( file,pickAI.r ) : WriteInteger( file,pickAI.g ) : WriteInteger( file,pickAI.b ) : WriteInteger( file,pickAI.a )
+	WriteInteger( file,pickPL.r ) : WriteInteger( file,pickPL.g ) : WriteInteger( file,pickPL.b ) : WriteInteger( file,pickPL.a )
+	for i = 0 to Cells-1 : WriteInteger( file,AIGrid[i].vehicle ) : next i
+	for i = 0 to Cells-1 : WriteInteger( file,PlayerGrid[i].vehicle ) : next i
+	WriteInteger( file,BaseProdValue )
+	WriteInteger( file,Events )
+endfunction
+
+function LoadGame( file$ )
+	file = OpenToRead( file$ )
+	ReadForce( file,AITank )
+	ReadForce( file,PlayerTank )
+
+	PlayerProdUnits = ReadInteger( file )
+	AIProdUnits = ReadInteger( file )
+	turns = ReadInteger( file )
+
+	ReadMapData( file )
+	CloseFile( file )
+endfunction
+
+function ReadMapData( file )
+	ResetMap()
+	LoadImage(field,"AchillesBoardClear.png")
+	CreateSprite(field,field)
+	SetSpriteDepth(field,12)
+	SetSpriteSize(field,MaxWidth,MaxHeight)
+
+	DrawSprite(field)
+	SetRenderToImage(field,0)
+	for i = 0 to MapSize-1
+		mapTable[i].terrain = ReadInteger( file )
+		maptable[i].cost = cost[mapTable[i].terrain]
+		maptable[i].modifier = TRM[mapTable[i].terrain]
+		mapTable[i].base = mapTable[i].terrain
+		mapTable[i].team = Unoccupied
+		node = CalcNode( mapTable[i].nodeX,mapTable[i].nodeY )
+		if node < LiveArea  `before button area
+			select mapTable[i].terrain
+				case PlayerBase
+					PlayerBases.length = PlayerBases.length+1
+					BaseSetup( PlayerBases.length,PlayerBaseSeries+PlayerBases.length,node,PlayerBase,PlayerBases,BaseGroup )
+				endcase
+				case AIBase
+					AIBases.length = AIBases.length+1
+					BaseSetup( AIBases.length,AIBaseSeries+AIBases.length,node,AIBase,AIBases,AIBaseGroup )
+				endcase
+				case PlayerDepot
+					PlayerDepotNode.length = PlayerDepotNode.length+1
+					DepotSetup(PlayerDepotNode.length,PlayerDepotSeries+PlayerDepotNode.length,node,PlayerDepot,PlayerDepotNode,depotGroup )
+				endcase
+				case AIDepot
+					AIDepotNode.length = AIDepotNode.length+1
+					DepotSetup( AIDepotNode.length,AIDepotSeries+AIDepotNode.length,node,AIDepot,AIDepotNode,AIdepotGroup )
+				endcase
+				case Trees      : DrawTerrain( node,TreeSprite,treeDummy ) : endcase
+				case Rough		: DrawTerrain( node,RoughSprite,RoughDummy ) : endcase
+				case Impassable : DrawTerrain( node,Impass,impassDummy ) : endcase
+				case Water		: DrawTerrain( node,AcquaSprite,waterDummy ) : endcase
+			endselect
+		endif
+	next i
+	`SETTINGS
+	LoadForce( file )
+	BaseProdValue = ReadInteger( file )
+	SetProductionButtons( BaseProdValue )
+	Events = ReadInteger( file )
+	if Events then SetVirtualButtonImageUp( ONOFF.ID,ONOFF.DN ) else SetVirtualButtonImageUp( ONOFF.ID,ONOFF.UP )
+
+	CloseFile( file )
+	SetRenderToScreen()
+
+	AIBaseCount = AIBases.length
+	PlayerBaseCount = PlayerBases.length
+	AIDepotCount = AIDepotNode.length
+	PlayerDepotCount = PlayerDepotNode.length
+	AIProdUnits = (AIBaseCount+1) * BaseProdValue
+	PlayerProdUnits = (PlayerBaseCount+1) * BaseProdValue
+	BaseColor()
+endfunction
+
+function WriteForce(file,Tank as tankType[],last)
+	WriteInteger(file,last)
+	for i = 0 to last
+		WriteInteger(file,Tank[i].OpenList.length)
+		for j = 0 to Tank[i].OpenList.length : WriteInteger(file,Tank[i].OpenList[j]) : next j
+
+		WriteInteger(file,Tank[i].ClosedList.length)
+		for j = 0 to Tank[i].ClosedList.length : WriteInteger(file,Tank[i].ClosedList[j]) : next j
+
+		WriteInteger(file,Tank[i].parentNode.length)
+		for j = 0 to Tank[i].parentNode.length : WriteInteger(file,Tank[i].parentNode[j]) : next j
+
+		WriteInteger(file,Tank[i].X)
+		WriteInteger(file,Tank[i].Y)
+		WriteInteger(file,Tank[i].node)
+		WriteInteger(file,Tank[i].goalNode)
+
+		WriteInteger(file,Tank[i].alive)
+		WriteInteger(file,Tank[i].stunMarker)
+		WriteInteger(file,Tank[i].stunned)
+		WriteInteger(file,Tank[i].target)
+		WriteInteger(file,Tank[i].moveTarget)
+		WriteInteger(file,Tank[i].index)
+		WriteInteger(file,Tank[i].moves)
+		WriteInteger(file,Tank[i].movesAllowed)
+		WriteInteger(file,Tank[i].route)
+		WriteInteger(file,Tank[i].totalTerrainCost)
+
+		WriteInteger(file,Tank[i].team)
+		WriteInteger(file,Tank[i].line)
+		WriteInteger(file,Tank[i].hilite)
+		WriteInteger(file,Tank[i].bullsEye)
+		WriteInteger(file,Tank[i].cover)
+		WriteInteger(file,Tank[i].vehicle)
+		WriteInteger(file,Tank[i].weapon)
+		WriteInteger(file,Tank[i].rounds)
+		WriteInteger(file,Tank[i].range)
+		WriteInteger(file,Tank[i].missiles)
+		WriteInteger(file,Tank[i].mines)
+		WriteInteger(file,Tank[i].charges)
+		WriteInteger(file,Tank[i].nearestPlayer)
+		WriteInteger(file,Tank[i].sound)
+		WriteInteger(file,Tank[i].volume)
+
+		WriteInteger(file,Tank[i].FOW)
+		WriteInteger(file,Tank[i].FOWSize)
+		WriteInteger(file,Tank[i].FOWOffset)
+		WriteInteger(file,Tank[i].bodyID)
+		WriteInteger(file,Tank[i].turretID)
+		WriteInteger(file,Tank[i].healthID)
+		WriteInteger(file,Tank[i].bodyImageID)
+		WriteInteger(file,Tank[i].turretImageID)
+		WriteInteger(file,Tank[i].healthBarImageID)
+
+		WriteFloat(file,Tank[i].speed)
+		WriteFloat(file,Tank[i].bodyW)
+		WriteFloat(file,Tank[i].bodyH)
+		WriteFloat(file,Tank[i].turretW)
+		WriteFloat(file,Tank[i].turretH)
+		WriteFloat(file,Tank[i].scale)
+		WriteFloat(file,Tank[i].health)
+		WriteFloat(file,Tank[i].minimumHealth)
+		WriteFloat(file,Tank[i].maximumHealth)
+		WriteFloat(file,Tank[i].damage)
+		WriteFloat(file,Tank[i].costFromStart)
+
+		WriteString(file,Tank[i].body$)
+		WriteString(file,Tank[i].turret$)
+	next i
+endfunction
+
+function ReadForce(file,Tank ref as tankType[])
+	last = ReadInteger(file)
+	for i = 0 to last
+		length = ReadInteger(file)
+		for j = 0 to length : Tank[i].OpenList[j] = ReadInteger(file) : next j
+
+		length = ReadInteger(file)
+		for j = 0 to length : Tank[i].ClosedList[j] = ReadInteger(file) : next j
+
+		length = ReadInteger(file)
+		for j = 0 to length : Tank[i].parentNode[j] = ReadInteger(file) : next j
+
+		Tank[i].X = ReadInteger(file)
+		Tank[i].Y = ReadInteger(file)
+		Tank[i].node = ReadInteger(file)
+		Tank[i].goalNode = ReadInteger(file)
+
+		Tank[i].alive = ReadInteger(file)
+		Tank[i].stunMarker = ReadInteger(file)
+		Tank[i].stunned = ReadInteger(file)
+		Tank[i].target = ReadInteger(file)
+		Tank[i].moveTarget = ReadInteger(file)
+		Tank[i].index = ReadInteger(file)
+		Tank[i].moves = ReadInteger(file)
+		Tank[i].movesAllowed = ReadInteger(file)
+		Tank[i].route = ReadInteger(file)
+		Tank[i].totalTerrainCost = ReadInteger(file)
+
+		Tank[i].team = ReadInteger(file)
+		Tank[i].line = ReadInteger(file)
+		Tank[i].hilite = ReadInteger(file)
+		Tank[i].bullsEye = ReadInteger(file)
+		Tank[i].cover = ReadInteger(file)
+		Tank[i].vehicle = ReadInteger(file)
+		Tank[i].weapon = ReadInteger(file)
+		Tank[i].rounds = ReadInteger(file)
+		Tank[i].range = ReadInteger(file)
+		Tank[i].missiles = ReadInteger(file)
+		Tank[i].mines = ReadInteger(file)
+		Tank[i].charges = ReadInteger(file)
+		Tank[i].nearestPlayer = ReadInteger(file)
+		Tank[i].sound = ReadInteger(file)
+		Tank[i].volume = ReadInteger(file)
+
+		Tank[i].FOW = ReadInteger(file)
+		Tank[i].FOWSize = ReadInteger(file)
+		Tank[i].FOWOffset = ReadInteger(file)
+		Tank[i].bodyID = ReadInteger(file)
+		Tank[i].turretID = ReadInteger(file)
+		Tank[i].healthID = ReadInteger(file)
+		Tank[i].bodyImageID = ReadInteger(file)
+		Tank[i].turretImageID = ReadInteger(file)
+		Tank[i].healthBarImageID = ReadInteger(file)
+
+		Tank[i].speed = ReadFloat(file)
+		Tank[i].bodyW = ReadFloat(file)
+		Tank[i].bodyH = ReadFloat(file)
+		Tank[i].turretW = ReadFloat(file)
+		Tank[i].turretH = ReadFloat(file)
+		Tank[i].scale = ReadFloat(file)
+		Tank[i].health = ReadFloat(file)
+		Tank[i].minimumHealth = ReadFloat(file)
+		Tank[i].maximumHealth = ReadFloat(file)
+		Tank[i].damage = ReadFloat(file)
+		Tank[i].costFromStart = ReadFloat(file)
+
+		Tank[i].body$ = ReadString(file)
+		Tank[i].turret$ = ReadString(file)
+	next i
+endfunction
+
+////////////// END load/save game routines ///////////
+
+
+	//~ global tx1# as float
+	//~ global tx2# as float
+	//~ global tx3# as float
+	//~ global tx4# as float
+	//~ global ty1# as float
 
 
 `Defunct:

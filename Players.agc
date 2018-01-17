@@ -307,11 +307,10 @@ endfunction
 
 
 function MoveInput(ID,x1,y1)
-	lineStart = MakeColor( 255,255,255 )
-	lineEnd = MakeColor( 0,100,0 )
-	shift = GetViewZoom() * NodeOffset
 	SetSpriteVisible(square,On)
 	SetRawMouseVisible(Off)
+	ScrollLimits()
+
 	while GetPointerState()
 		px = ScreenToWorldX(GetPointerX())
 		py = ScreenToWorldY(GetPointerY())
@@ -323,10 +322,15 @@ function MoveInput(ID,x1,y1)
 		y2 = (py/NodeSize)*NodeSize
 		x2 = MinMax(NodeSize,MapWidth,x2)
 		y2 = MinMax(NodeSize,MapHeight,y2)
-
 		SetSpritePosition(square,x2,y2)
-		DrawLine(x1,y1,WorldToScreenX(x2)+shift,WorldToScreenY(y2)+shift,lineStart,lineEnd)
 		Sync()
+
+		`Calculate new scroll position
+		if zoomFactor > 1 `only scroll if zoomed-in
+			xoffset = MinMax( minX,maxX,xoffset-( ( px-GetPointerX() )/zoomFactor ))
+			yoffset = MinMax( minY,maxY,yoffset-( ( py-GetPointerY() )/zoomFactor ))
+			SetViewOffset( xoffset,yoffset )
+		endif
 	endwhile
 	SetRawMouseVisible(On)
 	node = CalcNode( Floor(x2/NodeSize),Floor(y2/NodeSize) )
@@ -409,6 +413,7 @@ endfunction
 
 function BadMove()
 	PlaySound( ErrorSound,vol )
+	SetSpriteVisible(square,Off)
 	DisplayError( OutofRangeText,"out of reach" )
 endfunction
 
@@ -789,6 +794,20 @@ function DisplayError(ID,error$)
 endfunction
 
 remstart
+FROM MOVEINPUT
+	lineStart = MakeColor( 255,255,255 )
+	lineEnd = MakeColor( 0,100,0 )
+	shift = GetViewZoom() * NodeOffset
+
+	DrawLine(x1,y1,WorldToScreenX(x2)+shift,WorldToScreenY(y2)+shift,lineStart,lineEnd)
+
+	if zoomFactor > 1
+		newX = GetPointerX()
+		newY = GetPointerY()
+		CalcScroll()
+		lastX = newX
+		lastY = newY
+	endif
 
 FROM GETINPUT
 	if selection = Undefined then PressToZoom()

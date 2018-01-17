@@ -20,11 +20,16 @@
 global zoomFactor as float = 1.0
 global lastX as float
 global lastY as float
+global minX as float
+global maxX as float
+global minY as float
+global maxY as float
 global newX as float = 0
 global newY as float = 0
 global xoffset as float = 0
 global yoffset as float = 0
 global dragMode as integer
+
 
 
 function ASCII()
@@ -37,21 +42,12 @@ endfunction
 
 function PinchToZoom()
 	select GetRawTouchCount(1)
-		case 1:  `Scroll
+		case 1:  `Scroll; calculate new scroll position
 			if zoomFactor > 1  `only scroll if zoomed-in
-				// Limit scroll to board edges
-				zoom# =  zoomFactor - 1.0
-				ZFx2# =  zoomFactor * 2.0
-				minX# = -zoom# * MaxWidth  / ZFx2#  `should zoom * MaxWidth/MaxHeight be in ( )??
-				maxX# =  zoom# * MaxWidth  / ZFx2#
-				minY# = -zoom# * MaxHeight / ZFx2#
-				maxY# =  zoom# * MaxHeight / ZFx2#
-
-				//*** Calculate new scroll position ***
+				ScrollLimits()
 				post = GetRawFirstTouchEvent(0)
-				xoffset = MinMax( minX#,maxX#, GetViewOffsetX()+(GetRawTouchLastX(post)-GetRawTouchCurrentX(post))/zoomFactor )
-				yoffset = MinMax( minY#,maxY#, GetViewOffsetY()+(GetRawTouchLastY(post)-GetRawTouchCurrentY(post))/zoomFactor )
-
+				xoffset = MinMax( minX,maxX, GetViewOffsetX()+(GetRawTouchLastX(post)-GetRawTouchCurrentX(post))/zoomFactor )
+				yoffset = MinMax( minY,maxY, GetViewOffsetY()+(GetRawTouchLastY(post)-GetRawTouchCurrentY(post))/zoomFactor )
 				SetViewOffset(xoffset,yoffset)
 			else
 				SetViewOffset(0,0)  `reset scroll
@@ -109,17 +105,20 @@ function MouseScroll()
 endfunction
 
 function CalcScroll()
+	ScrollLimits()
+	//*** Calculate new scroll position ***
+	xoffset = MinMax( minX,maxX,lastX+( (newX-GetPointerX())/zoomFactor ))
+	yoffset = MinMax( minY,maxY,lastY+( (newY-GetPointerY())/zoomFactor ))
+	SetViewOffset( xoffset,yoffset )
+endfunction
+
+function ScrollLimits()
 	zoom# =  zoomFactor - 1.0
 	ZFx2# =  zoomFactor * 2.0
-	minX# = -zoom# * MaxWidth  / ZFx2# `should zoom * MaxWidth/MaxHeight be in ( )??
-	maxX# =  zoom# * MaxWidth  / ZFx2#
-	minY# = -zoom# * MaxHeight / ZFx2#
-	maxY# =  zoom# * MaxHeight / ZFx2#
-
-	//*** Calculate new scroll position ***
-	xoffset = MinMax( minX#,maxX#,lastX+( (newX-GetPointerX())/zoomFactor ))
-	yoffset = MinMax( minY#,maxY#,lastY+( (newY-GetPointerY())/zoomFactor ))
-	SetViewOffset( xoffset,yoffset )
+	minX = -zoom# * MaxWidth  / ZFx2# `should zoom * MaxWidth/MaxHeight be in ( )??
+	maxX =  zoom# * MaxWidth  / ZFx2#
+	minY = -zoom# * MaxHeight / ZFx2#
+	maxY =  zoom# * MaxHeight / ZFx2#
 endfunction
 
 function KeyScroll()
@@ -145,16 +144,10 @@ function KeyScroll()
 endfunction
 
 function CalcKeyScroll()
-	zoom# =  zoomFactor - 1.0
-	ZFx2# =  zoomFactor * 2.0
-	minX# = -zoom# * MaxWidth  / ZFx2# `should zoom * MaxWidth/MaxHeight be in ( )??
-	maxX# =  zoom# * MaxWidth  / ZFx2#
-	minY# = -zoom# * MaxHeight / ZFx2#
-	maxY# =  zoom# * MaxHeight / ZFx2#
-
+	ScrollLimits()
 	//*** Calculate new scroll position ***
-	xoffset = MinMax( minX#,maxX#,lastX+newX )
-	yoffset = MinMax( minY#,maxY#,lastY+newY )
+	xoffset = MinMax( minX,maxX,lastX+newX )
+	yoffset = MinMax( minY,maxY,lastY+newY )
 	SetViewOffset( xoffset,yoffset )
 endfunction
 
@@ -364,6 +357,12 @@ endfunction dataArray.length
 
 
 remstart
-
+FROM CalcKeyScroll()
+	zoom# =  zoomFactor - 1.0
+	ZFx2# =  zoomFactor * 2.0
+	minX# = -zoom# * MaxWidth  / ZFx2# `should zoom * MaxWidth/MaxHeight be in ( )??
+	maxX# =  zoom# * MaxWidth  / ZFx2#
+	minY# = -zoom# * MaxHeight / ZFx2#
+	maxY# =  zoom# * MaxHeight / ZFx2#
 remend
 

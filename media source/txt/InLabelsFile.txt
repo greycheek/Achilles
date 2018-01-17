@@ -1,0 +1,39 @@
+AcknowlegedProcessed_01.ogg
+bang2.wav
+BeamElectro_01.wav
+CopyProcessed_01.ogg
+DeactivateBeep.ogg
+Defeat.wav
+DISRUPTOR.ogg
+EdgeHit2.ogg
+EMP.ogg
+Evil Incoming_01.ogg
+ExitOpenAztec.wav
+explode.wav
+Exploding.ogg
+ExplosionPlain.wav
+HealGlassy.wav
+HoverbikeEnd.wav
+Interdict.ogg
+Jet2_01.ogg
+laser3.ogg
+LevelOnSinister.wav
+LightningBolt.ogg
+Locked On_01.ogg
+Logan.ogg
+MachineGun.ogg
+MagicReveal.wav
+MotorClose_01_01.ogg
+Ok_01.ogg
+OnMyWayProcessed_01.ogg
+PickUpHeavy.wav
+PlasticClick.wav
+reinforcements.ogg
+rocket.ogg
+rogerthatProcess.ogg
+Rumble2.ogg
+Silent.ogg
+Target Acquired_01.ogg
+TripodDestroyed.wav
+WalkerStompLow.ogg
+YesSirProcessed_01.ogg
