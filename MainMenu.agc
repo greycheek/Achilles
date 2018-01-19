@@ -1,9 +1,27 @@
 
+
 function MainMenu()
 	Setup()
+	r0 = 0 : r1 = 255
+	g0 = 0 : g1 = 32
+	b0 = 0 : b1 = 16
 	t1 = PatrolMech()
+	colors = CreateTweenSprite( 2 )
+	SetTweenSpriteRed( colors,r0,r1,TweenEaseOut1() )
+	SetTweenSpriteGreen( colors,g0,g1,TweenEaseOut1() )
+	SetTweenSpriteBlue( colors,b0,b1,TweenEaseOut1() )
+	PlayTweenSprite( colors,IrisGlow,0 )
 	do
-		if not GetTweenSpritePlaying(t1,MechGuy[0].bodyID) then t1 = PatrolMech()
+		if not GetTweenSpritePlaying( t1,MechGuy[0].bodyID ) then t1 = PatrolMech()
+		if not GetTweenSpritePlaying( colors,IrisGlow )
+			r=r0 : r0=r1 : r1=r
+			g=g0 : g0=g1 : g1=g
+			b=b0 : b0=b1 : b1=b
+			SetTweenSpriteRed( colors,r0,r1,TweenEaseOut1() )
+			SetTweenSpriteGreen( colors,g0,g1,TweenEaseOut1() )
+			SetTweenSpriteBlue( colors,b0,b1,TweenEaseOut1() )
+			PlayTweenSprite( colors,IrisGlow,0 )
+		endif
 		UpdateAllTweens(getframetime())
 		Sync()
 		info = GetVirtualButtonReleased( InfoButt.ID )
@@ -191,6 +209,11 @@ function DisplaySettings(state)
 
 	SetSpriteActive( Splash,FlipState )
 	SetSpriteVisible( Splash,FlipState )
+
+	SetSpriteActive( OpenIris,FlipState )
+	SetSpriteVisible( OpenIris,FlipState )
+	SetSpriteActive( IrisGlow,FlipState )
+	SetSpriteVisible( IrisGlow,FlipState )
 
 	SetVirtualButtonVisible( settingsButt.ID,FlipState )
 	SetVirtualButtonVisible( cancelButt.ID,FlipState )
@@ -858,6 +881,8 @@ function GameSetup()
 	DeleteSprite( MechGuy[0].bodyID )
 	DeleteSprite( MechGuy[0].turretID )
 	DeleteSprite( Logo )
+	DeleteSprite( OpenIris )
+	DeleteSprite( IrisGlow )
 	SetSpriteActive( Dialog,Off )
 	SetSpriteActive( Splash,Off )
 	SetSpriteVisible( Dialog,Off )

@@ -639,7 +639,7 @@ global BaseHalo as integer
 #constant Water 9
 
 #constant DepotSize 33
-#constant DepotDepth 3
+		#constant DepotDepth 4
 
 global depotOffset as integer
 depotOffset = NodeOffset/2
@@ -1405,6 +1405,8 @@ Mine1 = MineSeries + 1
 
 global DisruptSprite `= DisruptorSeries
 global Logo
+global OpenIris
+global IrisGlow
 
 global field as integer  `board
 global Explode1 as integer

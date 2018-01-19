@@ -1,4 +1,13 @@
 
+remstart
+	Input Output
+	 A B
+	 0 0    0
+	 1 0    1
+	 0 1    1
+	 1 1    0
+ remend
+
 #constant True = 1
 #constant False = 0
 #constant Read = 1
