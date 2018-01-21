@@ -378,8 +378,8 @@ function Setup()
 
    `MECH GUY
 
-	MechGuy[0].x = MiddleX
-	MechGuy[0].y = MiddleY
+	//~ MechGuy[0].x = MiddleX
+	//~ MechGuy[0].y = MiddleY
 	MechGuy[0].route = Random2(0,7)
 
 	LoadImage(MechGuy[0].bodyID,"MechAtlas3.png")
@@ -530,31 +530,37 @@ function Setup()
 	LogoImage = LoadImage("AchillesLogo2.png")
 	Logo = CreateSprite( LogoImage )
 	SetSpriteVisible( Logo, On )
-	SetSpriteSize( Logo,1390,450 ) ` 1050,340
-	SetSpritePosition( Logo,(MaxWidth-GetSpriteWidth(Logo))/2,(MaxHeight-GetSpriteHeight(Logo)*1.1))
+	SetSpriteSize( Logo,1237,400 )
+	SetSpritePosition( Logo,(MaxWidth-GetSpriteWidth(Logo))/2,(MaxHeight-GetSpriteHeight(Logo)*1.2))
 	SetSpriteDepth( Logo,0 )
 
    `SPLASHSCREEN
 
-	SetupSprite( Splash,Splash,"SplashScreenIV.png",0,0,MaxWidth,MaxHeight,3,On,0 )
+	SetupSprite( Splash,Splash,"SplashScreenV.png",0,0,MaxWidth,MaxHeight,3,On,0 )
 	SetupSprite( Dialog,Dialog,"SettingsDialog.png",0,0,MaxWidth,MaxHeight,1,Off,0 )
 	SetupSprite( BaseDialog,BaseDialog,"BaseDialog.png",0,0,MaxWidth,MaxHeight,1,Off,2 )
 	SetSpriteCategoryBits( Splash,NoBlock )
 	SetSpriteCategoryBits( Dialog,NoBlock )
 	SetSpriteCategoryBits( BaseDialog,NoBlock )
 
-	IrisImage = LoadImage("IrisII.png")
+	IrisImage = LoadImage("IRISSS2.png")
 	OpenIris = CreateSprite( IrisImage )
 	SetSpriteVisible( OpenIris, On )
-	SetSpriteSize( OpenIris,211,245 )
-	SetSpritePosition( OpenIris,(MaxWidth-GetSpriteWidth(OpenIris))/2,185)
+	SetSpriteSize( OpenIris,141,163 )
+	SetSpritePosition( OpenIris,((MaxWidth-GetSpriteWidth(OpenIris))/2)+2,227)
+	SetSpriteAnimation( OpenIris,140,162,100 )
 	SetSpriteDepth( OpenIris,2 )
 
-	IrisGlowImage = LoadImage("Glow.png")
+	MechGuy[0].x = MiddleX
+	MechGuy[0].y = MiddleY-((GetSpriteWidth(OpenIris))/2)+NodeOffset
+	SetSpritePositionByOffset(MechGuy[0].bodyID,MechGuy[0].x,MechGuy[0].y)
+	SetSpritePositionByOffset(MechGuy[0].turretID,MechGuy[0].x,MechGuy[0].y)
+
+	IrisGlowImage = LoadImage("GlowII.png")
 	IrisGlow = CreateSprite( IrisGlowImage )
 	SetSpriteVisible( IrisGlow, On )
-	SetSpriteSize( IrisGlow,210,243 )
-	SetSpritePosition( IrisGlow,(MaxWidth-GetSpriteWidth(IrisGlow))/2,185)
+	SetSpriteSize( IrisGlow,140,162 )
+	SetSpritePosition( IrisGlow,((MaxWidth-GetSpriteWidth(IrisGlow))/2)+2,228)
 	SetSpriteDepth( IrisGlow,3 )
 
 	LoadButton(InfoButt.ID,InfoButt.UP,InfoButt.DN,"InfoUp.png","InfoDown.png",InfoButt.x,InfoButt.y,InfoButt.w,On)

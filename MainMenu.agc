@@ -2,26 +2,10 @@
 
 function MainMenu()
 	Setup()
-	r0 = 0 : r1 = 255
-	g0 = 0 : g1 = 32
-	b0 = 0 : b1 = 16
-	t1 = PatrolMech()
-	colors = CreateTweenSprite( 2 )
-	SetTweenSpriteRed( colors,r0,r1,TweenEaseOut1() )
-	SetTweenSpriteGreen( colors,g0,g1,TweenEaseOut1() )
-	SetTweenSpriteBlue( colors,b0,b1,TweenEaseOut1() )
-	PlayTweenSprite( colors,IrisGlow,0 )
+	t as integer[2]
+	t = PatrolMech(t)
 	do
-		if not GetTweenSpritePlaying( t1,MechGuy[0].bodyID ) then t1 = PatrolMech()
-		if not GetTweenSpritePlaying( colors,IrisGlow )
-			r=r0 : r0=r1 : r1=r
-			g=g0 : g0=g1 : g1=g
-			b=b0 : b0=b1 : b1=b
-			SetTweenSpriteRed( colors,r0,r1,TweenEaseOut1() )
-			SetTweenSpriteGreen( colors,g0,g1,TweenEaseOut1() )
-			SetTweenSpriteBlue( colors,b0,b1,TweenEaseOut1() )
-			PlayTweenSprite( colors,IrisGlow,0 )
-		endif
+		if not GetTweenSpritePlaying( t[0],MechGuy[0].bodyID ) then t = PatrolMech(t)
 		UpdateAllTweens(getframetime())
 		Sync()
 		info = GetVirtualButtonReleased( InfoButt.ID )
@@ -78,43 +62,84 @@ function AlertButtons( x1,y1,x2,y2,size,accept,cancel )
 endfunction
 
 
-function PatrolMech()
+function PatrolMech(t ref as integer[])
 	dir as integer[8]
 	x2 = Random2(0,MaxWidth)
 	y2 = Random2(0,MaxHeight)
 	t# = Timer()
 	if (t# >= 1.5) and (t# <= 1.65) then RotateTurret(0,MechGuy,x2,y2)	`look again
-	if t# < 3 then exitfunction t1	`still looking
+	if t# < 3 then exitfunction t	`still looking
 
 	select Randomize(1,15)  `random action
 		case 10 : MechGuy[0].route = Random2(0,7) : endcase	`new direction
 		case 12		`stop and look
-			Halt(t1,t2)
+			Halt(t[0],t[1])
 			RotateTurret(0,MechGuy,x2,y2)
 			ResetTimer()
-			exitfunction t1
+			exitfunction t
 		endcase
 		case 14,15  `fire
-			Halt(t1,t2)
+			Halt(t[0],t[1])
 			if Random(0,1)
 				if  VectorDistance( MechGuy[0].x,MechGuy[0].y,x2,y2 ) > ( NodeSize*3 )
 					RotateTurret(0,MechGuy,x2,y2)
 					LaserFire( MechGuy[0].x,MechGuy[0].y,x2,y2,heavyLaser,1.25,2,1,MechGuy[0].scale )
-				//~ else
-					//~ print("too close")
 				endif
 			endif
-			exitfunction t1
+			exitfunction t
 		endcase
 	endselect
 
 	x1 = MechGuy[0].x
 	y1 = MechGuy[0].y
-	x2 = MinMax( buffer,MapWidth,x1 + turnX[MechGuy[0].route] )
+	x2 = MinMax( buffer,MapWidth,x1  + turnX[MechGuy[0].route] )
 	y2 = MinMax( buffer,MapHeight,y1 + turnY[MechGuy[0].route] )
 
-	if (x2=buffer) or (x2=MapWidth) or (y2=buffer) or (y2=MapHeight)  `screen edge?
-		Halt(t1,t2)
+	if OutOfBounds(x1,y1,buffer,MapWidth,buffer,MapHeight)
+		Halt(t[0],t[1])
+
+		if not Random2(0,4)
+			if x1 <= buffer then x = MaxWidth  else x = 0
+			if y1 <= buffer then y = MapHeight else y = 0
+			CannonFire( x,y,x1,y1,192,96 )
+			BlowItUp( 0,MechGuy )
+			x1 = MiddleX
+			y1 = MiddleY-((GetSpriteWidth(OpenIris))/2)+NodeOffset
+			SetSpritePositionByOffset( MechGuy[0].bodyID,x1,y1 )
+			SetSpritePositionByOffset( MechGuy[0].turretID,x1,y1 )
+			SetSpriteVisible( MechGuy[0].bodyID,On )
+			SetSpriteVisible( MechGuy[0].turretID,On )
+
+			colors = CreateTweenSprite( 2 )
+			SetTweenSpriteRed( colors,0,255,TweenLinear() )
+			SetTweenSpriteGreen( colors,0,32,TweenLinear() )
+			SetTweenSpriteBlue( colors,0,16,TweenLinear() )
+			grow = CreateTweenSprite( 3 )
+			SetTweenSpriteSizeX( grow,1,buffer,TweenEaseOut1() )
+			SetTweenSpriteSizeY( grow,1,buffer,TweenEaseOut1() )
+
+			PlaySprite( OpenIris,28,0 )
+			SetSpriteVisible( IrisGlow,On )
+			PlayTweenSprite( colors,IrisGlow,0 )
+			PlayTweenSprite( grow,MechGuy[0].bodyID,0 )
+			PlayTweenSprite( grow,MechGuy[0].turretID,0 )
+			PlaySound( SpawnSound,vol )
+			rampUp = True
+			while GetSpritePlaying( OpenIris )
+				if (GetSpriteCurrentFrame( OpenIris ) >= 50) and rampUp
+					StopTweenSprite( colors,IrisGlow )
+					SetTweenSpriteRed( colors,255,0,TweenLinear() )
+					SetTweenSpriteGreen( colors,32,0,TweenLinear() )
+					SetTweenSpriteBlue( colors,16,0,TweenLinear() )
+					PlayTweenSprite( colors,IrisGlow,0 )
+					rampUp = False
+				endif
+				UpdateAllTweens(getframetime())
+				Sync()
+			endwhile
+			SetSpriteVisible( IrisGlow,Off )
+		endif
+
 		index = 0
 		for i = 0 to 7
 			if MechGuy[0].route <> i
@@ -137,13 +162,13 @@ function PatrolMech()
 	next i
 	tankArc# = SetTurnArc(b#,a#)
 	turretArc# = SetTurnArc(t#,a#)
-	t1 = SetTween(x1,y1,x2,y2,b#,tankArc#,  MechGuy[0].bodyID,  TweenLinear(),MechGuy[0].speed)
-	t2 = SetTween(x1,y1,x2,y2,t#,turretArc#,MechGuy[0].turretID,TweenLinear(),MechGuy[0].speed)
+	t[0] = SetTween(x1,y1,x2,y2,b#,tankArc#,  MechGuy[0].bodyID,  TweenLinear(),MechGuy[0].speed)
+	t[1] = SetTween(x1,y1,x2,y2,t#,turretArc#,MechGuy[0].turretID,TweenLinear(),MechGuy[0].speed)
 
 	PlaySprite( MechGuy[0].bodyID,20,0 )
 	MechGuy[0].x = x2
 	MechGuy[0].y = y2
-endfunction t1
+endfunction t
 
 function AlertDialog( text,state,x,y,w,h )
 	If state = Off
@@ -151,7 +176,7 @@ function AlertDialog( text,state,x,y,w,h )
 		DeleteText( text )
 		DeleteSprite( AlertBackGround )
 	else
-				SetTextVisible( text,state )
+		SetTextVisible( text,state )
 		SetupSprite( AlertBackGround,AlertBackGround,"Yes-NoBkgnd.png",x,y,w,h,0,Off,0 )
 	endif
 	SetSpriteActive( AlertBackGround,state )

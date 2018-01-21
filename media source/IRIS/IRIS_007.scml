@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<spriter_data scml_version="1.0" generator="BrashMonkey Spriter" generator_version="r11">
+    <folder id="0">
+        <file id="0" name="IRIS.png" width="106" height="122" pivot_x="0" pivot_y="1"/>
+    </folder>
+    <entity id="0" name="entity_000">
+        <animation id="0" name="NewAnimation" length="1000" interval="100">
+            <mainline>
+                <key id="0" curve_type="bezier" c1="0.255034" c2="0.2749" c3="0.808725" c4="0.1422">
+                    <object_ref id="0" timeline="0" key="0" z_index="0"/>
+                    <object_ref id="1" timeline="1" key="0" z_index="1"/>
+                    <object_ref id="2" timeline="2" key="0" z_index="2"/>
+                    <object_ref id="3" timeline="3" key="0" z_index="3"/>
+                    <object_ref id="4" timeline="4" key="0" z_index="4"/>
+                    <object_ref id="5" timeline="5" key="0" z_index="5"/>
+                </key>
+                <key id="1" time="600">
+                    <object_ref id="0" timeline="0" key="1" z_index="0"/>
+                    <object_ref id="1" timeline="1" key="1" z_index="1"/>
+                    <object_ref id="2" timeline="2" key="1" z_index="2"/>
+                    <object_ref id="3" timeline="3" key="1" z_index="3"/>
+                    <object_ref id="4" timeline="4" key="1" z_index="4"/>
+                    <object_ref id="5" timeline="5" key="1" z_index="5"/>
+                </key>
+                <key id="2" time="602">
+                    <object_ref id="0" timeline="0" key="2" z_index="0"/>
+                    <object_ref id="1" timeline="1" key="2" z_index="1"/>
+                    <object_ref id="2" timeline="2" key="2" z_index="2"/>
+                    <object_ref id="3" timeline="3" key="2" z_index="3"/>
+                    <object_ref id="4" timeline="4" key="2" z_index="4"/>
+                    <object_ref id="5" timeline="5" key="2" z_index="5"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="IRIS">
+                <key id="0" spin="0">
+                    <object folder="0" file="0" x="0.487179" y="61.330891"/>
+                </key>
+                <key id="1" time="600" spin="0">
+                    <object folder="0" file="0" x="95.71831" y="61.591938" scale_x="0.1"/>
+                </key>
+                <key id="2" time="602" spin="0">
+                    <object folder="0" file="0" x="94.833196" y="62.059793" scale_x="0.1045"/>
+                </key>
+            </timeline>
+            <timeline id="1" name="IRIS_000">
+                <key id="0" spin="0">
+                    <object folder="0" file="0" y="-61" angle="180"/>
+                </key>
+                <key id="1" time="600" spin="0">
+                    <object folder="0" file="0" x="-94.238683" y="-60.176955" angle="180" scale_x="0.1"/>
+                </key>
+                <key id="2" time="602" spin="0">
+                    <object folder="0" file="0" x="-94.589182" y="-60.098901" angle="180" scale_x="0.1045"/>
+                </key>
+            </timeline>
+            <timeline id="2" name="IRIS_001">
+                <key id="0" spin="0">
+                    <object folder="0" file="0" x="-52.465201" y="31.092796" angle="60"/>
+                </key>
+                <key id="1" time="600" spin="0">
+                    <object folder="0" file="0" x="-4.47658" y="111.224011" angle="60" scale_x="0.1"/>
+                </key>
+                <key id="2" time="602" spin="0">
+                    <object folder="0" file="0" x="-5.272974" y="113.117053" angle="60" scale_x="0.1045"/>
+                </key>
+            </timeline>
+            <timeline id="3" name="IRIS_002">
+                <key id="0" spin="0">
+                    <object folder="0" file="0" x="-52.683761" y="-29.803419" angle="120"/>
+                </key>
+                <key id="1" time="600" spin="0">
+                    <object folder="0" file="0" x="-100.148148" y="50.893004" angle="120" scale_x="0.1"/>
+                </key>
+                <key id="2" time="602" spin="0">
+                    <object folder="0" file="0" x="-99.992995" y="52.276279" angle="120" scale_x="0.1045"/>
+                </key>
+            </timeline>
+            <timeline id="4" name="IRIS_003">
+                <key id="0" spin="0">
+                    <object folder="0" file="0" x="52.92674" y="30.218559" angle="300"/>
+                </key>
+                <key id="1" time="600" spin="0">
+                    <object folder="0" file="0" x="100.454439" y="-50.199295" angle="300" scale_x="0.1"/>
+                </key>
+                <key id="2" time="602" spin="0">
+                    <object folder="0" file="0" x="100.2168" y="-50.239683" angle="300" scale_x="0.1045"/>
+                </key>
+            </timeline>
+            <timeline id="5" name="IRIS_004">
+                <key id="0" spin="0">
+                    <object folder="0" file="0" x="52.40293" y="-30.512821" angle="240"/>
+                </key>
+                <key id="1" time="600" spin="0">
+                    <object folder="0" file="0" x="6.514991" y="-110.246914" angle="240" scale_x="0.1"/>
+                </key>
+                <key id="2" time="602" spin="0">
+                    <object folder="0" file="0" x="5.45102" y="-111.210894" angle="240" scale_x="0.1045"/>
+                </key>
+            </timeline>
+        </animation>
+    </entity>
+</spriter_data>

@@ -151,7 +151,7 @@ function Spawn( vehicle,node )
 	PlayerTank[ID].turretImageID = PlayerTank[ID].turretID
 	PlayerTank[ID].healthID = PlayerHealthSeries + PlayerCount
 	PlayerTank[ID].healthBarImageID = PlayerTank[ID].healthID
-		SetSpriteCategoryBits(PlayerTank[ID].healthID,NoBlock)
+	SetSpriteCategoryBits(PlayerTank[ID].healthID,NoBlock)
 
 	PlayerTank[ID].hilite = HiliteSeries + PlayerCount
 	LoadImage(PlayerTank[ID].hilite,"hilite45.png")
@@ -180,7 +180,7 @@ function Spawn( vehicle,node )
 	SetSpriteColor( PlayerTank[ID].FOW,255,255,255,35)
 	SetSpriteScissor(PlayerTank[ID].FOW,NodeSize,NodeSize,MaxWidth-NodeSize,MaxHeight-(NodeSize*3))
 	SetSpriteVisible(PlayerTank[ID].FOW,Off)
-				SetSpriteCategoryBits(PlayerTank[ID].FOW,NoBlock)
+	SetSpriteCategoryBits(PlayerTank[ID].FOW,NoBlock)
 
 	SetSpriteGroup(PlayerTank[ID].bodyID, PlayerTankGroup)
 	SetSpriteGroup(PlayerTank[ID].turretID, PlayerTankGroup)

@@ -335,7 +335,7 @@ function Fire( Attacker ref as tankType[], Defender ref as tankType[], attID, de
 	select Attacker[attID].weapon
 		case cannon,heavyCannon
 			RotateTurret(attID,Attacker,Defender[defID].x,Defender[defID].y)
-			CannonFire(Attacker[attID].x,Attacker[attID].y,Defender[defID].x,Defender[defID].y)
+			CannonFire(Attacker[attID].x,Attacker[attID].y,Defender[defID].x,Defender[defID].y,96,48)
 		endcase
 		case missile
 			MissileFire(Attacker[attID].x,Attacker[attID].y,Defender[defID].x,Defender[defID].Y)
@@ -689,12 +689,12 @@ function DefeatParticles()
 	AddParticlesColorKeyFrame( part, 16, 255, 255, 255, 0 )
 endfunction part
 
-function KillTank( defID,Tank ref as tankType[] )
+function BlowItUp( ID,Tank as tankType[] )
 	PlaySound( ExplodeSound,vol )
-			SetSpriteVisible( Tank[defID].bodyID,Off )
-			SetSpriteVisible( Tank[defID].turretID,Off )
-			SetSpriteVisible( Tank[defID].healthID,Off )
-	smoke1 = CreateParticles( Tank[defID].x,Tank[defID].y )
+	SetSpriteVisible( Tank[ID].bodyID,Off )
+	SetSpriteVisible( Tank[ID].turretID,Off )
+	SetSpriteVisible( Tank[ID].healthID,Off )
+	smoke1 = CreateParticles( Tank[ID].x,Tank[ID].y )
 	AddParticlesScaleKeyFrame( smoke1, .5, .5 )
 	AddParticlesColorKeyFrame( smoke1, 0, 255, 255, 255, 96 )
 	AddParticlesColorKeyFrame( smoke1, .25, 255, 128, 0, 96 )
@@ -708,13 +708,17 @@ function KillTank( defID,Tank ref as tankType[] )
 	SetParticlesDepth( smoke1, 0 )
 	SetParticlesVelocityRange( smoke1, .5, .75 )
 
-	Explosion( Tank[defID].x,Tank[defID].y,Explode2,ExplodingSound,48 )
-		DeleteSprite( Tank[defID].healthID )
-		DeleteSprite( Tank[defID].bodyID )
-		DeleteSprite( Tank[defID].turretID )
-		DeleteSprite( Tank[defID].stunMarker )
-		DeleteSprite( Tank[defID].cover )
+	Explosion( Tank[ID].x,Tank[ID].y,Explode2,ExplodingSound,48 )
 	SetParticlesVisible( smoke1,0 )
+endfunction
+
+function KillTank( defID,Tank ref as tankType[] )
+	BlowItUp( defID,Tank )
+	DeleteSprite( Tank[defID].healthID )
+	DeleteSprite( Tank[defID].bodyID )
+	DeleteSprite( Tank[defID].turretID )
+	DeleteSprite( Tank[defID].stunMarker )
+	DeleteSprite( Tank[defID].cover )
 
 	if Tank[defID].team = PlayerTeam
 		DeleteSprite( Tank[defID].FOW )
@@ -733,14 +737,14 @@ endfunction
 function Explosion( x,y,ID,sound,fps )
 	PlaySound( sound,vol )
 	SetSpriteVisible( ID,On )
-		SetSpriteActive( ID,On )
+	SetSpriteActive( ID,On )
 	SetSpritePositionByOffset( ID,x,y )
 	PlaySprite( ID,fps,0 )
 	repeat
 		Sync()
 	until not GetSpritePlaying( ID )
 	SetSpriteVisible( ID,Off )
-		SetSpriteActive( ID,Off )
+	SetSpriteActive( ID,Off )
 endfunction
 
 function ActivateEMP( ID, Tank ref as tankType[] )
@@ -836,14 +840,14 @@ function Wake( ID, Tank as tankType[] )
 	StopSprite( Tank[ID].stunMarker )
 endfunction
 
-function CannonFire( x1,y1,x2,y2 )
+function CannonFire( x1,y1,x2,y2,start,finish )
 	PlaySound( BangSound,vol )
 	SetSpriteVisible( Fire1,On )
-	SetSpritePositionByOffset( Fire1, x1, y1 )
+	SetSpritePositionByOffset( Fire1,x1,y1 )
 	a = GetSpriteAngle( Fire1 )
 	t = SetTween( x1,y1,x2,y2,a,a,Fire1,TweenEaseIn2(),.5)
-	SetTweenSpriteSizeX( t, 96, 48, TweenEaseIn2() )
-	SetTweenSpriteSizeY( t, 96, 48, TweenEaseIn2() )
+	SetTweenSpriteSizeX( t,start,finish,TweenEaseIn2() )
+	SetTweenSpriteSizeY( t,start,finish,TweenEaseIn2() )
 	PlaySprite( Fire1, 16, 1 )
 	PlayTweens( t, Fire1 )
 	SetSpriteVisible( Fire1,Off )
@@ -1095,6 +1099,31 @@ endfunction
 
 
 remstart
+
+FROM KillTank, after BlowItUP:
+	PlaySound( ExplodeSound,vol )
+	SetSpriteVisible( Tank[defID].bodyID,Off )
+	SetSpriteVisible( Tank[defID].turretID,Off )
+	SetSpriteVisible( Tank[defID].healthID,Off )
+	smoke1 = CreateParticles( Tank[defID].x,Tank[defID].y )
+	AddParticlesScaleKeyFrame( smoke1, .5, .5 )
+	AddParticlesColorKeyFrame( smoke1, 0, 255, 255, 255, 96 )
+	AddParticlesColorKeyFrame( smoke1, .25, 255, 128, 0, 96 )
+	AddParticlesColorKeyFrame( smoke1, .5, 255, 0, 0, 96 )
+	AddParticlesColorKeyFrame( smoke1, .75, 0, 0, 0, 96 )
+	SetParticlesFrequency( smoke1, 75 )
+	SetParticlesLife( smoke1, 1 )
+	SetParticlesSize( smoke1, 42 )
+	SetParticlesImage( smoke1, whiteSmokeImage )
+	SetParticlesDirection( smoke1, 25, 50 )
+	SetParticlesDepth( smoke1, 0 )
+	SetParticlesVelocityRange( smoke1, .5, .75 )
+
+	Explosion( Tank[defID].x,Tank[defID].y,Explode2,ExplodingSound,48 )
+
+	AFTER: 	DeleteSprite( Tank[defID].cover )
+	SetParticlesVisible( smoke1,0 )
+
 ISSUES
 			BASE PROTECT - DONT LEAVE A BASE WHEN THREATENED
 

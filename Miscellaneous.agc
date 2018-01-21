@@ -152,6 +152,13 @@ function KeyScroll()
 	endif
 endfunction
 
+function OutOfBounds(x,y,x1,x2,y1,y2)
+	if x <= x1 then exitfunction True
+	if x >= x2 then exitfunction True
+	if y <= y1 then exitfunction True
+	if y >= y2 then exitfunction True
+endfunction False
+
 function CalcKeyScroll()
 	ScrollLimits()
 	//*** Calculate new scroll position ***
