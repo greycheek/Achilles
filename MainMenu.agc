@@ -90,19 +90,24 @@ function PatrolMech(t ref as integer[])
 		endcase
 	endselect
 
+	RightEdge = MaxWidth-buffer
 	x1 = MechGuy[0].x
 	y1 = MechGuy[0].y
-	x2 = MinMax( buffer,MapWidth,x1  + turnX[MechGuy[0].route] )
+	x2 = MinMax( buffer,RightEdge,x1  + turnX[MechGuy[0].route] )
 	y2 = MinMax( buffer,MapHeight,y1 + turnY[MechGuy[0].route] )
 
-	if OutOfBounds(x1,y1,buffer,MapWidth,buffer,MapHeight)
+	if OutOfBounds(x1,y1,buffer,RightEdge,buffer,MapHeight)
 		Halt(t[0],t[1])
 
-		if not Random2(0,4)
-			if x1 <= buffer then x = MaxWidth  else x = 0
-			if y1 <= buffer then y = MapHeight else y = 0
-			CannonFire( x,y,x1,y1,192,96 )
+		if not Random2(0,2)
+			x = x1 : y = y1
+			if x1 <= buffer then x = RightEdge
+			if y1 <= buffer then y = MaxHeight-buffer
+			if x1 >= RightEdge then x = buffer
+			if y1 >= MapHeight then y = buffer
+			CannonFire( x,y,x1,y1,336,240 )
 			BlowItUp( 0,MechGuy )
+
 			x1 = MiddleX
 			y1 = MiddleY-((GetSpriteWidth(OpenIris))/2)+NodeOffset
 			SetSpritePositionByOffset( MechGuy[0].bodyID,x1,y1 )
