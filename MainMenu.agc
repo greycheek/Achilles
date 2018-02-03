@@ -3,6 +3,7 @@
 function MainMenu()
 	Setup()
 	t as integer[2]
+	SetSpriteVisible( MechGuy[1].bodyID,On )
 	t = PatrolMech(t)
 	do
 		if not GetTweenSpritePlaying( t[0],MechGuy[0].bodyID ) then t = PatrolMech(t)
@@ -47,10 +48,12 @@ function MainMenu()
 	loop
 endfunction
 
-function Halt(ID1,ID2)
+function Halt(ID1,ID2,ID3)
 	StopTweenSprite( ID1,MechGuy[0].bodyID )
 	StopTweenSprite( ID2,MechGuy[0].turretID )
+	StopTweenSprite( ID3,MechGuy[1].turretID )
 	StopSprite( MechGuy[0].bodyID )
+	StopSprite( MechGuy[1].bodyID )
 endfunction
 
 function AlertButtons( x1,y1,x2,y2,size,accept,cancel )
@@ -60,7 +63,6 @@ function AlertButtons( x1,y1,x2,y2,size,accept,cancel )
 	SetVirtualButtonPosition( accept,x1,y1 )
 	SetVirtualButtonPosition( cancel,x2,y2 )
 endfunction
-
 
 function PatrolMech(t ref as integer[])
 	dir as integer[8]
@@ -73,13 +75,13 @@ function PatrolMech(t ref as integer[])
 	select Randomize(1,15)  `random action
 		case 10 : MechGuy[0].route = Random2(0,7) : endcase	`new direction
 		case 12		`stop and look
-			Halt(t[0],t[1])
+			Halt(t[0],t[1],t[2])
 			RotateTurret(0,MechGuy,x2,y2)
 			ResetTimer()
 			exitfunction t
 		endcase
 		case 14,15  `fire
-			Halt(t[0],t[1])
+			Halt(t[0],t[1],t[2])
 			if Random(0,1)
 				if  VectorDistance( MechGuy[0].x,MechGuy[0].y,x2,y2 ) > ( NodeSize*3 )
 					RotateTurret(0,MechGuy,x2,y2)
@@ -91,27 +93,30 @@ function PatrolMech(t ref as integer[])
 	endselect
 
 	RightEdge = MaxWidth-buffer
+	BottomEdge = MaxHeight-buffer
 	x1 = MechGuy[0].x
 	y1 = MechGuy[0].y
-	x2 = MinMax( buffer,RightEdge,x1  + turnX[MechGuy[0].route] )
+	x2 = MinMax( buffer,RightEdge,x1 + turnX[MechGuy[0].route] )
 	y2 = MinMax( buffer,MapHeight,y1 + turnY[MechGuy[0].route] )
 
 	if OutOfBounds(x1,y1,buffer,RightEdge,buffer,MapHeight)
-		Halt(t[0],t[1])
+		Halt(t[0],t[1],t[2])
 
 		if not Random2(0,2)
 			x = x1 : y = y1
 			if x1 <= buffer then x = RightEdge
-			if y1 <= buffer then y = MaxHeight-buffer
+			if y1 <= buffer then y = BottomEdge
 			if x1 >= RightEdge then x = buffer
 			if y1 >= MapHeight then y = buffer
 			CannonFire( x,y,x1,y1,336,240 )
+			SetSpriteVisible( MechGuy[1].bodyID,Off )
 			BlowItUp( 0,MechGuy )
 
 			x1 = MiddleX
 			y1 = MiddleY-((GetSpriteWidth(OpenIris))/2)+NodeOffset
 			SetSpritePositionByOffset( MechGuy[0].bodyID,x1,y1 )
 			SetSpritePositionByOffset( MechGuy[0].turretID,x1,y1 )
+			SetSpritePositionByOffset( MechGuy[1].bodyID,x1+shadowOffset,y1+shadowOffset )
 			SetSpriteVisible( MechGuy[0].bodyID,On )
 			SetSpriteVisible( MechGuy[0].turretID,On )
 
@@ -143,6 +148,7 @@ function PatrolMech(t ref as integer[])
 				Sync()
 			endwhile
 			SetSpriteVisible( IrisGlow,Off )
+			SetSpriteVisible( MechGuy[1].bodyID,On )
 		endif
 
 		index = 0
@@ -169,10 +175,12 @@ function PatrolMech(t ref as integer[])
 	turretArc# = SetTurnArc(t#,a#)
 	t[0] = SetTween(x1,y1,x2,y2,b#,tankArc#,  MechGuy[0].bodyID,  TweenLinear(),MechGuy[0].speed)
 	t[1] = SetTween(x1,y1,x2,y2,t#,turretArc#,MechGuy[0].turretID,TweenLinear(),MechGuy[0].speed)
+	t[2] = SetTween(x1+shadowOffset,y1+shadowOffset,x2+shadowOffset,y2+shadowOffset,b#,tankArc#,MechGuy[1].bodyID,TweenLinear(),MechGuy[1].speed)
 
 	PlaySprite( MechGuy[0].bodyID,20,0 )
-	MechGuy[0].x = x2
-	MechGuy[0].y = y2
+	PlaySprite( MechGuy[1].bodyID,20,0 )
+	MechGuy[0].x = x2 : MechGuy[1].x = x2+shadowOffset
+	MechGuy[0].y = y2 : MechGuy[1].y = y2+shadowOffset
 endfunction t
 
 function AlertDialog( text,state,x,y,w,h )
@@ -244,6 +252,10 @@ function DisplaySettings(state)
 	SetSpriteVisible( OpenIris,FlipState )
 	SetSpriteActive( IrisGlow,FlipState )
 	SetSpriteVisible( IrisGlow,FlipState )
+
+	SetSpriteVisible( MechGuy[0].bodyID,FlipState )
+	SetSpriteVisible( MechGuy[0].turretID,FlipState )
+	SetSpriteVisible( MechGuy[1].bodyID,FlipState )
 
 	SetVirtualButtonVisible( settingsButt.ID,FlipState )
 	SetVirtualButtonVisible( cancelButt.ID,FlipState )
@@ -909,6 +921,7 @@ function GameSetup()
 	SetSpriteVisible( TurnCount,On )
 	DeleteText( VersionText )
 	DeleteSprite( MechGuy[0].bodyID )
+	DeleteSprite( MechGuy[1].bodyID )
 	DeleteSprite( MechGuy[0].turretID )
 	DeleteSprite( Logo )
 	DeleteSprite( OpenIris )

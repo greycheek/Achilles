@@ -179,7 +179,12 @@ function Fly( ID,Tank ref as tankType[],node1,node2 )	`NOT CONTROLLED BY ASTAR
 	Tank[ID].node = node2
 	Tank[ID].x = x2
 	Tank[ID].y = y2
-	Deploy(ID,Tank,node1,node2)
+
+	//~ Deploy(ID,Tank,node1,node2)
+
+	mapTable[node1].team = Unoccupied
+	mapTable[node2].team = Tank[ID].team
+	if mapTable[node1].terrain = Trees then SetSpriteVisible(Tank[ID].cover,0)
 endfunction
 
 function Deploy(ID,Tank ref as tankType[],node1,node2)

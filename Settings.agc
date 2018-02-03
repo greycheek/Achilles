@@ -18,7 +18,7 @@ function BaseSetup( ID, spriteID, node, base, baseRef ref as baseType[], group )
 
 	maptable[node].base = base
 	mapTable[node].terrain = base
-			maptable[node].modifier = BaseMod
+	maptable[node].modifier = BaseMod
 
 	LoadImage( baseRef[ID].spriteID,"BaseII.png" )
 	CreateSprite( baseRef[ID].spriteID,baseRef[ID].spriteID )
@@ -173,6 +173,7 @@ function GenerateMapFeature( i,feature,featureSprite,dummy,sliderQTY#,clumpModif
 			maptable[i].cost = cost[mapTable[i].terrain]
 			maptable[i].modifier = TRM[mapTable[i].terrain]
 			SetSpritePositionByOffset( featureSprite,mapTable[i].x,mapTable[i].y )
+			if feature = Rough then SetSpriteAngle( featureSprite,90 )
 			DrawSprite( featureSprite )
 			x = mapTable[i].x-NodeOffset
 			y = mapTable[i].y-NodeOffset
@@ -290,7 +291,7 @@ function GenerateMap()
 	roughDummy = CreateDummySprite()
 	waterDummy = CreateDummySprite()
 
-	LoadImage(TreeSprite,"TreeTop90.png")
+	LoadImage(TreeSprite,"TreeSpray.png")
 	CreateSprite(TreeSprite,TreeSprite )
 	SetSpriteTransparency(TreeSprite,1)
 	SetSpriteDepth(TreeSprite,1)
@@ -298,7 +299,7 @@ function GenerateMap()
 	SetSpriteOffset(TreeSprite,NodeOffset,NodeOffset)
 	SetSpriteVisible(TreeSprite,Off)
 
-	LoadImage(Impass,"Pylon.png")
+	LoadImage(Impass,"PylonII.png")
 	CreateSprite(Impass,Impass )
 	SetSpriteTransparency(Impass,1)
 	SetSpriteDepth(Impass,1)
@@ -306,14 +307,14 @@ function GenerateMap()
 	SetSpriteOffset(Impass,NodeOffset,NodeOffset)
 	SetSpriteVisible(Impass,Off)
 
-	LoadImage(AcquaSprite,"Water.png")
+	LoadImage(AcquaSprite,"WaterIII.png")
 	CreateSprite(AcquaSprite,AcquaSprite)
 	SetSpriteTransparency(AcquaSprite,Off)
 	SetSpriteDepth(AcquaSprite,1)
 	SetSpriteSize(AcquaSprite,NodeSize,NodeSize)
 	SetSpriteVisible(AcquaSprite,Off)
 
-	LoadImage(RoughSprite,"Rough90.png")
+	LoadImage(RoughSprite,"RoughII.png")
 	CreateSprite(RoughSprite,RoughSprite)
 	SetSpriteTransparency(RoughSprite,On)
 	SetSpriteDepth(RoughSprite,1)
@@ -376,15 +377,32 @@ function Setup()
 	pickPL.spect = SpectrumW
 	pickPL.value = SpectrumW
 
+
    `MECH GUY
 
-	//~ MechGuy[0].x = MiddleX
-	//~ MechGuy[0].y = MiddleY
 	MechGuy[0].route = Random2(0,7)
+	MechGuy[0].x = MiddleX
+	MechGuy[0].y = MiddleY-((GetSpriteWidth(OpenIris))/2)+NodeOffset
+	MechGuy[1].x = MechGuy[0].x
+	MechGuy[1].y = MechGuy[0].y
+
+	`shadow Mech
+	LoadImage(MechGuy[1].bodyID,"MechAtlasShadow.png")
+	CreateSprite(MechGuy[1].bodyID,MechGuy[1].bodyID )
+	SetSpriteDepth(MechGuy[1].bodyID,0 )
+	SetSpriteSize(MechGuy[1].bodyID,buffer*1.1,buffer*1.1 )
+	SetSpriteOffset(MechGuy[1].bodyID,NodeSize,NodeSize)
+	SetSpritePositionByOffset(MechGuy[1].bodyID,MechGuy[1].x,MechGuy[1].y)
+	SetSpriteAnimation(MechGuy[1].bodyID,197,169,15 )
+	SetSpriteAngle(MechGuy[1].bodyID,90)
+	SetSpriteTransparency(MechGuy[1].bodyID,1)
+	SetSpriteColorAlpha(MechGuy[1].bodyID,56)
+	SetSpriteVisible(MechGuy[1].bodyID,Off)
+	SetSpritePositionByOffset(MechGuy[1].bodyID,MechGuy[1].x+shadowOffset,MechGuy[1].y+shadowOffset)
 
 	LoadImage(MechGuy[0].bodyID,"MechAtlas3.png")
 	CreateSprite(MechGuy[0].bodyID,MechGuy[0].bodyID )
-	SetSpriteDepth(MechGuy[0].bodyID,1 )
+	SetSpriteDepth(MechGuy[0].bodyID,0 )
 	SetSpriteSize(MechGuy[0].bodyID,buffer,buffer )
 	SetSpriteOffset(MechGuy[0].bodyID,NodeSize,NodeSize)
 	SetSpritePositionByOffset(MechGuy[0].bodyID,MechGuy[0].x,MechGuy[0].y)
@@ -393,11 +411,15 @@ function Setup()
 
 	LoadImage(MechGuy[0].turretID,"MechTurret.png")
 	CreateSprite(MechGuy[0].turretID,MechGuy[0].turretID )
-	SetSpriteDepth(MechGuy[0].turretID,1 )
+	SetSpriteDepth(MechGuy[0].turretID,0 )
 	SetSpriteSize(MechGuy[0].turretID,buffer,buffer )
 	SetSpriteOffset(MechGuy[0].turretID,NodeSize,NodeSize)
 	SetSpritePositionByOffset(MechGuy[0].turretID,MechGuy[0].x,MechGuy[0].y)
 	SetSpriteAngle(MechGuy[0].turretID,90)
+
+	SetSpritePositionByOffset(MechGuy[0].bodyID,MechGuy[0].x,MechGuy[0].y)
+	SetSpritePositionByOffset(MechGuy[0].turretID,MechGuy[0].x,MechGuy[0].y)
+
 
    `INTERFACE
 
@@ -407,7 +429,6 @@ function Setup()
 	SetSpriteSize(square, NodeSize, NodeSize)
 	SetSpriteTransparency( square, 1 )
 	SetSpriteVisible( square, 0 )
-
 
 	prohibitImage = LoadImage("Prohibit.png")
 	prohibit = CreateSprite( prohibitImage )
@@ -527,7 +548,7 @@ function Setup()
 	SetSpriteAnimation( Explode3,64,48,11 )
 	SetSpriteSize( Explode3,96,72 )
 
-	LogoImage = LoadImage("AchillesLogo2.png")
+	LogoImage = LoadImage("AchillesLogo4.png")
 	Logo = CreateSprite( LogoImage )
 	SetSpriteVisible( Logo, On )
 	SetSpriteSize( Logo,1237,400 )
@@ -536,7 +557,7 @@ function Setup()
 
    `SPLASHSCREEN
 
-	SetupSprite( Splash,Splash,"SplashScreenV.png",0,0,MaxWidth,MaxHeight,3,On,0 )
+	SetupSprite( Splash,Splash,"SplashScreenVI.png",0,0,MaxWidth,MaxHeight,3,On,0 )
 	SetupSprite( Dialog,Dialog,"SettingsDialog.png",0,0,MaxWidth,MaxHeight,1,Off,0 )
 	SetupSprite( BaseDialog,BaseDialog,"BaseDialog.png",0,0,MaxWidth,MaxHeight,1,Off,2 )
 	SetSpriteCategoryBits( Splash,NoBlock )
@@ -550,11 +571,6 @@ function Setup()
 	SetSpritePosition( OpenIris,((MaxWidth-GetSpriteWidth(OpenIris))/2)+2,227)
 	SetSpriteAnimation( OpenIris,140,162,100 )
 	SetSpriteDepth( OpenIris,2 )
-
-	MechGuy[0].x = MiddleX
-	MechGuy[0].y = MiddleY-((GetSpriteWidth(OpenIris))/2)+NodeOffset
-	SetSpritePositionByOffset(MechGuy[0].bodyID,MechGuy[0].x,MechGuy[0].y)
-	SetSpritePositionByOffset(MechGuy[0].turretID,MechGuy[0].x,MechGuy[0].y)
 
 	IrisGlowImage = LoadImage("GlowII.png")
 	IrisGlow = CreateSprite( IrisGlowImage )

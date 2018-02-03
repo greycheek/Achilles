@@ -15,6 +15,7 @@ function BaseProduction( node )
 	ShowInfo( Off )
 	zoomFactor = 1
 	SetViewZoom( zoomFactor )
+	dragMode = False
 	SetViewOffset( 0,0 )
 	SetSpriteActive( BaseDialog,On )
 	SetSpriteVisible( BaseDialog,On )
@@ -46,7 +47,8 @@ function BaseProduction( node )
 	index = Null
 	repeat
 		if GetPointerState()
-			hit = GetSpriteHitGroup( SpriteConBaseGroup,GetPointerX(),GetPointerY() )
+
+			hit = GetSpriteHitGroup( SpriteConBaseGroup,ScreenToWorldX(GetPointerX()),ScreenToWorldY(GetPointerY()) )
 			if  hit
 				index = hit-SpriteConSeries
 				if index <> lastIndex
@@ -291,7 +293,7 @@ function WeaponButtons(ID,vehicle)
 		case laser 		 : SetVirtualButtonImageUp( LaserButt.ID,LaserButt.DN ) : endcase
 		case heavyLaser  : SetVirtualButtonImageUp( HeavyLaserButt.ID,HeavyLaserButt.DN ) : endcase
 		case disruptor	 : SetVirtualButtonImageUp( DisruptButt.ID,DisruptButt.DN ) : endcase
-				case machineGun  : SetVirtualButtonImageUp( BulletButt.ID,BulletButt.DN ) : endcase
+		case machineGun  : SetVirtualButtonImageUp( BulletButt.ID,BulletButt.DN ) : endcase
 		case missile
 			if PlayerTank[ID].missiles then SetVirtualButtonImageUp( MissileButt.ID,MissileButt.DN ) else SetVirtualButtonImageUp( MissileButt.ID,MissileButt.UP )
 		endcase
@@ -306,10 +308,9 @@ function WeaponButtons(ID,vehicle)
 endfunction
 
 
-function MoveInput(ID,x1,y1)
+function MoveInput(ID)
 	SetSpriteVisible(square,On)
 	SetRawMouseVisible(Off)
-	ScrollLimits()
 
 	while GetPointerState()
 		px = ScreenToWorldX(GetPointerX())
@@ -324,14 +325,8 @@ function MoveInput(ID,x1,y1)
 		y2 = MinMax(NodeSize,MapHeight,y2)
 		SetSpritePosition(square,x2,y2)
 		Sync()
-
-		`Calculate new scroll position
-		if zoomFactor > 1 `only scroll if zoomed-in
-			xoffset = MinMax( minX,maxX,xoffset-( ( px-GetPointerX() )/zoomFactor ))
-			yoffset = MinMax( minY,maxY,yoffset-( ( py-GetPointerY() )/zoomFactor ))
-			SetViewOffset( xoffset,yoffset )
-		endif
 	endwhile
+
 	SetRawMouseVisible(On)
 	node = CalcNode( Floor(x2/NodeSize),Floor(y2/NodeSize) )
 endfunction node
@@ -384,7 +379,8 @@ endfunction
 
 function RangeCheck(ID,range)
 	if PlayerTank[ID].target <> Undefined
-		if VectorDistance(PlayerTank[ID].x, PlayerTank[ID].y, AITank[PlayerTank[ID].target].x, AITank[PlayerTank[ID].target].y) > range
+		d = VectorDistance(PlayerTank[ID].x, PlayerTank[ID].y, AITank[PlayerTank[ID].target].x, AITank[PlayerTank[ID].target].y) / zoomFactor
+		if  d > range
 			DisplayError(OutofRangeText,"out of range")
 			exitfunction False
 		endif
@@ -423,9 +419,7 @@ function GetInput()
     glow = Brighter
 	WeaponButtons( Null,Undefined )
 	ID as integer
-
 	ButtonActivation(Off)
-
 	do
 		if selection <> Undefined then WeaponInput(ID)
 		if GetVirtualButtonReleased( InfoButt.ID ) or GetRawKeyState( 0x49 ) `I
@@ -448,8 +442,8 @@ function GetInput()
 			zoomFactor = 1
 			ButtonActivation(Off)
 		elseif GetPointerState()
-			x = MinMax(0,MaxWidth-1,ScreenToWorldX(GetPointerX()))	`MinMax, temporary fix for out of bounds erros
-			y = MinMax(0,MaxHeight-1,ScreenToWorldY(GetPointerY()))
+			x = MinMax( 0,MaxWidth-1, ScreenToWorldX(GetPointerX()) )	`MinMax, temporary fix for out of bounds erros
+			y = MinMax( 0,MaxHeight-1,ScreenToWorldY(GetPointerY()) )
 			pointerNode = CalcNode( floor(x/NodeSize),floor(y/NodeSize) )
 
 			baseID = GetSpriteHitGroup( BaseGroup,x,y )
@@ -501,8 +495,7 @@ function GetInput()
 			elseif selection <> Undefined
 				if y < ( MapHeight+NodeSize ) `stay within map height
 					TankAlpha(PlayerTank[ID].bodyID,PlayerTank[ID].turretID,Brightest)
-
-					node = MoveInput(ID,WorldToScreenX(PlayerTank[ID].x),WorldToScreenY(PlayerTank[ID].y))
+					node = MoveInput(ID)
 
 					if mapTable[node].team <> Unoccupied
 						if (PlayerTank[ID].target=Undefined) and (mapTable[node].team=AITeam) and (PlayerTank[ID].vehicle<>Engineer) //and (not PlayerTank[ID].stunned)
@@ -555,9 +548,6 @@ function GetInput()
 			endif
 		endif
 		ZoomScroll()
-				//~ if zoomFactor > 1 then ButtonState( InfoButt.ID,Off ) else ButtonState( InfoButt.ID,On )
-
-		//~ if zoomFactor > 1 then ShowInfo(Off) else ShowInfo(On)
 		if selection <> Undefined
 			inc alpha,glow
 			if alpha > GlowMax
@@ -575,10 +565,6 @@ function GetInput()
 	loop
 	SetSpriteVisible(PlayerTank[ID].FOW,Off)
 	ButtonActivation(On)
-			//~ ButtonState( InfoButt.ID,On )
-
-	//~ SetViewOffset(vx#,vy#)
-	//~ Zoom(1,0,0,On,1) `TURN THIS OFF FOR CONTINUOS ZOOM OPERATION
 endfunction
 
 function ZoomScroll()
@@ -637,10 +623,12 @@ function PlayerAim( ID,x1,y1 )
 			if GetSpriteVisible( AITank[i].bodyID ) `VISIBILITY CHECK
 				select PlayerTank[ID].weapon
 					case cannon,heavyCannon,disruptor,machineGun
+
 						if VectorDistance(x1,y1,x2,y2) > PlayerTank[ID].range
 							DisplayError(OutofRangeText,"out of range")
 							exitfunction
 						endif
+
 						if PlayerTank[ID].weapon = missile and ( PlayerTank[ID].missiles <= 0 )
 							DisplayError(OutofAmmoText,"out of ammo")
 							exitfunction
@@ -742,7 +730,7 @@ function PlayerOps()
 					SetSpriteVisible( PlayerTank[i].healthID,Off )
 					Fly( i,PlayerTank,PlayerTank[i].node,PlayerTank[i].goalNode )
 					SetSpriteVisible( PlayerTank[i].hilite,Off )
-					if PlayerTank[i].Vehicle = Hovercraft then Hover( i,PlayerTank )
+					if PlayerTank[i].Vehicle = Hovercraft then Hover( i,PlayerTank,PlayerTank[i].goalNode )
 					MineField( i,PlayerTank )
 				endif
 				exit
@@ -811,6 +799,16 @@ FROM MOVEINPUT
 
 FROM GETINPUT
 	if selection = Undefined then PressToZoom()
+
+	if zoomFactor > 1 then ButtonState( InfoButt.ID,Off ) else ButtonState( InfoButt.ID,On )
+
+	if zoomFactor > 1 then ShowInfo(Off) else ShowInfo(On)
+
+	ButtonState( InfoButt.ID,On )
+
+	SetViewOffset(vx#,vy#)
+	Zoom(1,0,0,On,1) `TURN THIS OFF FOR CONTINUOS ZOOM OPERATION
+
 
 FROM PLAYEROPS
 	if MineField( i,PlayerTank ) and (not PlayerTank[i].alive) then exit

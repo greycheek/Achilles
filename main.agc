@@ -10,9 +10,12 @@ remstart
 			--VERY REPETITIVE MOVEMENT PATTERNS??
 	--- SPRITECONS  BEHAVING STRANGELY - STICK TO SCREEN - UNITS NOT SELECTED SHOW UP IN GAME (MEDIUM TANK?)
 
-	--- REFINE SCROLL
-
 	FIXED?
+	--- CHECK ALL VECTORDISTANCE ROUTINES FOR FIRING
+		PLAYERAIM MODIFIED
+	---	AITANKS NOT APPEARING??
+	--- TEST MOVEINPUT ON iOS
+	--- ZOOMMED MOVEMENT DOESNT WORK!!!!!!!???????
 	--- ENSURE MECHGUY CAN BE SHOT AT FROM LEFT AND RIGHT SIDES OF SCREEN
 	--- MAP SAVE SLOT DIALOG BUG ON SAVE CANCEL!!!!
 	--- HOVERCRAFT ARE FIRING THROUGH WALLS!!! - was because ResetMap needed to have CategoryBits set.
@@ -169,6 +172,7 @@ endfunction
 function RandomKill( Tank as tanktype[],last )
 	unit as integer[]
 	Zoom(1,0,0,On,1)
+	dragMode = False
 	PlaySound( SaboSound )
 	EventDialog( Sabotage$,"One unit destroyed" )
 	for i = 0 to last
@@ -180,6 +184,7 @@ endfunction
 
 function EventDialog(t1$,t2$)
 	Zoom(1,0,0,On,1)
+	dragMode = False
 	TSize = 32*dev.scale
 	t1 = CreateText(t1$)
 	t2 = CreateText(t2$)
@@ -922,7 +927,7 @@ function LaserFire( x1,y1,x2,y2,weapon,t1#,t2#,interrupt,scale )
 	DeleteParticles( laser1 )
 endfunction
 
-function Hover( ID,Tank as tankType[] )
+function Hover( ID,Tank as tankType[],node )
 	if GetSpriteCurrentFrame( Tank[ID].bodyID ) <> 1
 		PlaySprite( Tank[ID].bodyID,50,0,Closing,FullyClosed )
 		repeat
@@ -936,6 +941,10 @@ function Hover( ID,Tank as tankType[] )
 		next i#
 		PlaySprite( Tank[ID].bodyID,FullyClosed,0,1,1 )
 	endif
+		if (mapTable[node].terrain = Trees) and GetSpriteVisible(Tank[ID].bodyID)	`position tanks under cover
+			SetSpritePositionByOffset(Tank[ID].cover,Tank[ID].x,Tank[ID].y)
+			SetSpriteVisible(Tank[ID].cover,1)
+		endif
 endfunction
 
 function SetTween( x1,y1,x2,y2,a1#,a2#,sprite,mode,speed#  )

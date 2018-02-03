@@ -258,11 +258,11 @@ function TankSetup(ID,Tank ref as tankType[],pick as ColorSpec)
 
 	Tank[ID].stunMarker = CloneSprite( StunSeries )
 
-	LoadImage(Tank[ID].cover,"Foliage.png")
+	LoadImage(Tank[ID].cover,"TreeSpray.png")	`vehicle cover
 	CreateSprite(Tank[ID].cover,Tank[ID].cover )
 	SetSpriteColorAlpha(Tank[ID].cover,CoverAlpha )
 	SetSpriteDepth(Tank[ID].cover,1 )
-	SetSpriteSize(Tank[ID].cover,NodeSize,NodeSize )
+	SetSpriteSize(Tank[ID].cover,NodeSize*.75,NodeSize*.75 )
 	SetSpriteVisible(Tank[ID].cover,Off)
 
 	LoadImage(Tank[ID].bodyImageID, Tank[ID].body$)

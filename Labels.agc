@@ -613,11 +613,18 @@ global AITank as tankType[]
 global PlayerTank as tankType[]
 global MechGuy as tankType[2]
 global buffer
+global shadowOffset as float
+
 MechGuy[0].bodyID = MechGuySeries
 MechGuy[0].turretID = MechGuySeries + 1
 MechGuy[0].speed = .5
 MechGuy[0].scale = 2
+MechGuy[1].bodyID = MechGuySeries + 2
+MechGuy[1].turretID = MechGuySeries + 3
+MechGuy[1].speed = .5
+MechGuy[1].scale = 2
 buffer = MechGuy[0].scale * NodeSize
+shadowOffset = buffer/8
 
 #constant BaseProdMin 5
 global BaseProdValue as integer = BaseProdMin
@@ -639,7 +646,7 @@ global BaseHalo as integer
 #constant Water 9
 
 #constant DepotSize 33
-		#constant DepotDepth 4
+#constant DepotDepth 4
 
 global depotOffset as integer
 depotOffset = NodeOffset/2

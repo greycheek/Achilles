@@ -55,11 +55,11 @@ function PinchToZoom()
 			if zoomFactor > 1  `only scroll if zoomed-in
 				ScrollLimits()
 				post = GetRawFirstTouchEvent(0)
-				xoffset = MinMax( minX,maxX, GetViewOffsetX()+(GetRawTouchLastX(post)-GetRawTouchCurrentX(post))/zoomFactor )
-				yoffset = MinMax( minY,maxY, GetViewOffsetY()+(GetRawTouchLastY(post)-GetRawTouchCurrentY(post))/zoomFactor )
-				SetViewOffset(xoffset,yoffset)
+				xoffset = MinMax( minX,maxX,GetViewOffsetX()+ScreenToWorldX(GetRawTouchLastX(post))-ScreenToWorldX(GetRawTouchCurrentX(post)) )
+				yoffset = MinMax( minY,maxY,GetViewOffsetY()+ScreenToWorldY(GetRawTouchLastY(post))-ScreenToWorldY(GetRawTouchCurrentY(post)) )
+				SetViewOffset( xoffset,yoffset )
 			else
-				SetViewOffset(0,0)  `reset scroll
+				SetViewOffset( 0,0 )  `reset scroll
 			endif
 		endcase
 		case 2:	`Zoom
@@ -92,38 +92,33 @@ function PresstoZoom()
 		exitfunction
 	endif
 	SetViewZoom( zoomFactor )
-	CalcScroll()
-	lastX = xoffset
-	lastY = yoffset
+	CalcScroll(lastX+newX-ScreenToWorldX(GetPointerX()),lastY+newY-ScreenToWorldY(GetPointerY()))
 endfunction
 
 function MouseScroll()
 	if zoomFactor > 1 `only scroll if zoomed-in
 		if GetPointerPressed()
-			newX=GetPointerX()
-			newY=GetPointerY()
+			newX = ScreenToWorldX(GetPointerX())
+			newY = ScreenToWorldY(GetPointerY())
 			dragMode = True
 		endif
-		if GetPointerReleased()
-			dragMode = False
-			lastX = xoffset
-			lastY = yoffset
-		endif
-		if dragMode then CalcScroll()
+		if GetPointerReleased() then dragMode = False
+		if dragMode then CalcScroll(lastX+newX-ScreenToWorldX(GetPointerX()),lastY+newY-ScreenToWorldY(GetPointerY()))
 	endif
 endfunction
 
-function CalcScroll()
+function CalcScroll(x,y)
 	ScrollLimits()
-	//*** Calculate new scroll position ***
-	xoffset = MinMax( minX,maxX,lastX+( (newX-GetPointerX())/zoomFactor ))
-	yoffset = MinMax( minY,maxY,lastY+( (newY-GetPointerY())/zoomFactor ))
+	xoffset = MinMax( minX,maxX,x )
+	yoffset = MinMax( minY,maxY,y )
 	SetViewOffset( xoffset,yoffset )
+	lastX = xoffset
+	lastY = yoffset
 endfunction
 
 function ScrollLimits()
-	zoom# =  zoomFactor - 1.0
-	ZFx2# =  zoomFactor * 2.0
+	zoom# = zoomFactor - 1.0
+	ZFx2# = zoomFactor * 2.0
 	minX = -zoom# * MaxWidth  / ZFx2# `should zoom * MaxWidth/MaxHeight be in ( )??
 	maxX =  zoom# * MaxWidth  / ZFx2#
 	minY = -zoom# * MaxHeight / ZFx2#

@@ -346,7 +346,7 @@ function AIOps()
 					if AITank[i].node <> AITank[i].goalNode
 						SetSpriteVisible(AITank[i].healthID,Off)
 						Fly( i,AITank,AITank[i].node,AITank[i].goalNode )
-						if GetSpriteVisible( AITank[i].bodyID ) then Hover( i,AITank )
+						if GetSpriteVisible( AITank[i].bodyID ) then Hover( i,AITank,AITank[i].goalNode )
 						MineField( i,AITank )
 					endif
 				endif
