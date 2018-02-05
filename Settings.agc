@@ -397,7 +397,6 @@ function Setup()
 	SetSpriteAngle(MechGuy[1].bodyID,90)
 	SetSpriteTransparency(MechGuy[1].bodyID,1)
 	SetSpriteColorAlpha(MechGuy[1].bodyID,56)
-	SetSpriteVisible(MechGuy[1].bodyID,Off)
 	SetSpritePositionByOffset(MechGuy[1].bodyID,MechGuy[1].x+shadowOffset,MechGuy[1].y+shadowOffset)
 
 	LoadImage(MechGuy[0].bodyID,"MechAtlas3.png")

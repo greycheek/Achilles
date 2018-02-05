@@ -3,7 +3,6 @@
 function MainMenu()
 	Setup()
 	t as integer[2]
-	SetSpriteVisible( MechGuy[1].bodyID,On )
 	t = PatrolMech(t)
 	do
 		if not GetTweenSpritePlaying( t[0],MechGuy[0].bodyID ) then t = PatrolMech(t)

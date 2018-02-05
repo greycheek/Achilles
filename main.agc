@@ -11,20 +11,8 @@ remstart
 	--- SPRITECONS  BEHAVING STRANGELY - STICK TO SCREEN - UNITS NOT SELECTED SHOW UP IN GAME (MEDIUM TANK?)
 
 	FIXED?
-	--- CHECK ALL VECTORDISTANCE ROUTINES FOR FIRING
-		PLAYERAIM MODIFIED
-	---	AITANKS NOT APPEARING??
-	--- TEST MOVEINPUT ON iOS
-	--- ZOOMMED MOVEMENT DOESNT WORK!!!!!!!???????
-	--- ENSURE MECHGUY CAN BE SHOT AT FROM LEFT AND RIGHT SIDES OF SCREEN
-	--- MAP SAVE SLOT DIALOG BUG ON SAVE CANCEL!!!!
-	--- HOVERCRAFT ARE FIRING THROUGH WALLS!!! - was because ResetMap needed to have CategoryBits set.
-	--- GAME IS FREEZING! - CAUSE BY MINE EXPLOSION!
-	--- SELECTING A MOVEMENT SQUARE GENERATES "OUT OF REACH" MESSAGE
-	--- BASE CAPTURE
-	--- PLAYER and AI TANKS ARE SOMETIMES STUCK - BLOCKAGE BY OTHER TANKS? -- RESET MOVEMENT WHEN BLOCKED?
-			--See PlayerOps and AIOps
-			--Implement visual blockage indicator
+	--- TARGET NODES CONTAINING TREES BLOCK LOS
+
 	FUTURE
 		getspriteincircle vs getspriteinbox??
 		Vary water, impass, tree and rough tiles
@@ -305,26 +293,24 @@ function RevealAIUnit(ID)
 	HealthBar(ID,AITank)
 endfunction
 
-remstart
-function LOSblocked(x1,y1,x2,y2)
-	if PhysicsRayCastCategory(Block,x1,y1,x2,y2)
-		if VectorDistance(x1,y1,x2,y2) > DLS then exitfunction True else exitfunction False  `adjacent nodes are always in LOS
-	endif
-endfunction False
-remend
 
-//~ remstart
 function LOSblocked(x1,y1,x2,y2)
 	if PhysicsRayCastCategory(Block,x1,y1,x2,y2)
 		node1 = CalcNodeFromScreen(x1,y1)
 		node2 = CalcNodeFromScreen(x2,y2)
-		select node1-node2 `adjacent nodes are always in LOS
+		select node1-node2   `adjacent nodes are always in LOS
 			case south,southeast,west,northeast,north,northwest,east,southwest : exitfunction False : endcase
 		endselect
+
+		x = GetRayCastX()
+		y = GetRayCastY()
+		nodeHit = CalcNodeFromScreen(x,y)
+		if nodeHit = node2 then exitfunction False   `not blocked if Trees at the target node
+
 		exitfunction True
 	endif
 endfunction False
-//~ remend
+
 
 function RotateTurret(ID,Tank ref as tankType[],x2,y2)
 	x1 = Tank[ID].x
@@ -1110,6 +1096,12 @@ endfunction
 
 remstart
 
+function LOSblocked(x1,y1,x2,y2)
+	if PhysicsRayCastCategory(Block,x1,y1,x2,y2)
+		if VectorDistance(x1,y1,x2,y2) > DLS then exitfunction True else exitfunction False  `adjacent nodes are always in LOS
+	endif
+endfunction False
+
 FROM KillTank, after BlowItUP:
 	PlaySound( ExplodeSound,vol )
 	SetSpriteVisible( Tank[defID].bodyID,Off )
@@ -1138,6 +1130,21 @@ ISSUES
 			BASE PROTECT - DONT LEAVE A BASE WHEN THREATENED
 
 FIXED?
+	--- CHECK ALL VECTORDISTANCE ROUTINES FOR FIRING
+		PLAYERAIM MODIFIED
+	---	AITANKS NOT APPEARING??
+	--- TEST MOVEINPUT ON iOS
+	--- ZOOMMED MOVEMENT DOESNT WORK!!!!!!!???????
+	--- ENSURE MECHGUY CAN BE SHOT AT FROM LEFT AND RIGHT SIDES OF SCREEN
+	--- MAP SAVE SLOT DIALOG BUG ON SAVE CANCEL!!!!
+	--- HOVERCRAFT ARE FIRING THROUGH WALLS!!! - was because ResetMap needed to have CategoryBits set.
+	--- GAME IS FREEZING! - CAUSE BY MINE EXPLOSION!
+	--- SELECTING A MOVEMENT SQUARE GENERATES "OUT OF REACH" MESSAGE
+	--- BASE CAPTURE
+	--- PLAYER and AI TANKS ARE SOMETIMES STUCK - BLOCKAGE BY OTHER TANKS? -- RESET MOVEMENT WHEN BLOCKED?
+			--See PlayerOps and AIOps
+			--Implement visual blockage indicator
+
 		--- SABOTAGE EVENT NOT WORKING??!!
 		--- DIALOG BOX AFTER ZOOMING OUT - ZOOM BEHAVE STRANGELY; TURN/PRODUCTION INFO GOES AWAY!!!
 		--- SHOOTING OUT OF TREES IS SOMETIMES BLOCKED!!

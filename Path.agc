@@ -135,7 +135,16 @@ function Move(ID,Tank ref as tankType[],node1,node2)
 	PlayTweens( t1, Tank[ID].bodyID )
 	Tank[ID].x = x2
 	Tank[ID].y = y2
-	Deploy(ID,Tank,node1,node2)
+
+	//~ Deploy(ID,Tank,node1,node2)
+	mapTable[node1].team = Unoccupied
+	mapTable[node2].team = Tank[ID].team
+	if mapTable[node1].terrain = Trees then SetSpriteVisible(Tank[ID].cover,0)
+	if (mapTable[node2].terrain = Trees) and GetSpriteVisible(Tank[ID].bodyID)	`position tanks under cover
+		SetSpritePositionByOffset(Tank[ID].cover,Tank[ID].x,Tank[ID].y)
+		SetSpriteVisible(Tank[ID].cover,1)
+	endif
+
 	inc Tank[ID].index
 	inc Tank[ID].totalTerrainCost,mapTable[node2].cost
 endfunction
@@ -180,13 +189,12 @@ function Fly( ID,Tank ref as tankType[],node1,node2 )	`NOT CONTROLLED BY ASTAR
 	Tank[ID].x = x2
 	Tank[ID].y = y2
 
-	//~ Deploy(ID,Tank,node1,node2)
-
 	mapTable[node1].team = Unoccupied
 	mapTable[node2].team = Tank[ID].team
 	if mapTable[node1].terrain = Trees then SetSpriteVisible(Tank[ID].cover,0)
 endfunction
 
+remstart
 function Deploy(ID,Tank ref as tankType[],node1,node2)
 	mapTable[node1].team = Unoccupied
 	mapTable[node2].team = Tank[ID].team
@@ -196,6 +204,7 @@ function Deploy(ID,Tank ref as tankType[],node1,node2)
 		SetSpriteVisible(Tank[ID].cover,1)
 	endif
 endfunction
+remend
 
 function SetTurnArc(a1#,a2#)
 	arc# = a2# - a1#

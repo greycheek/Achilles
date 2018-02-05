@@ -416,7 +416,7 @@ movement$[4,0] = "MOVES  3, PENALTY: Rough -1, Trees -2"
 movement$[5,0] = "MOVES  4, PENALTY: Rough -1, Trees -2"
 movement$[6,0] = "MOVES  3, NO TERRAIN MOVEMENT PENALTY"
 
-cost$[1,0] = "UNIT COST  150"
+cost$[1,0] = "UNIT COST  200"
 cost$[2,0] = "UNIT COST  250"
 cost$[3,0] = "UNIT COST  100"
 cost$[4,0] = "UNIT COST  200"
@@ -581,7 +581,7 @@ endtype
 
 
 global unitCost as integer[unitTypes]
-unitCost[HoverCraft] = 150
+unitCost[HoverCraft] = 200
 unitCost[Battery] = 250
 unitCost[MediumTank] = 100
 unitCost[HeavyTank] = 200
@@ -728,7 +728,7 @@ cost[Water] = Water
 
 `TERRAIN DAMAGE MODIFIER
 #constant TreeMod .5
-		#constant BaseMod .5
+#constant BaseMod .5
 #constant ClearMod 1
 #constant RoughMod 1.5
 
@@ -737,8 +737,8 @@ global TRM as Float[10]
 for i = 0 to 9 : TRM[i]=ClearMod : next i
 TRM[Rough]=RoughMod
 TRM[Trees]=TreeMod
-		TRM[AIBase]=BaseMod
-		TRM[PlayerBase]=BaseMod
+TRM[AIBase]=BaseMod
+TRM[PlayerBase]=BaseMod
 
 global Iris = BaseIris
 global IrisFrames = 62
@@ -1454,45 +1454,6 @@ endtype
 global SpriteConSize as integer = 112
 
 remstart
-BangSound = LoadSound("bang2.wav")
-BuildBaseSound = LoadSound( "HoverbikeEnd.wav" )
-ExplodeSound = LoadSound("explode.wav")
-ClickSound = LoadSound("PlasticClick.wav")
-SpawnSound = LoadSound("LevelOnSinister.wav")
-MineSound = LoadSound("TripodDestroyed.wav")
-MineBangSound = LoadSound("ExplosionPlain.wav")
-HeavyLaserSound = LoadSound( "BeamElectro_01.wav" )
-EngineerSound = LoadSound("MotorClose_01.wav")
-HealSound = LoadSound("HealGlassy.wav")
-VictorySound = LoadSound("MagicReveal.wav")
-SaboSound = LoadSound("ExitOpenAztec.wav")
-DefeatSound = LoadSound("Defeat.wav")
-EnterSound = LoadSound("PickUpHeavy.wav")
-
-DisruptorSound = LoadSoundOGG("DISRUPTOR.ogg")
-EMPSound = LoadSoundOGG("EMP.ogg")
-TankSound = LoadSoundOGG("Rumble2.ogg")
-ErrorSound = LoadSoundOGG("EdgeHit2.ogg")
-RocketSound = LoadSoundOGG("rocket.ogg" )
-ExplodingSound = LoadSoundOGG("Exploding.ogg")
-LaserSound = LoadSoundOGG( "laser3.ogg" )
-MusicSound = LoadMusicOGG( "Evil Incoming_01.ogg" )
-RogerThatSound = LoadSoundOGG( "rogerthatProcess.ogg" )
-YesSirSound = LoadSoundOGG( "YesSirProcessed_01.ogg" )
-CopySound = LoadSoundOGG( "CopyProcessed_01.ogg" )
-AcknowledgedSound = LoadSoundOGG( "AcknowlegedProcessed_01.ogg" )
-OnMyWaySound = LoadSoundOGG( "OnMyWayProcessed_01.ogg" )
-OKSound = LoadSoundOGG( "Ok_01.ogg" )
-TargetSound = LoadSoundOGG("Target Acquired_01.ogg" )
-LockOnSound = LoadSoundOGG( "Locked On_01.ogg" )
-Silence = LoadSoundOGG( "Silent.ogg" )
-EngineSound = LoadSoundOGG( "Jet2_01.ogg" )
-MachineGunSound = LoadSoundOGG( "MachineGun.ogg" )
-LightningSound = LoadSoundOGG("LightningBolt.ogg")
-LoganSound = LoadSoundOGG("Logan.ogg" )
-RenforcementsSound = LoadSoundOGG("reinforcements.ogg")
-InterdictSound = LoadSoundOGG("Interdict.ogg")
-MechSound = LoadSoundOGG("WalkerStomp.ogg")
 
 `DON'T NEED FOR OLD PATROL
 global patrolScan as integer[16]=[-32,-31,1,33,32,31,-1,-33,-32,-31,1,33,32,31,-1,-33]	 `starting at 12:00 and going clockwise(twice)
