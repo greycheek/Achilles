@@ -287,7 +287,8 @@ EngineSound = LoadSoundOGG( "Jet2_01.ogg" )
 EnterSound = LoadSound("PickUpHeavy.wav")
 ErrorSound = LoadSoundOGG("EdgeHit2.ogg")
 ExplodeSound = LoadSound("explode.wav")
-ExplodingSound = LoadSoundOGG("Exploding.ogg")
+ExplodingSound = LoadSoundOGG("LightningBolt.ogg")
+//~ ExplodingSound = LoadSoundOGG("Exploding.ogg")
 HealSound = LoadSound("HealGlassy.wav")
 HeavyLaserSound = LoadSound( "BeamElectro_01.wav" )
 InterdictSound = LoadSoundOGG("Interdict.ogg")
@@ -321,9 +322,9 @@ global orders as integer[7] `OrderSounds + 1
 #constant OrderSounds 6
 
 #constant TankVolume vol
-#constant EngineVolume 25
+#constant EngineVolume 10 `25
 #constant EngineerVolume 10
-#constant MechVolume 10
+#constant MechVolume 7 `10
 
 orders[0] = YesSirSound
 orders[1] = CopySound
@@ -1419,6 +1420,7 @@ global field as integer  `board
 global Explode1 as integer
 global Explode2 as integer
 global Explode3 as integer
+global Explode4 as integer
 
 `SPLASHSCREEN
 

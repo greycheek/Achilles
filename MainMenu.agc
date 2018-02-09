@@ -8,17 +8,13 @@ function MainMenu()
 		if not GetTweenSpritePlaying( t[0],MechGuy[0].bodyID ) then t = PatrolMech(t)
 		UpdateAllTweens(getframetime())
 		Sync()
-		info = GetVirtualButtonReleased( InfoButt.ID )
-		cancel = GetVirtualButtonReleased( cancelButt.ID )
-		accept = GetVirtualButtonReleased( acceptButt.ID )
-		settings = GetVirtualButtonReleased( settingsButt.ID )
-		IKey = GetRawKeyPressed( 0x49 ) `I
-		Qkey = GetRawKeyPressed( 0x51 ) `Q
-		SKey = GetRawKeyPressed( 0x53 ) `S
-		EKey = GetRawKeyPressed( Enter )
-		if cancel or Qkey
+		info = GetVirtualButtonReleased( InfoButt.ID ) or GetRawKeyPressed( 0x49 ) `I
+		cancel = GetVirtualButtonReleased( cancelButt.ID ) or GetRawKeyPressed( 0x51 ) `Q
+		accept = GetVirtualButtonReleased( acceptButt.ID ) or GetRawKeyPressed( Enter )
+		settings = GetVirtualButtonReleased( settingsButt.ID ) or GetRawKeyPressed( 0x53 ) `S
+		if cancel
 			if Confirm( "Quit?",QuitText ) then end
-		elseif settings or SKey
+		elseif settings
 			PlaySound( ClickSound,vol )
 			ButtonState(InfoButt.ID,Off)
 			AlertButtons( acceptButt.x,acceptButt.y,cancelButt.x,cancelButt.y,dev.buttSize,acceptButt.ID,cancelButt.ID )
@@ -30,11 +26,11 @@ function MainMenu()
 			SetSpriteActive( Logo, On )
 			SetSpriteDepth( Logo,0 )
 			ButtonState(InfoButt.ID,On)
-		elseif accept or EKey
+		elseif accept
 			PlaySound( ClickSound,vol )
 			GameSetup()
 			exitfunction
-		elseif info or IKey
+		elseif info
 			PlaySound( ClickSound,vol )
 			ButtonState(acceptButt.ID,Off)
 			ButtonState(cancelButt.ID,Off)
@@ -317,8 +313,6 @@ function ReDisplaySettings(state)
 	SetSpriteActive( AIValueSprite,state )
 	SetSpriteActive( PlayerSpectrumSprite,state )
 	SetSpriteActive( PlayerValueSprite,state )
-	SetSpriteVisible( MechGuy[0].bodyID,state )
-	SetSpriteVisible( MechGuy[0].turretID,state )
 
 	SetVirtualButtonVisible( mapButt.ID,state )
 	SetVirtualButtonVisible( diceButt.ID, not state )

@@ -242,6 +242,8 @@ function GenerateTerrain()
 	treeClumpMod# = ceil( treeQty*.15)
 	roughClumpMod# = ceil( roughQty*.15)
 
+			SetDisplayAspect(AspectRatio)  `back to map aspect ratio
+
 	SetSpriteVisible( TreeSprite,On )
 	SetSpriteVisible( RoughSprite,On )
 	for i = FirstCell to MapSize-1
@@ -257,7 +259,7 @@ function GenerateTerrain()
 
 	BaseColor()
 	SetRenderToScreen()
-	SetDisplayAspect(AspectRatio)  `back to map aspect ratio
+	//~ SetDisplayAspect(AspectRatio)  `back to map aspect ratio
 endfunction
 
 function GenerateMap()
@@ -346,6 +348,11 @@ function Setup()
 	DeleteAllImages()
 	DeleteAllButtons()
 
+	SetViewZoomMode( 1.0 )
+	SetViewOffset( 0,0 )
+	zoomFactor = 1
+	vol = 50
+	SetMusicVolumeOGG( MusicSound,vol )
 	smokeImage=loadimage("Smoke4a.png")
 	whiteSmokeImage=loadimage("Smoke5.png")
 
@@ -356,10 +363,7 @@ function Setup()
 	SpriteConSize = CellWidth
 	AICount = DefaultAI
 	PlayerCount = DefaultPlayer
-	vol = 50
 	BaseProdValue = BaseProdMin
-	//~ SoundVolume()
-	SetMusicVolumeOGG( MusicSound,vol )
 
 	pickAI.r = 255
 	pickAI.g = 33
@@ -529,14 +533,14 @@ function Setup()
 	SetSpriteAnimation( Explode1,128,128,32 )
 	SetSpriteSize( Explode1,128,128)
 
-	Explode2 = ExplodeSeries + 2
-	LoadImage( Explode2,"ExplodeSheet.png")
-	CreateSprite( Explode2,Explode2 )
-	SetSpriteTransparency( Explode2, 1 )
-	SetSpriteVisible( Explode2, 0 )
-	SetSpriteDepth ( Explode2, 0 )
-	SetSpriteAnimation( Explode2,109,81,32 )
-	SetSpriteSize( Explode2,75,60 )
+	//~ Explode2 = ExplodeSeries + 2
+	//~ LoadImage( Explode2,"ExplodeSheet.png")
+	//~ CreateSprite( Explode2,Explode2 )
+	//~ SetSpriteTransparency( Explode2, 1 )
+	//~ SetSpriteVisible( Explode2, 0 )
+	//~ SetSpriteDepth ( Explode2, 0 )
+	//~ SetSpriteAnimation( Explode2,109,81,32 )
+	//~ SetSpriteSize( Explode2,75,60 )
 
 	Explode3 = ExplodeSeries + 3
 	LoadImage( Explode3,"shiphit_strip11.png")
@@ -546,6 +550,15 @@ function Setup()
 	SetSpriteDepth ( Explode3, 0 )
 	SetSpriteAnimation( Explode3,64,48,11 )
 	SetSpriteSize( Explode3,96,72 )
+
+	Explode4 = ExplodeSeries + 4
+	LoadImage( Explode4,"white_strip12.png")
+	CreateSprite( Explode4,Explode4 )
+	SetSpriteTransparency( Explode4, 1 )
+	SetSpriteVisible( Explode4, 0 )
+	SetSpriteDepth ( Explode4, 0 )
+	SetSpriteAnimation( Explode4,102,103,8 )
+	SetSpriteSize( Explode4,204,206 )
 
 	LogoImage = LoadImage("AchillesLogo4.png")
 	Logo = CreateSprite( LogoImage )

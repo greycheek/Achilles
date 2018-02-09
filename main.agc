@@ -10,8 +10,12 @@ remstart
 			--VERY REPETITIVE MOVEMENT PATTERNS??
 	--- SPRITECONS  BEHAVING STRANGELY - STICK TO SCREEN - UNITS NOT SELECTED SHOW UP IN GAME (MEDIUM TANK?)
 
+	--- SLUGGISH BUTTON REACTION ON iOS
+
 	FIXED?
 	--- TARGET NODES CONTAINING TREES BLOCK LOS
+	--- INITIAL VIEW OF ZOOMED INFO SCREEN SEEMS TO HAVE NO OR INCORRECT BOUNDARIES
+		CHECK MOUSESCROLL
 
 	FUTURE
 		getspriteincircle vs getspriteinbox??
@@ -68,6 +72,7 @@ endif
 //~ ParticleTest()
 //~ DisruptorTest()
 //~ BlockProduction() : end
+//~ testing()
 
 
 Main()
@@ -700,7 +705,7 @@ function BlowItUp( ID,Tank as tankType[] )
 	SetParticlesDepth( smoke1, 0 )
 	SetParticlesVelocityRange( smoke1, .5, .75 )
 
-	Explosion( Tank[ID].x,Tank[ID].y,Explode2,ExplodingSound,48 )
+				Explosion( Tank[ID].x,Tank[ID].y,Explode4,ExplodingSound,12 )
 	SetParticlesVisible( smoke1,0 )
 endfunction
 
@@ -1042,6 +1047,13 @@ function DisruptorTest()
 	end
 endfunction
 
+function testing()
+	PlaySound( ExplodingSound )
+	repeat
+		Sync()
+	until GetPointerPressed()
+	end
+endfunction
 
 function SoundCheck()
 	c = 0

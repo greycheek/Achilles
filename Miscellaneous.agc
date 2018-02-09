@@ -1,5 +1,5 @@
 
-remstart
+remstart XOR
 	Input Output
 	 A B
 	 0 0    0
