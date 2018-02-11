@@ -89,7 +89,7 @@ function BaseProduction( node )
 	else
 		WaitForButtonRelease( cancelButt.ID )
 	endif
-	PlaySound( ClickSound )
+	PlaySound( ClickSound,vol )
 
 	//~ AlertButtons( YesNoX4a, YesNoY4, YesNoX4b, YesNoY4, dev.buttSize, AcceptButton, QuitButton )
 	SetSpriteActive( BaseDialog,Off )
@@ -422,30 +422,26 @@ function GetInput()
 	ButtonActivation(Off)
 	do
 		if selection <> Undefined then WeaponInput(ID)
-		info   = GetVirtualButtonReleased( InfoButt.ID ) or GetRawKeyState( 0x49 ) `I
-		cancel = GetVirtualButtonReleased( cancelButt.ID ) or GetRawKeyState(0x51) `Q
-		accept = GetVirtualButtonReleased( acceptButt.ID ) or GetRawKeyState(Enter)
-		if info or accept or cancel
-			if info
-				PlaySound( ClickSound,vol )
-				ShowInfo( Off )
-				ButtonState(acceptButt.ID,Off)
-				ButtonState(cancelButt.ID,Off)
-				ShowInfoTables()
-				ButtonState(acceptButt.ID,On)
-				ButtonState(cancelButt.ID,On)
-				ShowInfo( On )
-			elseif accept
-				PlaySound( ClickSound,vol )
-				MaxAlpha(ID)
-				exit
-			elseif cancel
-				Zoom(1,0,0,On,1)
-				ButtonActivation(On)
-				if Confirm("Back to Menu?",QuitText) then Main()
-				zoomFactor = 1
-				ButtonActivation(Off)
-			endif
+		if GetVirtualButtonPressed( InfoButt.ID ) or GetRawKeyState( 0x49 ) `I
+			PlaySound( ClickSound,vol )
+			ShowInfo( Off )
+			ButtonState(acceptButt.ID,Off)
+			ButtonState(cancelButt.ID,Off)
+			ShowInfoTables()
+			ButtonState(acceptButt.ID,On)
+			ButtonState(cancelButt.ID,On)
+			ShowInfo( On )
+		elseif GetVirtualButtonPressed( acceptButt.ID ) or GetRawKeyState(Enter)
+			PlaySound( ClickSound,vol )
+			MaxAlpha(ID)
+			exit
+		elseif GetVirtualButtonPressed( cancelButt.ID ) or GetRawKeyState(0x51) `Q
+			Zoom(1,0,0,On,1)
+			WaitForButtonRelease( cancelButt.ID )
+			ButtonActivation(On)
+			if Confirm("Back to Menu?",QuitText) then Main()
+			zoomFactor = 1
+			ButtonActivation(Off)
 		elseif GetPointerState()
 			x = MinMax( 0,MaxWidth-1, ScreenToWorldX(GetPointerX()) )	`MinMax, temporary fix for out of bounds erros
 			y = MinMax( 0,MaxHeight-1,ScreenToWorldY(GetPointerY()) )
@@ -465,7 +461,7 @@ function GetInput()
 						elseif PlayerTank[i].stunned
 							selection = Undefined
 						else
-							PlaySound( ClickSound )
+							PlaySound( ClickSound,vol )
 							MaxAlpha(ID)
 							if selection <> Undefined then SetSpriteVisible(PlayerTank[ID].FOW,Off)
 
@@ -480,7 +476,7 @@ function GetInput()
 					endif
 				next i
 			elseif baseID and ( selection = Undefined ) and ( mapTable[pointerNode].moveTarget = False )
-				PlaySound( ClickSound )
+				PlaySound( ClickSound,vol )
 				if PlayerSurviving = UnitLimit
 					EventDialog("Unit Maximum",Null$)
 				elseif casualties

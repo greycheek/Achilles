@@ -48,7 +48,7 @@ function LoadSaveGame( name$,dialogTitle$ )
 	do
 		Sync()
 		if GetVirtualButtonReleased( cancelButt.ID )
-			PlaySound( ClickSound )
+			PlaySound( ClickSound,vol )
 			exit
 		elseif GetVirtualButtonReleased( LOADBUTT.ID )
 
@@ -107,7 +107,7 @@ function SlotDialog( name$,dialogTitle$ )
 			exit
 		endif
 		if GetVirtualButtonReleased( cancelButt.ID )
-			PlaySound( ClickSound )
+			PlaySound( ClickSound,vol )
 			exit
 		endif
 	loop
@@ -559,7 +559,7 @@ function GameOver( textID,spinID,r,g,b,spinR,spinG,spinB,message$,sound )
 	#constant spinW 576
 	#constant spinH 256
 
-	PlaySound( sound )
+	PlaySound( sound,vol )
 	DeleteVirtualButton(AcceptButton)
 	DeleteVirtualButton(QuitButton)
 	DeleteAllText()
@@ -628,7 +628,7 @@ function GameOver( textID,message$,r,g,b,sound )
 
 	y2 = MapHeight/2
 	y1 = y2-(startSize/2)
-	PlaySound( sound )
+	PlaySound( sound,vol )
 	Text( textID,message$,MiddleX,y2,r,g,b,startSize,255,1 )
 	SetTextFont( textID,Impact )
 	TweenText( textID,Null,Null,y1,y2,Null,Null,startSize,endSize,beginSpacing,endSpacing,3,Null,TweenEaseIn1() )
@@ -1792,7 +1792,7 @@ remstart
 
 	if mapTable[node].team <> Unoccupied
 		if mapTable[node].team = PlayerTeam
-			PlaySound(ClickSound)
+			PlaySound(ClickSound,vol)
 			SetSpriteVisible(PlayerTank[i].hilite,Off)
 			PlayerTank[i].goalNode = PlayerTank[i].parentNode[PlayerTank[i].index]
 			ResetPath(i,PlayerTank)

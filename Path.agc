@@ -118,11 +118,12 @@ function Move(ID,Tank ref as tankType[],node1,node2)
 	visible = GetSpriteVisible( Tank[ID].bodyID )
 
 	if not visible
-		speed# = .01  `speed up invisible AI moves
+		speed# = .01	 `speed up invisible AI moves
 	else
 		speed# = Tank[ID].speed
-		SetSoundInstanceRate( PlaySound( Tank[ID].sound,Tank[ID].volume ),3.5 )	 `sound for visible units
+		SetSoundInstanceRate( PlaySound( Tank[ID].sound,Tank[ID].volume ),2 )	 `sound for visible units
 	endif
+
 	if Tank[ID].team = PlayerTeam then SetTween(x1,y1,x2,y2,0,0,Tank[ID].FOW,TweenLinear(),speed#)
 	t1 = SetTween(x1,y1,x2,y2,b#,tankArc#,  Tank[ID].bodyID,  TweenLinear(),speed#)
 	t2 = SetTween(x1,y1,x2,y2,t#,turretArc#,Tank[ID].turretID,TweenLinear(),speed#)
@@ -136,7 +137,6 @@ function Move(ID,Tank ref as tankType[],node1,node2)
 	Tank[ID].x = x2
 	Tank[ID].y = y2
 
-	//~ Deploy(ID,Tank,node1,node2)
 	mapTable[node1].team = Unoccupied
 	mapTable[node2].team = Tank[ID].team
 	if mapTable[node1].terrain = Trees then SetSpriteVisible(Tank[ID].cover,0)
@@ -144,7 +144,6 @@ function Move(ID,Tank ref as tankType[],node1,node2)
 		SetSpritePositionByOffset(Tank[ID].cover,Tank[ID].x,Tank[ID].y)
 		SetSpriteVisible(Tank[ID].cover,1)
 	endif
-
 	inc Tank[ID].index
 	inc Tank[ID].totalTerrainCost,mapTable[node2].cost
 endfunction
@@ -223,6 +222,7 @@ function ShowNode(node,cost) `debug
 endfunction
 
 remstart
+
 FROM MOVE:
 		case HoverCraft
 			if visible and ( GetSpriteCurrentFrame( Tank[ID].bodyID ) = 1 )

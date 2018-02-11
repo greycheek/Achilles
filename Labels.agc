@@ -321,10 +321,9 @@ global vol as integer = 100
 global orders as integer[7] `OrderSounds + 1
 #constant OrderSounds 6
 
-#constant TankVolume vol
-#constant EngineVolume 10 `25
-#constant EngineerVolume 10
-#constant MechVolume 7 `10
+global EngineVolume as integer = 10
+global EngineerVolume as integer = 10
+global MechVolume as integer = 7
 
 orders[0] = YesSirSound
 orders[1] = CopySound
@@ -335,6 +334,9 @@ orders[5] = OKSound
 orders[6] = Silence
 
 function SoundVolume()
+	EngineVolume = vol*.1
+	EngineerVolume = vol*.1
+	MechVolume = vol*.07
 	SetSoundInstanceVolume( BangSound, vol )
 	SetSoundInstanceVolume( BuildBaseSound, vol )
 	SetSoundInstanceVolume( ClickSound, vol )
@@ -364,7 +366,7 @@ function SoundVolume()
 	SetSoundInstanceVolume( RocketSound, vol )
 	SetSoundInstanceVolume( SaboSound, vol )
 	SetSoundInstanceVolume( SpawnSound, vol )
-	SetSoundInstanceVolume( TankSound, TankVolume )
+	SetSoundInstanceVolume( TankSound, vol )
 	SetSoundInstanceVolume( TargetSound, vol )
 	SetSoundInstanceVolume( VictorySound, vol )
 	for i = 0 to OrderSounds

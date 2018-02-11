@@ -157,7 +157,7 @@ function TankSetup(ID,Tank ref as tankType[],pick as ColorSpec)
 		case HeavyTank
 			Tank[ID].speed = .4
 			Tank[ID].sound = TankSound
-			Tank[ID].volume = TankVolume
+			Tank[ID].volume = vol
 			Tank[ID].weapon = heavyCannon
 			Tank[ID].range = heavyCannonRange
 			Tank[ID].damage = heavyCannonDamage
@@ -170,7 +170,7 @@ function TankSetup(ID,Tank ref as tankType[],pick as ColorSpec)
 		case MediumTank
 			Tank[ID].speed = .3
 			Tank[ID].sound = TankSound
-			Tank[ID].volume = TankVolume
+			Tank[ID].volume = vol
 			Tank[ID].weapon = cannon
 			Tank[ID].range = cannonRange
 			Tank[ID].damage = cannonDamage
@@ -196,7 +196,7 @@ function TankSetup(ID,Tank ref as tankType[],pick as ColorSpec)
 		case Battery
 			Tank[ID].speed = .3
 			Tank[ID].sound = TankSound
-			Tank[ID].volume = TankVolume
+			Tank[ID].volume = vol
 			Tank[ID].weapon = missile
 			Tank[ID].range = missileRange
 			Tank[ID].damage = missileDamage

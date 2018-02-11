@@ -11,6 +11,7 @@ remstart
 	--- SPRITECONS  BEHAVING STRANGELY - STICK TO SCREEN - UNITS NOT SELECTED SHOW UP IN GAME (MEDIUM TANK?)
 
 	--- SLUGGISH BUTTON REACTION ON iOS
+	--- MINE PLACEMENT IN FRIENDLY BASES - CHECK DETONATION AS RELATES TO BASE CAPTURE
 
 	FIXED?
 	--- TARGET NODES CONTAINING TREES BLOCK LOS
@@ -100,7 +101,7 @@ function Turn()
 endfunction
 
 function Blockage(ID,Tank as tankType[],x1,y1,x2,y2) `blocked movement
-	PlaySound(DeActivateSound)
+	PlaySound(DeActivateSound,vol)
 	SetSpritePositionByOffset(prohibit,x2,y2)
 	SetSpriteVisible(prohibit,On)
 	SetSpriteActive(prohibit,On)
@@ -128,22 +129,22 @@ function EventCheck()
 	Event$ = RandomEvent[ Random2(0,EventNum-1) ]
 	select Event$
 		case Weather$
-			PlaySound( LightningSound )
+			PlaySound( LightningSound,vol )
 			weather = .5
 			EventDialog( Weather$,"Movement halved" )
 		endcase
 		case Interdiction$
-			PlaySound( InterdictSound )
+			PlaySound( InterdictSound,vol )
 			casualties = 1
 			EventDialog( Interdiction$,"Production halted" )
 		endcase
 		case Reinforcement$
-			PlaySound( RenforcementsSound )
+			PlaySound( RenforcementsSound,vol )
 			reinforce = 2
 			EventDialog( Reinforcement$,"Production doubled" )
 		endcase
 		case Supply$
-			PlaySound( LoganSound )
+			PlaySound( LoganSound,vol )
 			EventDialog( Supply$,"All units repaired" )
 			for i = 0 to PlayerLast
 				if PlayerTank[i].alive then Repair( i,PlayerTank,PlayerDepotNode,PlayerTank[i].maximumHealth )
@@ -166,7 +167,7 @@ function RandomKill( Tank as tanktype[],last )
 	unit as integer[]
 	Zoom(1,0,0,On,1)
 	dragMode = False
-	PlaySound( SaboSound )
+	PlaySound( SaboSound,vol )
 	EventDialog( Sabotage$,"One unit destroyed" )
 	for i = 0 to last
 		if Tank[i].alive then unit.insert(i)
@@ -534,7 +535,7 @@ function CaptureBase( capturedIndex, newBaseIndex, pick ref as ColorSpec, attBas
 	DeleteSprite( defBase[capturedIndex].spriteID )
 
 	BaseSetup( newBaseIndex,defBase[capturedIndex].spriteID,defBase[capturedIndex].node,base,attBase,group )
-	PlaySound( BuildBaseSound )
+	PlaySound( BuildBaseSound,vol )
 
 	SetSpritePositionByOffset( BaseHalo,mapTable[defBase[capturedIndex].node].x,mapTable[defBase[capturedIndex].node].y )
 	SetSpriteVisible( BaseHalo,On )
@@ -614,7 +615,7 @@ function GameOver( textID,r,g,b,message$,sound )
 	#constant endSpacing 0
 	fountain as integer
 
-	PlaySound( sound )
+	PlaySound( sound,vol )
 	DeleteVirtualButton(acceptButt.ID)
 	DeleteVirtualButton(cancelButt.ID)
 	DeleteVirtualButton(InfoButt.ID)
@@ -748,7 +749,7 @@ function ActivateEMP( ID, Tank ref as tankType[] )
 	#constant AlphaPlus 325
 	SetSpriteVisible( EMP1,On )
 	for i = 1 to 5
-		if mod(i,2) then PlaySound( EMPSound )  `every other wave
+		if mod(i,2) then PlaySound( EMPSound,vol )  `every other wave
 		for j = NodeSize to empRange step 30
 			shift = j/2
 			SetSpritePosition( EMP1,Tank[ID].x-shift,Tank[ID].y-shift )
@@ -1028,7 +1029,7 @@ function SheetTest()
 endfunction
 
 function DisruptorTest()
-	PlaySound( DisruptorSound )
+	PlaySound( DisruptorSound,vol )
 	SetClearColor( 0,64,8 )
 	ClearScreen()
 	DisruptSprite = LoadImage( "DISRUPTION_SS.png" )
@@ -1048,7 +1049,7 @@ function DisruptorTest()
 endfunction
 
 function testing()
-	PlaySound( ExplodingSound )
+	PlaySound( ExplodingSound,vol )
 	repeat
 		Sync()
 	until GetPointerPressed()

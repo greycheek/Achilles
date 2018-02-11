@@ -472,7 +472,7 @@ function Compose()
 		elseif GetVirtualButtonReleased(Button25.ID)
 			SetProductionButtons(25)
 		elseif GetVirtualButtonReleased(ONOFF.ID)
-			PlaySound(ClickSound)
+			PlaySound(ClickSound,vol)
 			if Events
 				Events = Off
 				SetVirtualButtonImageUp(ONOFF.ID,ONOFF.UP)
@@ -491,7 +491,7 @@ function Compose()
 			ReDisplaySettings( Off )
 			SpriteConState( Off )
 			StopMusicOGG( MusicSound )
-			PlaySound( ClickSound )
+			PlaySound( ClickSound,vol )
 			if mapImpass then SetVirtualButtonImageUp(ImpassButt.ID,ImpassButt.DN) else SetVirtualButtonImageUp(ImpassButt.ID,ImpassButt.UP)
 			if mapWater	 then SetVirtualButtonImageUp(WaterButt.ID,WaterButt.DN) else SetVirtualButtonImageUp(WaterButt.ID,WaterButt.UP)
 
@@ -513,7 +513,7 @@ function Compose()
 				Sync()
 
 				if GetVirtualButtonReleased( ImpassButt.ID )
-					PlaySound( ClickSound )
+					PlaySound( ClickSound,vol )
 					if mapImpass
 						mapImpass=0 : SetVirtualButtonImageUp( ImpassButt.ID,ImpassButt.UP )
 					else
@@ -521,7 +521,7 @@ function Compose()
 					endif
 				endif
 				if GetVirtualButtonReleased( WaterButt.ID )
-					PlaySound( ClickSound )
+					PlaySound( ClickSound,vol )
 					if mapWater
 						mapWater=0 : SetVirtualButtonImageUp( WaterButt.ID,WaterButt.UP )
 					else
@@ -530,12 +530,12 @@ function Compose()
 				endif
 				if GetVirtualButtonReleased( diskButt.ID ) or GetRawKeyPressed( 0x46 ) then MapSlotDialog() `F
 				if GetVirtualButtonReleased( diceButt.ID ) or GetRawKeyPressed( 0x52 ) `R
-					PlaySound( ClickSound )
+					PlaySound( ClickSound,vol )
 					ResetMap()
 					GenerateTerrain()
 				endif
 				if GetVirtualButtonReleased( acceptButt.ID ) or GetRawKeyPressed( Enter )
-					PlaySound( ClickSound )
+					PlaySound( ClickSound,vol )
 					exit
 				endif
 
@@ -550,7 +550,7 @@ function Compose()
 endfunction
 
 function SetProductionButtons( Units )
-	PlaySound( ClickSound )
+	PlaySound( ClickSound,vol )
 	SetVirtualButtonImageUp( Button5.ID,Button5.UP )
 	SetVirtualButtonImageUp( Button10.ID,Button10.UP )
 	SetVirtualButtonImageUp( Button15.ID,Button15.UP )
@@ -609,7 +609,7 @@ function MapSlotDialog()
 			exit
 		endif
 		if GetVirtualButtonReleased( cancelButt.ID )
-			PlaySound( ClickSound )
+			PlaySound( ClickSound,vol )
 			exit
 		endif
 	loop
@@ -637,7 +637,7 @@ function LoadSaveDialog( map$ )
 	do
 		Sync()
 		if GetVirtualButtonReleased( cancelButt.ID )
-			PlaySound( ClickSound )
+			PlaySound( ClickSound,vol )
 			exit
 		elseif GetVirtualButtonReleased( LOADBUTT.ID )
 			LoadMap( map$ )
