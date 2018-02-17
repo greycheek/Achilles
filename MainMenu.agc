@@ -4,13 +4,30 @@ function MainMenu()
 	Setup()
 	t as integer[2]
 	t = PatrolMech(t)
+	ut# = GetUpdateTime()
+	ft# = GetFrameTime()
 	do
+		if GetPointerPressed()	`poke the mech
+			if GetSpriteinCircle(MechGuy[0].bodyID,GetPointerX(),GetPointerY(),NodeSize)
+				PlaySound(BoingSound,vol)
+				Halt(t[0],t[1],t[2])
+				MechGuy[0].x = GetSpriteXByOffset(MechGuy[0].turretID)
+				MechGuy[0].y = GetSpriteYByOffset(MechGuy[0].turretID)
+				x2 = Random2(0,MaxWidth)
+				y2 = Random2(0,MaxHeight)
+				RotateTurret(0,MechGuy,x2,y2)
+				ResetTimer()
+			endif
+		endif
 		if not GetTweenSpritePlaying( t[0],MechGuy[0].bodyID ) then t = PatrolMech(t)
-		UpdateAllTweens(getframetime())
+		UpdateAllTweens( ft# )
 		Sync()
 		info = GetVirtualButtonReleased( InfoButt.ID ) or GetRawKeyPressed( 0x49 ) `I
+		Update( ut# )
 		cancel = GetVirtualButtonReleased( cancelButt.ID ) or GetRawKeyPressed( 0x51 ) `Q
+		Update( ut# )
 		accept = GetVirtualButtonReleased( acceptButt.ID ) or GetRawKeyPressed( Enter )
+		Update( ut# )
 		settings = GetVirtualButtonReleased( settingsButt.ID ) or GetRawKeyPressed( 0x53 ) `S
 		if cancel
 			if Confirm( "Quit?",QuitText ) then end
@@ -46,8 +63,9 @@ endfunction
 function Halt(ID1,ID2,ID3)
 	StopTweenSprite( ID1,MechGuy[0].bodyID )
 	StopTweenSprite( ID2,MechGuy[0].turretID )
-	StopTweenSprite( ID3,MechGuy[1].turretID )
+	StopTweenSprite( ID3,MechGuy[1].bodyID )
 	StopSprite( MechGuy[0].bodyID )
+	StopSprite( MechGuy[0].turretID )
 	StopSprite( MechGuy[1].bodyID )
 endfunction
 

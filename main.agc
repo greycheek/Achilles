@@ -11,9 +11,10 @@ remstart
 	--- SPRITECONS  BEHAVING STRANGELY - STICK TO SCREEN - UNITS NOT SELECTED SHOW UP IN GAME (MEDIUM TANK?)
 
 	--- DOES WATER BLOCK LOS??????!!!!!!
-	--- SLUGGISH BUTTON REACTION ON iOS
+	--- POKE SOUND
 
 	FIXED?
+	--- SLUGGISH BUTTON REACTION ON iOS
 	--- MINE PLACEMENT IN FRIENDLY BASES - CHECK DETONATION AS RELATES TO BASE CAPTURE
 	--- TARGET NODES CONTAINING TREES BLOCK LOS
 	--- INITIAL VIEW OF ZOOMED INFO SCREEN SEEMS TO HAVE NO OR INCORRECT BOUNDARIES
@@ -688,26 +689,30 @@ function DefeatParticles()
 	AddParticlesColorKeyFrame( part, 16, 255, 255, 255, 0 )
 endfunction part
 
+
 function BlowItUp( ID,Tank as tankType[] )
 	PlaySound( ExplodeSound,vol )
 	SetSpriteVisible( Tank[ID].bodyID,Off )
 	SetSpriteVisible( Tank[ID].turretID,Off )
 	SetSpriteVisible( Tank[ID].healthID,Off )
 	smoke1 = CreateParticles( Tank[ID].x,Tank[ID].y )
-	AddParticlesScaleKeyFrame( smoke1, .5, .5 )
-	AddParticlesColorKeyFrame( smoke1, 0, 255, 255, 255, 96 )
-	AddParticlesColorKeyFrame( smoke1, .25, 255, 128, 0, 96 )
-	AddParticlesColorKeyFrame( smoke1, .5, 255, 0, 0, 96 )
-	AddParticlesColorKeyFrame( smoke1, .75, 0, 0, 0, 96 )
-	SetParticlesFrequency( smoke1, 75 )
+	AddParticlesScaleKeyFrame( smoke1,  0, 1.0 )
+	AddParticlesScaleKeyFrame( smoke1,  8, 2.5 )
+	AddParticlesScaleKeyFrame( smoke1, 16, 5.0 )
+	AddParticlesColorKeyFrame( smoke1, 0, 255, 255, 255, 255 )
+	AddParticlesColorKeyFrame( smoke1, 8, 255, 255, 255, 128 )
+	AddParticlesColorKeyFrame( smoke1, 16, 255, 255, 255, 0 )
+	SetParticlesFrequency( smoke1, 16 )
 	SetParticlesLife( smoke1, 1 )
-	SetParticlesSize( smoke1, 42 )
-	SetParticlesImage( smoke1, whiteSmokeImage )
+	SetParticlesSize( smoke1, 60 )
+	SetParticlesImage( smoke1, smokeImage )
 	SetParticlesDirection( smoke1, 25, 50 )
 	SetParticlesDepth( smoke1, 0 )
-	SetParticlesVelocityRange( smoke1, .5, .75 )
-
-				Explosion( Tank[ID].x,Tank[ID].y,Explode4,ExplodingSound,12 )
+	SetParticlesVelocityRange( smoke1, 1, 2 )
+	SetParticlesAngle( smoke1, 360 )
+	SetParticlesRotationRangeRad( smoke1, 0, .33 )
+	Sync()
+	Explosion( Tank[ID].x,Tank[ID].y,Explode4,ExplodingSound,12 )
 	SetParticlesVisible( smoke1,0 )
 endfunction
 
@@ -961,11 +966,11 @@ function ParticleTest()
 	DefeatImage = LoadImage("DefeatImage.png")
 
 	SetParticlesImage( part, DefeatImage )
-	SetParticlesVelocityRange( part,1.5,3)
-	SetParticlesFrequency( part,5 )
+	SetParticlesVelocityRange( part,1,2)
+	SetParticlesFrequency( part,2 )
 	SetParticlesDepth( part,1 )
-	SetParticlesLife( part,15 )
-	SetParticlesSize( part,90 )
+	SetParticlesLife( part,3 )
+	SetParticlesSize( part,40 )
 	SetParticlesAngle( part, 360 )
 	SetParticlesRotationRangeRad( part, 0, .33 )
 	AddParticlesScaleKeyFrame( part,  0, 1.0 )
@@ -1071,7 +1076,6 @@ function SoundCheck()
 	if GetFileExists( "PickUpHeavy.wav" ) then inc c
 	if GetFileExists( "EdgeHit2.ogg" ) then inc c
 	if GetFileExists( "explode.wav" ) then inc c
-	if GetFileExists( "Exploding.ogg" ) then inc c
 	if GetFileExists( "HealGlassy.wav" ) then inc c
 	if GetFileExists( "BeamElectro_01.wav" ) then inc c
 	if GetFileExists( "Interdict.ogg" ) then inc c

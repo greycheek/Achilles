@@ -332,42 +332,62 @@ function MoveInput(ID)
 endfunction node
 
 function WeaponInput(ID)
+	Update( GetUpdateTime() )
 	if GetVirtualButtonState(LaserButt.ID) //or GetRawKeyPressed(0x4c) `L
 		WeaponSelect(ID,PlayerTank,laser,laserRange,laserDamage)
 		WaitForButtonRelease(LaserButt.ID)
-
-	elseif GetVirtualButtonState(HeavyLaserButt.ID) //or GetRawKeyPressed(0x4c) `L
+		exitfunction
+	endif
+	Update( GetUpdateTime() )
+	if GetVirtualButtonState(HeavyLaserButt.ID) //or GetRawKeyPressed(0x4c) `L
 		WeaponSelect(ID,PlayerTank,heavyLaser,heavyLaserRange,heavyLaserDamage)
 		WaitForButtonRelease(HeavyLaserButt.ID)
-
-	elseif GetVirtualButtonState(CannonButt.ID) //or GetRawKeyPressed(0x43) `C
+		exitfunction
+	endif
+	Update( GetUpdateTime() )
+	if GetVirtualButtonState(CannonButt.ID) //or GetRawKeyPressed(0x43) `C
 		if RangeCheck(ID,cannonRange)
 			WeaponSelect(ID,PlayerTank,cannon,cannonRange,cannonDamage)
 			WaitForButtonRelease(CannonButt.ID)
 		endif
-	elseif GetVirtualButtonState(HeavyCannonButt.ID) //or GetRawKeyPressed(0x43) `C
+		exitfunction
+	endif
+	Update( GetUpdateTime() )
+	if GetVirtualButtonState(HeavyCannonButt.ID) //or GetRawKeyPressed(0x43) `C
 		if RangeCheck(ID,heavyCannonRange)
 			WeaponSelect(ID,PlayerTank,heavyCannon,heavyCannonRange,heavyCannonDamage)
 			WaitForButtonRelease(HeavyCannonButt.ID)
 		endif
-	elseif GetVirtualButtonState(DisruptButt.ID)
+		exitfunction
+	endif
+	Update( GetUpdateTime() )
+	if GetVirtualButtonState(DisruptButt.ID)
 		if RangeCheck(ID,disruptorRange)
 			WeaponSelect(ID,PlayerTank,disruptor,disruptorRange,disruptorDamage)
 			WaitForButtonRelease(DisruptButt.ID)
 		endif
-	elseif GetVirtualButtonState(MissileButt.ID)
+		exitfunction
+	endif
+	Update( GetUpdateTime() )
+	if GetVirtualButtonState(MissileButt.ID)
 		if (PlayerTank[ID].vehicle = Mech) and PlayerTank[ID].missiles
 			WeaponSelect(ID,PlayerTank,missile,missileRange,missileDamage)
 			WaitForButtonRelease(MissileButt.ID)
 		endif
-	elseif GetVirtualButtonState(MineButt.ID) //or GetRawKeyPressed(0x4D) `M
+		exitfunction
+	endif
+	Update( GetUpdateTime() )
+	if GetVirtualButtonState(MineButt.ID) //or GetRawKeyPressed(0x4D) `M
 		if PlayerTank[ID].weapon = mine   `toggle
 			WeaponSelect(ID,PlayerTank,Undefined,mineRange,mineDamage)
 		else
 			WeaponSelect(ID,PlayerTank,mine,mineRange,mineDamage)
 		endif
 		WaitForButtonRelease(MineButt.ID)
-	elseif GetVirtualButtonState(EMPButt.ID)
+		exitfunction
+	endif
+	Update( GetUpdateTime() )
+	if GetVirtualButtonState(EMPButt.ID)
 		if PlayerTank[ID].weapon = emp   `toggle
 			WeaponSelect(ID,PlayerTank,Undefined,empRange,empDamage)
 		else
@@ -422,7 +442,8 @@ function GetInput()
 	ButtonActivation(Off)
 	do
 		if selection <> Undefined then WeaponInput(ID)
-		if GetVirtualButtonPressed( InfoButt.ID ) or GetRawKeyState( 0x49 ) `I
+		Update( GetUpdateTime() )
+		if GetVirtualButtonState( InfoButt.ID ) or GetRawKeyState( 0x49 ) `I
 			PlaySound( ClickSound,vol )
 			ShowInfo( Off )
 			ButtonState(acceptButt.ID,Off)
@@ -431,18 +452,26 @@ function GetInput()
 			ButtonState(acceptButt.ID,On)
 			ButtonState(cancelButt.ID,On)
 			ShowInfo( On )
-		elseif GetVirtualButtonPressed( acceptButt.ID ) or GetRawKeyState(Enter)
+			continue
+		endif
+		Update( GetUpdateTime() )
+		if GetVirtualButtonState( acceptButt.ID ) or GetRawKeyState(Enter)
 			PlaySound( ClickSound,vol )
 			MaxAlpha(ID)
 			exit
-		elseif GetVirtualButtonPressed( cancelButt.ID ) or GetRawKeyState(0x51) `Q
+		endif
+		Update( GetUpdateTime() )
+		if GetVirtualButtonState( cancelButt.ID ) or GetRawKeyState(0x51) `Q
 			Zoom(1,0,0,On,1)
 			WaitForButtonRelease( cancelButt.ID )
 			ButtonActivation(On)
 			if Confirm("Back to Menu?",QuitText) then Main()
 			zoomFactor = 1
 			ButtonActivation(Off)
-		elseif GetPointerState()
+			continue
+		endif
+		Update( GetUpdateTime() )
+		if GetPointerState()
 			x = MinMax( 0,MaxWidth-1, ScreenToWorldX(GetPointerX()) )	`MinMax, temporary fix for out of bounds erros
 			y = MinMax( 0,MaxHeight-1,ScreenToWorldY(GetPointerY()) )
 			pointerNode = CalcNode( floor(x/NodeSize),floor(y/NodeSize) )

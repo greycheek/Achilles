@@ -20,6 +20,7 @@ global MiddleY as float
 global AspectRatio as float
 global MapWidth as float
 global MapHeight as float
+global MapBottom as integer
 global NodeSize as integer
 global NodeOffset as integer
 global ScreenWidth as integer
@@ -33,6 +34,7 @@ NodeSize = MaxWidth/Columns
 NodeOffset = NodeSize/2
 MapWidth = OpenColumns*NodeSize
 MapHeight = OpenRows*NodeSize
+MapBottom = MapHeight+NodeSize
 MiddleX = MaxWidth/2
 MiddleY = MapHeight/2
 
@@ -237,6 +239,7 @@ global Box as boxType	`for FOW Offset
 `SOUNDS
 global AcknowledgedSound
 global BangSound
+global BoingSound
 global BuildBaseSound
 global ClickSound
 global CopySound
@@ -275,22 +278,22 @@ global TargetSound
 global VictorySound
 global YesSirSound
 
-BangSound = LoadSound("bang2.wav")
-BuildBaseSound = LoadSound( "HoverbikeEnd.wav" )
-ClickSound = LoadSound("PlasticClick.wav")
+BangSound = LoadSoundOGG("bang2.ogg")
+BoingSound = LoadSoundOGG("JumpBoing_01.ogg")
+BuildBaseSound = LoadSoundOGG( "HoverbikeEnd.ogg" )
+ClickSound = LoadSoundOGG("PlasticClick.ogg")
 DeActivateSound = LoadSoundOGG( "DeactivateBeep.ogg" )
-DefeatSound = LoadSound("Defeat.wav")
+DefeatSound = LoadSoundOGG("Defeat.ogg")
 DisruptorSound = LoadSoundOGG("DISRUPTOR.ogg")
 EMPSound = LoadSoundOGG("EMP.ogg")
 EngineerSound = LoadSoundOGG("MotorClose_01_01.ogg")
 EngineSound = LoadSoundOGG( "Jet2_01.ogg" )
-EnterSound = LoadSound("PickUpHeavy.wav")
+EnterSound = LoadSoundOGG("PickUpHeavy.ogg")
 ErrorSound = LoadSoundOGG("EdgeHit2.ogg")
-ExplodeSound = LoadSound("explode.wav")
+ExplodeSound = LoadSoundOGG("explode.ogg")
 ExplodingSound = LoadSoundOGG("LightningBolt.ogg")
-//~ ExplodingSound = LoadSoundOGG("Exploding.ogg")
-HealSound = LoadSound("HealGlassy.wav")
-HeavyLaserSound = LoadSound( "BeamElectro_01.wav" )
+HealSound = LoadSoundOGG("HealGlassy.ogg")
+HeavyLaserSound = LoadSoundOGG( "BeamElectro_01.ogg" )
 InterdictSound = LoadSoundOGG("Interdict.ogg")
 LaserSound = LoadSoundOGG( "laser3.ogg" )
 LightningSound = LoadSoundOGG("LightningBolt.ogg")
@@ -298,16 +301,16 @@ LockOnSound = LoadSoundOGG( "Locked On_01.ogg" )
 LoganSound = LoadSoundOGG("Logan.ogg" )
 MachineGunSound = LoadSoundOGG( "MachineGun.ogg" )
 MechSound = LoadSoundOGG("WalkerStompLow.ogg")
-MineBangSound = LoadSound("ExplosionPlain.wav")
-MineSound = LoadSound("TripodDestroyed.wav")
+MineBangSound = LoadSoundOGG("ExplosionPlain.ogg")
+MineSound = LoadSoundOGG("TripodDestroyed.ogg")
 MusicSound = LoadMusicOGG( "Evil Incoming_01.ogg" )
 RenforcementsSound = LoadSoundOGG("reinforcements.ogg")
 RocketSound = LoadSoundOGG("rocket.ogg" )
-SaboSound = LoadSound("ExitOpenAztec.wav")
-SpawnSound = LoadSound("LevelOnSinister.wav")
+SaboSound = LoadSoundOGG("ExitOpenAztec.ogg")
+SpawnSound = LoadSoundOGG("LevelOnSinister.ogg")
 TankSound = LoadSoundOGG("Rumble2.ogg")
 TargetSound = LoadSoundOGG("Target Acquired_01.ogg" )
-VictorySound = LoadSound("MagicReveal.wav")
+VictorySound = LoadSoundOGG("MagicReveal.ogg")
 
 YesSirSound = LoadSoundOGG( "YesSirProcessed_01.ogg" )
 CopySound = LoadSoundOGG( "CopyProcessed_01.ogg" )
@@ -338,6 +341,7 @@ function SoundVolume()
 	EngineerVolume = vol*.1
 	MechVolume = vol*.07
 	SetSoundInstanceVolume( BangSound, vol )
+	SetSoundInstanceVolume( BoingSound, vol )
 	SetSoundInstanceVolume( BuildBaseSound, vol )
 	SetSoundInstanceVolume( ClickSound, vol )
 	SetSoundInstanceVolume( DeActivateSound, vol )
@@ -1098,9 +1102,9 @@ WaterButt.h = dev.buttSize
 
 InfoButt.ID = 24
 InfoButt.x = MiddleX
-InfoButt.h = 52
-InfoButt.y = acceptButt.y + ((dev.buttSize-InfoButt.h)/2)
-InfoButt.w = dev.buttSize
+InfoButt.h = dev.buttSize
+InfoButt.y = acceptButt.y -(dev.scale*2)
+InfoButt.w = InfoButt.h
 
 XButt.ID = 25
 XButt.x = MaxWidth-dev.buttSize
