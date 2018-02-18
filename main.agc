@@ -6,12 +6,11 @@ remstart
 	ISSUES/REVISIONS
 	--- BETTER AI DECISIONS?
 			PLACEMENT RELATIVE TO ENEMY
-			ENGINEER PROTECTION
-			--VERY REPETITIVE MOVEMENT PATTERNS??
+			VERY REPETITIVE MOVEMENT PATTERNS??
 	--- SPRITECONS  BEHAVING STRANGELY - STICK TO SCREEN - UNITS NOT SELECTED SHOW UP IN GAME (MEDIUM TANK?)
 
 	--- DOES WATER BLOCK LOS??????!!!!!!
-	--- POKE SOUND
+	--- STATS
 
 	FIXED?
 	--- SLUGGISH BUTTON REACTION ON iOS
@@ -688,7 +687,6 @@ function DefeatParticles()
 	AddParticlesColorKeyFrame( part,  8, 255, 255, 255, 128 )
 	AddParticlesColorKeyFrame( part, 16, 255, 255, 255, 0 )
 endfunction part
-
 
 function BlowItUp( ID,Tank as tankType[] )
 	PlaySound( ExplodeSound,vol )

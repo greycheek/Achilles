@@ -4,11 +4,9 @@ function MainMenu()
 	Setup()
 	t as integer[2]
 	t = PatrolMech(t)
-	ut# = GetUpdateTime()
-	ft# = GetFrameTime()
 	do
 		if GetPointerPressed()	`poke the mech
-			if GetSpriteinCircle(MechGuy[0].bodyID,GetPointerX(),GetPointerY(),NodeSize)
+			if GetSpriteinCircle(MechGuy[0].bodyID,GetPointerX(),GetPointerY(),NodeSize/2)
 				PlaySound(BoingSound,vol)
 				Halt(t[0],t[1],t[2])
 				MechGuy[0].x = GetSpriteXByOffset(MechGuy[0].turretID)
@@ -20,18 +18,31 @@ function MainMenu()
 			endif
 		endif
 		if not GetTweenSpritePlaying( t[0],MechGuy[0].bodyID ) then t = PatrolMech(t)
-		UpdateAllTweens( ft# )
+		UpdateAllTweens( GetFrameTime() )
 		Sync()
-		info = GetVirtualButtonReleased( InfoButt.ID ) or GetRawKeyPressed( 0x49 ) `I
-		Update( ut# )
-		cancel = GetVirtualButtonReleased( cancelButt.ID ) or GetRawKeyPressed( 0x51 ) `Q
-		Update( ut# )
-		accept = GetVirtualButtonReleased( acceptButt.ID ) or GetRawKeyPressed( Enter )
-		Update( ut# )
-		settings = GetVirtualButtonReleased( settingsButt.ID ) or GetRawKeyPressed( 0x53 ) `S
-		if cancel
-			if Confirm( "Quit?",QuitText ) then end
-		elseif settings
+		if GetVirtualButtonReleased( InfoButt.ID ) or GetRawKeyPressed( 0x49 ) `I
+			PlaySound( ClickSound,vol )
+			ButtonState(acceptButt.ID,Off)
+			ButtonState(cancelButt.ID,Off)
+			ButtonState(settingsButt.ID,Off)
+			ShowInfoTables()
+			ButtonState(acceptButt.ID,On)
+			ButtonState(cancelButt.ID,On)
+			ButtonState(settingsButt.ID,On)
+			continue
+		endif
+		Update( GetUpdateTime() )
+		if GetVirtualButtonReleased( cancelButt.ID ) or GetRawKeyPressed( 0x51 ) `Q
+			if Confirm( "Quit?",QuitText ) then end else continue
+		endif
+		Update( GetUpdateTime() )
+		if GetVirtualButtonReleased( acceptButt.ID ) or GetRawKeyPressed( Enter )
+			PlaySound( ClickSound,vol )
+			GameSetup()
+			exitfunction
+		endif
+		Update( GetUpdateTime() )
+		if GetVirtualButtonReleased( settingsButt.ID ) or GetRawKeyPressed( 0x53 ) `S
 			PlaySound( ClickSound,vol )
 			ButtonState(InfoButt.ID,Off)
 			AlertButtons( acceptButt.x,acceptButt.y,cancelButt.x,cancelButt.y,dev.buttSize,acceptButt.ID,cancelButt.ID )
@@ -43,19 +54,6 @@ function MainMenu()
 			SetSpriteActive( Logo, On )
 			SetSpriteDepth( Logo,0 )
 			ButtonState(InfoButt.ID,On)
-		elseif accept
-			PlaySound( ClickSound,vol )
-			GameSetup()
-			exitfunction
-		elseif info
-			PlaySound( ClickSound,vol )
-			ButtonState(acceptButt.ID,Off)
-			ButtonState(cancelButt.ID,Off)
-			ButtonState(settingsButt.ID,Off)
-			ShowInfoTables()
-			ButtonState(acceptButt.ID,On)
-			ButtonState(cancelButt.ID,On)
-			ButtonState(settingsButt.ID,On)
 		endif
 	loop
 endfunction

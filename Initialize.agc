@@ -29,7 +29,7 @@ function VehicleImage( ID, Tank ref as tankType[] )
 			Tank[ID].turret$ = "MISSILETURRET.png"
 		endcase
 		case Mech
-			Tank[ID].body$ = "MechAtlas3.png"
+			Tank[ID].body$ = "MechAtlas.png"
 			Tank[ID].turret$ = "MechTurret.png"
 		endcase
 		case Engineer
@@ -300,8 +300,8 @@ function TankSetup(ID,Tank ref as tankType[],pick as ColorSpec)
 			SetSpriteDepth( Tank[ID].turretID,2 )
 			SetSpriteDepth( Tank[ID].bodyID,2 )
 		endcase
-		case Mech 	    : SetSpriteAnimation( Tank[ID].bodyID,197,169,15 ) : endcase
-		case Engineer   : SetSpriteAnimation( Tank[ID].bodyID,200,200,16 ) : endcase
+		case Mech 	  : SetSpriteAnimation( Tank[ID].bodyID,357,321,15 ) : endcase
+		case Engineer : SetSpriteAnimation( Tank[ID].bodyID,200,200,16 ) : endcase
 	endselect
 endfunction
 
