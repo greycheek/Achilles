@@ -86,6 +86,12 @@ zoneRadius = FlyRadius * NodeSize
 #constant Sabotage$ = "Sabotage!"			 `eliminate one random unit
 #constant EventNum 21
 
+#constant SupplyFile$ = "Crates.png"
+#constant ReinforcementFile$ = "Reinforcements.png"
+#constant WeatherFile$ = ""
+#constant InterdictionFile$ = "STEALTH BOMBER.png"
+#constant SabotageFile$ = ""
+
 global casualties as integer = Null
 global reinforce as integer = 1
 global weather as float = 1
@@ -119,6 +125,19 @@ global turns as integer = 0
 global offset as integer[8]=[north,northwest,east,southwest,south,southeast,west,northeast]
 global angle  as integer[8]=[0,45,90,135,180,225,270,315]
 
+
+`STATS
+type StatType
+	rounds
+	basesLost
+	basesCaptured
+	unitsLost
+	unitsCreated
+	unitsDestroyed
+endtype
+global Stats as StatType
+
+
 `TEXT
 #constant TurnText 0
 #constant HitText 1
@@ -150,8 +169,8 @@ global angle  as integer[8]=[0,45,90,135,180,225,270,315]
 #constant Gill 50
 #constant Avenir 60
 #constant WeaponText 100
-#constant StatText 200
-
+#constant UnitStatText 200
+#constant StatText 300
 
 `SPRITES
 #constant PlayerTankGroup 1
@@ -413,7 +432,7 @@ weapon$[5,0] = "MISSILES  range --, damage 40%, rounds 5"
 weapon$[5,1] = "DISRUPTOR  range 4, damage 40%**, rounds --"
 weapon$[5,2] = "** affects all enemy & friendly units in range"
 weapon$[6,0] = "MINES  range 0, damage 40%, rounds 4"
-weapon$[6,1] = "EMP  range 3, damage **, rounds 4"
+weapon$[6,1] = "EMP  range 4, damage **, rounds 4"
 weapon$[6,2] = "** disables enemy & friendly units for 1 turn"
 
 movement$[1,0] = "MOVES  8, NO TERRAIN MOVEMENT PENALTY"
@@ -421,7 +440,7 @@ movement$[2,0] = "MOVES  7, PENALTY: Rough -1, Trees -2"
 movement$[3,0] = "MOVES  5, PENALTY: Rough -1, Trees -2"
 movement$[4,0] = "MOVES  3, PENALTY: Rough -1, Trees -2"
 movement$[5,0] = "MOVES  4, PENALTY: Rough -1, Trees -2"
-movement$[6,0] = "MOVES  3, NO TERRAIN MOVEMENT PENALTY"
+movement$[6,0] = "MOVES  4, NO TERRAIN MOVEMENT PENALTY"
 
 cost$[1,0] = "UNIT COST  200"
 cost$[2,0] = "UNIT COST  250"
@@ -507,7 +526,7 @@ global mineRange as integer = 0
 #constant emp 6
 #constant empDamage 0
 global empRange as integer
-empRange = nodeSize * 5
+empRange = nodeSize * 4
 
 #constant disruptor 7
 #constant disruptorDamage .4
@@ -858,6 +877,7 @@ global Button15 as buttonType
 global Button20 as buttonType
 global Button25 as buttonType
 global ONOFF as buttonType
+global StatButt as buttontype
 
 type alertType
 	ID
@@ -1124,6 +1144,12 @@ Button25.ID = 31
 
 ONOFF.ID = 32
 
+StatButt.ID = 33
+StatButt.x = settingsButt.x-(dev.buttSize*1.15)
+StatButt.y = acceptButt.y
+StatButt.h = dev.buttSize
+StatButt.w = dev.buttSize
+
 
 `button images
 cancelButt.UP = InterfaceSeries+4
@@ -1283,6 +1309,8 @@ Button25.DN = InterfaceSeries+83
 ONOFF.UP = InterfaceSeries+84
 ONOFF.DN = InterfaceSeries+85
 
+StatButt.UP = InterfaceSeries+86
+StatButt.DN = InterfaceSeries+87
 
 
 MusicScale.x = MiddleX+95

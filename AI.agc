@@ -58,10 +58,10 @@ function FindEnemy(ID)
 		if not PlayerTank[j].alive then continue
 
 		if GetSpriteInBox( PlayerTank[j].bodyID,box.x1,box.y1,box.x2,box.y2 )
-			//~ if not GetSpriteVisible(AITank[ID].bodyID)
-				//~ SetSpriteVisible(AITank[ID].bodyID,On)
-				//~ SetSpriteVisible(AITank[ID].turretID,On)
-			//~ endif
+						//~ if not GetSpriteVisible(AITank[ID].bodyID)
+							//~ SetSpriteVisible(AITank[ID].bodyID,On)
+							//~ SetSpriteVisible(AITank[ID].turretID,On)
+						//~ endif
 			vd = VectorDistance(AITank[ID].x,AITank[ID].y,PlayerTank[j].x,PlayerTank[j].y)
 			if vd < ShortestDistance
 				ShortestDistance = vd
@@ -104,6 +104,10 @@ function AITarget()
 							next j
 							if not friendly
 								WeaponSelect( i,AITank,emp,empRange,empDamage )
+											if not GetSpriteVisible(AITank[i].bodyID)
+												SetSpriteVisible(AITank[i].bodyID,On)
+												SetSpriteVisible(AITank[i].turretID,On)
+											endif
 								Fire( AITank,PlayerTank,i,Null )
 							endif
 							continue
@@ -149,6 +153,10 @@ function AITarget()
 						continue
 					endif
 					AITank[i].target = AITank[i].NearestPlayer
+									if not GetSpriteVisible(AITank[i].bodyID)
+										SetSpriteVisible(AITank[i].bodyID,On)
+										SetSpriteVisible(AITank[i].turretID,On)
+									endif
 					Fire( AITank,PlayerTank,i,AITank[i].NearestPlayer )
 				else
 					AITank[i].target = Undefined
@@ -161,6 +169,8 @@ endfunction
 function AIFOW(ID)
 	for i = 0 to PlayerLast
 		if PlayerTank[i].alive and GetSpriteInCircle(AITank[ID].bodyID,PlayerTank[i].x,PlayerTank[i].y,PlayerTank[i].FOWOffset-NodeSize)
+					//~ if PlayerTank[i].alive and GetSpriteInCircle(AITank[ID].bodyID,PlayerTank[i].x,PlayerTank[i].y,PlayerTank[i].FOWOffset)
+
 			RevealAIUnit(ID)
 			exitfunction True
 		endif
@@ -178,18 +188,16 @@ function GoalSet(ID,vehicle)
 			if VisitDepot(ID)  then exitfunction
 			if AttackBase(ID)  then exitfunction
 			if ProtectBase(ID) then exitfunction
-			DefaultGoal(ID,1)
 		endcase
 		case Battery
 			if VisitDepot(ID) then exitfunction
 			if AttackBase(ID) then exitfunction
-			DefaultGoal(ID,1)
 		endcase
 		case Engineer
 			if VisitDepot(ID) then exitfunction
-			DefaultGoal(ID,1)
 		endcase
 	endselect
+	DefaultGoal(ID,1)
 endfunction
 
 function VisitDepot(ID)
@@ -346,6 +354,7 @@ function AIOps()
 					if AITank[i].node <> AITank[i].goalNode
 						SetSpriteVisible(AITank[i].healthID,Off)
 						Fly( i,AITank,AITank[i].node,AITank[i].goalNode )
+									AIFOW(i)
 						if GetSpriteVisible( AITank[i].bodyID ) then Hover( i,AITank,AITank[i].goalNode )
 						MineField( i,AITank )
 					endif
@@ -363,6 +372,7 @@ function AIOps()
 						exit
 					else
 						Move( i,AITank,AITank[i].parentNode[AITank[i].index],nextMove )
+									AIFOW(i)
 						if MineField( i,AITank ) then exit
 					endif
 				else
@@ -376,7 +386,7 @@ function AIOps()
 			if not GetTweenTextPlaying( tt,MovingText ) then tt = TweenText( MovingText,Null,Null,Null,Null,255,0,Null,Null,Null,Null,1,0,2 )
 		loop
 		PlayerBaseCapture()
-		AIFOW(i)
+		//~ AIFOW(i)
 	next i
 	DeleteText(MovingText)
 	for i = 0 to AIPlayerLast

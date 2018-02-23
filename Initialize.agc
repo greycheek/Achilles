@@ -227,7 +227,7 @@ function TankSetup(ID,Tank ref as tankType[],pick as ColorSpec)
 			Tank[ID].range = empRange
 			Tank[ID].damage = empDamage
 			Tank[ID].rounds = 4
-			Tank[ID].movesAllowed = 3
+			Tank[ID].movesAllowed = 4
 			Tank[ID].health = EngineerHealthMax
 			Tank[ID].minimumHealth = EngineerHealthMax *.33
 			Tank[ID].maximumHealth = EngineerHealthMax

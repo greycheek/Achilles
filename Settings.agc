@@ -356,6 +356,24 @@ function Setup()
 	smokeImage=loadimage("Smoke4a.png")
 	whiteSmokeImage=loadimage("Smoke5.png")
 
+	if GetFileExists( "stats" )
+		StatFile = OpenToRead( "stats" )
+		Stats.rounds = ReadInteger( StatFile )
+		Stats.basesLost = ReadInteger( StatFile )
+		Stats.basesCaptured = ReadInteger( StatFile )
+		Stats.unitsLost = ReadInteger( StatFile )
+		Stats.unitsCreated = ReadInteger( StatFile )
+		Stats.unitsDestroyed = ReadInteger( StatFile )
+		CloseFile( StatFile )
+	else
+		Stats.rounds = 0
+		Stats.basesLost = 0
+		Stats.basesCaptured = 0
+		Stats.unitsLost = 0
+		Stats.unitsCreated = 0
+		Stats.unitsDestroyed = 0
+	endif
+
 	dim AIgrid[Cells] as gridType
 	dim PlayerGrid[Cells] as gridType
 	dim SpriteCon[SpriteConUnits] as dialogTankType
@@ -590,6 +608,9 @@ function Setup()
 	SetSpriteSize( IrisGlow,140,162 )
 	SetSpritePosition( IrisGlow,((MaxWidth-GetSpriteWidth(IrisGlow))/2)+2,228)
 	SetSpriteDepth( IrisGlow,3 )
+
+
+	LoadButton(StatButt.ID,StatButt.UP,StatButt.DN,"StatsUp.png","StatsDown.png",StatButt.x,StatButt.y,StatButt.w,On)
 
 	LoadButton(InfoButt.ID,InfoButt.UP,InfoButt.DN,"InfoUp.png","InfoDown.png",InfoButt.x,InfoButt.y,InfoButt.w,On)
 	LoadButton(XButt.ID,XButt.UP,XButt.DN,"Xup.png","Xdown.png",XButt.x,XButt.y,XButt.w,Off)

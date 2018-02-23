@@ -9,10 +9,15 @@ remstart
 			VERY REPETITIVE MOVEMENT PATTERNS??
 	--- SPRITECONS  BEHAVING STRANGELY - STICK TO SCREEN - UNITS NOT SELECTED SHOW UP IN GAME (MEDIUM TANK?)
 
-	--- DOES WATER BLOCK LOS??????!!!!!!
-	--- STATS
+	--- LOS STILL GETTING BLOCKED !!!!!!
+	--- FIRING ON INVISIBLE UNIT GENERATES "NOT IN LOS" MESSAGE
 
 	FIXED?
+	--- INVISIBLE UNITS OUT OF FOW ??????!!!!!
+			REMOVED AIFOW FROM AIOPS
+			SEE FINDENEMY - FIXED? - PLACE THIS CALL SOMEWHERE ELSE?
+	--- AI ENGINEER EMP RANGE IS BASED ON MOVES ALLOWED???
+			made empRange and movesAlowwed equal (4)
 	--- SLUGGISH BUTTON REACTION ON iOS
 	--- MINE PLACEMENT IN FRIENDLY BASES - CHECK DETONATION AS RELATES TO BASE CAPTURE
 	--- TARGET NODES CONTAINING TREES BLOCK LOS
@@ -123,30 +128,37 @@ function Blockage(ID,Tank as tankType[],x1,y1,x2,y2) `blocked movement
 	if cover then SetSpriteVisible(Tank[ID].cover,On)
 endfunction
 
+//~ RandomEvent[0] = Supply$
+//~ RandomEvent[1] = Reinforcement$
+//~ RandomEvent[2] = Weather$
+//~ RandomEvent[3] = Interdiction$
+//~ RandomEvent[4] = Sabotage$
+
 function EventCheck()
 	reinforce = 1
 	weather = 1
 	casualties = Null
-	Event$ = RandomEvent[ Random2(0,EventNum-1) ]
+	//~ Event$ = RandomEvent[ Random2(0,EventNum-1) ]
+	Event$ = Supply$
 	select Event$
 		case Weather$
 			PlaySound( LightningSound,vol )
 			weather = .5
-			EventDialog( Weather$,"Movement halved" )
+			EventDialog( Weather$,"Movement halved",WeatherFile$ )
 		endcase
 		case Interdiction$
 			PlaySound( InterdictSound,vol )
 			casualties = 1
-			EventDialog( Interdiction$,"Production halted" )
+			EventDialog( Interdiction$,"Production halted",InterdictionFile$ )
 		endcase
 		case Reinforcement$
 			PlaySound( RenforcementsSound,vol )
 			reinforce = 2
-			EventDialog( Reinforcement$,"Production doubled" )
+			EventDialog( Reinforcement$,"Production doubled",ReinforcementFile$ )
 		endcase
 		case Supply$
 			PlaySound( LoganSound,vol )
-			EventDialog( Supply$,"All units repaired" )
+			EventDialog( Supply$,"All units repaired",SupplyFile$ )
 			for i = 0 to PlayerLast
 				if PlayerTank[i].alive then Repair( i,PlayerTank,PlayerDepotNode,PlayerTank[i].maximumHealth )
 			next i
@@ -169,7 +181,7 @@ function RandomKill( Tank as tanktype[],last )
 	Zoom(1,0,0,On,1)
 	dragMode = False
 	PlaySound( SaboSound,vol )
-	EventDialog( Sabotage$,"One unit destroyed" )
+	EventDialog( Sabotage$,"One unit destroyed",SabotageFile$ )
 	for i = 0 to last
 		if Tank[i].alive then unit.insert(i)
 	next i
@@ -177,16 +189,27 @@ function RandomKill( Tank as tanktype[],last )
 	KillTank( ID,Tank )
 endfunction
 
-function EventDialog(t1$,t2$)
-	Zoom(1,0,0,On,1)
+function EventDialog( t1$,t2$,i$ )
+	Zoom( 1,0,0,On,1 )
 	dragMode = False
-	TSize = 32*dev.scale
-	t1 = CreateText(t1$)
-	t2 = CreateText(t2$)
+	TSize = 32 * dev.scale
+	t1 = CreateText( t1$ )
+	t2 = CreateText( t2$ )
 	SetText( t1,alertDialog.x,alertDialog.y+TSize,255,25,25,TSize,255,0 )
-	SetText( t2,alertDialog.x,alertDialog.y+(TSize*3),50,50,50,TSize,255,0 )
+	SetText( t2,alertDialog.x,alertDialog.y+(TSize*2),50,50,50,TSize,255,0 )
 	AlertDialog( t1,On,alertDialog.x-TSize,alertDialog.y,alertDialog.w+(TSize*2),alertDialog.h )
 	SetVirtualButtonPosition( cancelButt.ID,alertDialog.accept.x+TSize,alertDialog.accept.y )
+
+	thumbnailImage = LoadImage( i$ )
+	thumbnail = CreateSprite( thumbnailImage )
+	thumbnailSize = 90 * dev.scale
+	SetSpriteTransparency( thumbnail, 1 )
+	SetSpriteVisible( thumbnail, 0 )
+	SetSpriteDepth ( thumbnail, 0 )
+	SetSpriteSize( thumbnail,thumbnailSize,thumbnailSize )
+	SetSpritePosition( thumbnail,alertDialog.x,alertDialog.y+alertDialog.h-(thumbnailSize*1.5) )
+	SetSpriteVisible( thumbnail,On )
+
 	repeat
 		Sync()
 	until GetVirtualButtonPressed( cancelButt.ID ) or GetRawKeyState( Enter )
@@ -194,7 +217,8 @@ function EventDialog(t1$,t2$)
 	PlaySound( ClickSound,vol )
 	SetVirtualButtonPosition( cancelButt.ID,cancelButt.X,cancelButt.Y )
 	AlertDialog( t1,Off,alertDialog.x,alertDialog.y,alertDialog.w,alertDialog.h )
-	DeleteText(t2)
+	DeleteText( t2 )
+	DeleteSprite( thumbnail )
 endfunction
 
 function SetFOWbox( ID, Tank as tankType[] )
@@ -583,8 +607,9 @@ function PlayerBaseCapture()
 				SetSpriteVisible(AITank[i].turretID,On)
 				dec PlayerBaseCount
 				inc AIBaseCount
-					AIBases.length = AIBases.length + 1
-					CaptureBase( j,AIBases.length,pickAI,AIBases,PlayerBases,AIBase,AIBaseGroup )
+						inc Stats.basesLost
+				AIBases.length = AIBases.length + 1
+				CaptureBase( j,AIBases.length,pickAI,AIBases,PlayerBases,AIBase,AIBaseGroup )
 				if PlayerBaseCount = -1 then GameOver( DefeatText,255,255,255,"DEFEAT",DefeatSound )
 				exit
 			endif
@@ -599,8 +624,9 @@ function AIBaseCapture()
 			if PlayerTank[i].parentNode[PlayerTank[i].index] = AIBases[j].node
 				dec AIBaseCount
 				inc PlayerBaseCount
-					PlayerBases.length = PlayerBases.length + 1
-					CaptureBase( j,PlayerBases.length,pickPL,PlayerBases,AIBases,PlayerBase,BaseGroup )
+						inc Stats.basesCaptured
+				PlayerBases.length = PlayerBases.length + 1
+				CaptureBase( j,PlayerBases.length,pickPL,PlayerBases,AIBases,PlayerBase,BaseGroup )
 				if AIBaseCount = -1 then GameOver( VictoryText,0,0,0,"VICTORY",VictorySound )
 				exit
 			endif
@@ -726,8 +752,10 @@ function KillTank( defID,Tank ref as tankType[] )
 		DeleteSprite( Tank[defID].FOW )
 		DeleteSprite( Tank[defID].hilite )
 		dec PlayerSurviving
+			inc Stats.unitsLost
 	else
 		dec AISurviving
+			inc Stats.unitsDestroyed
 	endif
 	mapTable[Tank[defID].moveTarget].moveTarget = False  `clear target  if Tank[defID].moveTarget then
 

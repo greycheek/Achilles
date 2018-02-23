@@ -7,7 +7,7 @@ function MainMenu()
 	do
 		if GetPointerPressed()	`poke the mech
 			if GetSpriteinCircle(MechGuy[0].bodyID,GetPointerX(),GetPointerY(),NodeSize/2)
-				PlaySound(BoingSound,vol)
+				PlaySound( BoingSound,vol )
 				Halt(t[0],t[1],t[2])
 				MechGuy[0].x = GetSpriteXByOffset(MechGuy[0].turretID)
 				MechGuy[0].y = GetSpriteYByOffset(MechGuy[0].turretID)
@@ -25,15 +25,50 @@ function MainMenu()
 			ButtonState(acceptButt.ID,Off)
 			ButtonState(cancelButt.ID,Off)
 			ButtonState(settingsButt.ID,Off)
+			ButtonState(StatButt.ID,Off)
 			ShowInfoTables()
 			ButtonState(acceptButt.ID,On)
 			ButtonState(cancelButt.ID,On)
 			ButtonState(settingsButt.ID,On)
+			ButtonState(StatButt.ID,On)
+			continue
+		endif
+		if GetVirtualButtonReleased( StatButt.ID ) or GetRawKeyPressed( 0x54 ) `T
+			PlaySound( ClickSound,vol )
+			margin = 15 * dev.scale
+			SetupSprite( AlertBackGround,AlertBackGround,"Yes-NoBkgnd.png",mapSlotDialog.x,mapSlotDialog.y,mapSlotDialog.w,mapSlotDialog.h,0,On,0 )
+			SetSpriteActive( AlertBackGround,On )
+			SetSpriteVisible( AlertBackGround,On )
+			SetVirtualButtonPosition( acceptButt.ID,mapSlotDialog.cancel.x-margin,mapSlotDialog.cancel.y )
+			x = mapSlotDialog.x + margin
+			y = mapSlotDialog.y + margin
+			TSize = 30*dev.scale
+			Text(StatText,"PLAYER STATISTICS",x,y,0,0,0,TSize,255,0) : inc y,TSize+(10*dev.scale)
+			TSize = 24*dev.scale
+			Text(StatText+1,"Longest Game:  "+str(Stats.rounds)+" turns",x,y,0,0,0,TSize,255,0) : inc y,TSize
+			Text(StatText+2,"Bases Lost:  "+str(Stats.basesLost),x,y,0,0,0,TSize,255,0) : inc y,TSize
+			Text(StatText+3,"Bases Captured:  "+str(Stats.basesCaptured),x,y,0,0,0,TSize,255,0) : inc y,TSize
+			Text(StatText+4,"Units Lost:  "+str(Stats.unitsLost),x,y,0,0,0,TSize,255,0) : inc y,TSize
+			Text(StatText+5,"Units Created:  "+str(Stats.unitsCreated),x,y,0,0,0,TSize,255,0) : inc y,TSize
+			Text(StatText+6,"Enemies Destroyed:  "+str(Stats.unitsDestroyed),x,y,0,0,0,TSize,255,0)
+			repeat
+				Sync()
+			until GetVirtualButtonPressed( acceptButt.ID )
+			WaitForButtonRelease( acceptButt.ID )
+			for i = 0 to 6 : DeleteText(StatText+i) : next i
+			SetSpriteActive( AlertBackGround,Off )
+			SetSpriteVisible( AlertBackGround,Off )
+			SetVirtualButtonPosition( acceptButt.ID,acceptButt.x,acceptButt.y )
 			continue
 		endif
 		Update( GetUpdateTime() )
 		if GetVirtualButtonReleased( cancelButt.ID ) or GetRawKeyPressed( 0x51 ) `Q
-			if Confirm( "Quit?",QuitText ) then end else continue
+			if Confirm( "Quit?",QuitText )
+				WriteStats()
+				end
+			else
+				continue
+			endif
 		endif
 		Update( GetUpdateTime() )
 		if GetVirtualButtonReleased( acceptButt.ID ) or GetRawKeyPressed( Enter )
@@ -56,6 +91,17 @@ function MainMenu()
 			ButtonState(InfoButt.ID,On)
 		endif
 	loop
+endfunction
+
+function WriteStats()
+	StatFile = OpenToWrite( "stats" )
+	if turns > Stats.rounds then WriteInteger( StatFile,turns ) else WriteInteger( StatFile,Stats.rounds )
+	WriteInteger( StatFile,Stats.basesLost )
+	WriteInteger( StatFile,Stats.basesCaptured )
+	WriteInteger( StatFile,Stats.unitsLost )
+	WriteInteger( StatFile,Stats.unitsCreated )
+	WriteInteger( StatFile,Stats.unitsDestroyed )
+	CloseFile( StatFile )
 endfunction
 
 function Halt(ID1,ID2,ID3)
@@ -268,9 +314,11 @@ function DisplaySettings(state)
 	SetSpriteVisible( MechGuy[0].turretID,FlipState )
 	SetSpriteVisible( MechGuy[1].bodyID,FlipState )
 
+	SetVirtualButtonVisible( StatButt.ID,FlipState )
 	SetVirtualButtonVisible( settingsButt.ID,FlipState )
 	SetVirtualButtonVisible( cancelButt.ID,FlipState )
 	SetVirtualButtonVisible( mapButt.ID,state )
+	SetVirtualButtonActive( StatButt.ID,FlipState )
 	SetVirtualButtonActive( settingsButt.ID,FlipState )
 	SetVirtualButtonActive( cancelButt.ID,FlipState )
 	SetVirtualButtonActive( mapButt.ID,state )
@@ -421,14 +469,14 @@ function Compose()
 			hit = GetSpriteHit(x,y)
 			select hit
 				case SpriteCon[1].ID,SpriteCon[2].ID,SpriteCon[3].ID,SpriteCon[4].ID,SpriteCon[5].ID,SpriteCon[6].ID,SpriteCon[7].ID
-					Stats(hit-SpriteConSeries,True,MiddleY+250,30,dev.textSize)
+					ShowUnitStats(hit-SpriteConSeries,True,MiddleY+250,30,dev.textSize)
 					SetRawMouseVisible( Off )
 					clone = CloneSprite( hit )
 					while GetPointerState()
 						SetSpritePositionByOffset( clone,GetPointerX(),GetPointerY() )
 						Sync()
 					endwhile
-					Stats( Null,Null,Null,Null,Null )
+					ShowUnitStats( Null,Null,Null,Null,Null )
 					SetSpriteSize( clone,SpriteConSize,SpriteConSize )
 
 					for i = 1 to 7
@@ -946,6 +994,9 @@ function GameSetup()
 	next i
 	SetVirtualButtonVisible( settingsButt.ID,Off )
 	SetVirtualButtonActive( settingsButt.ID,Off )
+	SetVirtualButtonVisible( StatButt.ID,Off )
+	SetVirtualButtonActive( StatButt.ID,Off )
+
 	StopMusicOGG( MusicSound )
 
 	LoadImage( EMP1,"EMP.png" )

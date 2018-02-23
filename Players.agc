@@ -57,7 +57,7 @@ function BaseProduction( node )
 					SetSpriteColor( SpriteCon[index].ID,255,255,255,255 )
 					lastIndex = index
 					units = PlayerProdUnits-unitCost[index]
-					Stats(index,True,MiddleY-100,30,dev.textSize)
+					ShowUnitStats(index,True,MiddleY-100,30,dev.textSize)
 					if units < 0
 						Text(IllegalText,"Not enough production Units",MaxWidth-AISide,row1-50,0,0,0,dev.textSize,255,2)
 						SetTextBold(IllegalText,On)
@@ -98,7 +98,7 @@ function BaseProduction( node )
 		SetSpriteActive( SpriteCon[i].ID,Off )
 		SetSpriteVisible( SpriteCon[i].ID,Off )
 	next i
-	Stats(Null,Null,Null,Null,Null)
+	ShowUnitStats(Null,Null,Null,Null,Null)
 	DeleteText( ProductionText )
 
 	Zoom(1,0,0,On,1)
@@ -133,6 +133,8 @@ function Spawn( vehicle,node )
 	inc PlayerCount
 	inc PlayerLast
 	inc PlayerSurviving
+			inc Stats.unitsCreated
+
 	ID = PlayerLast
 	PlayerTank.length = PlayerCount
 
@@ -190,24 +192,24 @@ function Spawn( vehicle,node )
 	SetSpriteAngle(PlayerTank[ID].turretID,90)
 endfunction ID
 
-function Stats(unit,postStats,y,yOffset,textSize)
-	if GetTextExists( StatText )
-		for j = 0 to UnitTypes+1 : DeleteText(StatText+j) : next j
+function ShowUnitStats(unit,postStats,y,yOffset,textSize)
+	if GetTextExists( UnitStatText )
+		for j = 0 to UnitTypes+1 : DeleteText(UnitStatText+j) : next j
 	endif
 	if postStats
-		Text(StatText,type$[unit,0],65,y,0,0,0,textSize,255,0)
-		SetTextBold(StatText,On)
-		Text(StatText+1,cost$[unit,0],65,y+yOffset,0,0,0,textSize,255,0)
-		Text(StatText+2,armor$[unit,0],65,y+(yOffset*2),0,0,0,textSize,255,0)
-		Text(StatText+3,movement$[unit,0],65,y+(yOffset*3),0,0,0,textSize,255,0)
-		Text(StatText+4,weapon$[unit,0],65,y+(yOffset*4),0,0,0,textSize,255,0)
+		Text(UnitStatText,type$[unit,0],65,y,0,0,0,textSize,255,0)
+		SetTextBold(UnitStatText,On)
+		Text(UnitStatText+1,cost$[unit,0],65,y+yOffset,0,0,0,textSize,255,0)
+		Text(UnitStatText+2,armor$[unit,0],65,y+(yOffset*2),0,0,0,textSize,255,0)
+		Text(UnitStatText+3,movement$[unit,0],65,y+(yOffset*3),0,0,0,textSize,255,0)
+		Text(UnitStatText+4,weapon$[unit,0],65,y+(yOffset*4),0,0,0,textSize,255,0)
 		select unit
 			case MediumTank,HeavyTank
-				Text(StatText+5,weapon$[unit,1],65,y+(yOffset*5),0,0,0,textSize,255,0)
+				Text(UnitStatText+5,weapon$[unit,1],65,y+(yOffset*5),0,0,0,textSize,255,0)
 			endcase
 			case Engineer,Mech
-				Text(StatText+5,weapon$[unit,1],65,y+(yOffset*5),0,0,0,textSize,255,0)
-				Text(StatText+6,weapon$[unit,2],65,y+(yOffset*6),0,0,0,textSize,255,0)
+				Text(UnitStatText+5,weapon$[unit,1],65,y+(yOffset*5),0,0,0,textSize,255,0)
+				Text(UnitStatText+6,weapon$[unit,2],65,y+(yOffset*6),0,0,0,textSize,255,0)
 			endcase
 		endselect
 	endif
@@ -465,7 +467,10 @@ function GetInput()
 			Zoom(1,0,0,On,1)
 			WaitForButtonRelease( cancelButt.ID )
 			ButtonActivation(On)
-			if Confirm("Back to Menu?",QuitText) then Main()
+			if Confirm("Back to Menu?",QuitText)
+						WriteStats()
+				Main()
+			endif
 			zoomFactor = 1
 			ButtonActivation(Off)
 			continue
@@ -507,9 +512,9 @@ function GetInput()
 			elseif baseID and ( selection = Undefined ) and ( mapTable[pointerNode].moveTarget = False )
 				PlaySound( ClickSound,vol )
 				if PlayerSurviving = UnitLimit
-					EventDialog("Unit Maximum",Null$)
+					EventDialog("Unit Maximum",Null$,Null$)
 				elseif casualties
-					EventDialog(Interdiction$,"Production halted")
+					EventDialog(Interdiction$,"Production halted",InterdictionFile$)
 				else
 					Markers(Off)
 					selection = BaseProduction( pointerNode )
