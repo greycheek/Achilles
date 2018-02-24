@@ -88,9 +88,9 @@ zoneRadius = FlyRadius * NodeSize
 
 #constant SupplyFile$ = "Crates.png"
 #constant ReinforcementFile$ = "Reinforcements.png"
-#constant WeatherFile$ = ""
+#constant WeatherFile$ = "Weather.png"
 #constant InterdictionFile$ = "STEALTH BOMBER.png"
-#constant SabotageFile$ = ""
+#constant SabotageFile$ = "Sabotage.png"
 
 global casualties as integer = Null
 global reinforce as integer = 1
@@ -167,7 +167,7 @@ global Stats as StatType
 #constant ONOFFText 26
 
 #constant Gill 50
-#constant Avenir 60
+#constant AvenirCond 60
 #constant WeaponText 100
 #constant UnitStatText 200
 #constant StatText 300

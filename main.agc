@@ -46,8 +46,8 @@ SetWindowSize( MaxWidth,MaxHeight,1,1 )
 MaximizeWindow()
 SetWindowPosition( 0,0 )
 SetOrientationAllowed( 0, 0, 1, 1 )
-LoadFont( Avenir,"Avenir Next.ttc" )
-UseNewDefaultFonts( On )
+LoadFont( AvenirCond,"Avenir Next Condensed.ttc" )
+UseNewDefaultFonts(On)
 SetPhysicsWallTop(Off)
 SetPhysicsWallBottom(Off)
 SetPhysicsWallLeft(Off)
@@ -139,7 +139,7 @@ function EventCheck()
 	weather = 1
 	casualties = Null
 	//~ Event$ = RandomEvent[ Random2(0,EventNum-1) ]
-	Event$ = Supply$
+	Event$ = Sabotage$
 	select Event$
 		case Weather$
 			PlaySound( LightningSound,vol )
@@ -202,10 +202,10 @@ function EventDialog( t1$,t2$,i$ )
 
 	thumbnailImage = LoadImage( i$ )
 	thumbnail = CreateSprite( thumbnailImage )
-	thumbnailSize = 90 * dev.scale
-	SetSpriteTransparency( thumbnail, 1 )
-	SetSpriteVisible( thumbnail, 0 )
-	SetSpriteDepth ( thumbnail, 0 )
+	thumbnailSize = 90 * (dev.scale*1.15)
+	SetSpriteTransparency( thumbnail,1 )
+	SetSpriteVisible( thumbnail,0 )
+	SetSpriteDepth ( thumbnail,0 )
 	SetSpriteSize( thumbnail,thumbnailSize,thumbnailSize )
 	SetSpritePosition( thumbnail,alertDialog.x,alertDialog.y+alertDialog.h-(thumbnailSize*1.5) )
 	SetSpriteVisible( thumbnail,On )
@@ -652,7 +652,7 @@ function GameOver( textID,r,g,b,message$,sound )
 	y1 = y2-(startSize/2)
 
 	Text( textID,message$,MiddleX,y2,r,g,b,startSize,255,1 )
-	SetTextFont( textID,Avenir )
+	SetTextFont( textID,AvenirCond )
 	tt = TweenText( textID,Null,Null,y1,y2,Null,Null,startSize,endSize,beginSpacing,endSpacing,3,Null,TweenEaseIn1() )
 
 	if GetMouseExists() then SetRawMouseVisible( On )
