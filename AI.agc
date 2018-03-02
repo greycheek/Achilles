@@ -189,12 +189,9 @@ function GoalSet(ID,vehicle)
 			if AttackBase(ID)  then exitfunction
 			if ProtectBase(ID) then exitfunction
 		endcase
-		case Battery
+		case Battery, Engineer
 			if VisitDepot(ID) then exitfunction
 			if AttackBase(ID) then exitfunction
-		endcase
-		case Engineer
-			if VisitDepot(ID) then exitfunction
 		endcase
 	endselect
 	DefaultGoal(ID,1)
@@ -337,8 +334,8 @@ endfunction AITank[ID].route
 function AIOps()
 	if AISurviving < UnitLimit then AIBaseProduction()
 	AITarget()
-	Text(MovingText,"moving",MiddleX,MiddleY,255,255,255,36,255,1)
-	tt = TweenText( MovingText,Null,Null,Null,Null,255,0,Null,Null,Null,Null,1,0,2 )
+	Text(MovingText,"moving",MiddleX,MiddleY,255,255,255,36,255,1,On)
+	tt = TweenText( MovingText,Null,Null,Null,Null,255,0,Null,Null,Null,Null,1,0,2,On )
 
 	for i = 0 to AIPlayerLast
 		if not AITank[i].alive then continue
@@ -383,7 +380,7 @@ function AIOps()
 			else
 				exit
 			endif
-			if not GetTweenTextPlaying( tt,MovingText ) then tt = TweenText( MovingText,Null,Null,Null,Null,255,0,Null,Null,Null,Null,1,0,2 )
+			if not GetTweenTextPlaying( tt,MovingText ) then tt = TweenText( MovingText,Null,Null,Null,Null,255,0,Null,Null,Null,Null,1,0,2,Off )
 		loop
 		PlayerBaseCapture()
 		//~ AIFOW(i)

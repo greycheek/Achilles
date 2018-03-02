@@ -43,14 +43,14 @@ function MainMenu()
 			x = mapSlotDialog.x + margin
 			y = mapSlotDialog.y + margin
 			TSize = 30*dev.scale
-			Text(StatText,"PLAYER STATISTICS",x,y,0,0,0,TSize,255,0) : inc y,TSize+(10*dev.scale)
+			Text(StatText,"PLAYER STATISTICS",x,y,0,0,0,TSize,255,0,On) : inc y,TSize+(10*dev.scale)
 			TSize = 24*dev.scale
-			Text(StatText+1,"Longest Game:  "+str(Stats.rounds)+" turns",x,y,0,0,0,TSize,255,0) : inc y,TSize
-			Text(StatText+2,"Bases Lost:  "+str(Stats.basesLost),x,y,0,0,0,TSize,255,0) : inc y,TSize
-			Text(StatText+3,"Bases Captured:  "+str(Stats.basesCaptured),x,y,0,0,0,TSize,255,0) : inc y,TSize
-			Text(StatText+4,"Units Lost:  "+str(Stats.unitsLost),x,y,0,0,0,TSize,255,0) : inc y,TSize
-			Text(StatText+5,"Units Created:  "+str(Stats.unitsCreated),x,y,0,0,0,TSize,255,0) : inc y,TSize
-			Text(StatText+6,"Enemies Destroyed:  "+str(Stats.unitsDestroyed),x,y,0,0,0,TSize,255,0)
+			Text(StatText+1,"Longest Game:  "+str(Stats.rounds)+" turns",x,y,0,0,0,TSize,255,0,Off) : inc y,TSize
+			Text(StatText+2,"Bases Lost:  "+str(Stats.basesLost),x,y,0,0,0,TSize,255,0,Off) : inc y,TSize
+			Text(StatText+3,"Bases Captured:  "+str(Stats.basesCaptured),x,y,0,0,0,TSize,255,0,Off) : inc y,TSize
+			Text(StatText+4,"Units Lost:  "+str(Stats.unitsLost),x,y,0,0,0,TSize,255,0,Off) : inc y,TSize
+			Text(StatText+5,"Units Created:  "+str(Stats.unitsCreated),x,y,0,0,0,TSize,255,0,Off) : inc y,TSize
+			Text(StatText+6,"Enemies Destroyed:  "+str(Stats.unitsDestroyed),x,y,0,0,0,TSize,255,0,Off)
 			repeat
 				Sync()
 			until GetVirtualButtonPressed( acceptButt.ID )
@@ -265,13 +265,13 @@ function CreateGrid(state)
 		//~ SetSpriteVisible( SpriteCon[i].ID,state )
 	//~ next i
 	if state
-		Text(MusicText,"Music",MusicScale.tx,MusicScale.ty,0,0,0,30,255,0)
+		Text(MusicText,"Music",MusicScale.tx,MusicScale.ty,0,0,0,30,255,0,Off)
 		SetTextDepth(MusicText,1)
-		Text(SoundText,"Sound",SoundScale.tx,SoundScale.ty,0,0,0,30,255,0)
+		Text(SoundText,"Sound",SoundScale.tx,SoundScale.ty,0,0,0,30,255,0,Off)
 		SetTextDepth(SoundText,1)
-		Text(ProdUnitText,"Production Units/Base",MusicScale.x,Button5.y-(dev.buttSize*1.1),0,0,0,30,255,0)
+		Text(ProdUnitText,"Production Units/Base",MusicScale.x,Button5.y-(dev.buttSize*1.1),0,0,0,30,255,0,Off)
 		SetTextDepth(ProdUnitText,1)
-		Text(ONOFFText,"Random Events",ONOFF.tx,ONOFF.ty,0,0,0,30,255,0)
+		Text(ONOFFText,"Random Events",ONOFF.tx,ONOFF.ty,0,0,0,30,255,0,Off)
 		SetTextDepth(ONOFFText,1)
 	else
 		DeleteText(MusicText)
@@ -634,7 +634,7 @@ function MapSlotDialog()
 	PlaySound( ClickSound,vol )
 	map$ = ""
 	TSize = (32*dev.scale)
-	Text( MapText,"MAP SAVE SLOTS",mapSlotDialog.x+20,mapSlotDialog.y+20,50,50,50,TSize,255,0 )
+	Text( MapText,"Map Save Slots",mapSlotDialog.x+20,mapSlotDialog.y+20,50,50,50,TSize,255,0,Off )
 	SetVirtualButtonPosition( cancelButt.ID,mapSlotDialog.cancel.x,mapSlotDialog.cancel.y )
 	ButtonState( cancelButt.ID,On )
 	AlertDialog( MapText,On,mapSlotDialog.x,mapSlotDialog.y,mapSlotDialog.w,mapSlotDialog.h )
@@ -687,7 +687,7 @@ endfunction
 function LoadSaveDialog( map$ )
 	PlaySound( ClickSound,vol )
 	TSize = (32*dev.scale)
-	Text( MapText,"MAP SAVE SLOTS",alertDialog.x+(TSize*.85),alertDialog.y+(TSize*.6),50,50,50,TSize,255,0 )
+	Text( MapText,"Map Save Slots",alertDialog.x+(TSize*.85),alertDialog.y+(TSize*.6),50,50,50,TSize,255,0,Off )
 	SetVirtualButtonPosition( cancelButt.ID,mapSaveDialog.cancel.x,mapSaveDialog.cancel.y )
 	AlertDialog( MapText,On,alertDialog.x,alertDialog.y,alertDialog.w,alertDialog.h )
 	MapLoadSaveButtons( On )
@@ -812,7 +812,7 @@ endfunction True
 
 function Confirm( message$,textID )
 	TSize = 36*dev.scale
-	Text( textID,message$,alertDialog.x+(TSize*.85),alertDialog.y+(TSize*.6),50,50,50,TSize,255,0 )
+	Text( textID,message$,alertDialog.x+(TSize*.85),alertDialog.y+(TSize*.6),50,50,50,TSize,255,0,Off )
 	AlertDialog( textID,On,alertDialog.x,alertDialog.y,alertDialog.w,alertDialog.h )
 	AlertButtons( alertDialog.accept.x,alertDialog.accept.y,alertDialog.cancel.x,alertDialog.cancel.y,alertDialog.accept.w,acceptButt.ID,cancelButt.ID )
 	do
@@ -996,6 +996,7 @@ function GameSetup()
 	SetVirtualButtonActive( settingsButt.ID,Off )
 	SetVirtualButtonVisible( StatButt.ID,Off )
 	SetVirtualButtonActive( StatButt.ID,Off )
+		ButtonActivation(Off)
 
 	StopMusicOGG( MusicSound )
 

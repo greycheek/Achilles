@@ -90,7 +90,7 @@ zoneRadius = FlyRadius * NodeSize
 #constant ReinforcementFile$ = "Reinforcements.png"
 #constant WeatherFile$ = "Weather.png"
 #constant InterdictionFile$ = "STEALTH BOMBER.png"
-#constant SabotageFile$ = "Sabotage.png"
+#constant SabotageFile$ = "SabotageII.png"
 
 global casualties as integer = Null
 global reinforce as integer = 1
@@ -167,7 +167,6 @@ global Stats as StatType
 #constant ONOFFText 26
 
 #constant Gill 50
-#constant AvenirCond 60
 #constant WeaponText 100
 #constant UnitStatText 200
 #constant StatText 300
@@ -331,12 +330,12 @@ TankSound = LoadSoundOGG("Rumble2.ogg")
 TargetSound = LoadSoundOGG("Target Acquired_01.ogg" )
 VictorySound = LoadSoundOGG("MagicReveal.ogg")
 
-YesSirSound = LoadSoundOGG( "YesSirProcessed_01.ogg" )
-CopySound = LoadSoundOGG( "CopyProcessed_01.ogg" )
-AcknowledgedSound = LoadSoundOGG( "AcknowlegedProcessed_01.ogg" )
-OnMyWaySound = LoadSoundOGG( "OnMyWayProcessed_01.ogg" )
-RogerThatSound = LoadSoundOGG( "rogerthatProcess.ogg" )
-OKSound = LoadSoundOGG( "Ok_01.ogg" )
+YesSirSound = LoadSoundOGG( "YesSir.ogg" )
+CopySound = LoadSoundOGG( "Copy.ogg" )
+AcknowledgedSound = LoadSoundOGG( "Acknowledged.ogg" )
+OnMyWaySound = LoadSoundOGG( "OnMyWay.ogg" )
+RogerThatSound = LoadSoundOGG( "RogerThat.ogg" )
+OKSound = LoadSoundOGG( "Ok.ogg" )
 Silence = LoadSoundOGG( "Silent.ogg" )
 
 global vol as integer = 100
@@ -1210,6 +1209,7 @@ DefeatImage = InterfaceSeries+50
 
 
 `Other
+global ACHILLESFONT
 global laserFull
 global laserOut
 global laserFade

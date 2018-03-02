@@ -5,8 +5,8 @@ function ShowInfo( shown )
 	SetSpriteVisible( TurnCount,shown )
 	SetSpriteVisible( ProductionUnits,shown )
 	if shown
-		Text(TurnText,str(turns),settingsButt.x-18,MaxHeight-(UnitY/1.4),255,255,255,36,255,2)
-		Text(UnitText,str(PlayerProdUnits),settingsButt.x-18,MaxHeight-UnitY-5,255,255,255,36,255,2)
+		Text(TurnText,str(turns),settingsButt.x-18,MaxHeight-(UnitY/1.4),255,255,255,36,255,2,Off)
+		Text(UnitText,str(PlayerProdUnits),settingsButt.x-18,MaxHeight-UnitY-5,255,255,255,36,255,2,Off)
 	endif
 endfunction
 
@@ -39,9 +39,7 @@ function BaseProduction( node )
 		SetSpriteColor( SpriteCon[i].ID,128,128,128,255 )
 		SetSpriteGroup( SpriteCon[i].ID,SpriteConBaseGroup )
 	next i
-	Text(ProductionText,"Available Production Units: "+str(PlayerProdUnits),AISide,row1-50,0,0,0,dev.textSize,255,0)
-	SetTextBold(ProductionText,On)
-
+	Text(ProductionText,"Available Production Units: "+str(PlayerProdUnits),AISide,row1-50,0,0,0,dev.textSize,255,0,On)
 	vehicle = Undefined
 	lastIndex = Null
 	index = Null
@@ -59,8 +57,7 @@ function BaseProduction( node )
 					units = PlayerProdUnits-unitCost[index]
 					ShowUnitStats(index,True,MiddleY-100,30,dev.textSize)
 					if units < 0
-						Text(IllegalText,"Not enough production Units",MaxWidth-AISide,row1-50,0,0,0,dev.textSize,255,2)
-						SetTextBold(IllegalText,On)
+						Text(IllegalText,"Not enough production Units",MaxWidth-AISide,row1-50,0,0,0,dev.textSize,255,2,On)
 						SetTextString( ProductionText, "Available Production Units: "+str(PlayerProdUnits) )
 						vehicle = Undefined
 					else
@@ -68,7 +65,6 @@ function BaseProduction( node )
 						DeleteText(IllegalText)
 						vehicle = index
 					endif
-					SetTextBold(ProductionText,On)
 				endif
 			endif
 		endif
@@ -197,19 +193,18 @@ function ShowUnitStats(unit,postStats,y,yOffset,textSize)
 		for j = 0 to UnitTypes+1 : DeleteText(UnitStatText+j) : next j
 	endif
 	if postStats
-		Text(UnitStatText,type$[unit,0],65,y,0,0,0,textSize,255,0)
-		SetTextBold(UnitStatText,On)
-		Text(UnitStatText+1,cost$[unit,0],65,y+yOffset,0,0,0,textSize,255,0)
-		Text(UnitStatText+2,armor$[unit,0],65,y+(yOffset*2),0,0,0,textSize,255,0)
-		Text(UnitStatText+3,movement$[unit,0],65,y+(yOffset*3),0,0,0,textSize,255,0)
-		Text(UnitStatText+4,weapon$[unit,0],65,y+(yOffset*4),0,0,0,textSize,255,0)
+		Text(UnitStatText,type$[unit,0],65,y,0,0,0,textSize,255,0,On)
+		Text(UnitStatText+1,cost$[unit,0],65,y+yOffset,0,0,0,textSize,255,0,Off)
+		Text(UnitStatText+2,armor$[unit,0],65,y+(yOffset*2),0,0,0,textSize,255,0,Off)
+		Text(UnitStatText+3,movement$[unit,0],65,y+(yOffset*3),0,0,0,textSize,255,0,Off)
+		Text(UnitStatText+4,weapon$[unit,0],65,y+(yOffset*4),0,0,0,textSize,255,0,Off)
 		select unit
 			case MediumTank,HeavyTank
-				Text(UnitStatText+5,weapon$[unit,1],65,y+(yOffset*5),0,0,0,textSize,255,0)
+				Text(UnitStatText+5,weapon$[unit,1],65,y+(yOffset*5),0,0,0,textSize,255,0,Off)
 			endcase
 			case Engineer,Mech
-				Text(UnitStatText+5,weapon$[unit,1],65,y+(yOffset*5),0,0,0,textSize,255,0)
-				Text(UnitStatText+6,weapon$[unit,2],65,y+(yOffset*6),0,0,0,textSize,255,0)
+				Text(UnitStatText+5,weapon$[unit,1],65,y+(yOffset*5),0,0,0,textSize,255,0,Off)
+				Text(UnitStatText+6,weapon$[unit,2],65,y+(yOffset*6),0,0,0,textSize,255,0,Off)
 			endcase
 		endselect
 	endif
@@ -267,7 +262,7 @@ function WeaponButtons(ID,vehicle)
 			SetVirtualButtonVisible( MissileButt.ID, On )
 			SetVirtualButtonActive( MissileButt.ID, On )
 			SetVirtualButtonImageUp( MissileButt.ID, MissileButt.DN )
-			Text(NumeralText,str(PlayerTank[ID].missiles),NumX,NumY,255,255,255,30,255,0)
+			Text(NumeralText,str(PlayerTank[ID].missiles),NumX,NumY,255,255,255,30,255,0,Off)
 		endcase
 		case Mech
 			SetVirtualButtonVisible( DisruptButt.ID, On )
@@ -276,7 +271,7 @@ function WeaponButtons(ID,vehicle)
 			SetVirtualButtonActive( MissileButt.ID, On )
 			SetVirtualButtonImageUp( MissileButt.ID, MissileButt.UP )
 			SetVirtualButtonImageUp( DisruptButt.ID, DisruptButt.UP )
-			Text(NumeralText,str(PlayerTank[ID].missiles),NumX,NumY,255,255,255,30,255,0)
+			Text(NumeralText,str(PlayerTank[ID].missiles),NumX,NumY,255,255,255,30,255,0,Off)
 		endcase
 		case Engineer
 			SetVirtualButtonVisible( MineButt.ID, On )
@@ -285,8 +280,8 @@ function WeaponButtons(ID,vehicle)
 			SetVirtualButtonActive( EMPButt.ID, On )
 			SetVirtualButtonImageUp( MineButt.ID, MineButt.UP )
 			SetVirtualButtonImageUp( EMPButt.ID, EMPButt.UP )
-			Text(NumeralText,str(PlayerTank[ID].mines),NumX,NumY,255,255,255,30,255,0)
-			Text(NumeralText2,str(PlayerTank[ID].charges),NumX1,NumY,255,255,255,30,255,0)
+			Text(NumeralText,str(PlayerTank[ID].mines),NumX,NumY,255,255,255,30,255,0,Off)
+			Text(NumeralText2,str(PlayerTank[ID].charges),NumX1,NumY,255,255,255,30,255,0,Off)
 		endcase
 	endselect
 	select PlayerTank[ID].weapon
@@ -441,7 +436,7 @@ function GetInput()
     glow = Brighter
 	WeaponButtons( Null,Undefined )
 	ID as integer
-	ButtonActivation(Off)
+
 	do
 		if selection <> Undefined then WeaponInput(ID)
 		Update( GetUpdateTime() )
@@ -754,11 +749,11 @@ function PlayerOps()
 	for i = 0 to PlayerLast : if PlayerTank[i].stunned then dec PlayerTank[i].stunned : next i
 	FirePhase()
 	SetRawMouseVisible(Off)
+		WeaponButtons( Null,Undefined )
 
 	for i = 0 to PlayerLast
 		if not PlayerTank[i].alive then continue
 
-		WeaponButtons( Null,Undefined )
 		do
 			if PlayerTank[i].vehicle = Hovercraft
 				if PlayerTank[i].goalNode <> PlayerTank[i].node
@@ -808,7 +803,7 @@ function TankAlpha( bodyID, turretID, alpha )
 endfunction
 
 function DisplayError(ID,error$)
-	Text(ID,error$,MiddleX,MiddleY,255,255,255,36,255,1)
+	Text(ID,error$,MiddleX,MiddleY,255,255,255,36,255,1,On)
 	PlaySound(ErrorSound,vol)
 	Sync()
 	Delay(.66)

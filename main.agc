@@ -11,8 +11,15 @@ remstart
 
 	--- LOS STILL GETTING BLOCKED !!!!!!
 	--- FIRING ON INVISIBLE UNIT GENERATES "NOT IN LOS" MESSAGE
+	--- WHAT IS THAT GREY LINE ON THE RIGHT SIDE OF THE SCREEN?
+	--- WHEN BASE IS A MOVE TARGET, IT IS NO LONGER SELECTABLE
+
+	MAY NOT BE A PROBLEM:
+	--- MINES STILL PLACED AFTER ENGINEER DIES!!!!
+			mines explode when unit is destroyed at base?!
 
 	FIXED?
+	--- TURN OFF BUTTONS AT END OF TURN
 	--- INVISIBLE UNITS OUT OF FOW ??????!!!!!
 			REMOVED AIFOW FROM AIOPS
 			SEE FINDENEMY - FIXED? - PLACE THIS CALL SOMEWHERE ELSE?
@@ -46,8 +53,12 @@ SetWindowSize( MaxWidth,MaxHeight,1,1 )
 MaximizeWindow()
 SetWindowPosition( 0,0 )
 SetOrientationAllowed( 0, 0, 1, 1 )
-LoadFont( AvenirCond,"Avenir Next Condensed.ttc" )
 UseNewDefaultFonts(On)
+//~ ACHILLESFONT = LoadFont( "PTSans.ttc" )
+ACHILLESFONT = LoadFont( "Helvetica.ttc" )
+ACHILLESFONT = LoadFont( "MyriadPro-Cond.otf" )
+
+
 SetPhysicsWallTop(Off)
 SetPhysicsWallBottom(Off)
 SetPhysicsWallLeft(Off)
@@ -128,18 +139,12 @@ function Blockage(ID,Tank as tankType[],x1,y1,x2,y2) `blocked movement
 	if cover then SetSpriteVisible(Tank[ID].cover,On)
 endfunction
 
-//~ RandomEvent[0] = Supply$
-//~ RandomEvent[1] = Reinforcement$
-//~ RandomEvent[2] = Weather$
-//~ RandomEvent[3] = Interdiction$
-//~ RandomEvent[4] = Sabotage$
-
 function EventCheck()
 	reinforce = 1
 	weather = 1
 	casualties = Null
-	//~ Event$ = RandomEvent[ Random2(0,EventNum-1) ]
-	Event$ = Sabotage$
+	Event$ = RandomEvent[ Random2(0,EventNum-1) ]
+	//~ Event$ = Sabotage$
 	select Event$
 		case Weather$
 			PlaySound( LightningSound,vol )
@@ -195,8 +200,8 @@ function EventDialog( t1$,t2$,i$ )
 	TSize = 32 * dev.scale
 	t1 = CreateText( t1$ )
 	t2 = CreateText( t2$ )
-	SetText( t1,alertDialog.x,alertDialog.y+TSize,255,25,25,TSize,255,0 )
-	SetText( t2,alertDialog.x,alertDialog.y+(TSize*2),50,50,50,TSize,255,0 )
+	SetText( t1,alertDialog.x,alertDialog.y+TSize,255,25,25,TSize,255,0,Off )
+	SetText( t2,alertDialog.x,alertDialog.y+(TSize*2),50,50,50,TSize,255,0,Off )
 	AlertDialog( t1,On,alertDialog.x-TSize,alertDialog.y,alertDialog.w+(TSize*2),alertDialog.h )
 	SetVirtualButtonPosition( cancelButt.ID,alertDialog.accept.x+TSize,alertDialog.accept.y )
 
@@ -651,9 +656,9 @@ function GameOver( textID,r,g,b,message$,sound )
 	y2 = MapHeight/2
 	y1 = y2-(startSize/2)
 
-	Text( textID,message$,MiddleX,y2,r,g,b,startSize,255,1 )
-	SetTextFont( textID,AvenirCond )
-	tt = TweenText( textID,Null,Null,y1,y2,Null,Null,startSize,endSize,beginSpacing,endSpacing,3,Null,TweenEaseIn1() )
+	Text( textID,message$,MiddleX,y2,r,g,b,startSize,255,1,Off )
+	//~ SetTextFont( textID,ACHILLESFONT )
+	tt = TweenText( textID,Null,Null,y1,y2,Null,Null,startSize,endSize,beginSpacing,endSpacing,3,Null,TweenEaseIn1(),On )
 
 	if GetMouseExists() then SetRawMouseVisible( On )
 	repeat
@@ -741,6 +746,7 @@ function BlowItUp( ID,Tank as tankType[] )
 endfunction
 
 function KillTank( defID,Tank ref as tankType[] )
+			SetSpriteVisible( Tank[defID].bodyID, On )
 	BlowItUp( defID,Tank )
 	DeleteSprite( Tank[defID].healthID )
 	DeleteSprite( Tank[defID].bodyID )
