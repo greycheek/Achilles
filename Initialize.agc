@@ -305,12 +305,12 @@ function TankSetup(ID,Tank ref as tankType[],pick as ColorSpec)
 	endselect
 endfunction
 
-function CalcNode(x,y)	`node coordinates
-	node = (x + (Columns * y))
+function CalcNode(x#,y#)	`node coordinates
+	node = (x# + (Columns * y#))
 endfunction node
 
-function CalcNodeFromScreen(x,y)	`screen coordinates
-	node = floor(x/NodeSize) + (floor(y/NodeSize)*Columns)
+function CalcNodeFromScreen(x#,y#)	`screen coordinates
+	node = floor(x#/NodeSize) + (floor(y#/NodeSize)*Columns)
 endfunction node
 
 remstart

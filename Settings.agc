@@ -609,15 +609,16 @@ function Setup()
 	SetSpritePosition( IrisGlow,((MaxWidth-GetSpriteWidth(IrisGlow))/2)+2,228)
 	SetSpriteDepth( IrisGlow,3 )
 
+	LoadImage( EMP1,"EMP.png" )
+	CreateSprite( EMP1,EMP1 )
+	SetSpriteTransparency( EMP1, 1 )
+	SetSpriteVisible( EMP1, 0 )
+	SetSpriteDepth ( EMP1, 0 )
+	SetSpriteScissor( EMP1,NodeSize,NodeSize,MaxWidth-NodeSize,MaxHeight-(NodeSize*3) )
+
+	BasicButtons()
 
 	LoadButton(StatButt.ID,StatButt.UP,StatButt.DN,"StatsUp.png","StatsDown.png",StatButt.x,StatButt.y,StatButt.w,On)
-
-	LoadButton(InfoButt.ID,InfoButt.UP,InfoButt.DN,"InfoUp.png","InfoDown.png",InfoButt.x,InfoButt.y,InfoButt.w,On)
-	LoadButton(XButt.ID,XButt.UP,XButt.DN,"Xup.png","Xdown.png",XButt.x,XButt.y,XButt.w,Off)
-	LoadButton(ArrowRightButt.ID,ArrowRightButt.UP,ArrowRightButt.DN,"ArrowRightUp.png","ArrowRightDown.png",ArrowRightButt.x,ArrowRightButt.y,ArrowRightButt.w,Off)
-	SetVirtualButtonAlpha(XButt.ID,FullAlpha*.66)
-	SetVirtualButtonAlpha(ArrowRightButt.ID,FullAlpha*.66)
-
 
 	LoadButton(Button5.ID,Button5.UP,Button5.DN,"5UP.png","5DOWN.png",Button5.x,Button5.y,Button5.w,Off)
 	LoadButton(Button10.ID,Button10.UP,Button10.DN,"10UP.png","10DOWN.png",Button10.x,Button10.y,Button10.w,Off)
@@ -628,8 +629,6 @@ function Setup()
 	LoadButton(ONOFF.ID,ONOFF.UP,ONOFF.DN,"ONOFFUP.png","ONOFFDOWN.png",ONOFF.x,ONOFF.y,ONOFF.w,Off)
 	SetVirtualButtonImageUp(ONOFF.ID,ONOFF.DN)
 
-	LoadButton(acceptButt.ID,acceptButt.UP,acceptButt.DN,"CheckUp.png","CheckDown.png",acceptButt.x,acceptButt.y,acceptButt.w,On)
-	LoadButton(cancelButt.ID,cancelButt.UP,cancelButt.DN,"CancelUp.png","CancelDown2.png",cancelButt.x,cancelButt.y,cancelButt.w,On)
 	LoadButton(settingsButt.ID,settingsButt.UP,settingsButt.DN,"SettingsButton.png","SettingsButtonDown.png",settingsButt.x,settingsButt.y,settingsButt.w,On)
 
    `MAP GENERATOR SCREEN
@@ -844,6 +843,16 @@ function Setup()
 	GenerateMap()
 endfunction
 
+function BasicButtons()
+	LoadButton(InfoButt.ID,InfoButt.UP,InfoButt.DN,"InfoUp.png","InfoDown.png",InfoButt.x,InfoButt.y,InfoButt.w,On)
+	LoadButton(XButt.ID,XButt.UP,XButt.DN,"Xup.png","Xdown.png",XButt.x,XButt.y,XButt.w,Off)
+	LoadButton(ArrowRightButt.ID,ArrowRightButt.UP,ArrowRightButt.DN,"ArrowRightUp.png","ArrowRightDown.png",ArrowRightButt.x,ArrowRightButt.y,ArrowRightButt.w,Off)
+	LoadButton(acceptButt.ID,acceptButt.UP,acceptButt.DN,"CheckUp.png","CheckDown.png",acceptButt.x,acceptButt.y,acceptButt.w,On)
+	LoadButton(cancelButt.ID,cancelButt.UP,cancelButt.DN,"CancelUp.png","CancelDown2.png",cancelButt.x,cancelButt.y,cancelButt.w,On)
+	SetVirtualButtonAlpha(XButt.ID,FullAlpha*.66)
+	SetVirtualButtonAlpha(ArrowRightButt.ID,FullAlpha*.66)
+endfunction
+
 function DeleteAllButtons()
 	DeleteVirtualButton(LOADBUTT.ID)
 	DeleteVirtualButton(SAVEBUTT.ID)
@@ -875,6 +884,7 @@ function DeleteAllButtons()
 	DeleteVirtualButton(Button20.ID)
 	DeleteVirtualButton(Button25.ID)
 	DeleteVirtualButton(ONOFF.ID)
+	DeleteVirtualButton(StatButt.ID)
 endfunction
 
 remstart

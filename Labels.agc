@@ -77,7 +77,7 @@ zoneRadius = FlyRadius * NodeSize
 #constant turret 1
 #constant Goal 1
 #constant Complete 1
-#constant BarWidth 3	 `Health Bar
+#constant BarWidth 3.5	 `Health Bar
 
 #constant Supply$ = "Supply Boost!"		     `all units repaired and re-armed
 #constant Reinforcement$ = "Reinforcements!" `production units doubled
@@ -91,6 +91,7 @@ zoneRadius = FlyRadius * NodeSize
 #constant WeatherFile$ = "Weather.png"
 #constant InterdictionFile$ = "STEALTH BOMBER.png"
 #constant SabotageFile$ = "SabotageII.png"
+#constant UnitMaximum$ = "UnitMaximum.png"
 
 global casualties as integer = Null
 global reinforce as integer = 1

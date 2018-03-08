@@ -972,11 +972,8 @@ function GameSetup()
 	SetViewOffset( 0,0 )
 	zoomFactor = 1
 
-	PlayerProdUnits = (PlayerBaseCount+1)*BaseProdValue
-	AIProdUnits = (AIBaseCount+1)*BaseProdValue
-
+	StopMusicOGG( MusicSound )
 	SetSpriteVisible( TurnCount,On )
-	DeleteText( VersionText )
 	DeleteSprite( MechGuy[0].bodyID )
 	DeleteSprite( MechGuy[1].bodyID )
 	DeleteSprite( MechGuy[0].turretID )
@@ -992,21 +989,12 @@ function GameSetup()
 		if GetSpriteExists(AIGrid[i].ID) then DeleteSprite(AIGrid[i].ID)
 		if GetSpriteExists(PlayerGrid[i].ID) then DeleteSprite(PlayerGrid[i].ID)
 	next i
-	SetVirtualButtonVisible( settingsButt.ID,Off )
-	SetVirtualButtonActive( settingsButt.ID,Off )
-	SetVirtualButtonVisible( StatButt.ID,Off )
-	SetVirtualButtonActive( StatButt.ID,Off )
-		ButtonActivation(Off)
 
-	StopMusicOGG( MusicSound )
+	DeleteAllButtons()
+	BasicButtons()
 
-	LoadImage( EMP1,"EMP.png" )
-	CreateSprite( EMP1,EMP1 )
-	SetSpriteTransparency( EMP1, 1 )
-	SetSpriteVisible( EMP1, 0 )
-	SetSpriteDepth ( EMP1, 0 )
-	SetSpriteScissor( EMP1,NodeSize,NodeSize,MaxWidth-NodeSize,MaxHeight-(NodeSize*3) )
-
+	PlayerProdUnits = (PlayerBaseCount+1)*BaseProdValue
+	AIProdUnits = (AIBaseCount+1)*BaseProdValue
 	AISurviving = AICount
 	PlayerSurviving = PlayerCount
 	PlayerLast = PlayerCount-1

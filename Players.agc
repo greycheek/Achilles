@@ -507,7 +507,7 @@ function GetInput()
 			elseif baseID and ( selection = Undefined ) and ( mapTable[pointerNode].moveTarget = False )
 				PlaySound( ClickSound,vol )
 				if PlayerSurviving = UnitLimit
-					EventDialog("Unit Maximum",Null$,Null$)
+					EventDialog("Unit Maximum",Null$,UnitMaximum$)
 				elseif casualties
 					EventDialog(Interdiction$,"Production halted",InterdictionFile$)
 				else
@@ -679,7 +679,7 @@ function PlayerAim( ID,x1,y1 )
 				TargetLine( PlayerTank[ID].x,PlayerTank[ID].y,AITank[PlayerTank[ID].target].x,AITank[PlayerTank[ID].target].y,1,PlayerTank,ID,255,64,0 )
 				exit
 			else
-				DisplayError( OutofRangeText,"out of reach" )
+				//~ DisplayError( OutofRangeText,"out of reach" )
 				exitfunction
 			endif
 

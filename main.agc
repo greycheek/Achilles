@@ -9,16 +9,17 @@ remstart
 			VERY REPETITIVE MOVEMENT PATTERNS??
 	--- SPRITECONS  BEHAVING STRANGELY - STICK TO SCREEN - UNITS NOT SELECTED SHOW UP IN GAME (MEDIUM TANK?)
 
-	--- LOS STILL GETTING BLOCKED !!!!!!
 	--- FIRING ON INVISIBLE UNIT GENERATES "NOT IN LOS" MESSAGE
-	--- WHAT IS THAT GREY LINE ON THE RIGHT SIDE OF THE SCREEN?
-	--- WHEN BASE IS A MOVE TARGET, IT IS NO LONGER SELECTABLE
+			-- REMOVED DISPLAYERROR() IN PLAYERAIM ROUTINE
+	--- STOP FLICKERING BUTTONS AFTER EVENT DIALOGS
 
 	MAY NOT BE A PROBLEM:
 	--- MINES STILL PLACED AFTER ENGINEER DIES!!!!
 			mines explode when unit is destroyed at base?!
 
 	FIXED?
+	--- LOS STILL GETTING BLOCKED !!!!!!
+	--- DEAD SPOTS ON SCREEN AGAIN!!!!
 	--- TURN OFF BUTTONS AT END OF TURN
 	--- INVISIBLE UNITS OUT OF FOW ??????!!!!!
 			REMOVED AIFOW FROM AIOPS
@@ -54,8 +55,6 @@ MaximizeWindow()
 SetWindowPosition( 0,0 )
 SetOrientationAllowed( 0, 0, 1, 1 )
 UseNewDefaultFonts(On)
-//~ ACHILLESFONT = LoadFont( "PTSans.ttc" )
-ACHILLESFONT = LoadFont( "Helvetica.ttc" )
 ACHILLESFONT = LoadFont( "MyriadPro-Cond.otf" )
 
 
@@ -337,13 +336,10 @@ function LOSblocked(x1,y1,x2,y2)
 		select node1-node2   `adjacent nodes are always in LOS
 			case south,southeast,west,northeast,north,northwest,east,southwest : exitfunction False : endcase
 		endselect
-
-		x = GetRayCastX()
-		y = GetRayCastY()
+		x = ScreenToWorldX(GetRayCastX())
+		y = ScreenToWorldY(GetRayCastY())
 		nodeHit = CalcNodeFromScreen(x,y)
-		if nodeHit = node2 then exitfunction False   `not blocked if Trees at the target node
-
-		exitfunction True
+		if nodeHit = node2 then exitfunction False else exitfunction True  `not blocked if Trees at the target node
 	endif
 endfunction False
 
@@ -539,25 +535,15 @@ function Repair(ID,Tank ref as tankType[],depotNode as depotType[],healthMax as 
 	HealthBar(ID,Tank)
 endfunction
 
-function Heal(ID,Tank ref as tankType[],depotNode as depotType[],depot,healthMax as float)
-endfunction
-
-function HealthBar(ID,Tank ref as tankType[])
-	width = BarWidth * Tank[ID].scale
+function HealthBar( ID,Tank ref as tankType[] )
+	width# = BarWidth * Tank[ID].scale
     health# = Tank[ID].health / Tank[ID].maximumHealth
-	height# = Min(BarWidth,(health# * BarHeight) * Tank[ID].scale)
-	c = ( Tank[ID].health / Tank[ID].maximumHealth ) * 255
-	if c < 255
-		if c > 160
-			c = 160
-		elseif c
-			c = 0
-		endif
-	endif
-	SetSpriteColor( Tank[ID].healthID,c,c,c,255 )
-    SetSpriteSize(Tank[ID].healthID, width, height#)
-	SetSpritePosition(Tank[ID].healthID,Tank[ID].x-NodeOffset,Tank[ID].y-NodeOffset+BarOffset)
-	SetSpriteVisible(Tank[ID].healthID, On)
+	height# = Min( BarWidth,(health# * BarHeight) * Tank[ID].scale )
+	c = health# * 255
+	SetSpriteColor( Tank[ID].healthID,c,c,c,FullAlpha )
+    SetSpriteSize( Tank[ID].healthID, width#, height# )
+	SetSpritePosition( Tank[ID].healthID,Tank[ID].x-NodeOffset,Tank[ID].y-NodeOffset+BarOffset )
+	SetSpriteVisible( Tank[ID].healthID, On )
 	Sync()
 endfunction
 
@@ -1145,6 +1131,14 @@ endfunction
 
 
 remstart
+FROM HEALTHBAR
+	if c < 255
+		if c > 160
+			c = 160
+		elseif c
+			c = 0
+		endif
+	endif
 
 function LOSblocked(x1,y1,x2,y2)
 	if PhysicsRayCastCategory(Block,x1,y1,x2,y2)
