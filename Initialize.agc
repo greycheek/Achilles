@@ -276,7 +276,7 @@ function TankSetup(ID,Tank ref as tankType[],pick as ColorSpec)
 	SetSpriteCategoryBits( Tank[ID].turretID,NoBlock )
 	CreateSprite(Tank[ID].turretID, Tank[ID].turretImageID)
 	CreateSprite(Tank[ID].healthID, Tank[ID].healthBarImageID)
-		SetSpriteCategoryBits(Tank[ID].healthID,NoBlock)
+	SetSpriteCategoryBits(Tank[ID].healthID,NoBlock)
 	SetSpriteVisible(Tank[ID].healthID,Off)
 
 	SetSpriteSize(Tank[ID].bodyID, Tank[ID].bodyW*Tank[ID].scale, Tank[ID].bodyH*Tank[ID].scale)
@@ -284,6 +284,9 @@ function TankSetup(ID,Tank ref as tankType[],pick as ColorSpec)
 
 	SetSpriteOffset(Tank[ID].bodyID, NodeOffset, NodeOffset)
 	SetSpriteOffset(Tank[ID].turretID, NodeOffset, NodeOffset)
+
+			SetSpriteShapeBox(Tank[ID].bodyID,-NodeOffset,-NodeOffset,NodeOffset,NodeOffset,0)
+			SetSpriteShapeBox(Tank[ID].turretID,-NodeOffset,-NodeOffset,NodeOffset,NodeOffset,0)
 
 	SetSpriteDepth(Tank[ID].healthID,1)
 	SetSpriteDepth(Tank[ID].turretID,3)

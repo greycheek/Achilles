@@ -478,6 +478,8 @@ function GetInput()
 
 			baseID = GetSpriteHitGroup( BaseGroup,x,y )
 			tankID = GetSpriteHitGroup( PlayerTankGroup,x,y )
+
+			// FRIENDLY TANK SELECTED
 			if tankID
 				for i = 0 to PlayerLast
 					if (tankID = PlayerTank[i].bodyID) or (tankID = PlayerTank[i].turretID)
@@ -504,6 +506,7 @@ function GetInput()
 						exit
 					endif
 				next i
+			// FRIENDLY BASE SELECTED
 			elseif baseID and ( selection = Undefined ) and ( mapTable[pointerNode].moveTarget = False )
 				PlaySound( ClickSound,vol )
 				if PlayerSurviving = UnitLimit
@@ -528,6 +531,7 @@ function GetInput()
 					node = MoveInput(ID)
 
 					if mapTable[node].team <> Unoccupied
+						// ENEMY TANK SELECTED?
 						if (PlayerTank[ID].target=Undefined) and (mapTable[node].team=AITeam) and (PlayerTank[ID].vehicle<>Engineer) //and (not PlayerTank[ID].stunned)
 							PlayerAim(ID,PlayerTank[ID].x,PlayerTank[ID].y)
 						else

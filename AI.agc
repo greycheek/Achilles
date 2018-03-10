@@ -168,8 +168,8 @@ endfunction
 
 function AIFOW(ID)
 	for i = 0 to PlayerLast
-		if PlayerTank[i].alive and GetSpriteInCircle(AITank[ID].bodyID,PlayerTank[i].x,PlayerTank[i].y,PlayerTank[i].FOWOffset-NodeSize)
-					//~ if PlayerTank[i].alive and GetSpriteInCircle(AITank[ID].bodyID,PlayerTank[i].x,PlayerTank[i].y,PlayerTank[i].FOWOffset)
+		//~ if PlayerTank[i].alive and GetSpriteInCircle(AITank[ID].bodyID,PlayerTank[i].x,PlayerTank[i].y,PlayerTank[i].FOWOffset-NodeSize)
+					if PlayerTank[i].alive and GetSpriteInCircle(AITank[ID].bodyID,PlayerTank[i].x,PlayerTank[i].y,PlayerTank[i].FOWOffset)
 
 			RevealAIUnit(ID)
 			exitfunction True

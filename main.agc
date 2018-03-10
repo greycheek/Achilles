@@ -1,3 +1,5 @@
+function AAmainTOP()
+endfunction
 
 //ACHILLES v0.9 ~ Created 3/14/16 by Bob Tedesco Jr
 //Two ways to win - base capture, or eliminate all enemy units
@@ -9,9 +11,7 @@ remstart
 			VERY REPETITIVE MOVEMENT PATTERNS??
 	--- SPRITECONS  BEHAVING STRANGELY - STICK TO SCREEN - UNITS NOT SELECTED SHOW UP IN GAME (MEDIUM TANK?)
 
-	--- FIRING ON INVISIBLE UNIT GENERATES "NOT IN LOS" MESSAGE
-			-- REMOVED DISPLAYERROR() IN PLAYERAIM ROUTINE
-	--- STOP FLICKERING BUTTONS AFTER EVENT DIALOGS
+	--- SLUGGISH BUTTON REACTION ON iOS
 
 	MAY NOT BE A PROBLEM:
 	--- MINES STILL PLACED AFTER ENGINEER DIES!!!!
@@ -19,18 +19,8 @@ remstart
 
 	FIXED?
 	--- LOS STILL GETTING BLOCKED !!!!!!
-	--- DEAD SPOTS ON SCREEN AGAIN!!!!
-	--- TURN OFF BUTTONS AT END OF TURN
-	--- INVISIBLE UNITS OUT OF FOW ??????!!!!!
-			REMOVED AIFOW FROM AIOPS
-			SEE FINDENEMY - FIXED? - PLACE THIS CALL SOMEWHERE ELSE?
-	--- AI ENGINEER EMP RANGE IS BASED ON MOVES ALLOWED???
-			made empRange and movesAlowwed equal (4)
-	--- SLUGGISH BUTTON REACTION ON iOS
-	--- MINE PLACEMENT IN FRIENDLY BASES - CHECK DETONATION AS RELATES TO BASE CAPTURE
-	--- TARGET NODES CONTAINING TREES BLOCK LOS
-	--- INITIAL VIEW OF ZOOMED INFO SCREEN SEEMS TO HAVE NO OR INCORRECT BOUNDARIES
-		CHECK MOUSESCROLL
+	--- HOVERCRAFT MOVE TO LEGAL NODE GENERATES "OUT OF REACH" MESSAGE
+			REMOVED DISPLAYERROR() IN PLAYERAIM ROUTINE
 
 	FUTURE
 		getspriteincircle vs getspriteinbox??
@@ -43,8 +33,8 @@ remstart
 	    Load/Save games
 remend
 
-`--AITank visibility - Initialize and AIFOW
-`--LOS -- Mod at end of PlayerOps
+// AITank visibility - Initialize and AIFOW
+// LOS -- Mod at end of PlayerOps
 
 //~ ASCII()
 //~ SoundCheck()
@@ -143,7 +133,7 @@ function EventCheck()
 	weather = 1
 	casualties = Null
 	Event$ = RandomEvent[ Random2(0,EventNum-1) ]
-	//~ Event$ = Sabotage$
+	//~ Event$ = Reinforcement$
 	select Event$
 		case Weather$
 			PlaySound( LightningSound,vol )
@@ -530,7 +520,7 @@ function Repair(ID,Tank ref as tankType[],depotNode as depotType[],healthMax as 
 	Tank[ID].missiles = Tank[ID].rounds
 	Tank[ID].mines = Tank[ID].rounds
 	Tank[ID].charges = Tank[ID].rounds
-	if Tank[ID].team = PlayerTeam then WeaponButtons(ID,Tank[ID].vehicle)
+	//~ if Tank[ID].team = PlayerTeam then WeaponButtons(ID,Tank[ID].vehicle)
 	if not GetSpriteVisible(Tank[ID].bodyID) then exitfunction
 	HealthBar(ID,Tank)
 endfunction
@@ -1174,6 +1164,19 @@ ISSUES
 			BASE PROTECT - DONT LEAVE A BASE WHEN THREATENED
 
 FIXED?
+	--- STOP FLICKERING BUTTONS AFTER EVENT DIALOGS
+	--- INVISIBLE TANKS NOT APPEARING WHEN IN LOS??
+	--- DEAD SPOTS ON SCREEN AGAIN!!!!
+	--- TURN OFF BUTTONS AT END OF TURN
+	--- INVISIBLE UNITS OUT OF FOW ??????!!!!!
+			REMOVED AIFOW FROM AIOPS
+			SEE FINDENEMY - FIXED? - PLACE THIS CALL SOMEWHERE ELSE?
+	--- AI ENGINEER EMP RANGE IS BASED ON MOVES ALLOWED???
+			made empRange and movesAlowwed equal (4)
+	--- MINE PLACEMENT IN FRIENDLY BASES - CHECK DETONATION AS RELATES TO BASE CAPTURE
+	--- TARGET NODES CONTAINING TREES BLOCK LOS
+	--- INITIAL VIEW OF ZOOMED INFO SCREEN SEEMS TO HAVE NO OR INCORRECT BOUNDARIES
+		CHECK MOUSESCROLL
 	--- CHECK ALL VECTORDISTANCE ROUTINES FOR FIRING
 		PLAYERAIM MODIFIED
 	---	AITANKS NOT APPEARING??

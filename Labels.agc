@@ -39,7 +39,7 @@ MiddleX = MaxWidth/2
 MiddleY = MapHeight/2
 
 global zoneRadius as integer
-#constant FlyRadius 8
+#constant FlyRadius 7
 #constant PatrolRadius 8
 zoneRadius = FlyRadius * NodeSize
 
@@ -898,7 +898,7 @@ dev.device = GetDeviceBaseName()
 select dev.device
 	case "windows","mac"
 		dev.buttSize = 64
-		dev.textSize = 28
+		dev.textSize = 32
 		dev.scale = 1
 		dev.slidescaleW = 240
 		dev.slidescaleH = dev.buttSize
@@ -916,7 +916,7 @@ select dev.device
 		SetSyncRate( 30,0 )
 		if FindString( GetDeviceType(),"ipad" )	`add Android tablets
 			dev.buttSize = 64
-			dev.textSize = 28
+			dev.textSize = 32
 			dev.scale = 1
 			dev.slidescaleW = 240
 			dev.slidescaleH = dev.buttSize
@@ -931,7 +931,7 @@ select dev.device
 			SLOT1.w = dev.buttSize
 		else
 			dev.buttSize = 80
-			dev.textSize = 32
+			dev.textSize = 36
 			dev.scale = 2
 			dev.slidescaleW = 222
 			dev.slidescaleH = dev.buttSize
