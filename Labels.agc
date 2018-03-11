@@ -92,6 +92,7 @@ zoneRadius = FlyRadius * NodeSize
 #constant InterdictionFile$ = "STEALTH BOMBER.png"
 #constant SabotageFile$ = "SabotageII.png"
 #constant UnitMaximum$ = "UnitMaximum.png"
+#constant Stats$ = "Stats.png"
 
 global casualties as integer = Null
 global reinforce as integer = 1

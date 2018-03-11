@@ -6,18 +6,13 @@ endfunction
 
 remstart
 	ISSUES/REVISIONS
-	--- BETTER AI DECISIONS?
-			PLACEMENT RELATIVE TO ENEMY
-			VERY REPETITIVE MOVEMENT PATTERNS??
-	--- SPRITECONS  BEHAVING STRANGELY - STICK TO SCREEN - UNITS NOT SELECTED SHOW UP IN GAME (MEDIUM TANK?)
-
 	--- SLUGGISH BUTTON REACTION ON iOS
 
-	MAY NOT BE A PROBLEM:
+	FIXED?
+	--- SPRITECONS BEHAVING STRANGELY - STICK TO SCREEN - UNITS NOT SELECTED SHOW UP IN GAME (MEDIUM TANK?)
+	--- HOVERCRAFT CAN MOVE BEYOND RANGE LIMIT WHEN MOVING UP OR TO THE LEFT
 	--- MINES STILL PLACED AFTER ENGINEER DIES!!!!
 			mines explode when unit is destroyed at base?!
-
-	FIXED?
 	--- LOS STILL GETTING BLOCKED !!!!!!
 	--- HOVERCRAFT MOVE TO LEGAL NODE GENERATES "OUT OF REACH" MESSAGE
 			REMOVED DISPLAYERROR() IN PLAYERAIM ROUTINE
@@ -31,6 +26,9 @@ remstart
 		Races/Factions?
 	    AI DIFFICULTY LEVEL
 	    Load/Save games
+		Better ai decisions?
+			Placement relative to enemy
+			Very repetitive movement patterns??
 remend
 
 // AITank visibility - Initialize and AIFOW
@@ -216,8 +214,8 @@ function EventDialog( t1$,t2$,i$ )
 endfunction
 
 function SetFOWbox( ID, Tank as tankType[] )
-	box.x1 = Min(NodeSize,Tank[ID].x - (floor(Tank[ID].FOWOffset*weather)))
-	box.y1 = Min(NodeSize,Tank[ID].y - (floor(Tank[ID].FOWOffset*weather)))
+	box.x1 = Min(NodeSize,Tank[ID].x + NodeOffset - (floor(Tank[ID].FOWOffset*weather)))
+	box.y1 = Min(NodeSize,Tank[ID].y + NodeOffset - (floor(Tank[ID].FOWOffset*weather)))
 	box.x2 = Max(MapWidth,Tank[ID].x + (floor(Tank[ID].FOWOffset*weather)))
 	box.y2 = Max(MapHeight,Tank[ID].y + (floor(Tank[ID].FOWOffset*weather)))
 endfunction

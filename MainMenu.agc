@@ -40,8 +40,11 @@ function MainMenu()
 			SetSpriteActive( AlertBackGround,On )
 			SetSpriteVisible( AlertBackGround,On )
 			SetVirtualButtonPosition( acceptButt.ID,mapSlotDialog.cancel.x-margin,mapSlotDialog.cancel.y )
-			x = mapSlotDialog.x + margin
-			y = mapSlotDialog.y + margin
+			x = mapSlotDialog.x + ( margin*2 )
+			y = mapSlotDialog.y + ( margin*2 )
+			thumbnailW = 80 * ( dev.scale*1.15 )
+			thumbnailH = 96 * ( dev.scale*1.15 )
+			thumbnailY = y + margin
 			TSize = 30*dev.scale
 			Text(StatText,"PLAYER STATISTICS",x,y,0,0,0,TSize,255,0,On) : inc y,TSize+(10*dev.scale)
 			TSize = 24*dev.scale
@@ -51,10 +54,19 @@ function MainMenu()
 			Text(StatText+4,"Units Lost:  "+str(Stats.unitsLost),x,y,0,0,0,TSize,255,0,Off) : inc y,TSize
 			Text(StatText+5,"Units Created:  "+str(Stats.unitsCreated),x,y,0,0,0,TSize,255,0,Off) : inc y,TSize
 			Text(StatText+6,"Enemies Destroyed:  "+str(Stats.unitsDestroyed),x,y,0,0,0,TSize,255,0,Off)
+			thumbnailImage = LoadImage( Stats$ )
+			thumbnail = CreateSprite( thumbnailImage )
+			SetSpriteTransparency( thumbnail,1 )
+			SetSpriteVisible( thumbnail,0 )
+			SetSpriteDepth ( thumbnail,0 )
+			SetSpriteSize( thumbnail,thumbnailW,thumbnailH )
+			SetSpritePosition( thumbnail,mapSlotDialog.x+mapSlotDialog.w-(thumbnailW*1.33),thumbnailY )
+			SetSpriteVisible( thumbnail,On )
 			repeat
 				Sync()
 			until GetVirtualButtonPressed( acceptButt.ID )
 			WaitForButtonRelease( acceptButt.ID )
+			DeleteSprite( thumbnail )
 			for i = 0 to 6 : DeleteText(StatText+i) : next i
 			SetSpriteActive( AlertBackGround,Off )
 			SetSpriteVisible( AlertBackGround,Off )
