@@ -42,12 +42,10 @@ function MainMenu()
 			SetVirtualButtonPosition( acceptButt.ID,mapSlotDialog.cancel.x-margin,mapSlotDialog.cancel.y )
 			x = mapSlotDialog.x + ( margin*2 )
 			y = mapSlotDialog.y + ( margin*2 )
+			thumbnailY = y
 			thumbnailW = 80 * ( dev.scale*1.15 )
 			thumbnailH = 96 * ( dev.scale*1.15 )
-			thumbnailY = y + margin
-			TSize = 30*dev.scale
-			Text(StatText,"PLAYER STATISTICS",x,y,0,0,0,TSize,255,0,On) : inc y,TSize+(10*dev.scale)
-			TSize = 24*dev.scale
+			TSize = 26*dev.scale
 			Text(StatText+1,"Longest Game:  "+str(Stats.rounds)+" turns",x,y,0,0,0,TSize,255,0,Off) : inc y,TSize
 			Text(StatText+2,"Bases Lost:  "+str(Stats.basesLost),x,y,0,0,0,TSize,255,0,Off) : inc y,TSize
 			Text(StatText+3,"Bases Captured:  "+str(Stats.basesCaptured),x,y,0,0,0,TSize,255,0,Off) : inc y,TSize

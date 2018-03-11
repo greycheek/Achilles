@@ -578,7 +578,7 @@ function Setup()
 	SetSpriteAnimation( Explode4,102,103,8 )
 	SetSpriteSize( Explode4,204,206 )
 
-	LogoImage = LoadImage("AchillesLogo4.png")
+	LogoImage = LoadImage("AchillesLogo5.png")
 	Logo = CreateSprite( LogoImage )
 	SetSpriteVisible( Logo, On )
 	SetSpriteSize( Logo,1237,400 )
