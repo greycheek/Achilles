@@ -181,7 +181,7 @@ function TankSetup(ID,Tank ref as tankType[],pick as ColorSpec)
 			Tank[ID].maximumHealth = MediumHealthMax
 		endcase
 		case HoverCraft
-			Tank[ID].speed = .5
+			Tank[ID].speed = .6
 			Tank[ID].sound = EngineSound
 			Tank[ID].volume = EngineVolume
 			Tank[ID].weapon = machineGun

@@ -242,9 +242,11 @@ global Stats as StatType
 #constant TerrainSeries2 1701
 #constant TerrainSeries3 1703
 #constant TerrainSeries4 1704
+#constant TerrainSeries5 1705
 
 global AcquaSprite as integer = TerrainSeries3
 global RoughSprite as integer = TerrainSeries4
+global ShadowSprite as integer = TerrainSeries5
 
 type boxType
 	x1
@@ -662,6 +664,7 @@ global BaseHalo as integer
 
 
 `--TERRAIN--
+#constant Shadow 0
 #constant Clear 1
 #constant Rough 2
 #constant Trees 3
@@ -782,6 +785,7 @@ type mapType
 	mineSprite as integer
 	mineType as integer
 	terrain as integer
+		hasShadow as integer
 	moveTarget as integer
 	depotID as integer
 	heuristic as Float
@@ -795,6 +799,7 @@ global impassDummy as integer
 global roughDummy as integer
 global waterDummy as integer
 global cross as integer
+global shadowDummy as integer
 
 
 type baseType

@@ -6,6 +6,15 @@ function BaseColor()
 	for i = 0 to AIDepotCount     : SetSpriteColor(AIDepotNode[i].spriteID,pickAI.r,pickAI.g,pickAI.b,pickAI.a) : next i
 endfunction
 
+function PlaceShadow(node)
+	if mapTable[node].hasShadow
+		SetSpriteVisible( ShadowSprite,On )
+		SetSpritePositionByOffset( ShadowSprite,mapTable[node].x,mapTable[node].y )
+		DrawSprite( ShadowSprite )
+		SetSpriteVisible( ShadowSprite,Off )
+	endif
+endfunction
+
 function BaseSetup( ID, spriteID, node, base, baseRef ref as baseType[], group )
 	baseRef[ID].node = node
 	baseRef[ID].spriteID = spriteID
@@ -114,6 +123,7 @@ function GenerateBases()
 		node = Placement( AIDepotSector,AISectorNodes )
 		DepotSetup( i,AIDepotSeries+i,node,AIDepot,AIDepotNode,AIdepotGroup )
 	next i
+		PlaceShadow(node)
 	SetDisplayAspect(-1)  `device aspect ratio
 endfunction
 
@@ -121,6 +131,7 @@ function GenerateImpassables()
 	shapeTypes = mapImpass + mapWater
 	SetSpriteVisible(Impass,On)
 	SetSpriteVisible(AcquaSprite,On)
+	SetSpriteVisible(ShadowSprite,On)
 	for s = 0 to 1 `2 halves of the screen
 		shape = Random2(0,ShapeCount-1) `pick a random shape
 		depth = Random2(0,OpenRows-ShapeHeight) * Columns
@@ -137,6 +148,11 @@ function GenerateImpassables()
 				y = mapTable[columnNode].y-NodeOffset
 
 				select Shapes[ shapeTypes,shape,shapeLine+c ]
+					case Shadow
+						SetSpritePositionByOffset( ShadowSprite,mapTable[columnNode].x,mapTable[columnNode].y )
+						DrawSprite( ShadowSprite )
+						mapTable[columnNode].hasShadow = True
+					endcase
 					case Impassable
 						mapTable[columnNode].terrain = Impassable
 						SetSpritePositionByOffset( Impass,mapTable[columnNode].x,mapTable[columnNode].y )
@@ -159,6 +175,7 @@ function GenerateImpassables()
 	next s
 	SetSpriteVisible(Impass,Off)
 	SetSpriteVisible(AcquaSprite,Off)
+	SetSpriteVisible(ShadowSprite,Off)
 endfunction
 
 function GenerateMapFeature( i,feature,featureSprite,dummy,sliderQTY#,clumpModifier#,category )
@@ -180,6 +197,7 @@ function GenerateMapFeature( i,feature,featureSprite,dummy,sliderQTY#,clumpModif
 			AddSpriteShapeBox(dummy,x,y,x+NodeSize-1,y+NodeSize-1,0)
 			SetSpritePhysicsOn( dummy,1 )
 			SetSpriteCategoryBits( dummy,category )
+			PlaceShadow(i)
 		endif
 	endif
 endfunction
@@ -199,10 +217,12 @@ function ResetMap()
 	DeleteSprite(treeDummy)
 	DeleteSprite(roughDummy)
 	DeleteSprite(waterDummy)
+	DeleteSprite(shadowDummy)
 	impassDummy = CreateDummySprite()
 	treeDummy = CreateDummySprite()
 	roughDummy = CreateDummySprite()
 	waterDummy = CreateDummySprite()
+	shadowDummy = CreateDummySprite()
 
 	SetSpritePhysicsOn( impassDummy,1 )
 	SetSpriteCategoryBits( impassDummy,Block )
@@ -242,7 +262,7 @@ function GenerateTerrain()
 	treeClumpMod# = ceil( treeQty*.15)
 	roughClumpMod# = ceil( roughQty*.15)
 
-			SetDisplayAspect(AspectRatio)  `back to map aspect ratio
+	SetDisplayAspect(AspectRatio)  `back to map aspect ratio
 
 	SetSpriteVisible( TreeSprite,On )
 	SetSpriteVisible( RoughSprite,On )
@@ -264,13 +284,14 @@ endfunction
 
 function GenerateMap()
 
-	MapFile = OpenToRead( "AchillesBoardClear.txt" )
+	MapFile = OpenToRead( "AchillesBoardClearShadows.txt" )
 	for i = 0 to MapSize-1
 		mapTable[i].nodeX = i-(trunc(i/Columns)*Columns)
 		mapTable[i].nodeY = trunc(i/Columns)
 		mapTable[i].x = (mapTable[i].nodeX * NodeSize) + NodeOffset
 		mapTable[i].y = (mapTable[i].nodeY * NodeSize) + NodeOffset
 		mapTable[i].terrain = val(chr(ReadByte( MapFile ))) `base 16 format
+		mapTable[i].hasShadow = val(chr(ReadByte( MapFile )))
 		maptable[i].cost = cost[mapTable[i].terrain]
 		maptable[i].modifier = TRM[mapTable[i].terrain]
 		mapTable[i].base = Empty
@@ -322,6 +343,13 @@ function GenerateMap()
 	SetSpriteDepth(RoughSprite,1)
 	SetSpriteSize(RoughSprite,NodeSize,NodeSize)
 	SetSpriteVisible(RoughSprite,Off)
+
+	LoadImage( ShadowSprite,"wallshadow.png" )
+	CreateSprite( ShadowSprite,ShadowSprite )
+	SetSpriteTransparency( ShadowSprite,On )
+	SetSpriteDepth(ShadowSprite,0)
+	SetSpriteSize( ShadowSprite,45,45 )
+	SetSpriteVisible( ShadowSprite,Off )
 
 	starImage = LoadImage("VictoryImage.png")
 	laserStarImage = LoadImage("LaserStar.png")
@@ -416,7 +444,7 @@ function Setup()
 	SetSpriteOffset(MechGuy[1].bodyID,NodeSize,NodeSize)
 	SetSpritePositionByOffset(MechGuy[1].bodyID,MechGuy[1].x,MechGuy[1].y)
 	SetSpriteAnimation(MechGuy[1].bodyID,197,169,15 )
-	SetSpriteAngle(MechGuy[1].bodyID,90)
+	//~ SetSpriteAngle(MechGuy[1].bodyID,90)
 	SetSpriteTransparency(MechGuy[1].bodyID,1)
 	SetSpriteColorAlpha(MechGuy[1].bodyID,56)
 	SetSpritePositionByOffset(MechGuy[1].bodyID,MechGuy[1].x+shadowOffset,MechGuy[1].y+shadowOffset)
@@ -587,7 +615,7 @@ function Setup()
 
    `SPLASHSCREEN
 
-	SetupSprite( Splash,Splash,"SplashScreenVI.png",0,0,MaxWidth,MaxHeight,3,On,0 )
+	SetupSprite( Splash,Splash,"SplashScreenVIII.png",0,0,MaxWidth,MaxHeight,3,On,0 )
 	SetupSprite( Dialog,Dialog,"SettingsDialog.png",0,0,MaxWidth,MaxHeight,1,Off,0 )
 	SetupSprite( BaseDialog,BaseDialog,"BaseDialog.png",0,0,MaxWidth,MaxHeight,1,Off,2 )
 	SetSpriteCategoryBits( Splash,NoBlock )

@@ -183,7 +183,7 @@ function PatrolMech(t ref as integer[])
 			y1 = MiddleY-((GetSpriteWidth(OpenIris))/2)+NodeOffset
 			SetSpritePositionByOffset( MechGuy[0].bodyID,x1,y1 )
 			SetSpritePositionByOffset( MechGuy[0].turretID,x1,y1 )
-			SetSpritePositionByOffset( MechGuy[1].bodyID,x1+shadowOffset,y1+shadowOffset )
+			SetSpritePositionByOffset( MechGuy[1].bodyID,x1,y1-shadowOffset )
 			SetSpriteVisible( MechGuy[0].bodyID,On )
 			SetSpriteVisible( MechGuy[0].turretID,On )
 
@@ -242,12 +242,12 @@ function PatrolMech(t ref as integer[])
 	turretArc# = SetTurnArc(t#,a#)
 	t[0] = SetTween(x1,y1,x2,y2,b#,tankArc#,  MechGuy[0].bodyID,  TweenLinear(),MechGuy[0].speed)
 	t[1] = SetTween(x1,y1,x2,y2,t#,turretArc#,MechGuy[0].turretID,TweenLinear(),MechGuy[0].speed)
-	t[2] = SetTween(x1+shadowOffset,y1+shadowOffset,x2+shadowOffset,y2+shadowOffset,b#,tankArc#,MechGuy[1].bodyID,TweenLinear(),MechGuy[1].speed)
+	t[2] = SetTween(x1,y1-shadowOffset,x2,y2-shadowOffset,b#,tankArc#,MechGuy[1].bodyID,TweenLinear(),MechGuy[1].speed)
 
 	PlaySprite( MechGuy[0].bodyID,20,0 )
 	PlaySprite( MechGuy[1].bodyID,20,0 )
-	MechGuy[0].x = x2 : MechGuy[1].x = x2+shadowOffset
-	MechGuy[0].y = y2 : MechGuy[1].y = y2+shadowOffset
+	MechGuy[0].x = x2 : MechGuy[1].x = x2 //+shadowOffset
+	MechGuy[0].y = y2 : MechGuy[1].y = y2-shadowOffset
 endfunction t
 
 function AlertDialog( text,state,x,y,w,h )
@@ -494,7 +494,7 @@ function Compose()
 							GridCheck( clone,i ) : exit
 						endif
 					next i
-								SetRawMouseVisible( On )
+					SetRawMouseVisible( On )
 				endcase
 				case AISpectrumSprite
 					pickAI.satur = abs(cy1-y)/100
@@ -738,6 +738,7 @@ function LoadMap( map$ )
 	MapFile = OpenToRead( map$ )
 	for i = 0 to MapSize-1
 		mapTable[i].terrain = ReadInteger( MapFile )
+		mapTable[i].hasShadow = ReadInteger( MapFile )
 		maptable[i].cost = cost[mapTable[i].terrain]
 		maptable[i].modifier = TRM[mapTable[i].terrain]
 		mapTable[i].base = mapTable[i].terrain
@@ -766,14 +767,15 @@ function LoadMap( map$ )
 				case Impassable : DrawTerrain( node,Impass,impassDummy ) : endcase
 				case Water		: DrawTerrain( node,AcquaSprite,waterDummy ) : endcase
 			endselect
+			PlaceShadow(i)
 		endif
 	next i
 	`SETTINGS
 	LoadForce( MapFile )
 	BaseProdValue = ReadInteger( MapFile )
 	SetProductionButtons(BaseProdValue)
-			Events = ReadInteger( MapFile )
-			if Events then SetVirtualButtonImageUp( ONOFF.ID,ONOFF.DN ) else SetVirtualButtonImageUp( ONOFF.ID,ONOFF.UP )
+	Events = ReadInteger( MapFile )
+	if Events then SetVirtualButtonImageUp( ONOFF.ID,ONOFF.DN ) else SetVirtualButtonImageUp( ONOFF.ID,ONOFF.UP )
 
 	CloseFile( MapFile )
 			//~ SetDisplayAspect(AspectRatio)  `back to map aspect ratio
@@ -809,7 +811,7 @@ function SaveMap( map$ )
 	endif
 	file = OpenToWrite( map$ )
 	`save map
-	for i = 0 to MapSize-1 : WriteInteger( file, mapTable[i].terrain ) : next i
+	for i = 0 to MapSize-1 : WriteInteger( file, mapTable[i].terrain ) : WriteInteger( file, mapTable[i].hasShadow ) : next i
 	`save settings
 	WriteInteger( file,pickAI.r ) : WriteInteger( file,pickAI.g ) : WriteInteger( file,pickAI.b ) : WriteInteger( file,pickAI.a )
 	WriteInteger( file,pickPL.r ) : WriteInteger( file,pickPL.g ) : WriteInteger( file,pickPL.b ) : WriteInteger( file,pickPL.a )

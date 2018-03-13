@@ -156,8 +156,8 @@ function Fly( ID,Tank ref as tankType[],node1,node2 )	`NOT CONTROLLED BY ASTAR
 	endArc# = atan2( y1-y2,x1-x2 )-90
 	tankArc# = GetSpriteAngle( Tank[ID].bodyID )
 	turretArc# = GetSpriteAngle( Tank[ID].turretID )
-	b# = SetTurnArc( tankArc#,endArc# )
-	t# = SetTurnArc( turretArc#,endArc# )
+	b1# = SetTurnArc( tankArc#,endArc# )
+	t1# = SetTurnArc( turretArc#,endArc# )
 
 	visible = GetSpriteVisible( Tank[ID].bodyID )
 	if not visible
@@ -167,9 +167,9 @@ function Fly( ID,Tank ref as tankType[],node1,node2 )	`NOT CONTROLLED BY ASTAR
 		SetSoundInstanceRate( PlaySound( Tank[ID].sound,Tank[ID].volume ),3.5 )	 `sound for visible units
 	endif
 
-	if Tank[ID].team = PlayerTeam then SetTween( x1,y1,x2,y2,0,0,Tank[ID].FOW,TweenLinear(),speed# )
-	t1 = SetTween( x1,y1,x2,y2,tankArc#,b#,Tank[ID].bodyID,TweenLinear(),speed# )
-	t2 = SetTween( x1,y1,x2,y2,turretArc#,t#,Tank[ID].turretID,TweenLinear(),speed# )
+	if Tank[ID].team = PlayerTeam then SetTween( x1,y1,x2,y2,0,0,Tank[ID].FOW,TweenEaseOut1(),speed# )
+	t1 = SetTween( x1,y1,x2,y2,tankArc#,b1#,Tank[ID].bodyID,TweenEaseOut1(),speed# )
+	t2 = SetTween( x1,y1,x2,y2,turretArc#,t1#,Tank[ID].turretID,TweenEaseOut1(),speed# )
 
 	if visible and ( GetSpriteCurrentFrame( Tank[ID].bodyID ) = 1 )
 		for i# = 1 to 1.3 step .025	`Take Off
@@ -183,6 +183,18 @@ function Fly( ID,Tank ref as tankType[],node1,node2 )	`NOT CONTROLLED BY ASTAR
 		until GetSpriteCurrentFrame( Tank[ID].bodyID ) = FullyOpen
 	endif
 	PlayTweens( t1, Tank[ID].bodyID )
+
+	`Spin around on landing
+	b2# = SetTurnArc( tankArc#,0 )
+	t2# = SetTurnArc( turretArc#,0 )
+	t1 = CreateTweenSprite( speed# )
+	SetTweenSpriteAngle( t1,b1#,b2#,TweenLinear() )
+	PlayTweenSprite( t1,Tank[ID].bodyID,0 )
+	t2 = CreateTweenSprite( speed# )
+	SetTweenSpriteAngle( t2,t1#,t2#,TweenLinear() )
+	PlayTweenSprite( t2,Tank[ID].turretID,0 )
+	PlayTweens( t1,Tank[ID].bodyID )
+
 	Tank[ID].parentNode[Tank[ID].index] = node2
 	Tank[ID].node = node2
 	Tank[ID].x = x2
